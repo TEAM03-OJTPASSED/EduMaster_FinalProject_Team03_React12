@@ -1,5 +1,4 @@
 import { useCustomNavigate } from "../hooks/customNavigate";
-import heroImage from "../assets/pexels-armin-rimoldi-5553045.jpg"
 
 const Homepage = () => {
   const navigate = useCustomNavigate();
@@ -25,11 +24,7 @@ const Homepage = () => {
           Student Dashboard
         </button>
       </div>
-      <div className="w-full text-left">
-
-
-        
-      </div>
+      <div className="w-full text-left"></div>
     </div>
   );
 };

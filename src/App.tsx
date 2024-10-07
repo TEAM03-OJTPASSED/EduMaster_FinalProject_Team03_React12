@@ -31,7 +31,7 @@ function App() {
           <Route path="/contact" element={<Contactpage />} />
           <Route path="/faqs" element={<FAQspage />} />
           <Route path="/error" element={<Errorpage />} />
-          <Route path="/detail/:id" element={<CourseDetailpage />} />
+          <Route path="/course/:id" element={<CourseDetailpage />} />
           <Route path="/forgot-password" element={<ForgotPasswordpage />} />
         </Route>
       </Routes>
