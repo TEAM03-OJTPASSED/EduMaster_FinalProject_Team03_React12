@@ -149,6 +149,29 @@ const Navbar = () => {
           autoFocus
           onBlur={() => setIsSearchActive(false)}
         />
+      </div>
+      <div
+        className={`flex m-2 gap-2 md:gap-3 items-center transition-opacity duration-200 ${
+          searchExpanded ? "opacity-0" : "opacity-100"
+        }`}
+      >
+        {" "}
+        {/* Ẩn các nút khi ô tìm kiếm mở */}
+        <button
+          className="px-3 py-1.5 bg-blue-500 text-white rounded-md transition duration-200 hover:bg-blue-600 text-sm md:text-base"
+          onClick={() => navigate("/login")}
+        >
+          Log In
+        </button>
+        <button
+          className="px-3 py-1.5 bg-green-500 text-white rounded-md transition duration-200 hover:bg-green-600 text-sm md:text-base"
+          onClick={() => navigate("/signup")}
+        >
+          Sign Up
+        </button>
+      </div>
+
+      {/* Media query: áp dụng chỉ cho màn hình nhỏ */}
       )}
     </div>
   );

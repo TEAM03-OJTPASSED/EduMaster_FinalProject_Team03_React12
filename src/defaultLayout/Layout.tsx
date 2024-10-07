@@ -1,11 +1,15 @@
 import { Outlet } from "react-router-dom"; // Import Outlet
 import Navbar from "../components/Navbar";
+import UserAuth from "../components/UserAuthTest";
 
 const GeneralLayout = () => {
   return (
     <div>
+      {/* User test section */}
+      <UserAuth />
+
       {/* Navbar section */}
-      <div className="w-full h-20 fixed top-0 left-0 flex items-center bg-white shadow">
+      <div className="w-full h-20 flex items-center bg-white shadow">
         <Navbar />
       </div>
 
