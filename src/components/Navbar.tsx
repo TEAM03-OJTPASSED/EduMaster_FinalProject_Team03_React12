@@ -5,6 +5,7 @@ import logoImage from "../assets/EduMaster.png";
 import { useCustomNavigate } from "../hooks/customNavigate";
 import { AiOutlineSearch } from "react-icons/ai";
 
+
 // Define the type for menu items
 interface MenuItem {
   label: string;
@@ -75,7 +76,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="w-full h-20 flex items-center justify-between p-4 bg-white shadow-md relative z-50">
+    <div className="w-full h-16 flex items-center justify-between p-4 bg-white shadow-md relative z-0">
       {!isSearchActive ? (
         <>
           <img
@@ -85,7 +86,7 @@ const Navbar = () => {
             onClick={() => navigate("/")}
             style={{ objectFit: "cover", width: "250px", cursor: "pointer" }}
           />
-
+          <div>
           {/* Home Button */}
           <Button
             className={`navbar-button ${
@@ -128,12 +129,13 @@ const Navbar = () => {
           {/* Dropdown Menu */}
           <Dropdown menu={menuProps}>
             <Button color="default" variant="text">
-              <Space>
+              <Space className="text-base font-semibold">
                 Pages
                 <DownOutlined />
               </Space>
             </Button>
           </Dropdown>
+          </div>
 
           {/* Log In / Sign Up and Search Icons */}
           <div className="flex items-center gap-4">
