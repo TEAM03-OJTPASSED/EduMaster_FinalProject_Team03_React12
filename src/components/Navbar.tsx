@@ -64,19 +64,6 @@ const Navbar = () => {
       </div>
 
       {/* Media query: áp dụng chỉ cho màn hình nhỏ */}
-      <style>
-        {`
-          @media (min-width: 768px) {
-            .navbar-search {
-              position: relative; /* Đặt lại vị trí cho màn hình lớn */
-              width: auto; /* Chiều rộng tự động trên máy tính */
-            }
-            .navbar-search.expanded {
-              position: relative; /* Không áp dụng hiệu ứng mở rộng cho máy tính */
-            }
-          }
-        `}
-      </style>
     </div>
   );
 };
