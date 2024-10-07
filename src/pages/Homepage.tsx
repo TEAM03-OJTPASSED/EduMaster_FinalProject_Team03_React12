@@ -1,9 +1,10 @@
 import { useCustomNavigate } from "../hooks/customNavigate";
+import heroImage from "../assets/pexels-armin-rimoldi-5553045.jpg"
 
 const Homepage = () => {
   const navigate = useCustomNavigate();
   return (
-    <div className="flex flex-col items-center p-4">
+    <div className="flex flex-col items-center">
       <div className="flex flex-col md:flex-row gap-4">
         <button
           className="px-4 py-2 bg-yellow-500 text-white rounded-md w-full md:w-auto"
@@ -24,7 +25,11 @@ const Homepage = () => {
           Student Dashboard
         </button>
       </div>
-      <div className="mt-4 w-full text-left">Homepage</div>
+      <div className="w-full text-left">
+
+
+        
+      </div>
     </div>
   );
 };
