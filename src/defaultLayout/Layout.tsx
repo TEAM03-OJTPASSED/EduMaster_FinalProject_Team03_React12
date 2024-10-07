@@ -4,12 +4,12 @@ import UserAuth from "../components/UserAuthTest";
 
 const GeneralLayout = () => {
   return (
-    <div>
+    <div className="div">
       {/* User test section */}
       <UserAuth />
 
       {/* Navbar section */}
-      <div className="w-full h-16 fixed top-0 left-0 flex items-center bg-white shadow">
+      <div className="w-full h-16 left-0 flex items-center bg-white shadow">
         <Navbar />
       </div>
 
