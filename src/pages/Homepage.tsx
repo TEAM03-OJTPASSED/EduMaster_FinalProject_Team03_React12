@@ -1,6 +1,6 @@
 import { useCustomNavigate } from "../hooks/customNavigate";
 
-const Homepage = () => {
+const HomePage = () => {
   const navigate = useCustomNavigate();
   return (
     <div className="flex flex-col items-center">
@@ -29,4 +29,4 @@ const Homepage = () => {
   );
 };
 
-export default Homepage;
+export default HomePage;
