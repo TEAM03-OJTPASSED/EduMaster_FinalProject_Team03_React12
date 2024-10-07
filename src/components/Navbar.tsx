@@ -1,45 +1,153 @@
-import { Input } from "antd";
+import { useState } from "react";
+import { Button, Dropdown, Input, MenuProps, Space } from "antd";
+import { DownOutlined } from "@ant-design/icons";
 import logoImage from "../assets/EduMaster.png";
 import { useCustomNavigate } from "../hooks/customNavigate";
 import { AiOutlineSearch } from "react-icons/ai";
-import { useState } from "react";
+
+// Define the type for menu items
+interface MenuItem {
+  label: string;
+  key: string;
+  path: string;
+}
+
+// Define the items with paths
+const items: MenuItem[] = [
+  {
+    label: "Contact",
+    key: "1",
+    path: "/contact",
+  },
+  {
+    label: "FAQs",
+    key: "2",
+    path: "/faqs",
+  },
+  {
+    label: "Error",
+    key: "3",
+    path: "/error",
+  },
+];
 
 const Navbar = () => {
   const navigate = useCustomNavigate();
-  const [searchExpanded, setSearchExpanded] = useState(false);
+  const [isSearchActive, setIsSearchActive] = useState(false);
+  const [activeButton, setActiveButton] = useState<string>("home");
 
-  const handleSearchClick = () => {
-    setSearchExpanded(!searchExpanded);
+  // Updated handleMenuClick to navigate to the selected item's path
+  const handleMenuClick: MenuProps["onClick"] = (e) => {
+    const selectedItem = items.find((item) => item.key === e.key);
+    if (selectedItem) {
+      navigate(selectedItem.path); // Navigate to the selected item's path
+    }
+  };
+
+  const menuProps = {
+    items: items.map((item) => ({ label: item.label, key: item.key })), // Map to the expected structure
+    onClick: handleMenuClick,
   };
 
   return (
-    <div className="w-full h-20 flex items-center justify-between p-4 bg-white shadow-md">
-      <img
-        src={logoImage}
-        alt="EduMaster logo"
-        className={`max-h-[80%] max-w-[40%] object-contain cursor-pointer transition-opacity duration-200 ${
-          searchExpanded ? "opacity-0" : "opacity-100"
-        }`} // Ẩn logo khi ô tìm kiếm mở
-        onClick={() => navigate("/")}
-      />
-      <div
-        className={`transition-all duration-300 ${
-          searchExpanded ? "absolute right-0 w-full" : "max-w-[300px]"
-        }`}
-      >
-        {" "}
-        {/* Chiều rộng của ô tìm kiếm */}
+    <div className="w-full h-20 flex items-center justify-between p-4 bg-white shadow-md relative z-50">
+      {!isSearchActive ? (
+        <>
+          <img
+            className="w-24 sm:w-36 cursor-pointer"
+            src={logoImage}
+            alt="EduMaster logo"
+            onClick={() => navigate("/")}
+            style={{ objectFit: "cover", width: "250px", cursor: "pointer" }}
+          />
+          <div>
+            <Button
+              className={`navbar-button ${
+                activeButton === "home" ? "active" : ""
+              } text-xs sm:text-base`} // Adjust font size
+              onClick={() => {
+                setActiveButton("home");
+                navigate("/");
+              }}
+            >
+              Home
+            </Button>
+          </div>
+          <div>
+            <Button
+              className={`navbar-button ${
+                activeButton === "courses" ? "active" : ""
+              } text-xs sm:text-base`} // Adjust font size
+              onClick={() => {
+                setActiveButton("courses");
+                navigate("/course");
+              }}
+            >
+              Courses
+            </Button>
+          </div>
+          <div>
+            <Button
+              className={`navbar-button ${
+                activeButton === "blog" ? "active" : ""
+              } text-xs sm:text-base`} // Adjust font size
+              onClick={() => {
+                setActiveButton("blog");
+                navigate("/blog");
+              }}
+            >
+              Blog
+            </Button>
+          </div>
+          <div>
+            <Dropdown menu={menuProps} className="dropdown-menu-button">
+              <Button color="default" variant="text">
+                <Space>
+                  Pages
+                  <DownOutlined />
+                </Space>
+              </Button>
+            </Dropdown>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <button
+              className="px-3 py-1.5 bg-blue-500 text-white rounded-md transition duration-200 hover:bg-blue-600 text-sm md:text-base"
+              onClick={() => navigate("/login")}
+            >
+              Log In
+            </button>
+            <button
+              className="px-3 py-1.5 bg-green-500 text-white rounded-md transition duration-200 hover:bg-green-600 text-sm md:text-base"
+              onClick={() => navigate("/signup")}
+            >
+              Sign Up
+            </button>
+            <div
+              className="flex items-center justify-center w-10 h-10 bg-gray-200 rounded-full cursor-pointer"
+              onClick={() => setIsSearchActive(true)}
+            >
+              <AiOutlineSearch size={24} />
+            </div>
+          </div>
+        </>
+      ) : (
         <Input
-          placeholder="Search for anything . . ."
+          placeholder="Search..."
+          className="transition-all duration-3000 ease-in-out"
           style={{
-            width: "95%",
-            height: 40,
+            width: "90%",
+            position: "absolute",
+            right: "5%",
+            top: "50%",
+            transform: "translateY(-50%)",
+            fontSize: "16px",
             borderRadius: "20px",
+            padding: "10px",
+            height: "50px",
           }}
-          prefix={<AiOutlineSearch className="text-gray-400" />}
-          className="mx-2"
-          onFocus={handleSearchClick} // Gọi hàm khi ô tìm kiếm được nhấn
-          onBlur={() => setSearchExpanded(false)} // Đặt lại trạng thái khi mất tiêu điểm
+          autoFocus
+          onBlur={() => setIsSearchActive(false)}
         />
       </div>
       <div
@@ -64,6 +172,7 @@ const Navbar = () => {
       </div>
 
       {/* Media query: áp dụng chỉ cho màn hình nhỏ */}
+      )}
     </div>
   );
 };
