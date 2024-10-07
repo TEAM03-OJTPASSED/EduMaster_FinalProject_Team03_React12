@@ -1,5 +1,5 @@
 import { useCustomNavigate } from "../hooks/customNavigate";
-import { Button } from "antd";
+import { Button, Card } from "antd";
 import heroImage from "../assets/pexels-armin-rimoldi-5553045.jpg"
 import { BiSearch } from "react-icons/bi";
 import CategoriesGrid from "../components/home/CategoriesGrid";
@@ -7,6 +7,8 @@ import CategoriesGrid from "../components/home/CategoriesGrid";
 
 import { FaPalette, FaCode, FaComments, FaVideo, FaCamera, FaChartLine, FaPenNib, FaChartPie, FaAtom, FaNetworkWired } from 'react-icons/fa';
 import CoursesGrid from "../components/home/CoursesGrid";
+import CTABanner from "../components/home/CTABanner";
+import LatestArticles from "../components/home/LatestArticles";
 
 
 interface Category {
@@ -107,6 +109,36 @@ const HomePage = () => {
               <CoursesGrid/>
             </div>
           </div>
+        </section>
+
+        <section>
+          <div className="py-24 grid gap-6 grid-cols-4 justify-between">
+            <Card className=" h-40 bg-[#EAEAEA] text-center flex flex-col items-center align-center justify-center" hoverable>
+              <h3 className="h3">25K+</h3>
+              <p>Active Students</p>
+            </Card>
+            <Card className="h-40 bg-[#EAEAEA] text-center flex flex-col items-center align-center justify-center" hoverable>
+              <h3 className="h3">888+</h3>
+              <p>Total Courses</p>
+            </Card>
+            <Card className=" h-40 bg-[#EAEAEA] text-center flex flex-col items-center align-center justify-center" hoverable>
+              <h3 className="h3">253+</h3>
+              <p>Active Instructors</p>
+            </Card>
+            <Card className=" h-40 bg-[#EAEAEA] text-center flex flex-col items-center align-center justify-center" hoverable>
+              <h3 className="h3">100%</h3>
+              <p>Satisfaction Rate</p>
+            </Card>
+
+          </div>
+        </section>
+
+        <section>
+          <CTABanner/>
+        </section>
+
+        <section>
+          <LatestArticles/>
         </section>
 </main>
 
