@@ -5,6 +5,7 @@ import {
   VideoCameraOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, theme } from "antd";
+import AdminContent from "../pages/AdminDashboard/AdminContent";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -27,6 +28,8 @@ const AdminSiderMenu: React.FC = () => {
   return (
     <Layout>
       <Sider
+        theme="light"
+        style={{ height: "100vh" }}
         breakpoint="lg"
         collapsedWidth="0"
         onBreakpoint={(broken) => {
@@ -38,7 +41,7 @@ const AdminSiderMenu: React.FC = () => {
       >
         <div className="demo-logo-vertical" />
         <Menu
-          theme="dark"
+          theme="light"
           mode="inline"
           defaultSelectedKeys={["4"]}
           items={items}
@@ -55,7 +58,7 @@ const AdminSiderMenu: React.FC = () => {
               borderRadius: borderRadiusLG,
             }}
           >
-            content
+            <AdminContent></AdminContent>
           </div>
         </Content>
         <Footer style={{ textAlign: "center" }}>

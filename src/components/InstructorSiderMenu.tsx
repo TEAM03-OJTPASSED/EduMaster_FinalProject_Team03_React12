@@ -27,6 +27,10 @@ const InstructorSiderMenu: React.FC = () => {
   return (
     <Layout>
       <Sider
+        trigger
+        width={500}
+        theme="light"
+        style={{ height: "100vh" }}
         breakpoint="lg"
         collapsedWidth="0"
         onBreakpoint={(broken) => {
@@ -38,10 +42,11 @@ const InstructorSiderMenu: React.FC = () => {
       >
         <div className="demo-logo-vertical" />
         <Menu
-          theme="dark"
+          theme="light"
           mode="inline"
           defaultSelectedKeys={["4"]}
           items={items}
+          className="text-[35px] font-sans"
         />
       </Sider>
       <Layout>

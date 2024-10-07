@@ -5,13 +5,13 @@ const AdminLayout = () => {
   return (
     <div>
       {/* Navbar section */}
-      <div className="w-full h-20 flex items-center bg-white shadow">
+      <div className="w-full flex items-center bg-white shadow">
         <Navbar />
       </div>
 
       {/* Content section */}
-      <div className=" flex justify-center mt-4">
-        <div className="w-[100%] ">
+      <div className=" flex justify-center">
+        <div className="w-full ">
           <Outlet />
         </div>
       </div>
