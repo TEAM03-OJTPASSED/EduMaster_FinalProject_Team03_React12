@@ -54,6 +54,7 @@ const Navbar = () => {
       {!isSearchActive ? (
         <>
           <img
+            className="w-24 sm:w-36 cursor-pointer"
             src={logoImage}
             alt="EduMaster logo"
             onClick={() => navigate("/")}
@@ -63,7 +64,7 @@ const Navbar = () => {
             <Button
               className={`navbar-button ${
                 activeButton === "home" ? "active" : ""
-              }`}
+              } text-xs sm:text-base`} // Adjust font size
               onClick={() => {
                 setActiveButton("home");
                 navigate("/");
@@ -76,7 +77,7 @@ const Navbar = () => {
             <Button
               className={`navbar-button ${
                 activeButton === "courses" ? "active" : ""
-              }`}
+              } text-xs sm:text-base`} // Adjust font size
               onClick={() => {
                 setActiveButton("courses");
                 navigate("/course");
@@ -89,7 +90,7 @@ const Navbar = () => {
             <Button
               className={`navbar-button ${
                 activeButton === "blog" ? "active" : ""
-              }`}
+              } text-xs sm:text-base`} // Adjust font size
               onClick={() => {
                 setActiveButton("blog");
                 navigate("/blog");

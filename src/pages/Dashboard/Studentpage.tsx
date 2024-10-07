@@ -1,12 +1,12 @@
 import { useLocation } from "react-router-dom"; // Import useLocation
-import StudentSiderMenu from "../components/StudentSiderMenu";
-import StudentContent from "./StudentDashboard/StudentContent";
+import StudentSiderMenu from "../../components/StudentSiderMenu";
+import StudentContent from "../StudentDashboard/StudentContent";
 
 const StudentPage = () => {
   const location = useLocation(); // Get current location
 
   // Determine if the welcome message should be displayed
-  const showWelcomeMessage = location.pathname === "/student";
+  const showWelcomeMessage = location.pathname === "/dashboard/student";
 
   return (
     <div className="flex">

@@ -47,16 +47,16 @@ const AdminSiderMenu: React.FC = () => {
     setCurrent(e.key);
     switch (e.key) {
       case "user-management":
-        navigate("/admin/user-management");
+        navigate("/dashboard/admin/user-management");
         break;
       case "course-management":
-        navigate("/admin/course-management");
+        navigate("/dashboard/admin/course-management");
         break;
       case "category-management":
-        navigate("/admin/category-management");
+        navigate("/dashboard/admin/category-management");
         break;
       case "payout-management":
-        navigate("/admin/payout-management");
+        navigate("/dashboard/admin/payout-management");
         break;
 
       default:

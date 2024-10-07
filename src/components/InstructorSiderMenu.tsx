@@ -43,13 +43,13 @@ const InstructorSiderMenu: React.FC = () => {
     // Navigate to the corresponding page based on the clicked key
     switch (e.key) {
       case "profile":
-        navigate("/instructor/profile"); // Navigate to Profile page
+        navigate("/dashboard/instructor/profile"); // Navigate to Profile page
         break;
       case "course-management":
-        navigate("/instructor/course-management"); // Navigate to Course Management page
+        navigate("/dashboard/instructor/course-management"); // Navigate to Course Management page
         break;
       case "payout-management":
-        navigate("/instructor/payout-management"); // Navigate to Payout Management page
+        navigate("/dashboard/instructor/payout-management"); // Navigate to Payout Management page
         break;
       default:
         break;

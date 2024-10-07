@@ -34,10 +34,10 @@ const StudentSiderMenu: React.FC = () => {
     // Navigate to the corresponding page based on the clicked key
     switch (e.key) {
       case "profile":
-        navigate("/student/profile");
+        navigate("/dashboard/student/profile");
         break;
       case "course-detail":
-        navigate("/student/course-detail");
+        navigate("/dashboard/student/course-detail");
         break;
       default:
         break;
