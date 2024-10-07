@@ -14,11 +14,13 @@ import FAQspage from "./pages/FAQspage";
 import Errorpage from "./pages/Errorpage";
 import CourseDetailpage from "./pages/CourseDetailpage";
 import ForgotPasswordpage from "./pages/ForgotPasswordpage";
+import AdminLayout from "./defaultLayout/AdminLayout";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* General Layout */}
         <Route path="/" element={<GeneralLayout />}>
           <Route path="/" element={<Homepage />} />
           <Route path="/login" element={<Loginpage />} />
@@ -33,6 +35,21 @@ function App() {
           <Route path="/error" element={<Errorpage />} />
           <Route path="/detail/:id" element={<CourseDetailpage />} />
           <Route path="/forgot-password" element={<ForgotPasswordpage />} />
+        </Route>
+
+        {/* Admin Layout */}
+        <Route element={<AdminLayout />}>
+          <Route path="/admin/dashboard" element={<Adminpage />} />
+        </Route>
+
+        {/* Instructor Layout */}
+        <Route element={<AdminLayout />}>
+          <Route path="/instructor/dashboard/*" element={<Instructorpage />} />
+        </Route>
+
+        {/* Student Layout */}
+        <Route element={<AdminLayout />}>
+          <Route path="/dashboard/student/*" element={<Studentpage />} />
         </Route>
       </Routes>
     </BrowserRouter>
