@@ -16,8 +16,8 @@ export const Banner = ({
   discount,
 }: Props) => {
   return (
-    <div className="flex bg-neutral-900 text-white w-full px-20 py-10 gap-3">
-      <div className="flex flex-col w-4/5 gap-3">
+    <div className="absolute inset-x-0 flex bg-neutral-900 text-white px-20 py-10 gap-3">
+      <div className="flex flex-col w-2/3 gap-3">
         <div className="flex items-baseline font-jost">
           <div className="bg-neutral-600 px-3 py-2 rounded-lg mr-2">
             {category}
@@ -28,8 +28,8 @@ export const Banner = ({
         </div>
         <div className="font-exo font-semibold text-4xl">{title}</div>
       </div>
-      <div className="w-1/5 font-jost">
-        <div className="h-28 w-full flex justify-center items-center overflow-hidden rounded-t-lg">
+      <div className="absolute right-20 w-1/5 font-jost">
+        <div className="h-60 w-full flex justify-center items-center overflow-hidden rounded-t-lg">
           <img src={imageUrl} alt={title} className="object-contain w-full" />
         </div>
         <div className="flex bg-white text-black px-2 py-3 rounded-b-lg items-center justify-between gap-2">
