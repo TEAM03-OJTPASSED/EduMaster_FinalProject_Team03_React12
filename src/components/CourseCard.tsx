@@ -3,6 +3,9 @@ import { AiOutlineClockCircle } from "react-icons/ai";
 import { TiUserOutline } from "react-icons/ti";
 
 
+
+
+
 interface Course {
     id: number
     image_url: string
@@ -12,6 +15,7 @@ interface Course {
     duration: string
     students: number
     price: number | string
+    lessons?: number
 }
 
 
@@ -26,17 +30,25 @@ interface Course {
 //     discount: number;
 // }
 
-const CourseCard: React.FC<{ course: Course }> = ({ course }) => (
+const CourseCard: React.FC<{ course: Course, viewMode: string }> = ({ course, viewMode }) => (
     <Card
       hoverable
+      styles={{
+        body: {
+          height: '100%',
+          width: '100%',
+        },
+      }}
+      
       cover={
         <div className="relative">
-          <img alt={course.name} src={course.image_url} className="w-full h-48 object-cover " />
+          <img alt={course.name} src={course.image_url} className={`${viewMode === 'list' ? 'w-[400px]' : 'w-full'} h-48 object-cover`}/>
           <Tag className="absolute top-2 left-2 bg-black text-white">{course.category}</Tag>
         </div>
       }
-      className="h-full flex flex-col rounded-3xl overflow-hidden group"
+      className={`h-full rounded-3xl overflow-hidden group  ${viewMode === 'list' ? 'flex' : ""}`}
     >
+      
       
       <div className="flex-grow">
         <p className="text-gray-500 text-sm mb-2">by {course.author}</p>
@@ -46,6 +58,7 @@ const CourseCard: React.FC<{ course: Course }> = ({ course }) => (
         <div className="flex justify-between text-sm text-gray-500 mb-4">
             <span className="flex items-center"><AiOutlineClockCircle className="mr-1" />{course.duration}</span>
             <span className="flex items-center"><TiUserOutline className="mr-1" />{course.students} Students</span>
+            {course.lessons && <span className="flex items-center"><TiUserOutline className="mr-1" />{course.lessons} Lessons</span> }
         </div>
         
         <div className="flex justify-between items-center">
@@ -55,6 +68,7 @@ const CourseCard: React.FC<{ course: Course }> = ({ course }) => (
             <Button type="link" className="text-blue-600 hover:text-blue-800">View More</Button>
         </div>
       </div>
+      
     </Card>
   )
 export default CourseCard

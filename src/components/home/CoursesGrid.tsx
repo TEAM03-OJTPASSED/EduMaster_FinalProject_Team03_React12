@@ -83,7 +83,7 @@ export default function CoursesGrid() {
     <Row gutter={[20, 20]} className="mt-8">
       {courses.map((course) => (
         <Col xs={24} sm={12} md={8} key={course.id}>
-          <CourseCard course={course} />
+          <CourseCard course={course} viewMode='grid'/>
         </Col>
       ))}
     </Row>
