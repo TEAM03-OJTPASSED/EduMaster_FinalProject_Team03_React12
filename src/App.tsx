@@ -16,6 +16,7 @@ import CourseDetailpage from "./pages/CourseDetailpage";
 import ForgotPasswordpage from "./pages/ForgotPasswordpage";
 import AdminLayout from "./defaultLayout/AdminLayout";
 import AdminContent from "./pages/AdminDashboard/AdminContent";
+import UserManagement from "./pages/AdminDashboard/userManagement";
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
         {/* Admin Layout */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="dashboard" element={<AdminContent />} />
+          <Route path="users" element={<UserManagement />} />
         </Route>
 
         {/* Instructor Layout */}
