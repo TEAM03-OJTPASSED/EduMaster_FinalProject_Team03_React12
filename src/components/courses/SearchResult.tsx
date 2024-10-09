@@ -21,6 +21,7 @@ interface Course {
 export const SearchResults: React.FC<{
   courses: Course[];
   onSearch: (searchValue: string) => void;
+  // onCourseSelected: (course: Course) => void;
 }> = ({ courses, onSearch }) => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
 
@@ -56,7 +57,7 @@ export const SearchResults: React.FC<{
           />
         </div>
       </div>
-      {courses.length > 0 ? (<>
+      {courses.length > 0 ? (<div>
             <div
               className={`grid gap-6 ${
                 viewMode === "grid" ? "grid-cols-2" : "grid-cols-1"
@@ -64,7 +65,9 @@ export const SearchResults: React.FC<{
             >
               
               {courses.map((course) => (
-                <CourseCard course={course} viewMode={viewMode} key={course.id} />
+                <a key={course.id} href={`/course/${course.id}`}>
+                  <CourseCard course={course} viewMode={viewMode}/>
+                </a>
               ))}
             </div>
 
@@ -74,7 +77,7 @@ export const SearchResults: React.FC<{
               showQuickJumper
               className="mt-8 text-center"
             />
-            </>)
+            </div>)
         : (
           <div className="text-center mt-8">
             No courses found
