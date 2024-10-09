@@ -1,11 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-
-// 
+//
 type UserType = {
   username: string;
-//   password: string;
   email: string;
-  accessToken:string
+  accessToken: string;
 };
 
 interface AuthType {
@@ -20,6 +18,11 @@ interface AuthType {
     isError?: boolean;
     isSuccess?: boolean;
   };
+  forgot_password: {
+    isFetching?: boolean;
+    isError?: boolean;
+    isSuccess?: boolean;
+  };
 }
 const initialState: AuthType = {
   login: {
@@ -29,6 +32,11 @@ const initialState: AuthType = {
     isError: false,
   },
   register: {
+    isFetching: false,
+    isError: false,
+    isSuccess: true,
+  },
+  forgot_password: {
     isFetching: false,
     isError: false,
     isSuccess: true,
@@ -55,15 +63,35 @@ const authSlice = createSlice({
     },
     registerSuccess: (state) => {
       state.register.isFetching = false;
-     
       state.register.isSuccess = true;
     },
     registerError: (state) => {
       state.register.isError = true;
       state.register.isFetching = false;
     },
+    forgotStart: (state) => {
+      state.login.isFetching = true;
+    },
+    forgotSuccess: (state) => {
+      state.login.isFetching = false;
+      state.login.isAuthenticated = true;
+    },
+    forgotError: (state) => {
+      state.login.isError = true;
+      state.login.isFetching = false;
+    },
   },
 });
 
 export default authSlice.reducer;
-export const {registerStart,registerSuccess,registerError,loginStart, loginSuccess, loginError } = authSlice.actions;
+export const {
+  registerStart,
+  registerSuccess,
+  registerError,
+  loginStart,
+  loginSuccess,
+  loginError,
+  forgotStart,
+  forgotSuccess,
+  forgotError
+} = authSlice.actions;

@@ -16,6 +16,7 @@ const onFinish: FormProps<LoginProps>["onFinish"] = (values) => {
 };
 
 const Loginpage = () => {
+  
   return (
     <div className="w-full  lg:flex lg:h-[35rem] lg:flex-row">
       {/* BACKGROUND */}
@@ -58,8 +59,7 @@ const Loginpage = () => {
               <Checkbox>Remember password</Checkbox>
             </Form.Item>
             <div className="min-h-8 flex mt-1 underline px-1">
-
-            <NavLink to={"/forgot-password"}>Forgot password</NavLink>
+              <NavLink to={"/forgot-password"}>Forgot password</NavLink>
             </div>
           </div>
           {/* login */}

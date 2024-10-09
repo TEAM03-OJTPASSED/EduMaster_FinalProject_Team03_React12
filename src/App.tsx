@@ -11,7 +11,7 @@ import ContactPage from "./pages/Contactpage";
 import FAQsPage from "./pages/FAQspage";
 import ErrorPage from "./pages/Errorpage";
 import CourseDetailPage from "./pages/CourseDetailpage";
-import ForgotPasswordPage from "./pages/ForgotPasswordpage";
+import ForgotPasswordPage from "./pages/AuthPage/ForgotPasswordpage";
 import AdminPage from "./pages/Dashboard/Adminpage";
 import InstructorPage from "./pages/Dashboard/Instructorpage";
 import StudentPage from "./pages/Dashboard/Studentpage";

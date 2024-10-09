@@ -6,6 +6,9 @@ import {
   registerError,
   registerStart,
   registerSuccess,
+  forgotStart,
+  forgotError,
+  forgotSuccess,
 } from "./authSlice";
 const URL_BASE_API = "http://localhost:8080";
 import { RegisterType } from "./SignUppage";
@@ -45,6 +48,17 @@ const authApiRequest = {
       dispatch(registerError());
     }
   },
+  verifyEmailExisted: async (dispatch:AppDispatch,email: string) => {
+    dispatch(forgotStart())
+    try {
+      const res =  await axios.post(`${URL_BASE_API}/forgot-password`, email)
+      const {data} = res
+      dispatch(forgotSuccess(data))
+    } catch (error) {
+      dispatch(forgotError())
+      console.log(error);
+    }
+  },
 };
 
-export default authApiRequest
+export default authApiRequest;
