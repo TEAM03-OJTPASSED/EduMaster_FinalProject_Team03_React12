@@ -1,7 +1,7 @@
 import { Button, Form, Input } from "antd";
 import { FormProps } from "antd";
 
-type RegisterType = {
+export type RegisterType = {
   username: string;
   email: string;
   password: string;

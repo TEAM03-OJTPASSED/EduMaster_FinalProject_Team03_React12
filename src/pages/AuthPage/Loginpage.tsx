@@ -5,7 +5,7 @@ import { Divider } from "antd";
 import { jwtDecode } from "jwt-decode";
 import { NavLink } from "react-router-dom";
 
-type LoginProps = {
+export type LoginProps = {
   username: string;
   password: string;
   remember: boolean;

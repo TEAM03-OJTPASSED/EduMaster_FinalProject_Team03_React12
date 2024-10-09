@@ -8,7 +8,7 @@ import {
   registerSuccess,
 } from "./authSlice";
 const URL_BASE_API = "http://localhost:8080";
-import {}
+import { RegisterType } from "./SignUppage";
 import { LoginProps } from "./Loginpage";
 import { NavigateFunction } from "react-router-dom";
 import { AppDispatch } from "../../stores/store";
