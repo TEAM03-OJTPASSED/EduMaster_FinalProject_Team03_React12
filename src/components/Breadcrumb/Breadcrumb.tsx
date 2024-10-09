@@ -14,12 +14,11 @@ const DynamicBreadcrumb: React.FC = () => {
         <Link to="/">Home</Link> {/* Trang chính */}
       </Breadcrumb.Item>
       {pathSegments.map((segment, index) => {
-        const path = `/${pathSegments.slice(0, index + 1).join("/")}`; // Tạo đường dẫn cho từng phần
+        const path = `/${pathSegments.slice(0, index + 1).join("/")}`;
         return (
           <Breadcrumb.Item key={path}>
             <Link to={path}>
               {segment.charAt(0).toUpperCase() + segment.slice(1)}{" "}
-              {/* Chỉnh sửa chữ cái đầu */}
             </Link>
           </Breadcrumb.Item>
         );

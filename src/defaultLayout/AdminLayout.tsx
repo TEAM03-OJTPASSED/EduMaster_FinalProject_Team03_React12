@@ -9,9 +9,15 @@ const AdminLayout = () => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <AdminNavBar /> {/* Navbar */}
-      <Layout style={{ marginTop: "80px" }}>
+      <Layout style={{ padding: "24px", marginTop: "80px" }}>
         <DynamicBreadcrumb /> {/* Breadcrumb */}
-        <Content style={{ padding: "24px", backgroundColor: "#fff" }}>
+        <Content
+          style={{
+            borderRadius: "15px",
+            padding: "8px",
+            backgroundColor: "#fff",
+          }}
+        >
           <Outlet /> {/* Render component từ route */}
         </Content>
       </Layout>
