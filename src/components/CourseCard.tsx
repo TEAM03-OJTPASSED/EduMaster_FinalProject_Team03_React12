@@ -31,6 +31,7 @@ interface Course {
 // }
 
 const CourseCard: React.FC<{ course: Course, viewMode: string }> = ({ course, viewMode }) => (
+  <a href={`/course/${course.id}`}>
     <Card
       hoverable
       styles={{
@@ -70,5 +71,6 @@ const CourseCard: React.FC<{ course: Course, viewMode: string }> = ({ course, vi
       </div>
       
     </Card>
+    </a>
   )
 export default CourseCard

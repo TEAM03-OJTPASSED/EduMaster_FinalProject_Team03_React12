@@ -65,9 +65,7 @@ export const SearchResults: React.FC<{
             >
               
               {courses.map((course) => (
-                <a key={course.id} href={`/course/${course.id}`}>
-                  <CourseCard course={course} viewMode={viewMode}/>
-                </a>
+                  <CourseCard course={course} viewMode={viewMode} key={course.id}/>
               ))}
             </div>
 
