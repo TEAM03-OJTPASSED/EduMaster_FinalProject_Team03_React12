@@ -36,7 +36,7 @@ const menuItems = [
         key: "management-requests", // Đặt key duy nhất cho mục con
         icon: <FormOutlined />,
         title: "Request",
-        path: "/admin/requests",
+        path: "/admin/request-management",
       },
       {
         key: "management-categories", // Đặt key duy nhất cho mục con

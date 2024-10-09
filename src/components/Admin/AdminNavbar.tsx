@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Button, Drawer, Avatar, Dropdown, Menu } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
-import logoImage from "../assets/EduMaster.png"; // Đường dẫn đến logo
-import { useCustomNavigate } from "../hooks/customNavigate"; // Hook tùy chỉnh cho điều hướng
+import logoImage from "../../assets/EduMaster.png"; // Đường dẫn đến logo
+import { useCustomNavigate } from "../../hooks/customNavigate"; // Hook tùy chỉnh cho điều hướng
 import AdminSiderMenu from "./AdminSiderMenu";
 
 const { Sider } = Layout; // Chỉ destructure Sider

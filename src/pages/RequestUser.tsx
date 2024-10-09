@@ -14,12 +14,12 @@ import {
   EditOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
-import EditUserModal from "../../components/Admin/AdminModals/EditUserModal";
+import EditUser from "../components/Admin/AdminModals/EditUserModal";
 
 const { Title } = Typography;
 const { Option } = Select; // Destructure Option from Select
 
-const UserManagement = () => {
+const RequestUser = () => {
   const [dataSource, setDataSource] = useState([
     {
       key: "1",
@@ -53,25 +53,6 @@ const UserManagement = () => {
     },
   ]);
 
-  const [editVisible, setEditVisible] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
-
-  const handleEdit = (record) => {
-    setCurrentUser(record); // Set the current user to edit
-    setEditVisible(true); // Show edit modal
-  };
-
-  const handleDelete = (record) => {
-    console.log("Deleting user:", record);
-    // Implement delete logic
-  };
-
-  const handleSave = (values) => {
-    console.log("Saving user:", values);
-    // Update user logic here, possibly update dataSource state
-    // setDataSource(updatedData);
-  };
-
   const columns = [
     {
       title: "Họ và tên",
@@ -94,57 +75,20 @@ const UserManagement = () => {
       key: "username",
     },
     {
-      title: "Trạng thái",
-      dataIndex: "status",
-      key: "status",
-      render: (text, record) => (
-        <Switch
-          checked={text}
-          // checkedChildren="Kích hoạt"
-          // unCheckedChildren="Không kích hoạt"
-          onChange={(checked) => handleStatusChange(checked, record.key)}
-        />
-      ),
+      title: "Descriptions",
+      dataIndex: "description",
+      key: "description",
     },
-    {
-      title: "Loại người dùng",
-      dataIndex: "role",
-      key: "role",
-      render: (text, record) => (
-        <Select
-          defaultValue={text}
-          style={{ width: 120 }}
-          onChange={(value) => handleRoleChange(value, record.key)}
-        >
-          <Option value="Admin">Admin</Option>
-          <Option value="Instructor">Instructor</Option>
-          <Option value="Student">Student</Option>
-        </Select>
-      ),
-    },
-    // {
-    //   title: "Ngày tạo",
-    //   dataIndex: "createdAt",
-    //   key: "createdAt",
-    // },
     {
       title: "Hành động",
       key: "action",
       render: (text, record) => (
         <Space size="middle">
-          <Button
-            type="primary"
-            icon={<EditOutlined />}
-            onClick={() => handleEdit(record)}
-          >
-            Chỉnh sửa
+          <Button color="primary" variant="outlined">
+            Approve
           </Button>
-          <Button
-            type="danger"
-            icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record)}
-          >
-            Xóa
+          <Button color="danger" variant="outlined">
+            Reject
           </Button>
         </Space>
       ),
@@ -170,14 +114,8 @@ const UserManagement = () => {
           scroll={{ x: true }} // Thêm scroll cho bảng
         />
       </Card>
-      <EditUserModal
-        visible={editVisible}
-        onClose={() => setEditVisible(false)}
-        user={currentUser}
-        onSave={handleSave}
-      />
     </div>
   );
 };
 
-export default UserManagement;
+export default RequestUser;

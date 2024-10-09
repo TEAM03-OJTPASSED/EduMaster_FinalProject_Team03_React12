@@ -8,6 +8,14 @@ const DynamicBreadcrumb: React.FC = () => {
     .split("/")
     .filter((segment) => segment); // Tách đường dẫn thành các phần
 
+  // Hàm xử lý các đoạn segment để chuyển đổi 'Request-management' thành 'Request Management'
+  const formatSegment = (segment: string) => {
+    return segment
+      .split("-") // Tách chuỗi bằng dấu "-"
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Viết hoa chữ cái đầu
+      .join(" "); // Nối lại thành chuỗi với dấu cách
+  };
+
   return (
     <Breadcrumb style={{ margin: "16px 0" }}>
       <Breadcrumb.Item>
@@ -18,7 +26,8 @@ const DynamicBreadcrumb: React.FC = () => {
         return (
           <Breadcrumb.Item key={path}>
             <Link to={path}>
-              {segment.charAt(0).toUpperCase() + segment.slice(1)}{" "}
+              {formatSegment(segment)}{" "}
+              {/* Gọi hàm formatSegment để định dạng */}
             </Link>
           </Breadcrumb.Item>
         );

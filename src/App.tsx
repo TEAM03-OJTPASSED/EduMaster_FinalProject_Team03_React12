@@ -17,6 +17,7 @@ import ForgotPasswordpage from "./pages/ForgotPasswordpage";
 import AdminLayout from "./defaultLayout/AdminLayout";
 import AdminContent from "./pages/AdminDashboard/AdminContent";
 import UserManagement from "./pages/AdminDashboard/userManagement";
+import RequestUser from "./pages/RequestUser";
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="dashboard" element={<AdminContent />} />
           <Route path="users" element={<UserManagement />} />
+          <Route path="request-management" element={<RequestUser />} />
         </Route>
 
         {/* Instructor Layout */}
