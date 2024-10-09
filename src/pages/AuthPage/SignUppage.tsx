@@ -1,5 +1,8 @@
 import { Button, Form, Input } from "antd";
 import { FormProps } from "antd";
+import authApiRequest from "./authApiRequest";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 export type RegisterType = {
   username: string;
@@ -8,11 +11,13 @@ export type RegisterType = {
   confirmPassword: string;
 };
 
-const onFinish: FormProps<RegisterType>["onFinish"] = (values) => {
-  console.log("Success:", values);
-};
-
 const SignUppage = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const onFinish: FormProps<RegisterType>["onFinish"] = (values) => {
+    console.log("Success:", values);
+    authApiRequest.register(dispatch, navigate, values);
+  };
   return (
     <div className="w-full rounded-lg  lg:flex lg:h-[35rem] lg:flex-row">
       {/* BACKGROUND */}
@@ -31,7 +36,6 @@ const SignUppage = () => {
           wrapperCol={{ span: 24 }}
           initialValues={{ remember: true }}
           onFinish={onFinish}
-          // onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
           {/* email */}
@@ -99,5 +103,4 @@ const SignUppage = () => {
     </div>
   );
 };
-
 export default SignUppage;

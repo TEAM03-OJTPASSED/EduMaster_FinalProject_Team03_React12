@@ -18,7 +18,7 @@ import { AppDispatch } from "../../stores/store";
 const authApiRequest = {
   login: async (
     dispatch: AppDispatch,
-    naviagte: NavigateFunction,
+    navigate: NavigateFunction,
     formData: LoginProps
   ) => {
     dispatch(loginStart());
@@ -26,7 +26,7 @@ const authApiRequest = {
       const res = await axios.post(`${URL_BASE_API}/login`, formData);
       const { data } = res;
       dispatch(loginSuccess(data));
-      naviagte("/");
+      navigate("/");
     } catch (error) {
       console.log(error);
       dispatch(loginError());
@@ -34,7 +34,7 @@ const authApiRequest = {
   },
   register: async (
     dispatch: AppDispatch,
-    naviagte: NavigateFunction,
+    navigate: NavigateFunction,
     formData: RegisterType
   ) => {
     dispatch(registerStart());
@@ -42,7 +42,7 @@ const authApiRequest = {
       const res = await axios.post(`${URL_BASE_API}/login`, formData);
       const { data } = res;
       dispatch(registerSuccess(data));
-      naviagte("/login");
+      navigate("/login");
     } catch (error) {
       console.log(error);
       dispatch(registerError());

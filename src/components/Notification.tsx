@@ -8,6 +8,7 @@ type AlertType = {
   closable?: AlertProps["closable"]; 
   action?: AlertProps["action"];
   className?: string;
+  description?:AlertProps["description"]
 };
 
 const Notification: React.FC<AlertType> = (props) => {

@@ -3,7 +3,11 @@ import { Button, Checkbox, Form, Input } from "antd";
 import { FormProps } from "antd";
 import { Divider } from "antd";
 import { jwtDecode } from "jwt-decode";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import authApiRequest from "./authApiRequest";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../stores/store";
+import Notification from "../../components/Notification";
 
 export type LoginProps = {
   username: string;
@@ -11,12 +15,20 @@ export type LoginProps = {
   remember: boolean;
 };
 
-const onFinish: FormProps<LoginProps>["onFinish"] = (values) => {
-  console.log("Success:", values);
-};
-
 const Loginpage = () => {
-  
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const {isError,isFetching} = useSelector((state:RootState) => state.auth.login)
+  const onFinish: FormProps<LoginProps>["onFinish"] = (values) => {
+    authApiRequest.login(dispatch, navigate, values);
+    console.log(values);
+  };
+
+  const handleFinish = (credentialResponse: CredentialResponse) => {
+    console.log(credentialResponse);
+    const decode = jwtDecode(credentialResponse?.credential as string);
+    console.log("decode", decode);
+  };
   return (
     <div className="w-full  lg:flex lg:h-[35rem] lg:flex-row">
       {/* BACKGROUND */}
@@ -35,6 +47,7 @@ const Loginpage = () => {
           wrapperCol={{ span: 24 }}
           initialValues={{ remember: true }}
           onFinish={onFinish}
+          
           autoComplete="off"
         >
           {/* username */}
@@ -68,20 +81,16 @@ const Loginpage = () => {
               htmlType="submit"
               shape="round"
               className="bg-[#FF782D] text-xl text-white py-5 w-full"
+              loading={isFetching}
             >
               Login
             </Button>
           </Form.Item>
+          {<Notification message="Username or password is not correct" type="error" showIcon />}
           <Divider plain>Or sign up with</Divider>
           <div className="flex justify-center">
             <GoogleLogin
-              onSuccess={(credentialResponse: CredentialResponse) => {
-                console.log(credentialResponse);
-                const decode = jwtDecode(
-                  credentialResponse?.credential as string
-                );
-                console.log("decode", decode);
-              }}
+              onSuccess={handleFinish}
               onError={() => {
                 console.log("Login Failed");
               }}
