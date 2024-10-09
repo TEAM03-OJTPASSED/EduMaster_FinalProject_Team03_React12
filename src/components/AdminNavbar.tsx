@@ -49,11 +49,11 @@ const AdminNavBar = () => {
             <img
               src={logoImage}
               alt="EduMaster logo"
-              style={{ width: "100%", marginBottom: "16px", cursor: "pointer" }}
+              style={{ width: "100%", marginBottom: "8px", marginTop: "8px", cursor: "pointer" }}
               onClick={() => navigate("/")}
             />
           </div>
-          <AdminSiderMenu onMenuClick={toggleDrawer} />{" "}
+          <AdminSiderMenu  />{" "}
           {/* Thêm AdminSiderMenu */}
         </Sider>
       )}
