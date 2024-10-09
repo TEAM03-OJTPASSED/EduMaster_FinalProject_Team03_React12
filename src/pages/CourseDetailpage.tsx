@@ -1,10 +1,11 @@
 import { useParams } from "react-router-dom";
 import { Banner } from "../components/CourseDetailPage/Banner";
+import { Detail } from "../components/CourseDetailPage/Detail";
 
 const CourseDetailPage = () => {
   const { id } = useParams();
   return (
-    <div className="flex bg-green-50">
+    <div className="absolute inset-x-0 flex flex-col">
       <Banner
         category="Photography"
         instructor="Determined-Poitras"
@@ -13,6 +14,7 @@ const CourseDetailPage = () => {
         price={59.0}
         discount={50}
       />
+      <Detail a="asdasd" />
     </div>
   );
 };

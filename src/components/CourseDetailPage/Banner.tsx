@@ -1,3 +1,5 @@
+import { CourseSummary } from "./CourseSummary";
+
 type Props = {
   title?: string;
   category?: string;
@@ -16,8 +18,8 @@ export const Banner = ({
   discount,
 }: Props) => {
   return (
-    <div className="absolute inset-x-0 flex bg-neutral-900 text-white px-20 py-10 gap-3">
-      <div className="flex flex-col w-2/3 gap-3">
+    <div className="flex flex-col bg-neutral-900 text-white px-20 py-10 gap-5 ">
+      <div className="flex flex-col w-2/3 gap-5">
         <div className="flex items-baseline font-jost">
           <div className="bg-neutral-600 px-3 py-2 rounded-lg mr-2">
             {category}
@@ -49,6 +51,7 @@ export const Banner = ({
           </div>
         </div>
       </div>
+      <CourseSummary time={2} student={156} level={"All"} lessons={20} quizzes={3} />
     </div>
   );
 };
