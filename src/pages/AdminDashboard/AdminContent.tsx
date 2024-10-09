@@ -215,7 +215,7 @@ const AdminContent = () => {
           <Card
             style={{
               ...cardStyle,
-              background: "linear-gradient(to bottom, #fefcbf, #fef9c3)",
+              background: "linear-gradient(to bottom, #fff99e, #fef9c3)",
               borderBottom: "4px solid #d69e2e",
             }}
           >
