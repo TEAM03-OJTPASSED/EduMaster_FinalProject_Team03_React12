@@ -37,7 +37,7 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({ filters, onFilterCha
     <Checkbox.Group
       className="flex flex-col space-y-2"
       value={selectedFilters[section.type] as string[]} // Type cast added here
-      onChange={(checkedValues) => handleFilterChange(section.type, checkedValues as string[] | number[])}
+      onChange={(checkedValues) => handleFilterChange(section.type, checkedValues)}
     >
       {section.options.map((option) => (
         <Checkbox key={option.value} value={option.value}>
@@ -50,7 +50,7 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({ filters, onFilterCha
   const renderRatingGroup = (section: FilterSection) => (
     <Checkbox.Group
       className="flex flex-col space-y-2"
-      value={selectedFilters[section.type] as number[]} // Type cast for reviews (number[])
+      value={selectedFilters[section.type] as number[]} // type cast for reviews
       onChange={(checkedValues) => handleFilterChange(section.type, checkedValues)}
     >
       {section.options.map((option) => (
