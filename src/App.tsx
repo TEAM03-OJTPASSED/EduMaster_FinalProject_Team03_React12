@@ -1,10 +1,16 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 
+import GeneralLayout from "./defaultLayout/Layout";
+import Homepage from "./pages/Homepage";
+import LoginPage from "./pages/Loginpage";
+import SignUpPage from "./pages/SignUppage";
+
 import Loginpage from "./pages/AuthPage/Loginpage";
 import SignUppage from "./pages/AuthPage/SignUppage";
 import Homepage from "./pages/Homepage";
 import GeneralLayout from "./defaultLayout/Layout";
+
 import CoursesPage from "./pages/Coursespage";
 import BlogPage from "./pages/Blogpage";
 import ContactPage from "./pages/Contactpage";
@@ -22,8 +28,11 @@ function App() {
       <Routes>
         <Route path="/" element={<GeneralLayout />}>
           <Route path="/" element={<Homepage />} />
+
+     
           <Route path="/login" element={<Loginpage />} />
           <Route path="/signup" element={<SignUppage />} />
+
           <Route path="/dashboard/admin/*" element={<AdminPage />} />
           <Route path="/dashboard/instructor/*" element={<InstructorPage />} />
           <Route path="/dashboard/student/*" element={<StudentPage />} />
