@@ -16,31 +16,65 @@
   --primary-color: #c5c7c9; /* Màu chính */
   --secondary-color: #de8f41; /* Màu phụ */
   --font-size-base: 16px; /* Kích thước chữ cơ bản */
+
+  /* Primary Colors */
+  --color-primary-default: #FF782D;
+  --color-primary-hover: #FFAB2D;
+  --color-primary-pressed: #F8620E;
+
+  /* Absolute Colors */
+  --color-absolute-black: #000000;
+  --color-absolute-white: #FFFFFF;
+
+  /* Neutral Colors */
+  --color-neutral-dark-grey: #555555;
+  --color-neutral-grey: #9D9D9D;
+  --color-neutral-light-grey: #EAEAEA;
+  --color-neutral-white-grey: #F5F5F5;
+
+  /* Status Colors */
+  --color-status-info: #2580D5;
+  --color-status-success: #55BE24;
+  --color-status-warning: #FFB100;
 }
+
+.h3 {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-primary-default);
+}
+
+
 /* styles.css */
 .navbar-button {
   background-color: transparent; /* Màu nền mặc định */
   color: black; /* Màu chữ */
   border: none; /* Không có viền */
+  border-radius: 0;
   padding: 10px 15px; /* Khoảng cách bên trong */
-  border-radius: 5px; /* Bo góc */
-  transition: background-color 0.3s ease, color 0.3s ease; /* Hiệu ứng chuyển màu */
-  height: 60px;
+  transition: background-color 0.1s ease, color 0.1s ease; /* Hiệu ứng chuyển màu */
+  height: 64px;
   width: 100px;
   font-size: var(--font-size-base);
+  font-weight: 500;
 }
 
 .navbar-button:hover {
-  background-color: gray; /* Màu nền khi hover */
+  color: var(--color-primary-hover) !important; /* Màu chữ */
+
 }
 
 .navbar-button:active {
-  background-color: var(--secondary-color); /* Màu nền khi click */
-  color: white; /* Màu chữ */
+  background-color: var(--color-neutral-white-grey); /* Màu nền khi click */
+  color: var(--color-primary-hover); /* Màu chữ */
 }
 .navbar-button.active {
-  background-color: var(--secondary-color); /* Màu nền cho nút đang được chọn */
-  color: white; /* Màu chữ cho nút đang được chọn */
+  background-color: var(--color-neutral-white-grey); /* Màu nền khi click */
+  color: var(--color-primary-pressed); /* Màu chữ */
+}
+
+.navbar-button.active:hover {
+  background-color: var(--color-neutral-white-grey) !important; /* Màu nền khi click */
 }
 
 .dropdown-menu-button {
@@ -48,10 +82,12 @@
   color: black; /* Màu chữ */
   border: none; /* Không có viền */
   padding: 10px 15px; /* Khoảng cách bên trong */
-  border-radius: 5px; /* Bo góc */
+  border-radius: 0; /* Bo góc */
   transition: background-color 0.3s ease, color 0.3s ease; /* Hiệu ứng chuyển màu */
   height: 60px;
   width: 100px;
+  font-size: var(--font-size-base);
+  font-weight: 500;
 }
 
 .dropdown-menu-button:hover {
@@ -69,3 +105,4 @@
   ); /* Adjust 80px if your navbar height is different */
   overflow: auto; /* Enables scrolling if content overflows */
 }
+

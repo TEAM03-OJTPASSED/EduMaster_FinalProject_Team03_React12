@@ -4,6 +4,7 @@ import { Detail } from "../components/CourseDetailPage/Detail";
 
 const CourseDetailPage = () => {
   const { id } = useParams();
+
   return (
     <div className="absolute inset-x-0 flex flex-col">
       <Banner
@@ -17,6 +18,9 @@ const CourseDetailPage = () => {
       <Detail a="asdasd" />
     </div>
   );
+
+  return <div>CourseDetailPage: {id}</div>;
+
 };
 
 export default CourseDetailPage;

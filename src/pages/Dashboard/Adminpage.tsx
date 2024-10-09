@@ -2,7 +2,7 @@ import { useLocation } from "react-router-dom"; // Import useLocation
 import AdminSiderMenu from "../../components/AdminSiderMenu";
 import AdminContent from "../AdminDashboard/AdminContent";
 
-const Adminpage = () => {
+const AdminPage = () => {
   const location = useLocation(); // Get current location
 
   // Determine if the welcome message should be displayed
@@ -21,4 +21,4 @@ const Adminpage = () => {
   );
 };
 
-export default Adminpage;
+export default AdminPage;
