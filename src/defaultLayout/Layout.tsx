@@ -15,7 +15,7 @@ const GeneralLayout = () => {
       </div>
 
       {/* Content section */}
-      <div className="pt-16 flex justify-center">
+      <div className="pt-16 flex justify-center overflow-hidden">
         <div className="w-[85%] min-h-screen ">
           <Outlet />
         </div>
