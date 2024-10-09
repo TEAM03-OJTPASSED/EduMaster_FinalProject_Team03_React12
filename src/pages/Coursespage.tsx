@@ -2,6 +2,8 @@ import { Layout } from "antd";
 import { SearchFilter } from "../components/courses/SearchFilter";
 import { SearchResults } from "../components/courses/SearchResult";
 import { useEffect, useState } from "react";
+import { useCustomNavigate } from "../hooks/customNavigate";
+import { useSearchParams } from "react-router-dom";
 
 
 interface Course {
@@ -99,8 +101,12 @@ interface Filters {
   level: string[];  
 }
 
-const CoursesPage = () => {
+
+const CoursesPage: React.FC = () => {
   const [filteredCourses, setFilteredCourses] = useState<Course[]>(courses);
+  const navigate = useCustomNavigate();
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get('search') ?? '';
 
   const [filters, setFilters] = useState<Filters>({
     category: [],
@@ -111,40 +117,60 @@ const CoursesPage = () => {
   });
 
   const handleFilterChange = (newFilter: Partial<Filters>) => {
-    const updatedFilters = {
-      ...filters,
+    setFilters((prevFilters) => ({
+      ...prevFilters,
       ...newFilter,
-    };
-    setFilters(updatedFilters);
-  }
+    }));
+  };
 
   useEffect(() => {
-    const filtered = courses.filter((course) => {
-      const matchesCategory = filters.category.length === 0 || filters.category.includes(course.category);
-      const matchesAuthor = filters.author.length === 0 || filters.author.includes(course.author);
+    const applyFilters = () => {
+      return courses.filter((course) => {
+        const matchesSearch = searchQuery
+          ? course.name.toLowerCase().includes(searchQuery.toLowerCase())
+          : true;
 
-      // Ensure price is properly compared against filters.price (which are strings)
-      const matchesPrice = filters.price.length === 0 ||
-        (course.price === 'Free' && filters.price.includes('free')) ||
-        (typeof course.price === 'number' && filters.price.includes('paid'));
+        const matchesCategory =
+          filters.category.length === 0 || filters.category.includes(course.category);
 
-      const matchesReview = filters.review.length === 0 || filters.review.some((review) => review <= course.students);
+        const matchesAuthor =
+          filters.author.length === 0 || filters.author.includes(course.author);
 
-      // Assuming level is compared to course duration, replace this with actual level if necessary
-      const matchesLevel = filters.level.length === 0 || filters.level.includes(course.duration);
+        const matchesPrice =
+          filters.price.length === 0 ||
+          (course.price === 'Free' && filters.price.includes('free')) ||
+          (typeof course.price === 'number' && filters.price.includes('paid'));
 
-      return matchesCategory && matchesAuthor && matchesPrice && matchesReview && matchesLevel;
-    });
+        const matchesReview =
+          filters.review.length === 0 ||
+          filters.review.some((review) => review <= course.students);
 
-    setFilteredCourses(filtered);
-  },[filters])
+        const matchesLevel =
+          filters.level.length === 0 || filters.level.includes(course.duration);
 
+        return (
+          matchesSearch &&
+          matchesCategory &&
+          matchesAuthor &&
+          matchesPrice &&
+          matchesReview &&
+          matchesLevel
+        );
+      });
+    };
+
+    setFilteredCourses(applyFilters());
+  }, [filters, searchQuery]);
+
+  const handleSearch = (searchText: string) => {
+    navigate(`/course?search=${searchText}`);
+  };
 
   return (
     <main>
       <Layout>
-        <SearchResults courses={filteredCourses} />
-        <SearchFilter onFilterChange={handleFilterChange}/>
+        <SearchResults courses={filteredCourses} onSearch={handleSearch} />
+        <SearchFilter onFilterChange={handleFilterChange} />
       </Layout>
     </main>
   );
