@@ -1,12 +1,12 @@
 import { Outlet } from "react-router-dom"; // Import Outlet
-import Navbar from "../components/Navbar";
+import AdminNavBar from "../components/AdminNavbar";
 
 const AdminLayout = () => {
   return (
     <div>
       {/* Navbar section */}
       <div className="w-full flex items-center bg-white shadow">
-        <Navbar />
+        <AdminNavBar />
       </div>
 
       {/* Content section */}
