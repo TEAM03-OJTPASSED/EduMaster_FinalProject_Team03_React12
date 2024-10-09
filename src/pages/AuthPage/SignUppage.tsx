@@ -3,6 +3,7 @@ import { FormProps } from "antd";
 import authApiRequest from "./authApiRequest";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import Notification from "../../components/Notification";
 
 export type RegisterType = {
   username: string;
@@ -89,6 +90,7 @@ const SignUppage = () => {
           >
             <Input.Password placeholder="Confirm Password" className="p-2" />
           </Form.Item>
+            {<Notification message="Error" description="Username or password is not correct" type="error" showIcon className="my-5"/>}
           <Form.Item>
             <Button
               htmlType="submit"

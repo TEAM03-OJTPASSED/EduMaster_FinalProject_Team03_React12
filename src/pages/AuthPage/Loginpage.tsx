@@ -46,8 +46,7 @@ const Loginpage = () => {
           name="basic"
           wrapperCol={{ span: 24 }}
           initialValues={{ remember: true }}
-          onFinish={onFinish}
-          
+          onFinish={onFinish}   
           autoComplete="off"
         >
           {/* username */}
@@ -86,7 +85,7 @@ const Loginpage = () => {
               Login
             </Button>
           </Form.Item>
-          {<Notification message="Username or password is not correct" type="error" showIcon />}
+          {<Notification message="Error" description="Username or password is not correct" type="error" showIcon />}
           <Divider plain>Or sign up with</Divider>
           <div className="flex justify-center">
             <GoogleLogin
