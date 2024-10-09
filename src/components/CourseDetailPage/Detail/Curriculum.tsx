@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Collapse } from "./Collapse";
+import { useState } from "react";
+import { Session } from "./Collapse";
 import {
   MdOutlineKeyboardArrowDown,
   MdOutlineKeyboardArrowUp,
@@ -48,7 +48,7 @@ export const Curriculum = ({ courses, lessons }: CurriculumProps) => {
   };
 
   return (
-    <div>
+    <div className="mb-[-16px]">
       {courses.map((course) => (
         <div key={course._id} className="mb-4 font-exo">
           <div
@@ -60,14 +60,27 @@ export const Curriculum = ({ courses, lessons }: CurriculumProps) => {
             onClick={() => toggleCourse(course._id)}
           >
             {openCourse === course._id ? (
-              <MdOutlineKeyboardArrowUp fill="black"/>
+              <MdOutlineKeyboardArrowUp fill="black" />
             ) : (
               <MdOutlineKeyboardArrowDown fill="black" />
             )}
             {course.name}
+            <div className="ml-auto text-sm font-normal text-gray-500">
+              {
+                lessons.filter((lesson) => lesson.course_id === course._id)
+                  .length
+              }{" "}
+              lessons
+            </div>
+            <div className="ml-2 text-sm font-normal text-gray-500">
+              {lessons
+                .filter((lesson) => lesson.course_id === course._id)
+                .reduce((total, lesson) => total + lesson.full_time, 0)}{" "}
+              minutes
+            </div>
           </div>
           {openCourse === course._id && (
-            <Collapse
+            <Session
               items={lessons.filter(
                 (lesson) => lesson.course_id === course._id
               )}

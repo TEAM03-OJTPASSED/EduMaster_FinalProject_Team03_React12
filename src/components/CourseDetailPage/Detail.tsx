@@ -1,7 +1,26 @@
 import { SetStateAction, useState } from "react";
 import { Overview } from "./Detail/Overview";
 import { Curriculum } from "./Detail/Curriculum";
+import { Instructor } from "./Instructor";
+import { Reviews } from "./Detail/Review"; // Assuming you have a ReviewComponent
 
+type Course = {
+  name: string;
+  category_id: string;
+  user_id: string;
+  description: string;
+  content: string;
+  status: "new" | "ongoing" | "completed";
+  video_url: string;
+  image_url: string;
+  price: number;
+  discount: number;
+  is_deleted: boolean;
+  _id: string;
+  created_at: string;
+  updated_at: string;
+  __v: number;
+};
 const sampleCourses: Course[] = [
   {
     name: "Nodejs Beginner 2027",
@@ -40,7 +59,17 @@ const sampleCourses: Course[] = [
     __v: 0,
   },
 ];
-
+type Lesson = {
+  name: string;
+  course_id: string;
+  session_id: string;
+  lesson_type: "video" | "article" | "quiz";
+  description: string;
+  video_url: string;
+  image_url: string;
+  full_time: number;
+  position_order: number;
+};
 const sampleLessons: Lesson[] = [
   {
     name: "Lesson 1: Introduction to Node.js",
@@ -87,6 +116,104 @@ const sampleLessons: Lesson[] = [
     position_order: 2,
   },
 ];
+interface Instructor {
+  email: string;
+  name: string;
+  google_id: string;
+  role: string;
+  status: boolean;
+  description: string;
+  phone_number: string;
+  avatar_url: string;
+  video_url: string;
+  is_verified: boolean;
+  token_version: number;
+  balance: number;
+  balance_total: number;
+  bank_name: string;
+  bank_account_no: string;
+  bank_account_name: string;
+  is_deleted: boolean;
+  _id: string;
+  dob: string;
+  created_at: string;
+  updated_at: string;
+  __v: number;
+}
+const sampleInstructor: Instructor = {
+  email: "tamoki1110@gmail.com",
+  name: "instructor",
+  google_id: "",
+  role: "instructor",
+  status: true,
+  description:
+    "LearnPress is a comprehensive WordPress LMS Plugin for WordPress. This is one of the best WordPress LMS Plugins which can be used to easily create & sell courses online.",
+  phone_number: "0938947221",
+  avatar_url: "https://picsum.photos/seed/picsum/200/300",
+  video_url:
+    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+  is_verified: false,
+  token_version: 0,
+  balance: 0,
+  balance_total: 0,
+  bank_name: "TPBank",
+  bank_account_no: "10837054501",
+  bank_account_name: "Tamoki Loi",
+  is_deleted: false,
+  _id: "66fe0cde171d976a891947e3",
+  dob: "2024-10-03T03:17:50.593Z",
+  created_at: "2024-10-03T03:17:50.593Z",
+  updated_at: "2024-10-03T03:17:50.593Z",
+  __v: 0,
+};
+
+interface Review {
+  _id: string;
+  user_id: string;
+  course_id: string;
+  comment: string;
+  rating: number;
+  is_deleted: boolean;
+  created_at: string;
+  updated_at: string;
+  __v: number;
+}
+
+const sampleReviews: Review[] = [
+  {
+    _id: "6680e264e19995122837e322",
+    user_id: "6680d54954c31267eb217f55",
+    course_id: "667ecee48039581edcd01af5",
+    comment: "Course is very good!",
+    rating: 3,
+    is_deleted: false,
+    created_at: "2024-06-30T04:43:16.652Z",
+    updated_at: "2024-06-30T05:05:21.619Z",
+    __v: 0,
+  },
+  {
+    _id: "6680e264e19995122837e323",
+    user_id: "6680d54954c31267eb217f56",
+    course_id: "667ecee48039581edcd01af6",
+    comment: "Excellent course!",
+    rating: 5,
+    is_deleted: false,
+    created_at: "2024-06-30T04:43:16.652Z",
+    updated_at: "2024-06-30T05:05:21.619Z",
+    __v: 0,
+  },
+  {
+    _id: "6680e264e19995122837e324",
+    user_id: "6680d54954c31267eb217f57",
+    course_id: "667ecee48039581edcd01af7",
+    comment: "Not bad, but could be better.",
+    rating: 2,
+    is_deleted: false,
+    created_at: "2024-06-30T04:43:16.652Z",
+    updated_at: "2024-06-30T05:05:21.619Z",
+    __v: 0,
+  },
+];
 
 type Props = {
   a: string;
@@ -104,7 +231,7 @@ export const Detail = ({ a }: Props) => {
     <div className="flex">
       <div className="border-2 border-gray-200 rounded-lg mt-12 ml-20 w-2/3">
         <div className="flex justify-between items-center">
-          <label className="w-1/5 text-center font-semibold cursor-pointer">
+          <label className="w-1/4 text-center font-semibold cursor-pointer">
             <input
               type="radio"
               name="tab"
@@ -123,7 +250,7 @@ export const Detail = ({ a }: Props) => {
               Overview
             </div>
           </label>
-          <label className="w-1/5 text-center font-semibold cursor-pointer">
+          <label className="w-1/4 text-center font-semibold cursor-pointer">
             <input
               type="radio"
               name="tab"
@@ -142,7 +269,7 @@ export const Detail = ({ a }: Props) => {
               Curriculum
             </div>
           </label>
-          <label className="w-1/5 text-center font-semibold cursor-pointer">
+          <label className="w-1/4 text-center font-semibold cursor-pointer">
             <input
               type="radio"
               name="tab"
@@ -161,26 +288,7 @@ export const Detail = ({ a }: Props) => {
               Instructor
             </div>
           </label>
-          <label className="w-1/5 text-center font-semibold cursor-pointer">
-            <input
-              type="radio"
-              name="tab"
-              value="qa"
-              checked={selected === "qa"}
-              onChange={handleChange}
-              className="hidden"
-            />
-            <div
-              className={`p-2 ${
-                selected === "qa"
-                  ? "bg-neutral-100 text-orange-500 border-b-2 border-neutral-100 rounded-t-lg border-x-2 border-x-gray-200"
-                  : "bg-white-200 border-b-2 border-gray-200"
-              }`}
-            >
-              Q&A
-            </div>
-          </label>
-          <label className="w-1/5 text-center font-semibold cursor-pointer">
+          <label className="w-1/4 text-center font-semibold cursor-pointer">
             <input
               type="radio"
               name="tab"
@@ -205,11 +313,8 @@ export const Detail = ({ a }: Props) => {
           {selected === "curriculum" && (
             <Curriculum courses={sampleCourses} lessons={sampleLessons} />
           )}
-          {selected === "instructor" && (
-            <div>Instructor content goes here.</div>
-          )}
-          {selected === "qa" && <div>Q&A content goes here.</div>}
-          {selected === "reviews" && <div>Reviews content goes here.</div>}
+          {selected ==="instructor" && <Instructor items={sampleInstructor} />}
+          {selected === "reviews" && <Reviews items={sampleReviews} />}
         </div>
       </div>
       <div className="w-1/3"></div>

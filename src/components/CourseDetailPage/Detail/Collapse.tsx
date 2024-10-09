@@ -13,11 +13,11 @@ interface Lesson {
   position_order: number;
 }
 
-interface CollapseProps {
+interface SessionProps {
   items: Lesson[];
 }
 
-export const Collapse = ({ items }: CollapseProps) => {
+export const Session = ({ items }: SessionProps) => {
   const [open, setOpen] = useState<string | null>(null);
 
   const togglePanel = (id: string) => {
