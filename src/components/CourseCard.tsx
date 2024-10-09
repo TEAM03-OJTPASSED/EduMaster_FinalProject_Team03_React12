@@ -43,7 +43,7 @@ const CourseCard: React.FC<{ course: Course, viewMode: string }> = ({ course, vi
       
       cover={
         <div className="relative">
-          <img alt={course.name} src={course.image_url} className={`${viewMode === 'list' ? 'w-[400px]' : 'w-full'} h-48 object-cover`}/>
+          <img alt={course.name} src={"https://picsum.photos/400/192"} className={`${viewMode === 'list' ? 'w-[400px]' : 'w-full'} h-48 object-cover`}/>
           <Tag className="absolute top-2 left-2 bg-black text-white">{course.category}</Tag>
         </div>
       }

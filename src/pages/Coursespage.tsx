@@ -138,7 +138,6 @@ const filterSections: FilterSection[] = [
     title: "Price",
     type: "price",
     options: [
-      { value: "all", label: "All", count: 15 },
       { value: "free", label: "Free", count: 15 },
       { value: "paid", label: "Paid", count: 15 },
     ]
