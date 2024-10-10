@@ -1,5 +1,5 @@
-const FAQspage = () => {
-  return <div>FAQspage</div>;
+const FAQsPage = () => {
+  return <div>FAQsPage</div>;
 };
 
-export default FAQspage;
+export default FAQsPage;

@@ -1,3 +1,4 @@
+
 import { useCustomNavigate } from "../hooks/customNavigate";
 import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
@@ -102,6 +103,4 @@ const Contactpage: React.FC = () => {
 
     </div>
   );
-};
-
-export default Contactpage;
+export default ContactPage;

@@ -1,9 +1,10 @@
-import { useState } from "react";
-import { Button, Dropdown, Input, MenuProps, Space } from "antd";
+import { useState, useEffect, useRef } from "react";
+import { Button, Dropdown, Input, InputRef, MenuProps, Space } from "antd"; // Import InputRef
 import { DownOutlined } from "@ant-design/icons";
 import logoImage from "../assets/EduMaster.png";
 import { useCustomNavigate } from "../hooks/customNavigate";
 import { AiOutlineSearch } from "react-icons/ai";
+
 
 // Define the type for menu items
 interface MenuItem {
@@ -36,21 +37,46 @@ const Navbar = () => {
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [activeButton, setActiveButton] = useState<string>("home");
 
-  // Updated handleMenuClick to navigate to the selected item's path
+  // Use InputRef instead of HTMLInputElement
+  const searchInputRef = useRef<InputRef>(null);
+
+  // Close search input when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchInputRef.current &&
+        !searchInputRef.current.input?.contains(event.target as Node)
+      ) {
+        setIsSearchActive(false);
+      }
+    };
+
+    if (isSearchActive) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isSearchActive]);
+
+  // Handle menu item clicks
   const handleMenuClick: MenuProps["onClick"] = (e) => {
     const selectedItem = items.find((item) => item.key === e.key);
     if (selectedItem) {
-      navigate(selectedItem.path); // Navigate to the selected item's path
+      navigate(selectedItem.path);
     }
   };
 
   const menuProps = {
-    items: items.map((item) => ({ label: item.label, key: item.key })), // Map to the expected structure
+    items: items.map((item) => ({ label: item.label, key: item.key })),
     onClick: handleMenuClick,
   };
 
   return (
-    <div className="w-full h-20 flex items-center justify-between p-4 bg-white shadow-md relative z-50">
+    <div className="w-full h-16 flex items-center justify-between p-4 bg-white shadow-md relative z-0">
       {!isSearchActive ? (
         <>
           <img
@@ -61,55 +87,57 @@ const Navbar = () => {
             style={{ objectFit: "cover", width: "250px", cursor: "pointer" }}
           />
           <div>
-            <Button
-              className={`navbar-button ${
-                activeButton === "home" ? "active" : ""
-              } text-xs sm:text-base`} // Adjust font size
-              onClick={() => {
-                setActiveButton("home");
-                navigate("/");
-              }}
-            >
-              Home
+          {/* Home Button */}
+          <Button
+            className={`navbar-button ${
+              activeButton === "home" ? "active" : ""
+            } text-xs sm:text-base`}
+            onClick={() => {
+              setActiveButton("home");
+              navigate("/");
+            }}
+          >
+            Home
+          </Button>
+
+          {/* Courses Button */}
+          <Button
+            className={`navbar-button ${
+              activeButton === "courses" ? "active" : ""
+            } text-xs sm:text-base`}
+            onClick={() => {
+              setActiveButton("courses");
+              navigate("/course");
+            }}
+          >
+            Courses
+          </Button>
+
+          {/* Blog Button */}
+          <Button
+            className={`navbar-button ${
+              activeButton === "blog" ? "active" : ""
+            } text-xs sm:text-base`}
+            onClick={() => {
+              setActiveButton("blog");
+              navigate("/blog");
+            }}
+          >
+            Blog
+          </Button>
+
+          {/* Dropdown Menu */}
+          <Dropdown menu={menuProps}>
+            <Button color="default" variant="text">
+              <Space className="text-base font-semibold">
+                Pages
+                <DownOutlined />
+              </Space>
             </Button>
-          </div>
-          <div>
-            <Button
-              className={`navbar-button ${
-                activeButton === "courses" ? "active" : ""
-              } text-xs sm:text-base`} // Adjust font size
-              onClick={() => {
-                setActiveButton("courses");
-                navigate("/course");
-              }}
-            >
-              Courses
-            </Button>
-          </div>
-          <div>
-            <Button
-              className={`navbar-button ${
-                activeButton === "blog" ? "active" : ""
-              } text-xs sm:text-base`} // Adjust font size
-              onClick={() => {
-                setActiveButton("blog");
-                navigate("/blog");
-              }}
-            >
-              Blog
-            </Button>
-          </div>
-          <div>
-            <Dropdown menu={menuProps} className="dropdown-menu-button">
-              <Button color="default" variant="text">
-                <Space>
-                  Pages
-                  <DownOutlined />
-                </Space>
-              </Button>
-            </Dropdown>
+          </Dropdown>
           </div>
 
+          {/* Log In / Sign Up and Search Icons */}
           <div className="flex items-center gap-4">
             <button
               className="px-3 py-1.5 bg-blue-500 text-white rounded-md transition duration-200 hover:bg-blue-600 text-sm md:text-base"
@@ -123,6 +151,8 @@ const Navbar = () => {
             >
               Sign Up
             </button>
+
+            {/* Search Icon */}
             <div
               className="flex items-center justify-center w-10 h-10 bg-gray-200 rounded-full cursor-pointer"
               onClick={() => setIsSearchActive(true)}
@@ -134,7 +164,7 @@ const Navbar = () => {
       ) : (
         <Input
           placeholder="Search..."
-          className="transition-all duration-3000 ease-in-out"
+          className="transition-all duration-300 ease-in-out"
           style={{
             width: "90%",
             position: "absolute",
@@ -147,7 +177,7 @@ const Navbar = () => {
             height: "50px",
           }}
           autoFocus
-          onBlur={() => setIsSearchActive(false)}
+          ref={searchInputRef} // Use correct ref type here
         />
       )}
     </div>

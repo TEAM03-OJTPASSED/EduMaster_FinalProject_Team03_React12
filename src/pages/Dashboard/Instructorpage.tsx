@@ -2,7 +2,7 @@ import { useLocation } from "react-router-dom"; // Import useLocation
 import InstructorSiderMenu from "../../components/InstructorSiderMenu";
 import InstructorContent from "../InstructorDashboard/InstructorContent";
 
-const Instructorpage = () => {
+const InstructorPage = () => {
   const location = useLocation(); // Get current location
 
   // Determine if the welcome message should be displayed
@@ -21,4 +21,4 @@ const Instructorpage = () => {
   );
 };
 
-export default Instructorpage;
+export default InstructorPage;
