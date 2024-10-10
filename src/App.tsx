@@ -21,10 +21,8 @@ function App() {
       <Routes>
         <Route path="/" element={<GeneralLayout />}>
           <Route path="/" element={<HomePage />} />
-
           <Route path="/login" element={<Loginpage />} />
           <Route path="/signup" element={<SignUppage />} />
-
           <Route path="/dashboard/admin/*" element={<AdminPage />} />
           <Route path="/dashboard/instructor/*" element={<InstructorPage />} />
           <Route path="/dashboard/student/*" element={<StudentPage />} />
