@@ -8,7 +8,7 @@ import { Input, Button } from 'antd';
 
 const { TextArea } = Input;
 
-const Contactpage: React.FC = () => {
+const ContactPage: React.FC = () => {
   const navigate = useCustomNavigate();
   const position: LatLngExpression = [10.857239, 106.790775];
 
@@ -103,4 +103,5 @@ const Contactpage: React.FC = () => {
 
     </div>
   );
+};
 export default ContactPage;

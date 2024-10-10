@@ -8,8 +8,6 @@ import SignUpPage from "./pages/SignUppage";
 
 import Loginpage from "./pages/AuthPage/Loginpage";
 import SignUppage from "./pages/AuthPage/SignUppage";
-import Homepage from "./pages/Homepage";
-import GeneralLayout from "./defaultLayout/Layout";
 
 import CoursesPage from "./pages/Coursespage";
 import BlogPage from "./pages/Blogpage";
