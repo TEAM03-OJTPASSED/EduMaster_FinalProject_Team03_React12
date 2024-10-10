@@ -4,92 +4,86 @@ import { SearchResults } from "../components/courses/SearchResult";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
-
 interface Course {
-  id: number
-  image_url: string
-  category: string
-  name: string
-  author: string
-  duration: string
-  students: number
-  price: number | string
-  lessons: number
+  id: number;
+  image_url: string;
+  category: string;
+  name: string;
+  author: string;
+  duration: string;
+  students: number;
+  price: number | string;
+  lessons: number;
 }
 
 const courses: Course[] = [
   {
     id: 1,
-    image_url: '/placeholder.svg?height=200&width=300',
-    category: 'Photography',
-    name: 'Create An LMS Website With LearnPress',
-    author: 'Determined-Poitras',
-    duration: '2Weeks',
+    image_url: "/placeholder.svg?height=200&width=300",
+    category: "Photography",
+    name: "Create An LMS Website With LearnPress",
+    author: "Determined-Poitras",
+    duration: "2Weeks",
     students: 156,
-    price: 'Free',
+    price: "Free",
     lessons: 2,
   },
   {
     id: 2,
-    image_url: '/placeholder.svg?height=200&width=300',
-    category: 'Photography',
-    name: 'Design A Website With ThimPresscrececerrcerverger',
-    author: 'Determined-Poitras',
-    duration: '2Weeks',
+    image_url: "/placeholder.svg?height=200&width=300",
+    category: "Photography",
+    name: "Design A Website With ThimPresscrececerrcerverger",
+    author: "Determined-Poitras",
+    duration: "2Weeks",
     students: 156,
     price: 49.0,
     lessons: 2,
-
   },
   {
     id: 3,
-    image_url: '/placeholder.svg?height=200&width=300',
-    category: 'Photography',
-    name: 'Create An LMS Website With LearnPress',
-    author: 'Determined-Poitras',
-    duration: '2Weeks',
+    image_url: "/placeholder.svg?height=200&width=300",
+    category: "Photography",
+    name: "Create An LMS Website With LearnPress",
+    author: "Determined-Poitras",
+    duration: "2Weeks",
     students: 156,
-    price: 'Free',
+    price: "Free",
     lessons: 2,
-
   },
   {
     id: 4,
-    image_url: '/placeholder.svg?height=200&width=300',
-    category: 'Photography',
-    name: 'Create An LMS Website With LearnPress',
-    author: 'Determined-Poitras',
-    duration: '2Weeks',
+    image_url: "/placeholder.svg?height=200&width=300",
+    category: "Photography",
+    name: "Create An LMS Website With LearnPress",
+    author: "Determined-Poitras",
+    duration: "2Weeks",
     students: 156,
-    price: 'Free',
+    price: "Free",
     lessons: 2,
-
   },
   {
     id: 5,
-    image_url: '/placeholder.svg?height=200&width=300',
-    category: 'Photography',
-    name: 'Create An LMS Website With LearnPress',
-    author: 'Determined-Poitras',
-    duration: '2Weeks',
+    image_url: "/placeholder.svg?height=200&width=300",
+    category: "Photography",
+    name: "Create An LMS Website With LearnPress",
+    author: "Determined-Poitras",
+    duration: "2Weeks",
     students: 156,
-    price: 'Free',
+    price: "Free",
     lessons: 2,
-
   },
   {
     id: 6,
-    image_url: '/placeholder.svg?height=200&width=300',
-    category: 'Photography',
-    name: 'Create An LMS Website With LearnPress',
-    author: 'Determined-Poitras',
-    duration: '2Weeks',
+    image_url: "/placeholder.svg?height=200&width=300",
+    category: "Photography",
+    name: "Create An LMS Website With LearnPress",
+    author: "Determined-Poitras",
+    duration: "2Weeks",
     students: 156,
-    price: 'Free',
+    price: "Free",
     lessons: 2,
-
   },
-]
+];
 
 interface FilterOption {
   value: string | number;
@@ -100,9 +94,9 @@ interface FilterOption {
 interface Filters {
   category: string[];
   author: string[];
-  price: string[];  
-  review: number[]; 
-  level: string[];  
+  price: string[];
+  review: number[];
+  level: string[];
 }
 
 interface FilterSection {
@@ -124,7 +118,7 @@ const filterSections: FilterSection[] = [
       { value: "single-family-home", label: "Single Family Home", count: 15 },
       { value: "studio", label: "Studio", count: 15 },
       { value: "university", label: "University", count: 15 },
-    ]
+    ],
   },
   {
     title: "Instructors",
@@ -132,7 +126,7 @@ const filterSections: FilterSection[] = [
     options: [
       { value: "kenny-white", label: "Kenny White", count: 15 },
       { value: "john-doe", label: "John Doe", count: 15 },
-    ]
+    ],
   },
   {
     title: "Price",
@@ -140,7 +134,7 @@ const filterSections: FilterSection[] = [
     options: [
       { value: "free", label: "Free", count: 15 },
       { value: "paid", label: "Paid", count: 15 },
-    ]
+    ],
   },
   {
     title: "Review",
@@ -151,7 +145,7 @@ const filterSections: FilterSection[] = [
       { value: 3, label: "3 Stars", count: 600 },
       { value: 2, label: "2 Stars", count: 300 },
       { value: 1, label: "1 Star", count: 150 },
-    ]
+    ],
   },
   {
     title: "Level",
@@ -161,34 +155,28 @@ const filterSections: FilterSection[] = [
       { value: "beginner", label: "Beginner", count: 15 },
       { value: "intermediate", label: "Intermediate", count: 15 },
       { value: "expert", label: "Expert", count: 15 },
-    ]
-  }
+    ],
+  },
 ];
-
-
-
-
-
-
 
 const CoursesPage: React.FC = () => {
   const [filteredCourses, setFilteredCourses] = useState<Course[]>(courses);
   // const navigate = useCustomNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const searchQuery = searchParams.get('search') ?? '';
+  const searchQuery = searchParams.get("search") ?? "";
 
   const [filters, setFilters] = useState<Filters>({
-    category: searchParams.getAll('category'),
-    author: searchParams.getAll('author'),
-    price: searchParams.getAll('price'),
-    review: searchParams.getAll('review').map(Number),
-    level: searchParams.getAll('level'),
+    category: searchParams.getAll("category"),
+    author: searchParams.getAll("author"),
+    price: searchParams.getAll("price"),
+    review: searchParams.getAll("review").map(Number),
+    level: searchParams.getAll("level"),
   });
 
   const updateUrlWithFilters = (newFilters: Partial<Filters>) => {
     const newSearchParams = new URLSearchParams();
 
-    if (searchQuery) newSearchParams.set('search', searchQuery);
+    if (searchQuery) newSearchParams.set("search", searchQuery);
 
     Object.entries(newFilters).forEach(([key, values]) => {
       if (values.length > 0) {
@@ -218,15 +206,16 @@ const CoursesPage: React.FC = () => {
           : true;
 
         const matchesCategory =
-          filters.category.length === 0 || filters.category.includes(course.category);
+          filters.category.length === 0 ||
+          filters.category.includes(course.category);
 
         const matchesAuthor =
           filters.author.length === 0 || filters.author.includes(course.author);
 
         const matchesPrice =
           filters.price.length === 0 ||
-          (course.price === 'Free' && filters.price.includes('free')) ||
-          (typeof course.price === 'number' && filters.price.includes('paid'));
+          (course.price === "Free" && filters.price.includes("free")) ||
+          (typeof course.price === "number" && filters.price.includes("paid"));
 
         const matchesReview =
           filters.review.length === 0 ||
@@ -252,9 +241,9 @@ const CoursesPage: React.FC = () => {
   const handleSearch = (searchText: string) => {
     const updatedSearchParams = new URLSearchParams(searchParams);
     if (searchText) {
-      updatedSearchParams.set('search', searchText);
+      updatedSearchParams.set("search", searchText);
     } else {
-      updatedSearchParams.delete('search');
+      updatedSearchParams.delete("search");
     }
     setSearchParams(updatedSearchParams);
   };
@@ -263,7 +252,11 @@ const CoursesPage: React.FC = () => {
     <main>
       <Layout>
         <SearchResults courses={filteredCourses} onSearch={handleSearch} />
-        <SearchFilter onFilterChange={handleFilterChange}  filters={filterSections} selectedFilters={filters}/>
+        <SearchFilter
+          onFilterChange={handleFilterChange}
+          filters={filterSections}
+          selectedFilters={filters}
+        />
       </Layout>
     </main>
   );
