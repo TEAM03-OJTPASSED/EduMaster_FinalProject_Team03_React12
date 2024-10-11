@@ -2,14 +2,11 @@ import React, { ReactNode, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { Layout } from "antd";
 import DynamicBreadcrumb from "../components/Breadcrumb/Breadcrumb";
+import InstructorNavbar from "../components/Instructor/InstructorNavbar";
 
 const { Content } = Layout;
 
-interface DashboardLayoutProps {
-  Navbar: ReactNode;
-}
-
-const DashboardLayout: React.FC<DashboardLayoutProps> = ({ Navbar }) => {
+const InstructorLayout: React.FC = () => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -25,7 +22,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ Navbar }) => {
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      {Navbar}
+      {/* {Navbar} */}
+      <InstructorNavbar />
       <Layout
         style={{
           marginLeft: isMobile ? 0 : 250, // MarginLeft cho desktop
@@ -49,4 +47,4 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ Navbar }) => {
   );
 };
 
-export default DashboardLayout;
+export default InstructorLayout;

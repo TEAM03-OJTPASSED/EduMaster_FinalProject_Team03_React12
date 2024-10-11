@@ -1,38 +1,37 @@
-import React, { useState, useEffect } from "react";
-import { Outlet, useLocation } from "react-router-dom"; // Import Outlet và useLocation
-import AdminNavBar from "../components/Admin/AdminNavbar"; // Đường dẫn tới component AdminNavBar
-import { Layout } from "antd"; // Import Layout từ Ant Design
+import React, { ReactNode, useEffect, useState } from "react";
+import { Outlet } from "react-router-dom";
+import { Layout } from "antd";
 import DynamicBreadcrumb from "../components/Breadcrumb/Breadcrumb";
-import LoadingOverlay from "../components/LoadingOverlay/LoadingOverlay"; // Import overlay loading
+import AdminNavBar from "../components/Admin/AdminNavbar";
 
-const { Content } = Layout; // Destructure Content từ Layout
+const { Content } = Layout;
 
-const AdminLayout = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const location = useLocation();
+const AdminLayout: React.FC = () => {
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    setIsLoading(true); // Bật loading khi có thay đổi route
-    const timer = setTimeout(() => {
-      setIsLoading(false); // Tắt loading sau 1 giây
-    }, 1000);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768); // Kiểm tra kích thước màn hình
+    };
 
-    return () => clearTimeout(timer); // Dọn dẹp timer khi component unmount
-  }, [location.pathname]);
+    handleResize(); // Kiểm tra khi render lần đầu
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      {/* Hiển thị loading overlay */}
-      {/* {isLoading && <LoadingOverlay />}  */}
-      <AdminNavBar /> {/* Navbar */}
+      {/* {Navbar} */}
+      <AdminNavBar />
       <Layout
         style={{
-          marginLeft: 250,
+          marginLeft: isMobile ? 0 : 250, // MarginLeft cho desktop
           padding: "24px 24px 0 24px",
           marginTop: "80px",
         }}
       >
-        <DynamicBreadcrumb /> {/* Breadcrumb */}
+        <DynamicBreadcrumb />
         <Content
           style={{
             borderRadius: "15px",
@@ -41,7 +40,7 @@ const AdminLayout = () => {
             minHeight: "80vh",
           }}
         >
-          <Outlet /> {/* Render component từ route */}
+          <Outlet />
         </Content>
       </Layout>
     </Layout>

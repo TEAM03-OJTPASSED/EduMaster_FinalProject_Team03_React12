@@ -5,7 +5,6 @@ import AdminLayout from "./defaultLayout/AdminLayout";
 import AdminContent from "./pages/AdminDashboard/AdminContent";
 import UserManagement from "./pages/AdminDashboard/userManagement";
 import RequestUser from "./pages/RequestUser";
-import DashboardLayout from "./defaultLayout/DashboardLayout";
 import AdminNavBar from "./components/Admin/AdminNavbar";
 import InstructorNavbar from "./components/Instructor/InstructorNavbar";
 import AdminPage from "./pages/Dashboard/Adminpage";
@@ -22,6 +21,8 @@ import FAQsPage from "./pages/FAQspage";
 import ErrorPage from "./pages/Errorpage";
 import CourseDetailPage from "./pages/CourseDetailPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import InstructorLayout from "./defaultLayout/InstructorLayout";
+import InstructorContent from "./pages/InstructorDashboard/InstructorContent";
 
 function App() {
   return (
@@ -49,19 +50,6 @@ function App() {
           </Route>
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
-          {/* Protected routes */}
-          <Route
-            path="/dashboard/admin/*"
-            element={<ProtectedRoute allowedRoles={["admin"]} />}
-          >
-            <Route index element={<AdminPage />} />
-          </Route>
-          <Route
-            path="/dashboard/instructor/*"
-            element={<ProtectedRoute allowedRoles={["instructor"]} />}
-          >
-            <Route index element={<InstructorPage />} />
-          </Route>
           <Route
             path="/dashboard/student/*"
             element={<ProtectedRoute allowedRoles={["student"]} />}
@@ -73,19 +61,27 @@ function App() {
         {/* Admin Layout */}
         <Route
           path="/admin"
-          element={<DashboardLayout Navbar={<AdminNavBar />} />}
+          element={<ProtectedRoute allowedRoles={["admin"]} />}
         >
-          <Route path="dashboard" element={<AdminContent />} />
-          <Route path="users" element={<UserManagement />} />
-          <Route path="request-management" element={<RequestUser />} />
+          <Route element={<AdminLayout />}>
+            <Route index element={<AdminContent />} />
+            <Route path="dashboard" element={<AdminContent />} />
+            <Route path="users" element={<UserManagement />} />
+            <Route path="request-management" element={<RequestUser />} />
+          </Route>
         </Route>
 
         {/* Instructor Layout */}
         <Route
           path="/instructor"
-          element={<DashboardLayout Navbar={<InstructorNavbar />} />}
+          element={
+            <ProtectedRoute allowedRoles={["instructor"]}></ProtectedRoute>
+          }
         >
-          <Route path="dashboard" element={<InstructorPage />} />
+          <Route element={<InstructorLayout />}>
+            <Route index element={<InstructorContent />} />
+            <Route path="dashboard" element={<InstructorPage />} />
+          </Route>
         </Route>
 
         {/* Student Layout */}
