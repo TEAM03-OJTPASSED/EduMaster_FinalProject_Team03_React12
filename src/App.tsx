@@ -18,6 +18,16 @@ import AdminLayout from "./defaultLayout/AdminLayout";
 import AdminContent from "./pages/AdminDashboard/AdminContent";
 import UserManagement from "./pages/AdminDashboard/userManagement";
 import RequestUser from "./pages/RequestUser";
+import AllCourse from "./pages/AdminDashboard/monitors/course/AllCourse";
+import CourseList from "./pages/AdminDashboard/monitors/course/CourseList";
+import SessionList from "./pages/AdminDashboard/monitors/course/SessionList";
+import LessonList from "./pages/AdminDashboard/monitors/course/LessonList";
+import PendingCourse from "./pages/AdminDashboard/monitors/pending_course/PendingCourse";
+import PendingSessionList from "./pages/AdminDashboard/monitors/pending_course/PendingSessionList";
+import PendingLessonList from "./pages/AdminDashboard/monitors/pending_course/PendingLessonList";
+import PendingCourseList from "./pages/AdminDashboard/monitors/pending_course/PendingCourseList";
+import PayoutManagement from "./pages/AdminDashboard/payoutManagement";
+import BlogManagement from "./pages/AdminDashboard/BlogManagement";
 
 function App() {
   return (
@@ -45,6 +55,18 @@ function App() {
           <Route path="dashboard" element={<AdminContent />} />
           <Route path="users" element={<UserManagement />} />
           <Route path="request-management" element={<RequestUser />} />
+          <Route path="all-courses" element={<AllCourse />}>
+            <Route index element={<CourseList />} />
+            <Route path="session" element={<SessionList />} />
+            <Route path="lesson" element={<LessonList />} />
+          </Route>
+          <Route path="pending-courses" element={<PendingCourse />} >
+          <Route index element={<PendingCourseList />} />
+            <Route path="session" element={<PendingSessionList />} />
+            <Route path="lesson" element={<PendingLessonList />} />
+          </Route>
+          <Route path="payout" element={<PayoutManagement />} />
+          <Route path="blog" element={<BlogManagement />} />
         </Route>
 
         {/* Instructor Layout */}

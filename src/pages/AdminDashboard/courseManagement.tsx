@@ -1,5 +1,6 @@
 const CourseManagement = () => {
-  return <div>CourseManagement</div>;
+  return <div>
+    
+  </div>;
 };
-
 export default CourseManagement;
