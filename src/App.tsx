@@ -76,12 +76,12 @@ function App() {
 
         {/* Instructor Layout */}
         <Route element={<AdminLayout />}>
-          <Route path="/instructor/dashboard/*" element={<Instructorpage />} />
+          <Route path="/instructor/dashboard/*" element={<InstructorPage/>} />
         </Route>
 
         {/* Student Layout */}
         <Route element={<AdminLayout />}>
-          <Route path="/dashboard/student/*" element={<Studentpage />} />
+          <Route path="/dashboard/student/*" element={<StudentPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
