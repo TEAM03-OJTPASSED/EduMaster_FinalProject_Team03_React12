@@ -15,11 +15,16 @@ import FAQsPage from "./pages/FAQspage";
 import ErrorPage from "./pages/Errorpage";
 import CourseDetailPage from "./pages/CourseDetailPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import AdminLayout from "./defaultLayout/AdminLayout";
+import AdminContent from "./pages/AdminDashboard/AdminContent";
+import UserManagement from "./pages/AdminDashboard/userManagement";
+import RequestUser from "./pages/RequestUser";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* General Layout */}
         <Route path="/" element={<GeneralLayout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<Loginpage />} />
@@ -60,6 +65,23 @@ function App() {
           >
             <Route index element={<StudentPage />} />
           </Route>
+        </Route>
+
+        {/* Admin Layout */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route path="dashboard" element={<AdminContent />} />
+          <Route path="users" element={<UserManagement />} />
+          <Route path="request-management" element={<RequestUser />} />
+        </Route>
+
+        {/* Instructor Layout */}
+        <Route element={<AdminLayout />}>
+          <Route path="/instructor/dashboard/*" element={<Instructorpage />} />
+        </Route>
+
+        {/* Student Layout */}
+        <Route element={<AdminLayout />}>
+          <Route path="/dashboard/student/*" element={<Studentpage />} />
         </Route>
       </Routes>
     </BrowserRouter>
