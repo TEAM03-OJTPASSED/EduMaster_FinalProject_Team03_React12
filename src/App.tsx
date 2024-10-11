@@ -1,23 +1,11 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import "./App.css";
-import Loginpage from "./pages/Loginpage";
-import SignUppage from "./pages/SignUppage";
-import Homepage from "./pages/Homepage";
-import GeneralLayout from "./defaultLayout/Layout";
-import Adminpage from "./pages/Dashboard/Adminpage";
-import Instructorpage from "./pages/Dashboard/Instructorpage";
-import Studentpage from "./pages/Dashboard/Studentpage";
-import Coursespage from "./pages/Coursespage";
-import Blogpage from "./pages/Blogpage";
-import Contactpage from "./pages/Contactpage";
-import FAQspage from "./pages/FAQspage";
-import Errorpage from "./pages/Errorpage";
-import CourseDetailpage from "./pages/CourseDetailpage";
-import ForgotPasswordpage from "./pages/ForgotPasswordpage";
+import ProtectedRoute from "./utils/ProtectedRoute";
+
 import AdminLayout from "./defaultLayout/AdminLayout";
 import AdminContent from "./pages/AdminDashboard/AdminContent";
 import UserManagement from "./pages/AdminDashboard/userManagement";
 import RequestUser from "./pages/RequestUser";
+
 import AllCourse from "./pages/AdminDashboard/monitors/course/AllCourse";
 import CourseList from "./pages/AdminDashboard/monitors/course/CourseList";
 import SessionList from "./pages/AdminDashboard/monitors/course/SessionList";
@@ -28,6 +16,24 @@ import PendingLessonList from "./pages/AdminDashboard/monitors/pending_course/Pe
 import PendingCourseList from "./pages/AdminDashboard/monitors/pending_course/PendingCourseList";
 import PayoutManagement from "./pages/AdminDashboard/payoutManagement";
 import BlogManagement from "./pages/AdminDashboard/BlogManagement";
+import AdminNavBar from "./components/Admin/AdminNavbar";
+import InstructorNavbar from "./components/Instructor/InstructorNavbar";
+import AdminPage from "./pages/Dashboard/Adminpage";
+import InstructorPage from "./pages/Dashboard/Instructorpage";
+import StudentPage from "./pages/Dashboard/Studentpage";
+import GeneralLayout from "./defaultLayout/Layout";
+import HomePage from "./pages/Homepage";
+import Loginpage from "./pages/AuthPage/Loginpage";
+import SignUppage from "./pages/AuthPage/SignUppage";
+import CoursesPage from "./pages/CoursesPage";
+import BlogPage from "./pages/BlogPage";
+import ContactPage from "./pages/Contactpage";
+import FAQsPage from "./pages/FAQspage";
+import ErrorPage from "./pages/Errorpage";
+import CourseDetailPage from "./pages/CourseDetailPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import InstructorLayout from "./defaultLayout/InstructorLayout";
+import InstructorContent from "./pages/InstructorDashboard/InstructorContent";
 
 function App() {
   return (
@@ -35,27 +41,46 @@ function App() {
       <Routes>
         {/* General Layout */}
         <Route path="/" element={<GeneralLayout />}>
-          <Route path="/" element={<Homepage />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<Loginpage />} />
           <Route path="/signup" element={<SignUppage />} />
-          <Route path="/dashboard/admin/*" element={<Adminpage />} />
-          <Route path="/dashboard/instructor/*" element={<Instructorpage />} />
-          <Route path="/dashboard/student/*" element={<Studentpage />} />
-          <Route path="/course" element={<Coursespage />} />
-          <Route path="/blog" element={<Blogpage />} />
-          <Route path="/contact" element={<Contactpage />} />
-          <Route path="/faqs" element={<FAQspage />} />
-          <Route path="/error" element={<Errorpage />} />
-          <Route path="/detail/:id" element={<CourseDetailpage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordpage />} />
+          <Route path="/course" element={<CoursesPage />} />
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/faqs" element={<FAQsPage />} />
+          <Route path="/error" element={<ErrorPage />} />
+          <Route
+            path="/course/:id"
+            element={
+              <ProtectedRoute
+                allowedRoles={["student", "instructor", "admin"]}
+              />
+            }
+          >
+            <Route index element={<CourseDetailPage />} />
+          </Route>
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+
+          <Route
+            path="/dashboard/student/*"
+            element={<ProtectedRoute allowedRoles={["student"]} />}
+          >
+            <Route index element={<StudentPage />} />
+          </Route>
         </Route>
 
         {/* Admin Layout */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route path="dashboard" element={<AdminContent />} />
-          <Route path="users" element={<UserManagement />} />
-          <Route path="request-management" element={<RequestUser />} />
-          <Route path="all-courses" element={<AllCourse />}>
+
+        <Route
+          path="/admin"
+          element={<ProtectedRoute allowedRoles={["admin"]} />}
+        >
+          <Route element={<AdminLayout />}>
+            <Route index element={<AdminContent />} />
+            <Route path="dashboard" element={<AdminContent />} />
+            <Route path="users" element={<UserManagement />} />
+            <Route path="request-management" element={<RequestUser />} />
+            <Route path="all-courses" element={<AllCourse />}>
             <Route index element={<CourseList />} />
             <Route path="session" element={<SessionList />} />
             <Route path="lesson" element={<LessonList />} />
@@ -67,16 +92,25 @@ function App() {
           </Route>
           <Route path="payout" element={<PayoutManagement />} />
           <Route path="blog" element={<BlogManagement />} />
+          </Route>
         </Route>
 
         {/* Instructor Layout */}
-        <Route element={<AdminLayout />}>
-          <Route path="/instructor/dashboard/*" element={<Instructorpage />} />
+        <Route
+          path="/instructor"
+          element={
+            <ProtectedRoute allowedRoles={["instructor"]}></ProtectedRoute>
+          }
+        >
+          <Route element={<InstructorLayout />}>
+            <Route index element={<InstructorContent />} />
+            <Route path="dashboard" element={<InstructorPage />} />
+          </Route>
         </Route>
 
         {/* Student Layout */}
         <Route element={<AdminLayout />}>
-          <Route path="/dashboard/student/*" element={<Studentpage />} />
+          <Route path="/dashboard/student/*" element={<StudentPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

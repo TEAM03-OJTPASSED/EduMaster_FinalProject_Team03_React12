@@ -2,11 +2,11 @@ import React, { ReactNode, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { Layout } from "antd";
 import DynamicBreadcrumb from "../components/Breadcrumb/Breadcrumb";
-import AdminNavBar from "../components/Admin/AdminNavbar";
+import InstructorNavbar from "../components/Instructor/InstructorNavbar";
 
 const { Content } = Layout;
 
-const AdminLayout: React.FC = () => {
+const InstructorLayout: React.FC = () => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const AdminLayout: React.FC = () => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* {Navbar} */}
-      <AdminNavBar />
+      <InstructorNavbar />
       <Layout
         style={{
           marginLeft: isMobile ? 0 : 250, // MarginLeft cho desktop
@@ -47,4 +47,4 @@ const AdminLayout: React.FC = () => {
   );
 };
 
-export default AdminLayout;
+export default InstructorLayout;
