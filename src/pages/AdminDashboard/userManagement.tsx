@@ -133,14 +133,16 @@ const UserManagement = () => {
       render: (text, record) => (
         <Space size="middle">
           <Button
-            type="primary"
+            color="primary"
+            variant="outlined"
             icon={<EditOutlined />}
             onClick={() => handleEdit(record)}
           >
             Chỉnh sửa
           </Button>
           <Button
-            type="danger"
+            color="danger"
+            variant="outlined"
             icon={<DeleteOutlined />}
             onClick={() => handleDelete(record)}
           >

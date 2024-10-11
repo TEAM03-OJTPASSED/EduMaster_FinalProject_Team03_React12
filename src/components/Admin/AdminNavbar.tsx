@@ -149,7 +149,15 @@ const AdminNavBar = () => {
         <Sider
           theme="light"
           width={250} // Chiều rộng cố định
-          style={{ minHeight: "80vh", marginTop: "80px" }} // Bổ sung marginTop để tránh chồng lên navbar
+          style={{
+            position: "fixed", // Cố định sidebar
+            height: "100vh", // Chiều cao bao phủ toàn trang
+            top: "80px", // Khoảng cách từ đầu trang, để tránh bị navbar đè lên
+            left: 0, // Canh lề trái
+            zIndex: 999, // Đảm bảo z-index để không bị các phần tử khác đè lên
+            backgroundColor: "#fff", // Đặt màu nền cho sidebar
+            boxShadow: "2px 0 5px rgba(0, 0, 0, 0.1)", // Thêm chút shadow cho đẹp
+          }}
         >
           <AdminSiderMenu /> {/* Thêm AdminSiderMenu */}
         </Sider>

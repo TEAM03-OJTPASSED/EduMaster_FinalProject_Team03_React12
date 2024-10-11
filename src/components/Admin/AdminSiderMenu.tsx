@@ -108,7 +108,11 @@ const AdminSiderMenu: React.FC<{ onMenuClick?: () => void }> = ({
     return items.map((item) => {
       if (item.children) {
         return (
-          <Menu.SubMenu key={item.key} icon={item.icon} title={item.title}>
+          <Menu.SubMenu
+            key={item.key}
+            icon={item.icon}
+            title={item.title}
+          >
             {renderMenuItems(item.children)}
           </Menu.SubMenu>
         );
