@@ -1,6 +1,13 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./utils/ProtectedRoute";
 
+import AdminLayout from "./defaultLayout/AdminLayout";
+import AdminContent from "./pages/AdminDashboard/AdminContent";
+import UserManagement from "./pages/AdminDashboard/userManagement";
+import RequestUser from "./pages/RequestUser";
+import DashboardLayout from "./defaultLayout/DashboardLayout";
+import AdminNavBar from "./components/Admin/AdminNavbar";
+import InstructorNavbar from "./components/Instructor/InstructorNavbar";
 import AdminPage from "./pages/Dashboard/Adminpage";
 import InstructorPage from "./pages/Dashboard/Instructorpage";
 import StudentPage from "./pages/Dashboard/Studentpage";
@@ -15,10 +22,6 @@ import FAQsPage from "./pages/FAQspage";
 import ErrorPage from "./pages/Errorpage";
 import CourseDetailPage from "./pages/CourseDetailPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-import AdminLayout from "./defaultLayout/AdminLayout";
-import AdminContent from "./pages/AdminDashboard/AdminContent";
-import UserManagement from "./pages/AdminDashboard/userManagement";
-import RequestUser from "./pages/RequestUser";
 
 function App() {
   return (
@@ -68,15 +71,21 @@ function App() {
         </Route>
 
         {/* Admin Layout */}
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route
+          path="/admin"
+          element={<DashboardLayout Navbar={<AdminNavBar />} />}
+        >
           <Route path="dashboard" element={<AdminContent />} />
           <Route path="users" element={<UserManagement />} />
           <Route path="request-management" element={<RequestUser />} />
         </Route>
 
         {/* Instructor Layout */}
-        <Route element={<AdminLayout />}>
-          <Route path="/instructor/dashboard/*" element={<InstructorPage/>} />
+        <Route
+          path="/instructor"
+          element={<DashboardLayout Navbar={<InstructorNavbar />} />}
+        >
+          <Route path="dashboard" element={<InstructorPage />} />
         </Route>
 
         {/* Student Layout */}

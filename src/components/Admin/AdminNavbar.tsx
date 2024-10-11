@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Button, Drawer, Avatar, Dropdown, Menu } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
-import logoImage from "../../assets/EduMaster.png"; // Đường dẫn đến logo
-import { useCustomNavigate } from "../../hooks/customNavigate"; // Hook tùy chỉnh cho điều hướng
-import AdminSiderMenu from "./AdminSiderMenu";
+import logoImage from "../../assets/EduMaster.png";
+import { useCustomNavigate } from "../../hooks/customNavigate";
+import AdminSidebar from "./AdminSidebar";
 
-const { Sider } = Layout; // Chỉ destructure Sider
+const { Sider } = Layout;
 
 const AdminNavBar = () => {
   const navigate = useCustomNavigate();
@@ -14,20 +14,21 @@ const AdminNavBar = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768); // Kiểm tra kích thước màn hình
+      setIsMobile(window.innerWidth < 768);
     };
 
-    handleResize(); // Kiểm tra khi render lần đầu
+    handleResize();
     window.addEventListener("resize", handleResize);
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const toggleDrawer = () => {
-    setDrawerVisible(!drawerVisible); // Toggle Drawer khi click
+    setDrawerVisible(!drawerVisible);
   };
 
-  // Menu items for the dropdown
+  const [isHovered, setIsHovered] = useState(false); // Thêm state cho hover
+
   const menu = (
     <Menu>
       <Menu.Item key="profile" onClick={() => navigate("/profile")}>
@@ -44,11 +45,10 @@ const AdminNavBar = () => {
 
   return (
     <>
-      {/* Navbar */}
       <div
         className="w-full h-20 flex items-center justify-between p-4 bg-white shadow-md"
         style={{
-          position: "fixed", // Đặt navbar ở vị trí fixed
+          position: "fixed",
           top: 0,
           left: 0,
           right: 0,
@@ -68,12 +68,12 @@ const AdminNavBar = () => {
           title="Menu"
           placement="left"
           onClose={toggleDrawer}
-          visible={drawerVisible} // Control visibility
+          open={drawerVisible}
+          styles={{ body: { padding: 0 } }} // Sử dụng styles.body thay cho bodyStyle
         >
-          {/* Sử dụng AdminSiderMenu bên trong Drawer */}
-          <AdminSiderMenu onMenuClick={toggleDrawer} />
+          <AdminSidebar onMenuClick={toggleDrawer} />
         </Drawer>
-        {/* Logo ở Navbar */}
+
         <div
           style={{
             display: "flex",
@@ -86,13 +86,12 @@ const AdminNavBar = () => {
             src={logoImage}
             alt="EduMaster logo"
             style={{
-              height: isMobile ? "30px" : "40px", // Điều chỉnh kích thước logo
-              marginRight: "16px", // Khoảng cách giữa logo và các thành phần khác
+              height: isMobile ? "30px" : "40px",
+              marginRight: "16px",
             }}
           />
         </div>
 
-        {/* Avatar cho Navbar */}
         <Dropdown overlay={menu} trigger={["click"]}>
           <div
             style={{
@@ -105,28 +104,19 @@ const AdminNavBar = () => {
               borderRadius: "10px",
               backgroundColor: "transparent",
               transition:
-                "background-color 0.3s, opacity 0.3s, transform 0.3s, box-shadow 0.3s", // Added transform and box-shadow
-              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)", // Added shadow for depth
+                "background-color 0.3s, opacity 0.3s, transform 0.3s, box-shadow 0.3s",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+              transform: isHovered ? "scale(1.05)" : "scale(1)", // Điều chỉnh scale khi hover
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "rgba(0, 0, 0, 0.1)"; // Subtle background color change on hover
-              e.currentTarget.style.opacity = "1"; // Ensure full opacity on hover
-              e.currentTarget.style.transform = "scale(1.05)"; // Slightly scale up on hover
-              e.currentTarget.style.boxShadow = "0 6px 12px rgba(0, 0, 0, 0.3)"; // Enhance shadow on hover
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "transparent"; // Reset background color
-              e.currentTarget.style.opacity = "0.9"; // Reset opacity
-              e.currentTarget.style.transform = "scale(1)"; // Reset scale
-              e.currentTarget.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)"; // Reset shadow
-            }}
+            onMouseEnter={() => setIsHovered(true)} // Bắt đầu hover
+            onMouseLeave={() => setIsHovered(false)} // Kết thúc hover
           >
             <Avatar
               shape="square"
               size="large"
               src="https://picsum.photos/id/237/200/300"
               alt="User Avatar"
-              style={{ border: "2px solid white" }} // Added border for contrast
+              style={{ border: "2px solid white" }}
             />
             {!isMobile && (
               <span
@@ -139,29 +129,26 @@ const AdminNavBar = () => {
                 Admin
               </span>
             )}
-            {/* Improved text color on hover */}
           </div>
         </Dropdown>
       </div>
 
       {/* Sidebar cho desktop */}
-      {!isMobile && (
-        <Sider
-          theme="light"
-          width={250} // Chiều rộng cố định
-          style={{
-            position: "fixed", // Cố định sidebar
-            height: "100vh", // Chiều cao bao phủ toàn trang
-            top: "80px", // Khoảng cách từ đầu trang, để tránh bị navbar đè lên
-            left: 0, // Canh lề trái
-            zIndex: 999, // Đảm bảo z-index để không bị các phần tử khác đè lên
-            backgroundColor: "#fff", // Đặt màu nền cho sidebar
-            boxShadow: "2px 0 5px rgba(0, 0, 0, 0.1)", // Thêm chút shadow cho đẹp
-          }}
-        >
-          <AdminSiderMenu /> {/* Thêm AdminSiderMenu */}
-        </Sider>
-      )}
+      <Sider
+        theme="light"
+        width={250}
+        style={{
+          position: isMobile ? "absolute" : "fixed", // Đặt thành fixed cho desktop
+          height: "100vh",
+          top: "80px", // Đặt từ đầu trang
+          left: isMobile ? "-250px" : 0, // Ra ngoài màn hình ở chế độ mobile
+          zIndex: 999,
+          backgroundColor: "#fff",
+          boxShadow: "2px 0 5px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <AdminSidebar />
+      </Sider>
     </>
   );
 };
