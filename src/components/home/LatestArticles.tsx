@@ -16,21 +16,21 @@ const articles: Article[] = [
     title: "Best LearnPress WordPress Theme Collection For 2023",
     date: "Jan 24, 22023",
     excerpt: "Looking for an amazing & well-functional LearnPress WordPress Theme?...",
-    image: "/placeholder.svg?height=200&width=300"
+    image: "https://picsum.photos/400/192"
   },
   {
     id: 2,
     title: "Best LearnPress WordPress Theme Collection For 2023",
     date: "Jan 24, 22023",
     excerpt: "Looking for an amazing & well-functional LearnPress WordPress Theme?...",
-    image: "/placeholder.svg?height=200&width=300"
+    image: "https://picsum.photos/400/192"
   },
   {
     id: 3,
     title: "Best LearnPress WordPress Theme Collection For 2023",
     date: "Jan 24, 22023",
     excerpt: "Looking for an amazing & well-functional LearnPress WordPress Theme?...",
-    image: "/placeholder.svg?height=200&width=300"
+    image: "https://picsum.photos/400/192"
   }
 ]
 

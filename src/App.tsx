@@ -1,39 +1,117 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import "./App.css";
+import ProtectedRoute from "./utils/ProtectedRoute";
 
-import Loginpage from "./pages/AuthPage/Loginpage";
-import SignUppage from "./pages/AuthPage/SignUppage";
-import Homepage from "./pages/Homepage";
-import GeneralLayout from "./defaultLayout/Layout";
-import CoursesPage from "./pages/Coursespage";
-import BlogPage from "./pages/Blogpage";
-import ContactPage from "./pages/Contactpage";
-import FAQsPage from "./pages/FAQspage";
-import ErrorPage from "./pages/Errorpage";
-import CourseDetailPage from "./pages/CourseDetailpage";
-import ForgotPasswordPage from "./pages/AuthPage/ForgotPasswordpage";
+
+import AdminLayout from "./defaultLayout/AdminLayout";
+import AdminContent from "./pages/AdminDashboard/AdminContent";
+import UserManagement from "./pages/AdminDashboard/userManagement";
+import RequestUser from "./pages/RequestUser";
+
+import AllCourse from "./pages/AdminDashboard/monitors/course/AllCourse";
+import CourseList from "./pages/AdminDashboard/monitors/course/CourseList";
+import SessionList from "./pages/AdminDashboard/monitors/course/SessionList";
+import LessonList from "./pages/AdminDashboard/monitors/course/LessonList";
+import PendingCourse from "./pages/AdminDashboard/monitors/pending_course/PendingCourse";
+import PendingSessionList from "./pages/AdminDashboard/monitors/pending_course/PendingSessionList";
+import PendingLessonList from "./pages/AdminDashboard/monitors/pending_course/PendingLessonList";
+import PendingCourseList from "./pages/AdminDashboard/monitors/pending_course/PendingCourseList";
+import PayoutManagement from "./pages/AdminDashboard/payoutManagement";
+import BlogManagement from "./pages/AdminDashboard/BlogManagement";
+import AdminNavBar from "./components/Admin/AdminNavbar";
+import InstructorNavbar from "./components/Instructor/InstructorNavbar";
 import AdminPage from "./pages/Dashboard/Adminpage";
 import InstructorPage from "./pages/Dashboard/Instructorpage";
 import StudentPage from "./pages/Dashboard/Studentpage";
+import GeneralLayout from "./defaultLayout/Layout";
+import HomePage from "./pages/Homepage";
+import Loginpage from "./pages/AuthPage/Loginpage";
+import SignUppage from "./pages/AuthPage/SignUppage";
+import CoursesPage from "./pages/CoursesPage";
+import BlogPage from "./pages/BlogPage";
+import ContactPage from "./pages/Contactpage";
+import FAQsPage from "./pages/FAQspage";
+import ErrorPage from "./pages/Errorpage";
+import CourseDetailPage from "./pages/CourseDetailPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import InstructorLayout from "./defaultLayout/InstructorLayout";
+import InstructorContent from "./pages/InstructorDashboard/InstructorContent";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* General Layout */}
         <Route path="/" element={<GeneralLayout />}>
-          <Route path="/" element={<Homepage />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<Loginpage />} />
           <Route path="/signup" element={<SignUppage />} />
-          <Route path="/dashboard/admin/*" element={<AdminPage />} />
-          <Route path="/dashboard/instructor/*" element={<InstructorPage />} />
-          <Route path="/dashboard/student/*" element={<StudentPage />} />
           <Route path="/course" element={<CoursesPage />} />
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/faqs" element={<FAQsPage />} />
           <Route path="/error" element={<ErrorPage />} />
-          <Route path="/course/:id" element={<CourseDetailPage />} />
+          <Route
+            path="/course/:id"
+            element={
+              <ProtectedRoute
+                allowedRoles={["student", "instructor", "admin"]}
+              />
+            }
+          >
+            <Route index element={<CourseDetailPage />} />
+          </Route>
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+
+          <Route
+            path="/dashboard/student/*"
+            element={<ProtectedRoute allowedRoles={["student"]} />}
+          >
+            <Route index element={<StudentPage />} />
+          </Route>
+        </Route>
+
+        {/* Admin Layout */}
+
+        <Route
+          path="/admin"
+          element={<ProtectedRoute allowedRoles={["admin"]} />}
+        >
+          <Route element={<AdminLayout />}>
+            <Route index element={<AdminContent />} />
+            <Route path="dashboard" element={<AdminContent />} />
+            <Route path="users" element={<UserManagement />} />
+            <Route path="request-management" element={<RequestUser />} />
+            <Route path="all-courses" element={<AllCourse />}>
+            <Route index element={<CourseList />} />
+            <Route path="session" element={<SessionList />} />
+            <Route path="lesson" element={<LessonList />} />
+          </Route>
+          <Route path="pending-courses" element={<PendingCourse />} >
+          <Route index element={<PendingCourseList />} />
+            <Route path="session" element={<PendingSessionList />} />
+            <Route path="lesson" element={<PendingLessonList />} />
+          </Route>
+          <Route path="payout" element={<PayoutManagement />} />
+          <Route path="blog" element={<BlogManagement />} />
+          </Route>
+        </Route>
+
+        {/* Instructor Layout */}
+        <Route
+          path="/instructor"
+          element={
+            <ProtectedRoute allowedRoles={["instructor"]}></ProtectedRoute>
+          }
+        >
+          <Route element={<InstructorLayout />}>
+            <Route index element={<InstructorContent />} />
+            <Route path="dashboard" element={<InstructorPage />} />
+          </Route>
+        </Route>
+
+        {/* Student Layout */}
+        <Route element={<AdminLayout />}>
+          <Route path="/dashboard/student/*" element={<StudentPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

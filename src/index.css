@@ -1,6 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Exo:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.font-jost {
+  font-family: 'Jost', sans-serif;
+}
+.font-exo {
+  font-family: 'Exo', sans-serif;
+}
 
 :root {
   --primary-color: #c5c7c9; /* Màu chính */
@@ -95,4 +105,5 @@
   ); /* Adjust 80px if your navbar height is different */
   overflow: auto; /* Enables scrolling if content overflows */
 }
+
 
