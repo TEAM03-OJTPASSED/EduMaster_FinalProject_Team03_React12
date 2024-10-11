@@ -104,7 +104,7 @@ const randomTypes = ["Technology", "Health", "Education", "Lifestyle", "Business
 export const listBlogs: Blog[] = Array.from({ length: 10 }, () => ({
   id:randomString(),
   title: `Blog ${randomString1(10)}`,
-  title_image: `https://random.image/${randomString(5)}.jpg`, 
+  title_image: `https://placehold.jp/150x150.png`, 
   type: randomTypes[Math.floor(Math.random() * randomTypes.length)], 
   publishedDate: randomDate(),
   content: `Content for ${randomString1(20)}...`, 

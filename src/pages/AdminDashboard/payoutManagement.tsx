@@ -73,18 +73,7 @@ const CourseList: React.FC = () => {
         return <div>{dayjs(created_at).format("DD/MM/YYYY")}</div>;
       },
     },
-    {
-      title: "Discount",
-      dataIndex: "discount",
-      key: "discount",
-      render: (discount: number) => {
-        return (
-          <div>
-            <span className="text-red-500"> {discount}%</span>
-          </div>
-        );
-      },
-    },
+   
     {
       title: "Action",
       key: "action",
@@ -103,16 +92,13 @@ const CourseList: React.FC = () => {
   return (
     <div>
       <Card>
-        <h3 className="text-2xl my-5">Pending Course Management</h3>
-
-
+        <h3 className="text-2xl my-5">Payout Management</h3>
         <div>
           <Input
-            placeholder="Search By Course Name"
+            placeholder="Search..."
             prefix={<SearchOutlined />}
             style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
           />
-
           <Select
             style={{ width: "10rem" }}
             placeholder="Select a person"

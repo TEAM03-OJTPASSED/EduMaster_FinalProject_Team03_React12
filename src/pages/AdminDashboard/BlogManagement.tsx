@@ -8,7 +8,7 @@ import {
   PlusCircleOutlined,
 } from "@ant-design/icons";
 import dayjs from "dayjs";
-import CreateBlog from "./CreateBlog";
+import CreateBlog from "./blog/CreateBlog";
 const BlogManagement = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModaCreatelVisible, setIsModalCreateVisible] = useState(false);
@@ -80,17 +80,16 @@ const BlogManagement = () => {
       <div className="flex">
         <h3 className="text-2xl my-5">Blog Management</h3>
         <div className="flex items-center mx-3">
-
-        <Button
-          onClick={showModalCreate}
-          icon={<PlusCircleOutlined />}
-          shape="round"
-          variant="solid"
-          color="primary"
-          className="items-center"
-        >
-          Create Blog
-        </Button>
+          <Button
+            onClick={showModalCreate}
+            icon={<PlusCircleOutlined />}
+            shape="round"
+            variant="solid"
+            color="primary"
+            className="items-center"
+          >
+            Create Blog
+          </Button>
         </div>
       </div>
       <Input
@@ -109,22 +108,23 @@ const BlogManagement = () => {
         scroll={{ x: true }}
       />
       <Modal
-        title="Course Details"
+        title="Course Update"
         open={isModalVisible}
         onCancel={handleCancel}
       >
         {selectedBlog && (
-          <div>
-            <p>
-              <strong>Title:</strong> {selectedBlog.title}
-            </p>
-            <p>
-              <strong>Title Image:</strong> {selectedBlog.title_image}
-            </p>
-            <p>
-              <strong>Type:</strong> {selectedBlog.type}
-            </p>
-          </div>
+          <CreateBlog
+            mode="update"
+            initialValues={{
+              title: selectedBlog.title,
+              title_image: selectedBlog.title_image,
+              type: selectedBlog.type,
+              content: `<div>${selectedBlog.content}</div>`,
+            }}
+            onFinished={(values) => {
+              console.log("Update values:", values);
+            }}
+          />
         )}
       </Modal>
       <Modal
@@ -132,7 +132,12 @@ const BlogManagement = () => {
         open={isModaCreatelVisible}
         onCancel={handleCancel}
       >
-        <CreateBlog />
+        <CreateBlog
+          mode="create"
+          onFinished={(values) => {
+            console.log("Create values:", values);
+          }}
+        />
       </Modal>
     </Card>
   );
