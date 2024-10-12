@@ -3,8 +3,8 @@ import ProtectedRoute from "./utils/ProtectedRoute";
 
 import AdminLayout from "./defaultLayout/AdminLayout";
 import AdminContent from "./pages/AdminDashboard/AdminContent";
-import UserManagement from "./pages/AdminDashboard/userManagement";
-import RequestUser from "./pages/RequestUser";
+import UserManagement from "./pages/AdminDashboard/UserManagement";
+import RequestUser from "./pages/AdminDashboard/RequestUser";
 
 import AllCourse from "./pages/AdminDashboard/monitors/course/AllCourse";
 import CourseList from "./pages/AdminDashboard/monitors/course/CourseList";
@@ -14,7 +14,7 @@ import PendingCourse from "./pages/AdminDashboard/monitors/pending_course/Pendin
 import PendingSessionList from "./pages/AdminDashboard/monitors/pending_course/PendingSessionList";
 import PendingLessonList from "./pages/AdminDashboard/monitors/pending_course/PendingLessonList";
 import PendingCourseList from "./pages/AdminDashboard/monitors/pending_course/PendingCourseList";
-import PayoutManagement from "./pages/AdminDashboard/payoutManagement";
+import PayoutManagement from "./pages/AdminDashboard/PayoutManagement";
 import BlogManagement from "./pages/AdminDashboard/BlogManagement";
 import AdminNavBar from "./components/Admin/AdminNavbar";
 import InstructorNavbar from "./components/Instructor/InstructorNavbar";
@@ -34,6 +34,7 @@ import CourseDetailPage from "./pages/CourseDetailPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import InstructorLayout from "./defaultLayout/InstructorLayout";
 import InstructorContent from "./pages/InstructorDashboard/InstructorContent";
+import CategoryManagement from "./pages/AdminDashboard/CategoryManagement";
 
 function App() {
   return (
@@ -80,6 +81,7 @@ function App() {
             <Route path="dashboard" element={<AdminContent />} />
             <Route path="users" element={<UserManagement />} />
             <Route path="request-management" element={<RequestUser />} />
+            <Route path="categories" element={<CategoryManagement />} />
             <Route path="all-courses" element={<AllCourse />}>
             <Route index element={<CourseList />} />
             <Route path="session" element={<SessionList />} />

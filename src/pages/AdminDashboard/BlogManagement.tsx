@@ -65,7 +65,7 @@ const BlogManagement = () => {
           />
           <Button
             type="text"
-            icon={<EditOutlined style={{ color: "red" }} />}
+            icon={<EditOutlined style={{ color: "blue" }} />}
             onClick={() => showModal(record)}
           />
         </>
