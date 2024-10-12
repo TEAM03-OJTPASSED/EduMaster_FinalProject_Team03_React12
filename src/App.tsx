@@ -35,6 +35,8 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import InstructorLayout from "./defaultLayout/InstructorLayout";
 import InstructorContent from "./pages/InstructorDashboard/InstructorContent";
 import CategoryManagement from "./pages/AdminDashboard/CategoryManagement";
+import CourseLog from "./pages/AdminDashboard/CourseLog";
+import PurchaseLog from "./pages/AdminDashboard/PurchaseLog";
 
 function App() {
   return (
@@ -94,6 +96,8 @@ function App() {
           </Route>
           <Route path="payout" element={<PayoutManagement />} />
           <Route path="blog" element={<BlogManagement />} />
+          <Route path="course-log" element={<CourseLog />} />
+          <Route path="purchase-log" element={<PurchaseLog />} />
           </Route>
         </Route>
 
