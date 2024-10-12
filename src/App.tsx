@@ -45,9 +45,9 @@ import InstructorReview from "./pages/InstructorDashboard/InstructorReview";
 import InstructorSetting from "./pages/InstructorDashboard/InstructorSetting";
 import CourseLog from "./pages/AdminDashboard/CourseLog";
 import PurchaseLog from "./pages/AdminDashboard/PurchaseLog";
-
-
-
+import InstructorCourseList from "./pages/InstructorDashboard/instructor-monitor/InstructorCourseList";
+import InstructorLessonList from "./pages/InstructorDashboard/instructor-monitor/InstructorLessonList";
+import IntructorSessionList from "./pages/InstructorDashboard/instructor-monitor/IntructorSessionList";
 
 function App() {
   return (
@@ -96,20 +96,19 @@ function App() {
             <Route path="request-management" element={<RequestUser />} />
             <Route path="categories" element={<CategoryManagement />} />
             <Route path="all-courses" element={<AllCourse />}>
-            <Route index element={<CourseList />} />
-            <Route path="session" element={<SessionList />} />
-            <Route path="lesson" element={<LessonList />} />
-          </Route>
-          <Route path="pending-courses" element={<PendingCourse />} >
-          <Route index element={<PendingCourseList />} />
-            <Route path="session" element={<PendingSessionList />} />
-            <Route path="lesson" element={<PendingLessonList />} />
-          </Route>
-          <Route path="payout" element={<PayoutManagement />} />
-          <Route path="blog" element={<BlogManagement />} />
-          <Route path="course-log" element={<CourseLog />} />
-          <Route path="purchase-log" element={<PurchaseLog />} />
-
+              <Route index element={<CourseList />} />
+              <Route path="session" element={<SessionList />} />
+              <Route path="lesson" element={<LessonList />} />
+            </Route>
+            <Route path="pending-courses" element={<PendingCourse />}>
+              <Route index element={<PendingCourseList />} />
+              <Route path="session" element={<PendingSessionList />} />
+              <Route path="lesson" element={<PendingLessonList />} />
+            </Route>
+            <Route path="payout" element={<PayoutManagement />} />
+            <Route path="blog" element={<BlogManagement />} />
+            <Route path="course-log" element={<CourseLog />} />
+            <Route path="purchase-log" element={<PurchaseLog />} />
           </Route>
         </Route>
 
@@ -125,7 +124,11 @@ function App() {
             <Route path="dashboard" element={<InstructorContent />} />
             <Route path="payout" element={<InstructorPayout />} />
             <Route path="order" element={<InstructorOrder />} />
-            <Route path="my-courses" element={<InstructorCourses />} />
+            <Route path="my-courses" element={<InstructorCourses />}>
+              <Route index element={<InstructorCourseList />} />
+              <Route path="session" element={<IntructorSessionList />} />
+              <Route path="lesson" element={<InstructorLessonList />} />
+            </Route>
             <Route path="create-courses" element={<InstructorCreateCourse />} />
             <Route path="course-log" element={<InstructorCourseLog />} />
             <Route path="purchase-log" element={<InstructorPurchaseLog />} />
