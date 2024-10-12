@@ -16,10 +16,7 @@ import PendingLessonList from "./pages/AdminDashboard/monitors/pending_course/Pe
 import PendingCourseList from "./pages/AdminDashboard/monitors/pending_course/PendingCourseList";
 import PayoutManagement from "./pages/AdminDashboard/PayoutManagement";
 import BlogManagement from "./pages/AdminDashboard/BlogManagement";
-import AdminNavBar from "./components/Admin/AdminNavbar";
-import InstructorNavbar from "./components/Instructor/InstructorNavbar";
-import AdminPage from "./pages/Dashboard/Adminpage";
-import InstructorPage from "./pages/Dashboard/Instructorpage";
+
 import StudentPage from "./pages/Dashboard/Studentpage";
 import GeneralLayout from "./defaultLayout/Layout";
 import HomePage from "./pages/Homepage";
@@ -35,6 +32,16 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import InstructorLayout from "./defaultLayout/InstructorLayout";
 import InstructorContent from "./pages/InstructorDashboard/InstructorContent";
 import CategoryManagement from "./pages/AdminDashboard/CategoryManagement";
+import InstructorPayout from "./pages/InstructorDashboard/instructor-management/InstructorPayout";
+import InstructorOrder from "./pages/InstructorDashboard/instructor-management/InstructorOrder";
+import InstructorDiscount from "./pages/InstructorDashboard/instructor-management/InstructorDiscount";
+import InstructorCourseLog from "./pages/InstructorDashboard/instructor-report/InstructorCourseLog";
+import InstructorCourses from "./pages/InstructorDashboard/instructor-monitor/InstructorCourses";
+import InstructorCreateCourse from "./pages/InstructorDashboard/instructor-monitor/InstructorCreateCourse";
+import InstructorPurchaseLog from "./pages/InstructorDashboard/instructor-report/InstructorPurchaseLog";
+import InstructorEarning from "./pages/InstructorDashboard/instructor-report/InstructorEarning";
+import InstructorReview from "./pages/InstructorDashboard/InstructorReview";
+import InstructorSetting from "./pages/InstructorDashboard/InstructorSetting";
 
 function App() {
   return (
@@ -83,17 +90,17 @@ function App() {
             <Route path="request-management" element={<RequestUser />} />
             <Route path="categories" element={<CategoryManagement />} />
             <Route path="all-courses" element={<AllCourse />}>
-            <Route index element={<CourseList />} />
-            <Route path="session" element={<SessionList />} />
-            <Route path="lesson" element={<LessonList />} />
-          </Route>
-          <Route path="pending-courses" element={<PendingCourse />} >
-          <Route index element={<PendingCourseList />} />
-            <Route path="session" element={<PendingSessionList />} />
-            <Route path="lesson" element={<PendingLessonList />} />
-          </Route>
-          <Route path="payout" element={<PayoutManagement />} />
-          <Route path="blog" element={<BlogManagement />} />
+              <Route index element={<CourseList />} />
+              <Route path="session" element={<SessionList />} />
+              <Route path="lesson" element={<LessonList />} />
+            </Route>
+            <Route path="pending-courses" element={<PendingCourse />}>
+              <Route index element={<PendingCourseList />} />
+              <Route path="session" element={<PendingSessionList />} />
+              <Route path="lesson" element={<PendingLessonList />} />
+            </Route>
+            <Route path="payout" element={<PayoutManagement />} />
+            <Route path="blog" element={<BlogManagement />} />
           </Route>
         </Route>
 
@@ -106,7 +113,17 @@ function App() {
         >
           <Route element={<InstructorLayout />}>
             <Route index element={<InstructorContent />} />
-            <Route path="dashboard" element={<InstructorPage />} />
+            <Route path="dashboard" element={<InstructorContent />} />
+            <Route path="payout" element={<InstructorPayout />} />
+            <Route path="order" element={<InstructorOrder />} />
+            <Route path="my-courses" element={<InstructorCourses />} />
+            <Route path="create-courses" element={<InstructorCreateCourse />} />
+            <Route path="course-log" element={<InstructorCourseLog />} />
+            <Route path="purchase-log" element={<InstructorPurchaseLog />} />
+            <Route path="earning" element={<InstructorEarning />} />
+            <Route path="discount" element={<InstructorDiscount />} />
+            <Route path="review" element={<InstructorReview />} />
+            <Route path="settings" element={<InstructorSetting />} />
           </Route>
         </Route>
 
