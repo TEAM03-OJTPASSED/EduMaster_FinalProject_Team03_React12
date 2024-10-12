@@ -107,7 +107,7 @@ const CreateBlog: React.FC<BlogFormProps> = ({
         >
           {fileList.length > 0 ? null : uploadButton}
         </Upload>
-{/* 
+
         {previewImage && (
           <Image
             wrapperStyle={{ display: "none" }}
@@ -118,7 +118,7 @@ const CreateBlog: React.FC<BlogFormProps> = ({
             }}
             src={previewImage}
           />
-        )} */}
+        )}
       </Form.Item>
       {/* Blog Type */}
       <Form.Item<BlogFieldType>

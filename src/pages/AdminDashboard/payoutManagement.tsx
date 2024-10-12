@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import {
   Table,
   Input,
@@ -12,11 +12,29 @@ import {
 import { SearchOutlined, EyeOutlined } from "@ant-design/icons";
 import { Payout, payouts, PayoutStatusEnum } from "./monitors/course/couseList";
 import dayjs from "dayjs";
+import { InputSearchProps } from "../../hooks/useDebounce";
 
 const CourseList: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Payout | null>(null);
 
+  const [filterSelection, setFilterSelection] = useState<InputSearchProps>({
+    selection: "",
+    search: "",
+  });
+
+  const handleOnChange = (e: ChangeEvent<HTMLInputElement> | string) => {
+    if (typeof e === "string") {
+      // Handle Select
+      setFilterSelection({ ...filterSelection, selection: e });
+    } else {
+      // Handle Input
+      const { name, value } = e.target;
+      setFilterSelection({ ...filterSelection, [name]: value });
+    }
+    console.log(filterSelection);
+    
+  };
   const showModal = (course: Payout) => {
     setSelectedCourse(course);
     setIsModalVisible(true);
@@ -73,7 +91,7 @@ const CourseList: React.FC = () => {
         return <div>{dayjs(created_at).format("DD/MM/YYYY")}</div>;
       },
     },
-   
+
     {
       title: "Action",
       key: "action",
@@ -98,15 +116,17 @@ const CourseList: React.FC = () => {
             placeholder="Search..."
             prefix={<SearchOutlined />}
             style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
+            onChange={(e) => handleOnChange(e)}
+            name="search" // Ensure the input has a name for identifying the field
           />
+
           <Select
             style={{ width: "10rem" }}
-            placeholder="Select a person"
-            filterOption={(input, option) =>
-              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
-            }
-            onChange={() => console.log("gigi")}
+            placeholder="Select a status"
+            defaultValue=""
+            onChange={(value) => handleOnChange(value)} // Pass the selected value
             options={[
+              { value: "", label: "All" },
               { value: "New", label: "New" },
               { value: "Request Payout", label: "Request Payout" },
               { value: "Completed", label: "Completed" },

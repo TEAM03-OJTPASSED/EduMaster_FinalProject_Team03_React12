@@ -10,7 +10,10 @@ import {
   FormOutlined,
   FolderOutlined,
   MoneyCollectOutlined,
+  BookOutlined,
   FileTextOutlined,
+  PercentageOutlined,
+  StarOutlined
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
@@ -19,7 +22,7 @@ const menuItems = [
     key: "dashboard",
     icon: <DashboardOutlined />,
     title: "Dashboard",
-    path: "/admin/dashboard",
+    path: "/instructor/dashboard",
   },
   {
     key: "management",
@@ -27,34 +30,22 @@ const menuItems = [
     title: "Management",
     children: [
       {
-        key: "management-users", // Đặt key duy nhất cho mục con
-        icon: <UserOutlined />,
-        title: "Users",
-        path: "/admin/users",
-      },
-      {
-        key: "management-requests", // Đặt key duy nhất cho mục con
-        icon: <FormOutlined />,
-        title: "Request",
-        path: "/admin/request-management",
-      },
-      {
-        key: "management-categories", // Đặt key duy nhất cho mục con
-        icon: <FolderOutlined />,
-        title: "Category",
-        path: "/admin/categories",
-      },
-      {
         key: "management-payout", // Đặt key duy nhất cho mục con
         icon: <MoneyCollectOutlined />,
         title: "Payout",
-        path: "/admin/payout",
+        path: "/instructor/payout",
       },
       {
-        key: "management-blog", // Đặt key duy nhất cho mục con
-        icon: <FileTextOutlined />,
-        title: "Blog",
-        path: "/admin/blog",
+        key: "management-order", // Đặt key duy nhất cho mục con
+        icon: <BookOutlined />,
+        title: "Order",
+        path: "/instructor/order",
+      },
+      {
+        key: "management-discount", // Đặt key duy nhất cho mục con
+        icon: <PercentageOutlined />,
+        title: "Discount",
+        path: "/instructor/discount",
       },
     ],
   },
@@ -63,8 +54,8 @@ const menuItems = [
     icon: <PieChartOutlined />,
     title: "Monitor",
     children: [
-      { key: "3-1", title: "All Courses", path: "/admin/all-courses" },
-      { key: "3-2", title: "Pending Course", path: "/admin/pending-courses" },
+      { key: "3-1", title: "My Courses", path: "/instructor/my-courses" },
+      { key: "3-2", title: "Create Course", path: "/instructor/create-courses" },
     ],
   },
   {
@@ -72,16 +63,24 @@ const menuItems = [
     icon: <LineChartOutlined />,
     title: "Reports",
     children: [
-      { key: "4-1", title: "Course log", path: "/admin/course-log" },
-      { key: "4-2", title: "Purchase log", path: "/admin/purchase-log" },
+      { key: "4-1", title: "Course log", path: "/instructor/course-log" },
+      { key: "4-2", title: "Purchase log", path: "/instructor/purchase-log" },
+      { key: "4-3", title: "Earning", path: "/instructor/earning" },
     ],
   },
   {
     key: "5",
     icon: <SettingOutlined />,
     title: "Settings",
-    path: "/admin/settings",
+    path: "/instructor/settings",
   },
+  {
+    key: "6",
+    icon: <StarOutlined />,
+    title: "Review",
+    path: "/instructor/review",
+  },
+
 ];
 
 const InstructorSidebar: React.FC<{ onMenuClick?: () => void }> = ({
