@@ -32,6 +32,7 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import InstructorLayout from "./defaultLayout/InstructorLayout";
 import InstructorContent from "./pages/InstructorDashboard/InstructorContent";
 import CategoryManagement from "./pages/AdminDashboard/CategoryManagement";
+
 import InstructorPayout from "./pages/InstructorDashboard/instructor-management/InstructorPayout";
 import InstructorOrder from "./pages/InstructorDashboard/instructor-management/InstructorOrder";
 import InstructorDiscount from "./pages/InstructorDashboard/instructor-management/InstructorDiscount";
@@ -42,6 +43,11 @@ import InstructorPurchaseLog from "./pages/InstructorDashboard/instructor-report
 import InstructorEarning from "./pages/InstructorDashboard/instructor-report/InstructorEarning";
 import InstructorReview from "./pages/InstructorDashboard/InstructorReview";
 import InstructorSetting from "./pages/InstructorDashboard/InstructorSetting";
+import CourseLog from "./pages/AdminDashboard/CourseLog";
+import PurchaseLog from "./pages/AdminDashboard/PurchaseLog";
+
+
+
 
 function App() {
   return (
@@ -90,17 +96,20 @@ function App() {
             <Route path="request-management" element={<RequestUser />} />
             <Route path="categories" element={<CategoryManagement />} />
             <Route path="all-courses" element={<AllCourse />}>
-              <Route index element={<CourseList />} />
-              <Route path="session" element={<SessionList />} />
-              <Route path="lesson" element={<LessonList />} />
-            </Route>
-            <Route path="pending-courses" element={<PendingCourse />}>
-              <Route index element={<PendingCourseList />} />
-              <Route path="session" element={<PendingSessionList />} />
-              <Route path="lesson" element={<PendingLessonList />} />
-            </Route>
-            <Route path="payout" element={<PayoutManagement />} />
-            <Route path="blog" element={<BlogManagement />} />
+            <Route index element={<CourseList />} />
+            <Route path="session" element={<SessionList />} />
+            <Route path="lesson" element={<LessonList />} />
+          </Route>
+          <Route path="pending-courses" element={<PendingCourse />} >
+          <Route index element={<PendingCourseList />} />
+            <Route path="session" element={<PendingSessionList />} />
+            <Route path="lesson" element={<PendingLessonList />} />
+          </Route>
+          <Route path="payout" element={<PayoutManagement />} />
+          <Route path="blog" element={<BlogManagement />} />
+          <Route path="course-log" element={<CourseLog />} />
+          <Route path="purchase-log" element={<PurchaseLog />} />
+
           </Route>
         </Route>
 

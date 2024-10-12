@@ -1,4 +1,4 @@
-import { Button, Card, Input, Modal, Select, Table, Form } from "antd";
+import { Button, Card, Input, Select, Table, Form } from "antd";
 import {
   SearchOutlined,
   DeleteOutlined,
@@ -140,20 +140,20 @@ const CategoryManagement = () => {
           </Button>
         </div>
       </div>
-      <Select
-        value={selectedCategory}
-        onChange={handleCategoryChange}
-        style={{ width: 200 }}
-        placeholder="Select a category"
-      >
-        <Option value="parent">Parent Category</Option>
-        <Option value="sub">Sub Category</Option>
-      </Select>
       <Input
         placeholder="Search By Category Name"
         prefix={<SearchOutlined />}
         style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
       />
+      <Select
+        style={{ width: "10rem" }}
+        value={selectedCategory}
+        onChange={handleCategoryChange}
+        placeholder="Select a category"
+      >
+        <Option value="parent">Parent Category</Option>
+        <Option value="sub">Sub Category</Option>
+      </Select>
       <Table
         dataSource={dataSource}
         columns={columns}
