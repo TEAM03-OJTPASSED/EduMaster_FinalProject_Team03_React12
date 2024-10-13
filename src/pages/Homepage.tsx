@@ -86,13 +86,13 @@ const HomePage = () => {
       <div className="flex flex-col md:flex-row gap-4">
         <button
           className="px-4 py-2 bg-yellow-500 text-white rounded-md w-full md:w-auto"
-          onClick={() => navigate("/dashboard/admin")}
+          onClick={() => navigate("/admin/dashboard")}
         >
           Admin Dashboard
         </button>
         <button
           className="px-4 py-2 bg-green-500 text-white rounded-md w-full md:w-auto"
-          onClick={() => navigate("/dashboard/instructor")}
+          onClick={() => navigate("/instructor/dashboard")}
         >
           Instructor Dashboard
         </button>
