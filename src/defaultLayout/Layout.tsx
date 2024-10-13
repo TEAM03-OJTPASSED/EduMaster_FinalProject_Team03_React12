@@ -20,6 +20,8 @@ const GeneralLayout = () => {
           <Outlet />
         </div>
       </div>
+
+      {/* Footer section */}
       <div className="w-full bg-gray-50">
         <Footer />
       </div>
