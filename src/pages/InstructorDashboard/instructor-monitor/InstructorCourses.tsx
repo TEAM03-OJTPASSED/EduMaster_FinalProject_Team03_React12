@@ -28,7 +28,6 @@ const InstructorCourses = () => {
         break;
       case "Lesson":
         naviagte("/instructor/my-courses/lesson")
-        
         break;
       default:
         break

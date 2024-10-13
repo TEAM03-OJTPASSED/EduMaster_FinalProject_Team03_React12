@@ -72,7 +72,7 @@ const CreateBlog: React.FC<BlogFormProps> = ({
   const onFinish = (values: BlogFieldType) => {
     console.log("Success:", values);
     if (onFinished) {
-      onFinished(values); // Pass form values to parent component
+      onFinished(values); 
     }
   };
 
