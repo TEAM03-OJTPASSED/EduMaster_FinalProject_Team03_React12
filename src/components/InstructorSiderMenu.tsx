@@ -1,91 +1,73 @@
 import React, { useState } from "react";
 import {
-  AppstoreOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  UploadOutlined,
   UserOutlined,
-  DollarOutlined,
+  VideoCameraOutlined,
 } from "@ant-design/icons";
-import { Menu, Switch } from "antd";
-import type { MenuProps, MenuTheme } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Button, Layout, Menu, theme } from "antd";
 
-type MenuItem = Required<MenuProps>["items"][number];
+const { Header, Content, Footer, Sider } = Layout;
 
-const items: MenuItem[] = [
-  {
-    key: "profile",
-    label: "Profile",
-    icon: <UserOutlined />,
-  },
-  {
-    key: "course-management",
-    label: "Course Management",
-    icon: <AppstoreOutlined />,
-  },
-  {
-    key: "payout-management",
-    label: "Payout Management",
-    icon: <DollarOutlined />,
-  },
-];
+const items = [
+  UserOutlined,
+  VideoCameraOutlined,
+  UploadOutlined,
+  UserOutlined,
+].map((icon, index) => ({
+  key: String(index + 1),
+  icon: React.createElement(icon),
+  label: `nav ${index + 1}`,
+}));
 
 const InstructorSiderMenu: React.FC = () => {
-  const [theme, setTheme] = useState<MenuTheme>("dark");
-  const [current, setCurrent] = useState<string>("");
-  const navigate = useNavigate(); // Initialize useNavigate
-
-  const changeTheme = (value: boolean) => {
-    setTheme(value ? "dark" : "light");
-  };
-
-  const onClick: MenuProps["onClick"] = (e) => {
-    setCurrent(e.key);
-
-    // Navigate to the corresponding page based on the clicked key
-    switch (e.key) {
-      case "profile":
-        navigate("/dashboard/instructor/profile"); // Navigate to Profile page
-        break;
-      case "course-management":
-        navigate("/dashboard/instructor/course-management"); // Navigate to Course Management page
-        break;
-      case "payout-management":
-        navigate("/dashboard/instructor/payout-management"); // Navigate to Payout Management page
-        break;
-      default:
-        break;
-    }
-  };
-
-  // Add a theme toggle item
-  const themeToggleItem: MenuItem = {
-    key: "theme-toggle",
-    label: (
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <Switch
-          checked={theme === "dark"}
-          onChange={changeTheme}
-          checkedChildren="Dark"
-          unCheckedChildren="Light"
-        />
-      </div>
-    ),
-    icon: null, // No icon for this item
-  };
-
-  // Insert the theme toggle into the menu items
-  const combinedItems = [...items, themeToggleItem];
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
 
   return (
-    <div style={{ width: 256 }}>
-      <Menu
-        theme={theme}
-        onClick={onClick}
-        style={{ width: 256 }}
-        selectedKeys={[current]}
-        mode="inline"
-        items={combinedItems}
-      />
-    </div>
+    <Layout>
+      <Sider theme="light">
+        <div className="demo-logo-vertical" />
+        <Menu
+          theme="light"
+          mode="inline"
+          defaultSelectedKeys={["1"]}
+          items={[
+            {
+              key: "1",
+              icon: <UserOutlined />,
+              label: "nav ",
+            },
+            {
+              key: "2",
+              icon: <VideoCameraOutlined />,
+              label: "nav 2",
+            },
+            {
+              key: "3",
+              icon: <UploadOutlined />,
+              label: "nav 3",
+            },
+          ]}
+        />
+      </Sider>
+      <Layout>
+        <Header style={{ padding: 0, background: colorBgContainer }}></Header>
+        <Content
+          style={{
+            margin: "24px 16px",
+            padding: 24,
+            minHeight: 280,
+            background: colorBgContainer,
+            borderRadius: borderRadiusLG,
+          }}
+        >
+          Content
+        </Content>
+      </Layout>
+    </Layout>
   );
 };
 
