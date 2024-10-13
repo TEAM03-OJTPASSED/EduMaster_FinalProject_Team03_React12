@@ -1,5 +1,4 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Suspense } from "react";
 import ProtectedRoute from "./utils/ProtectedRoute";
 
 // Import các trang
@@ -23,51 +22,49 @@ function App() {
   return (
     <BrowserRouter>
       <LoadingWrapper>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Routes>
-            <Route path="/" element={<GeneralLayout />}>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/login" element={<Loginpage />} />
-              <Route path="/signup" element={<SignUppage />} />
-              <Route path="/course" element={<CoursesPage />} />
-              <Route path="/blog" element={<BlogPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/faqs" element={<FAQsPage />} />
-              <Route path="/error" element={<ErrorPage />} />
-              <Route
-                path="/course/:id"
-                element={
-                  <ProtectedRoute
-                    allowedRoles={["student", "instructor", "admin"]}
-                  />
-                }
-              >
-                <Route index element={<CourseDetailPage />} />
-              </Route>
-              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-
-              {/* Protected routes */}
-              <Route
-                path="/dashboard/admin/*"
-                element={<ProtectedRoute allowedRoles={["admin"]} />}
-              >
-                <Route index element={<AdminPage />} />
-              </Route>
-              <Route
-                path="/dashboard/instructor/*"
-                element={<ProtectedRoute allowedRoles={["instructor"]} />}
-              >
-                <Route index element={<InstructorPage />} />
-              </Route>
-              <Route
-                path="/dashboard/student/*"
-                element={<ProtectedRoute allowedRoles={["student"]} />}
-              >
-                <Route index element={<StudentPage />} />
-              </Route>
+        <Routes>
+          <Route path="/" element={<GeneralLayout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<Loginpage />} />
+            <Route path="/signup" element={<SignUppage />} />
+            <Route path="/course" element={<CoursesPage />} />
+            <Route path="/blog" element={<BlogPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/faqs" element={<FAQsPage />} />
+            <Route path="/error" element={<ErrorPage />} />
+            <Route
+              path="/course/:id"
+              element={
+                <ProtectedRoute
+                  allowedRoles={["student", "instructor", "admin"]}
+                />
+              }
+            >
+              <Route index element={<CourseDetailPage />} />
             </Route>
-          </Routes>
-        </Suspense>
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+
+            {/* Protected routes */}
+            <Route
+              path="/dashboard/admin/*"
+              element={<ProtectedRoute allowedRoles={["admin"]} />}
+            >
+              <Route index element={<AdminPage />} />
+            </Route>
+            <Route
+              path="/dashboard/instructor/*"
+              element={<ProtectedRoute allowedRoles={["instructor"]} />}
+            >
+              <Route index element={<InstructorPage />} />
+            </Route>
+            <Route
+              path="/dashboard/student/*"
+              element={<ProtectedRoute allowedRoles={["student"]} />}
+            >
+              <Route index element={<StudentPage />} />
+            </Route>
+          </Route>
+        </Routes>
       </LoadingWrapper>
     </BrowserRouter>
   );

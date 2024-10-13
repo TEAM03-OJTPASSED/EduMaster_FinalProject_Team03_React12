@@ -6,16 +6,14 @@ const LoadingWrapper = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Tạo một timeout để trì hoãn 2 giây trước khi hiển thị trang nội dung
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 2000); // 2 giây
+    }, 2000);
 
     // Cleanup timer nếu component unmounts
     return () => clearTimeout(timer);
   }, []);
 
-  // Nếu vẫn đang loading, hiển thị Loading component
   if (loading) {
     return (
       <div>
@@ -24,7 +22,6 @@ const LoadingWrapper = ({ children }: { children: React.ReactNode }) => {
     );
   }
 
-  // Sau 2 giây, hiển thị nội dung thực tế (children)
   return <>{children}</>;
 };
 
