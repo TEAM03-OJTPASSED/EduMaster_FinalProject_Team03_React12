@@ -67,3 +67,9 @@
     background-position: 0 0; /* Kết thúc ở vị trí bình thường */
   }
 }
+
+.sub-logo {
+  font-size: 16px;
+  letter-spacing: 5px;
+  color: white;
+}

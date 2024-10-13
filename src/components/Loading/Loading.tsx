@@ -18,6 +18,7 @@ const CustomLoading = () => {
         <div className="name-container">
           <div className="logo-name">Edu Master</div>
         </div>
+        <div className="sub-logo">Conquer Knowledge, Conquer the Future!</div>
       </div>
     </div>
   );
