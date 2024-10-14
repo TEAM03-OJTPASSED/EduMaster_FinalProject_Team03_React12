@@ -2,7 +2,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import LoadingWrapper from "./components/Loading/LoadingWrapper";
 import { Suspense } from "react";
-import CoursesPage from "./pages/CoursesPage";
 import BlogPage from "./pages/BlogPage";
 import GeneralLayout from "./defaultLayout/Layout";
 import HomePage from "./pages/Homepage";
@@ -49,6 +48,8 @@ import ProtectedRouter from "./utils/ProtectedRoute";
 import CourseDetailPage from "./pages/CourseDetailpage";
 import DashboardLayout from "./defaultLayout/DashboardLayout";
 import StudentProfile from "./pages/StudentDashboard/studentProfile";
+import StudentPage from "./pages/Dashboard/Studentpage";
+import CoursesPage from "./pages/Coursespage";
 
 function App() {
   return (
