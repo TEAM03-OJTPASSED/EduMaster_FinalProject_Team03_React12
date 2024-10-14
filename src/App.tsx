@@ -12,7 +12,6 @@ import SignUppage from "./pages/AuthPage/SignUppage";
 import ContactPage from "./pages/Contactpage";
 import FAQsPage from "./pages/FAQspage";
 import ErrorPage from "./pages/Errorpage";
-import StudentPage from "./pages/Dashboard/Studentpage";
 import AdminLayout from "./defaultLayout/AdminLayout";
 import AdminContent from "./pages/AdminDashboard/AdminContent";
 import UserManagement from "./pages/AdminDashboard/userManagement";
