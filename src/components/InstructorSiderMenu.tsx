@@ -30,28 +30,6 @@ const InstructorSiderMenu: React.FC = () => {
     <Layout>
       <Sider theme="light">
         <div className="demo-logo-vertical" />
-        <Menu
-          theme="light"
-          mode="inline"
-          defaultSelectedKeys={["1"]}
-          items={[
-            {
-              key: "1",
-              icon: <UserOutlined />,
-              label: "nav ",
-            },
-            {
-              key: "2",
-              icon: <VideoCameraOutlined />,
-              label: "nav 2",
-            },
-            {
-              key: "3",
-              icon: <UploadOutlined />,
-              label: "nav 3",
-            },
-          ]}
-        />
       </Sider>
       <Layout>
         <Header style={{ padding: 0, background: colorBgContainer }}></Header>

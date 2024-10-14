@@ -23,7 +23,8 @@ interface User {
   created_at: string;
   updated_at: string;
 }
-interface Course {
+
+export interface Course {
   name: string;
   category_id: string;
   description: string;

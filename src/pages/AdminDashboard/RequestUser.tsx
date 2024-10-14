@@ -14,7 +14,7 @@ import {
   EditOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
-import EditUser from "../components/Admin/AdminModals/EditUserModal";
+import EditUser from "../../components/Admin/AdminModals/EditUserModal";
 
 const { Title } = Typography;
 const { Option } = Select; // Destructure Option from Select
@@ -96,9 +96,11 @@ const RequestUser = () => {
   ];
 
   return (
-    <div style={{ padding: "10px", backgroundColor: "#f0f2f5" }}>
+    <div>
       <Card>
-        <h3>Quản lý người dùng</h3>
+        <div className="flex">
+          <h3 className="text-2xl my-5">Request Management</h3>
+        </div>
         <Input
           placeholder="Tìm kiếm..."
           prefix={<SearchOutlined />}

@@ -1,11 +1,6 @@
 import { Button, Card, Tag } from "antd";
 import { AiOutlineClockCircle } from "react-icons/ai";
 import { TiUserOutline } from "react-icons/ti";
-
-
-
-
-
 interface Course {
     id: number
     image_url: string
@@ -17,8 +12,6 @@ interface Course {
     price: number | string
     lessons?: number
 }
-
-
 // interface Course {
 //     name: string;
 //     category_id: string;

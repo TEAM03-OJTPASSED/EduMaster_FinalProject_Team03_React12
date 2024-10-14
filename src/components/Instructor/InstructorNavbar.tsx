@@ -11,7 +11,7 @@ import {
 import { MenuOutlined } from "@ant-design/icons";
 import logoImage from "../../assets/EduMaster.png"; // Đường dẫn đến logo
 import { useCustomNavigate } from "../../hooks/customNavigate"; // Hook tùy chỉnh cho điều hướng
-import InstructorSidebar from "./instructorSidebar";
+import InstructorSidebar from "./InstructorSidebar";
 
 const { Sider } = Layout; // Chỉ destructure Sider
 

@@ -10,7 +10,10 @@ import {
   FormOutlined,
   FolderOutlined,
   MoneyCollectOutlined,
+  BookOutlined,
   FileTextOutlined,
+  PercentageOutlined,
+  StarOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
@@ -18,8 +21,8 @@ const menuItems = [
   {
     key: "dashboard",
     icon: <DashboardOutlined />,
-    label: "Dashboard",
-    path: "/admin/dashboard",
+    title: "Dashboard",
+    path: "/instructor/dashboard",
   },
   {
     key: "management",
@@ -27,34 +30,22 @@ const menuItems = [
     label: "Management",
     children: [
       {
-        key: "management-users",
-        icon: <UserOutlined />,
-        label: "Users",
-        path: "/admin/users",
-      },
-      {
-        key: "management-requests",
-        icon: <FormOutlined />,
-        label: "Requests",
-        path: "/admin/request-management",
-      },
-      {
-        key: "management-categories",
-        icon: <FolderOutlined />,
-        label: "Categories",
-        path: "/admin/categories",
-      },
-      {
         key: "management-payout",
         icon: <MoneyCollectOutlined />,
-        label: "Payout",
-        path: "/admin/payout",
+        title: "Payout",
+        path: "/instructor/payout",
       },
       {
-        key: "management-blog",
-        icon: <FileTextOutlined />,
-        label: "Blog",
-        path: "/admin/blog",
+        key: "management-order", // Đặt key duy nhất cho mục con
+        icon: <BookOutlined />,
+        title: "Order",
+        path: "/instructor/order",
+      },
+      {
+        key: "management-discount", // Đặt key duy nhất cho mục con
+        icon: <PercentageOutlined />,
+        title: "Discount",
+        path: "/instructor/discount",
       },
     ],
   },
@@ -63,11 +54,11 @@ const menuItems = [
     icon: <PieChartOutlined />,
     label: "Monitor",
     children: [
-      { key: "all-courses", label: "All Courses", path: "/admin/all-courses" },
+      { key: "3-1", title: "My Courses", path: "/instructor/my-courses" },
       {
-        key: "pending-courses",
-        label: "Pending Courses",
-        path: "/admin/pending-courses",
+        key: "3-2",
+        title: "Create Course",
+        path: "/instructor/create-courses",
       },
     ],
   },
@@ -76,19 +67,22 @@ const menuItems = [
     icon: <LineChartOutlined />,
     label: "Reports",
     children: [
-      { key: "course-log", label: "Course Log", path: "/admin/course-log" },
-      {
-        key: "purchase-log",
-        label: "Purchase Log",
-        path: "/admin/purchase-log",
-      },
+      { key: "4-1", title: "Course log", path: "/instructor/course-log" },
+      { key: "4-2", title: "Purchase log", path: "/instructor/purchase-log" },
+      { key: "4-3", title: "Earning", path: "/instructor/earning" },
     ],
   },
   {
     key: "settings",
     icon: <SettingOutlined />,
-    label: "Settings",
-    path: "/admin/settings",
+    title: "Settings",
+    path: "/instructor/settings",
+  },
+  {
+    key: "6",
+    icon: <StarOutlined />,
+    title: "Review",
+    path: "/instructor/review",
   },
 ];
 
