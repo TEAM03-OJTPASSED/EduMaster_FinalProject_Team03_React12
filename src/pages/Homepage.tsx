@@ -1,7 +1,7 @@
 import { useCustomNavigate } from "../hooks/customNavigate";
-import { Button, Card } from "antd";
+import { Button } from "antd";
 import heroImage from "../assets/pexels-armin-rimoldi-5553045.jpg";
-import { BiSearch } from "react-icons/bi";
+// import { BiSearch } from "react-icons/bi";
 import CategoriesGrid from "../components/home/CategoriesGrid";
 
 import {
@@ -19,6 +19,8 @@ import {
 import CoursesGrid from "../components/home/CoursesGrid";
 import CTABanner from "../components/home/CTABanner";
 import LatestArticles from "../components/home/LatestArticles";
+import { ProofOfProduct } from "../components/home/ProofOfProduct";
+import Search from "antd/es/input/Search";
 
 interface Category {
   icon: React.ReactNode;
@@ -98,7 +100,7 @@ const HomePage = () => {
         </button>
         <button
           className="px-4 py-2 bg-purple-500 text-white rounded-md w-full md:w-auto"
-          onClick={() => navigate("/dashboard/student")}
+          onClick={() => navigate("/student/dashboard")}
         >
           Student Dashboard
         </button>
@@ -117,9 +119,15 @@ const HomePage = () => {
             "All the courses you need, all in one place." Get started today to
             unlock your hidden potential!
           </div>
-          <Button className="rounded-xl bg-[#FF782D] border-none h-[40px] text-md font-semibold text-white">
+          {/* <Button className="rounded-xl bg-[#FF782D] border-none h-[40px] text-md font-semibold text-white">
             <BiSearch /> Find A Course
-          </Button>
+          </Button> */}
+          <Search
+            placeholder="Search for any course..."
+            onSearch={(e) => navigate(`course?search=${e}`)}
+            enterButton
+            className="w-96 custom-search"
+          />
         </section>
 
         <section>
@@ -161,6 +169,7 @@ const HomePage = () => {
                 <Button
                   type="default"
                   className="hover:bg-orange-500 hover:text-white transition-colors"
+                  onClick={() => navigate("/course")}
                 >
                   All Courses
                 </Button>
@@ -171,36 +180,7 @@ const HomePage = () => {
         </section>
 
         <section>
-          <div className="py-24 grid gap-6 grid-cols-4 justify-between">
-            <Card
-              className=" h-40 bg-[#EAEAEA] text-center flex flex-col items-center align-center justify-center"
-              hoverable
-            >
-              <h3 className="h3">25K+</h3>
-              <p>Active Students</p>
-            </Card>
-            <Card
-              className="h-40 bg-[#EAEAEA] text-center flex flex-col items-center align-center justify-center"
-              hoverable
-            >
-              <h3 className="h3">888+</h3>
-              <p>Total Courses</p>
-            </Card>
-            <Card
-              className=" h-40 bg-[#EAEAEA] text-center flex flex-col items-center align-center justify-center"
-              hoverable
-            >
-              <h3 className="h3">253+</h3>
-              <p>Active Instructors</p>
-            </Card>
-            <Card
-              className=" h-40 bg-[#EAEAEA] text-center flex flex-col items-center align-center justify-center"
-              hoverable
-            >
-              <h3 className="h3">100%</h3>
-              <p>Satisfaction Rate</p>
-            </Card>
-          </div>
+          <ProofOfProduct />
         </section>
 
         <section>

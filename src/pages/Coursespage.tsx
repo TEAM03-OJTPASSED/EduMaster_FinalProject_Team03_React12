@@ -251,7 +251,7 @@ const CoursesPage: React.FC = () => {
   return (
     <main>
       <Layout>
-        <SearchResults courses={filteredCourses} onSearch={handleSearch} />
+        <SearchResults courses={filteredCourses} onSearch={handleSearch} searchQuery={searchQuery} />
         <SearchFilter
           onFilterChange={handleFilterChange}
           filters={filterSections}
