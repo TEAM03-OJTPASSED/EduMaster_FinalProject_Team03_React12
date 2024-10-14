@@ -114,6 +114,12 @@ const StudentMenuItems: MenuItem[] = [
     title: "Profile",
     path: "/student/profile",
   },
+  {
+    key: "orders",
+    icon: <UserOutlined />,
+    title: "Orders",
+    path: "/student/order",
+  },
 ];
 
 const DashboardSideBar: React.FC<SideBarProps> = ({ role, onMenuClick }) => {
