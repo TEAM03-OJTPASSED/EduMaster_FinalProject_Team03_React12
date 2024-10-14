@@ -1,9 +1,5 @@
-import React from 'react'
-
 const InstructorPurchaseLog = () => {
-  return (
-    <div>InstructorPurchaseLog</div>
-  )
-}
+  return <div>InstructorPurchaseLog</div>;
+};
 
-export default InstructorPurchaseLog
+export default InstructorPurchaseLog;

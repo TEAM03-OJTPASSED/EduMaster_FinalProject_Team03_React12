@@ -169,11 +169,11 @@ const HomePage = () => {
 
   window.addEventListener("scroll", function () {
     const floatElements = document.querySelectorAll(".float-animation");
-  
+
     floatElements.forEach((el) => {
       const position = el.getBoundingClientRect().top;
       const windowHeight = window.innerHeight;
-  
+
       if (position < windowHeight) {
         el.classList.add("show");
       }
@@ -186,41 +186,19 @@ const HomePage = () => {
     document.documentElement.scrollTop = 0;
   };
 
-
-
-  
-
   return (
     <div className="flex flex-col items-center">
       <div className="flex-col flex items-center">
         <div className="w-4 h-4 rounded-full bg-orange-500 bottom-32 right-8 fixed"></div>
         <div className="w-4 h-4 rounded-full bg-orange-500 bottom-[100px] right-8 fixed"></div>
 
-      <button onClick={backToTop}>
-        <div className=" w-12 h-12 rounded-full bottom-10 right-4 hover:scale-110 transition duration-500 bg-orange-500 fixed justify-center flex items-center"><IoArrowUpOutline size={36} color="white" />
-        </div>
-      </button>
-      </div>
-      <div className="flex flex-col md:flex-row gap-4">
-        <button
-          className="px-4 py-2 bg-yellow-500 text-white rounded-md w-full md:w-auto"
-          onClick={() => navigate("/admin/dashboard")}
-        >
-          Admin Dashboard
-        </button>
-        <button
-          className="px-4 py-2 bg-green-500 text-white rounded-md w-full md:w-auto"
-          onClick={() => navigate("/instructor/dashboard")}
-        >
-          Instructor Dashboard
-        </button>
-        <button
-          className="px-4 py-2 bg-purple-500 text-white rounded-md w-full md:w-auto"
-          onClick={() => navigate("/student/dashboard")}
-        >
-          Student Dashboard
+        <button onClick={backToTop}>
+          <div className=" w-12 h-12 rounded-full bottom-10 right-4 hover:scale-110 transition duration-500 bg-orange-500 fixed justify-center flex items-center">
+            <IoArrowUpOutline size={36} color="white" />
+          </div>
         </button>
       </div>
+
       <main className="w-full text-left overflow-visible font-jost ">
         <section className="relative lg:h-[400px] font-jost h-[300px] w-[115vw] -ml-[15vw] flex justify-center items-center flex-col space-y-4 shadow-2xl shadow-orange-300  bg-black overflow-y-hidden">
           <img
@@ -229,7 +207,8 @@ const HomePage = () => {
             alt="Hero"
           />
           <div className="z-40 text-white text-5xl font-bold w-[500px] text-center">
-            Elavate Your Skills With <span className="underline">Online Courses</span>
+            Elavate Your Skills With{" "}
+            <span className="underline">Online Courses</span>
           </div>
           <div className="z-40 w-[400px] text-white text-center italic">
             "All the courses you need, all in one place." Get started today to
@@ -263,21 +242,19 @@ const HomePage = () => {
                   className="group hover:bg-orange-500 hover:text-white text-base transition-colors py-6 px-6 rounded-3xl font-jost"
                   style={{
                     backgroundColor: "#f97316",
-                    color:"white"
-                    
+                    color: "white",
                   }}
                   onClick={() => navigate("/course")}
-
                 >
-                  All Courses <BiSolidArrowFromLeft className="group-hover:scale-150 transition "/>
+                  All Courses{" "}
+                  <BiSolidArrowFromLeft className="group-hover:scale-150 transition " />
                 </Button>
               </div>
               <CategoriesGrid categories={categories} />
-              
             </div>
             <p className="text-gray-600 mt-12 text-2xl mx-auto text-center w-full italic font-semibold ">
-                    ...and many more to come!
-                  </p>
+              ...and many more to come!
+            </p>
           </div>
         </section>
 
@@ -293,19 +270,18 @@ const HomePage = () => {
                     Explore our Popular Courses
                   </p>
                 </div>
-                
-                <Button
-                                  onClick={() => navigate("/course")}
 
+                <Button
+                  onClick={() => navigate("/course")}
                   type="default"
                   className="group hover:bg-orange-500 hover:text-white text-base transition-colors py-6 px-6 rounded-3xl font-jost"
                   style={{
                     backgroundColor: "#f97316",
-                    color:"white"
-                    
+                    color: "white",
                   }}
                 >
-                  All Courses <BiSolidArrowFromLeft className="group-hover:scale-150 transition "/>
+                  All Courses{" "}
+                  <BiSolidArrowFromLeft className="group-hover:scale-150 transition " />
                 </Button>
               </div>
               <CoursesGrid courses={courses} viewMode="grid" />
@@ -314,13 +290,14 @@ const HomePage = () => {
         </section>
 
         <section className="p-4 float-animation">
-        <div>
-                  <h2 className="text-4xl font-bold text-gray-800">
-Students Love Us. Instructors Do Too                  </h2>
-                  <p className="text-gray-600">
-                    Learn anything from home with experts 
-                  </p>
-                </div>
+          <div>
+            <h2 className="text-4xl font-bold text-gray-800">
+              Students Love Us. Instructors Do Too{" "}
+            </h2>
+            <p className="text-gray-600">
+              Learn anything from home with experts
+            </p>
+          </div>
           <ProofOfProduct />
         </section>
 

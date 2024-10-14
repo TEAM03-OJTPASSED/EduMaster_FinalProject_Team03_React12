@@ -1,4 +1,3 @@
-import React from "react";
 import { Modal, Form, Input, Select, Switch, Button } from "antd";
 
 const { Option } = Select;

@@ -1,9 +1,5 @@
-import React from 'react'
-
 const InstructorCourseLog = () => {
-  return (
-    <div>InstructorCourseLog</div>
-  )
-}
+  return <div>InstructorCourseLog</div>;
+};
 
-export default InstructorCourseLog
+export default InstructorCourseLog;
