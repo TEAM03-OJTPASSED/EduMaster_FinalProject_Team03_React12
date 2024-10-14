@@ -14,7 +14,7 @@ import { Payout, payouts, PayoutStatusEnum } from "./monitors/course/couseList";
 import dayjs from "dayjs";
 import { InputSearchProps } from "../../hooks/useDebounce";
 
-const CourseList: React.FC = () => {
+const PayoutManagement: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Payout | null>(null);
 
@@ -182,4 +182,4 @@ const CourseList: React.FC = () => {
   );
 };
 
-export default CourseList;
+export default PayoutManagement;
