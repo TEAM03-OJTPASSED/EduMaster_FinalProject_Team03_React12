@@ -31,7 +31,7 @@ import CourseLog from "./pages/AdminDashboard/CourseLog";
 import PurchaseLog from "./pages/AdminDashboard/PurchaseLog";
 import InstructorLayout from "./defaultLayout/InstructorLayout";
 import InstructorContent from "./pages/InstructorDashboard/InstructorContent";
-import InstructorPayout from "./pages/InstructorDashboard/instructor-management/InstructorPayout";
+import InstructorPayout from "./pages/InstructorDashboard/instructor-management/payout/InstructorPayout";
 import InstructorOrder from "./pages/InstructorDashboard/instructor-management/InstructorOrder";
 import InstructorCourses from "./pages/InstructorDashboard/instructor-monitor/InstructorCourses";
 import InstructorCourseList from "./pages/InstructorDashboard/instructor-monitor/InstructorCourseList";
@@ -46,6 +46,8 @@ import InstructorReview from "./pages/InstructorDashboard/InstructorReview";
 import InstructorSetting from "./pages/InstructorDashboard/InstructorSetting";
 import ForgotPasswordPage from "./pages/AuthPage/ForgotPasswordPage";
 import PayoutManagement from "./pages/AdminDashboard/payoutManagement";
+import RequestPayout from "./pages/InstructorDashboard/instructor-management/payout/RequestPayout";
+import CompletedPayout from "./pages/InstructorDashboard/instructor-management/payout/CompletedPayout";
 
 function App() {
   return (
@@ -122,7 +124,10 @@ function App() {
               <Route element={<InstructorLayout />}>
                 <Route index element={<InstructorContent />} />
                 <Route path="dashboard" element={<InstructorContent />} />
-                <Route path="payout" element={<InstructorPayout />} />
+                <Route path="payout" element={<InstructorPayout />} >
+                  <Route index element={<RequestPayout />} />
+                  <Route path="completed-payout" element={<CompletedPayout />} />
+                  </Route>
                 <Route path="order" element={<InstructorOrder />} />
                 <Route path="my-courses" element={<InstructorCourses />}>
                   <Route index element={<InstructorCourseList />} />
