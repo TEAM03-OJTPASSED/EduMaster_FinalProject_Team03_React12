@@ -106,4 +106,14 @@
   overflow: auto; /* Enables scrolling if content overflows */
 }
 
+.ant-pagination-item {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  font-weight: normal !important;
+}
 
+.ant-pagination-item-active {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  font-weight: normal !important;
+}
