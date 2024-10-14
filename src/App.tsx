@@ -45,6 +45,7 @@ import InstructorDiscount from "./pages/InstructorDashboard/instructor-managemen
 import InstructorReview from "./pages/InstructorDashboard/InstructorReview";
 import InstructorSetting from "./pages/InstructorDashboard/InstructorSetting";
 import ForgotPasswordPage from "./pages/AuthPage/ForgotPasswordPage";
+import BlogDetailPage from "./pages/BlogDetailPage";
 
 function App() {
   return (
@@ -63,6 +64,7 @@ function App() {
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/faqs" element={<FAQsPage />} />
               <Route path="/error" element={<ErrorPage />} />
+              <Route path="/blog-detail/:id" element={<BlogDetailPage />} />
               <Route
                 path="/course/:id"
                 element={
