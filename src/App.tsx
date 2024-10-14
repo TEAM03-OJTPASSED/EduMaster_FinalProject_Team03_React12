@@ -3,32 +3,105 @@ import ProtectedRoute from "./utils/ProtectedRoute";
 import LoadingWrapper from "./components/Loading/LoadingWrapper";
 import React from "react";
 
-const CategoryManagement = React.lazy(() => import('./pages/AdminDashboard/categoryManagement'));
-const AllCourse = React.lazy(() => import('./pages/AdminDashboard/monitors/course/AllCourse'));
-const SessionList = React.lazy(() => import('./pages/AdminDashboard/monitors/course/SessionList'));
-const LessonList = React.lazy(() => import('./pages/AdminDashboard/monitors/course/LessonList'));
-const PendingCourse = React.lazy(() => import('./pages/AdminDashboard/monitors/pending_course/PendingCourse'));
-const CourseList = React.lazy(() => import('./pages/AdminDashboard/monitors/course/CourseList'));
-const PendingCourseList = React.lazy(() => import('./pages/AdminDashboard/monitors/pending_course/PendingCourseList'));
-const PendingSessionList = React.lazy(() => import('./pages/AdminDashboard/monitors/pending_course/PendingSessionList'));
-const PendingLessonList = React.lazy(() => import('./pages/AdminDashboard/monitors/pending_course/PendingLessonList'));
-const BlogManagement = React.lazy(() => import('./pages/AdminDashboard/BlogManagement'));
-const CourseLog = React.lazy(() => import('./pages/AdminDashboard/CourseLog'));
-const PurchaseLog = React.lazy(() => import('./pages/AdminDashboard/PurchaseLog'));
-const InstructorPayout = React.lazy(() => import('./pages/InstructorDashboard/instructor-management/InstructorPayout'));
-const InstructorOrder = React.lazy(() => import('./pages/InstructorDashboard/instructor-management/InstructorOrder'));
-const InstructorCourses = React.lazy(() => import('./pages/InstructorDashboard/instructor-monitor/InstructorCourses'));
-const InstructorCourseList = React.lazy(() => import('./pages/InstructorDashboard/instructor-monitor/InstructorCourseList'));
-const IntructorSessionList = React.lazy(() => import('./pages/InstructorDashboard/instructor-monitor/IntructorSessionList'));
-const InstructorLessonList = React.lazy(() => import('./pages/InstructorDashboard/instructor-monitor/InstructorLessonList'));
-const InstructorCreateCourse = React.lazy(() => import('./pages/InstructorDashboard/instructor-monitor/InstructorCreateCourse'));
-const InstructorCourseLog = React.lazy(() => import('./pages/InstructorDashboard/instructor-report/InstructorCourseLog'));
-const InstructorPurchaseLog = React.lazy(() => import('./pages/InstructorDashboard/instructor-report/InstructorPurchaseLog'));
-const InstructorEarning = React.lazy(() => import('./pages/InstructorDashboard/instructor-report/InstructorEarning'));
-const InstructorDiscount = React.lazy(() => import('./pages/InstructorDashboard/instructor-management/InstructorDiscount'));
-const InstructorReview = React.lazy(() => import('./pages/InstructorDashboard/InstructorReview'));
-const InstructorSetting = React.lazy(() => import('./pages/InstructorDashboard/InstructorSetting'));
-
+const CategoryManagement = React.lazy(
+  () => import("./pages/AdminDashboard/categoryManagement")
+);
+const AllCourse = React.lazy(
+  () => import("./pages/AdminDashboard/monitors/course/AllCourse")
+);
+const SessionList = React.lazy(
+  () => import("./pages/AdminDashboard/monitors/course/SessionList")
+);
+const LessonList = React.lazy(
+  () => import("./pages/AdminDashboard/monitors/course/LessonList")
+);
+const PendingCourse = React.lazy(
+  () => import("./pages/AdminDashboard/monitors/pending_course/PendingCourse")
+);
+const CourseList = React.lazy(
+  () => import("./pages/AdminDashboard/monitors/course/CourseList")
+);
+const PendingCourseList = React.lazy(
+  () =>
+    import("./pages/AdminDashboard/monitors/pending_course/PendingCourseList")
+);
+const PendingSessionList = React.lazy(
+  () =>
+    import("./pages/AdminDashboard/monitors/pending_course/PendingSessionList")
+);
+const PendingLessonList = React.lazy(
+  () =>
+    import("./pages/AdminDashboard/monitors/pending_course/PendingLessonList")
+);
+const BlogManagement = React.lazy(
+  () => import("./pages/AdminDashboard/BlogManagement")
+);
+const CourseLog = React.lazy(() => import("./pages/AdminDashboard/CourseLog"));
+const PurchaseLog = React.lazy(
+  () => import("./pages/AdminDashboard/PurchaseLog")
+);
+const InstructorPayout = React.lazy(
+  () =>
+    import("./pages/InstructorDashboard/instructor-management/InstructorPayout")
+);
+const InstructorOrder = React.lazy(
+  () =>
+    import("./pages/InstructorDashboard/instructor-management/InstructorOrder")
+);
+const InstructorCourses = React.lazy(
+  () =>
+    import("./pages/InstructorDashboard/instructor-monitor/InstructorCourses")
+);
+const InstructorCourseList = React.lazy(
+  () =>
+    import(
+      "./pages/InstructorDashboard/instructor-monitor/InstructorCourseList"
+    )
+);
+const IntructorSessionList = React.lazy(
+  () =>
+    import(
+      "./pages/InstructorDashboard/instructor-monitor/IntructorSessionList"
+    )
+);
+const InstructorLessonList = React.lazy(
+  () =>
+    import(
+      "./pages/InstructorDashboard/instructor-monitor/InstructorLessonList"
+    )
+);
+const InstructorCreateCourse = React.lazy(
+  () =>
+    import(
+      "./pages/InstructorDashboard/instructor-monitor/InstructorCreateCourse"
+    )
+);
+const InstructorCourseLog = React.lazy(
+  () =>
+    import("./pages/InstructorDashboard/instructor-report/InstructorCourseLog")
+);
+const InstructorPurchaseLog = React.lazy(
+  () =>
+    import(
+      "./pages/InstructorDashboard/instructor-report/InstructorPurchaseLog"
+    )
+);
+const InstructorEarning = React.lazy(
+  () =>
+    import("./pages/InstructorDashboard/instructor-report/InstructorEarning")
+);
+const InstructorDiscount = React.lazy(
+  () =>
+    import(
+      "./pages/InstructorDashboard/instructor-management/InstructorDiscount"
+    )
+);
+const InstructorReview = React.lazy(
+  () => import("./pages/InstructorDashboard/InstructorReview")
+);
+const InstructorSetting = React.lazy(
+  () => import("./pages/InstructorDashboard/InstructorSetting")
+);
 
 // Lazy loading components
 const AdminContent = React.lazy(
@@ -39,6 +112,10 @@ const UserManagement = React.lazy(
 );
 const RequestUser = React.lazy(
   () => import("./pages/AdminDashboard/RequestUser")
+);
+
+const ForgotPasswordPage = React.lazy(
+  () => import("./pages/AuthPage/ForgotPasswordPage")
 );
 
 const StudentPage = React.lazy(() => import("./pages/Dashboard/Studentpage"));
@@ -71,6 +148,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<Loginpage />} />
             <Route path="/signup" element={<SignUppage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/course" element={<CoursesPage />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/contact" element={<ContactPage />} />
