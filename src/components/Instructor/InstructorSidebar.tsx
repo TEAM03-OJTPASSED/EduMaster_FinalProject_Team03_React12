@@ -22,6 +22,7 @@ const menuItems = [
     key: "dashboard",
     icon: <DashboardOutlined />,
     title: "Dashboard",
+    label: "Dashboard",
     path: "/instructor/dashboard",
   },
   {
@@ -36,13 +37,13 @@ const menuItems = [
         path: "/instructor/payout",
       },
       {
-        key: "management-order", // Đặt key duy nhất cho mục con
+        key: "management-order",
         icon: <BookOutlined />,
         title: "Order",
         path: "/instructor/order",
       },
       {
-        key: "management-discount", // Đặt key duy nhất cho mục con
+        key: "management-discount",
         icon: <PercentageOutlined />,
         title: "Discount",
         path: "/instructor/discount",
@@ -54,10 +55,16 @@ const menuItems = [
     icon: <PieChartOutlined />,
     label: "Monitor",
     children: [
-      { key: "3-1", title: "My Courses", path: "/instructor/my-courses" },
+      {
+        key: "3-1",
+        title: "My Courses",
+        icon: <BookOutlined />,
+        path: "/instructor/my-courses",
+      },
       {
         key: "3-2",
         title: "Create Course",
+        icon: <FileTextOutlined />,
         path: "/instructor/create-courses",
       },
     ],
@@ -67,21 +74,38 @@ const menuItems = [
     icon: <LineChartOutlined />,
     label: "Reports",
     children: [
-      { key: "4-1", title: "Course log", path: "/instructor/course-log" },
-      { key: "4-2", title: "Purchase log", path: "/instructor/purchase-log" },
-      { key: "4-3", title: "Earning", path: "/instructor/earning" },
+      {
+        key: "4-1",
+        title: "Course log",
+        icon: <FileTextOutlined />,
+        path: "/instructor/course-log",
+      },
+      {
+        key: "4-2",
+        title: "Purchase log",
+        icon: <FileTextOutlined />,
+        path: "/instructor/purchase-log",
+      },
+      {
+        key: "4-3",
+        title: "Earning",
+        icon: <MoneyCollectOutlined />,
+        path: "/instructor/earning",
+      },
     ],
   },
   {
     key: "settings",
     icon: <SettingOutlined />,
     title: "Settings",
+    label: "Settings",
     path: "/instructor/settings",
   },
   {
     key: "6",
     icon: <StarOutlined />,
     title: "Review",
+    label: "Review",
     path: "/instructor/review",
   },
 ];
@@ -112,19 +136,20 @@ const InstructorSidebar: React.FC<{ onMenuClick?: () => void }> = ({
         key: item.key,
         icon: item.icon,
         label: item.label,
+        title: item.title,
         onClick: () => handleMenuClick(item.key),
       };
 
       if (item.children) {
-        // For submenu, use children
         return {
           key: item.key,
           icon: item.icon,
           label: item.label,
+          title: item.title,
           children: item.children.map((child) => ({
             key: child.key,
             icon: child.icon,
-            label: child.label,
+            label: child.title,
             onClick: () => handleMenuClick(child.key),
           })),
         };
