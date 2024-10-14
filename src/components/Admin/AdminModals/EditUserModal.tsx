@@ -14,7 +14,7 @@ const EditUser = ({ visible, onClose, user, onSave }) => {
   return (
     <Modal
       title="Chỉnh sửa người dùng"
-      visible={visible}
+      open={visible}
       onCancel={onClose}
       footer={null}
     >
