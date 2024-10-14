@@ -35,7 +35,9 @@ const AdminContent = React.lazy(
 const UserManagement = React.lazy(
   () => import("./pages/AdminDashboard/userManagement")
 );
-const RequestUser = React.lazy(() => import("./pages/AdminDashboard/RequestUser"));
+const RequestUser = React.lazy(
+  () => import("./pages/AdminDashboard/RequestUser")
+);
 
 const StudentPage = React.lazy(() => import("./pages/Dashboard/Studentpage"));
 const GeneralLayout = React.lazy(() => import("./defaultLayout/Layout"));
