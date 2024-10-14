@@ -213,6 +213,17 @@ const sampleReviews: Review[] = [
     updated_at: "2024-06-30T05:05:21.619Z",
     __v: 0,
   },
+  {
+    _id: "6680e264e19995122837e323",
+    user_id: "6680d54954c31267eb217f57",
+    course_id: "667ecee48039581edcd01af7",
+    comment: "Not bad, but could be better.",
+    rating: 2,
+    is_deleted: false,
+    created_at: "2024-06-30T04:43:16.652Z",
+    updated_at: "2024-06-30T05:05:21.619Z",
+    __v: 0,
+  },
 ];
 
 type Props = {
@@ -229,7 +240,7 @@ export const Detail = ({ a }: Props) => {
 
   return (
     <div className="flex">
-      <div className="border-2 border-gray-200 rounded-lg mt-12 ml-20 w-2/3">
+      <div className="border-2 border-gray-200 rounded-lg mt-12 w-2/3">
         <div className="flex justify-between items-center">
           <label className="w-1/4 text-center font-semibold cursor-pointer">
             <input
