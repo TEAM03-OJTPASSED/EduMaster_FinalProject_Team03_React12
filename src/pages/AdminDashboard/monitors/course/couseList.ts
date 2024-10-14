@@ -1,10 +1,10 @@
 export enum CourseStatusEnum {
-  new,
-  waiting_approve,
-  approve,
-  reject,
-  active,
-  inactive,
+  NEW = "New",
+  WAITING_APPROVE = "Waiting for Approval",
+  APPROVED = "Approved",
+  REJECTED = "Rejected",
+  ACTIVE = "Active",
+  INACTIVE = "Inactive",
 }
 export enum LessonTypeEnum {
   video = "video",
@@ -18,14 +18,14 @@ export enum PayoutStatusEnum {
   completed = "Completed",
   rejected = "Rejected",
 }
- export interface Blog {
-  id:string,
-  title:string,
-  title_image:string,
-  type:string,
-  publishedDate: Date
-  content:string
- }
+export interface Blog {
+  id: string;
+  title: string;
+  title_image: string;
+  type: string;
+  publishedDate: Date;
+  content: string;
+}
 export interface Course {
   name: string;
   category_id: string;
@@ -93,21 +93,30 @@ interface AdminTransaction {
 }
 
 const randomString = () => Math.random().toString(36).substring(2, 10);
-const randomNumber = () => Math.floor(Math.random() * 10000) / 100; 
+const randomNumber = () => Math.floor(Math.random() * 10000) / 100;
 const randomBoolean = () => Math.random() < 0.5;
 
-const randomString1 = (length: number) => Math.random().toString(36).substring(2, length + 2);
-const randomDate = () => new Date(Date.now() - Math.floor(Math.random() * 10000000000)); 
-const randomTypes = ["Technology", "Health", "Education", "Lifestyle", "Business"];
-
+const randomString1 = (length: number) =>
+  Math.random()
+    .toString(36)
+    .substring(2, length + 2);
+const randomDate = () =>
+  new Date(Date.now() - Math.floor(Math.random() * 10000000000));
+const randomTypes = [
+  "Technology",
+  "Health",
+  "Education",
+  "Lifestyle",
+  "Business",
+];
 
 export const listBlogs: Blog[] = Array.from({ length: 10 }, () => ({
-  id:randomString(),
+  id: randomString(),
   title: `Blog ${randomString1(10)}`,
-  title_image: `https://placehold.jp/150x150.png`, 
-  type: randomTypes[Math.floor(Math.random() * randomTypes.length)], 
+  title_image: `https://placehold.jp/150x150.png`,
+  type: randomTypes[Math.floor(Math.random() * randomTypes.length)],
   publishedDate: randomDate(),
-  content: `Content for ${randomString1(20)}...`, 
+  content: `Content for ${randomString1(20)}...`,
 }));
 export const payouts: Payout[] = Array.from({ length: 10 }, () => ({
   id: randomString(),
@@ -127,12 +136,11 @@ export const payouts: Payout[] = Array.from({ length: 10 }, () => ({
   timestamp: new Date(),
 }));
 
-
 export const adminTransactions: AdminTransaction[] = Array.from(
   { length: 10 },
   () => ({
     id: randomString(),
-    payout_id: payouts[Math.floor(Math.random() * payouts.length)].id, 
+    payout_id: payouts[Math.floor(Math.random() * payouts.length)].id,
     payout_amount: randomNumber(),
     created_at: new Date(),
     updated_at: new Date(),
@@ -373,7 +381,7 @@ export const listCourses: Course[] = [
     content: "HTML, CSS, JavaScript basics",
     video_url: "https://example.com/intro-web-dev",
     image_url: "https://example.com/images/web-dev.jpg",
-    status: CourseStatusEnum.active,
+    status: CourseStatusEnum.ACTIVE,
     price: 100,
     discount: 10,
   },
@@ -384,7 +392,7 @@ export const listCourses: Course[] = [
     content: "Closures, Async Programming, Promises, Design Patterns",
     video_url: "https://example.com/js-advanced",
     image_url: "https://example.com/images/js-advanced.jpg",
-    status: CourseStatusEnum.active,
+    status: CourseStatusEnum.ACTIVE,
     price: 150,
     discount: 20,
   },
@@ -395,7 +403,7 @@ export const listCourses: Course[] = [
     content: "JSX, Components, Props, State",
     video_url: "https://example.com/react-beginners",
     image_url: "https://example.com/images/react-beginners.jpg",
-    status: CourseStatusEnum.active,
+    status: CourseStatusEnum.REJECTED,
     price: 120,
     discount: 15,
   },
@@ -407,7 +415,7 @@ export const listCourses: Course[] = [
     content: "Node.js basics, Express.js, Middleware, REST APIs",
     video_url: "https://example.com/node-express",
     image_url: "https://example.com/images/node-express.jpg",
-    status: CourseStatusEnum.active,
+    status: CourseStatusEnum.WAITING_APPROVE,
     price: 130,
     discount: 10,
   },
@@ -419,7 +427,7 @@ export const listCourses: Course[] = [
     content: "MERN stack, MongoDB, React, Express, Node.js",
     video_url: "https://example.com/mern-fullstack",
     image_url: "https://example.com/images/mern-fullstack.jpg",
-    status: CourseStatusEnum.active,
+    status: CourseStatusEnum.ACTIVE,
     price: 200,
     discount: 25,
   },
@@ -430,7 +438,7 @@ export const listCourses: Course[] = [
     content: "Data Analysis, Python, Pandas, Machine Learning",
     video_url: "https://example.com/data-science",
     image_url: "https://example.com/images/data-science.jpg",
-    status: CourseStatusEnum.active,
+    status: CourseStatusEnum.APPROVED,
     price: 180,
     discount: 15,
   },
@@ -442,7 +450,7 @@ export const listCourses: Course[] = [
     video_url: "https://example.com/python-beginners",
     image_url: "https://example.com/images/python-beginners.jpg",
     price: 90,
-    status: CourseStatusEnum.active,
+    status: CourseStatusEnum.ACTIVE,
     discount: 5,
   },
   {
@@ -454,7 +462,7 @@ export const listCourses: Course[] = [
     video_url: "https://example.com/cloud-aws",
     image_url: "https://example.com/images/cloud-aws.jpg",
     price: 210,
-    status: CourseStatusEnum.inactive,
+    status: CourseStatusEnum.INACTIVE,
     discount: 20,
   },
   {
@@ -464,7 +472,7 @@ export const listCourses: Course[] = [
     content: "CI/CD, Docker, Kubernetes, Jenkins",
     video_url: "https://example.com/devops-fundamentals",
     image_url: "https://example.com/images/devops.jpg",
-    status: CourseStatusEnum.inactive,
+    status: CourseStatusEnum.INACTIVE,
     price: 160,
     discount: 10,
   },
@@ -477,7 +485,7 @@ export const listCourses: Course[] = [
       "Cybersecurity principles, Firewalls, Encryption, Threat Detection",
     video_url: "https://example.com/cybersecurity-basics",
     image_url: "https://example.com/images/cybersecurity.jpg",
-    status: CourseStatusEnum.inactive,
+    status: CourseStatusEnum.INACTIVE,
     price: 140,
     discount: 10,
   },
