@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   UnorderedListOutlined,
   DownOutlined,
   UpOutlined,
-  PlusCircleFilled
+  PlusCircleFilled,
 } from "@ant-design/icons";
 import {
   listLessons,
@@ -55,7 +55,10 @@ const SessionItem = ({ items }: SessionItem) => {
           </div>
           {/* create lesson */}
           <div className="p-2 ">
-            <Button className="!border-none !shadow-none hover:!text-[#FF782D]" icon={<PlusCircleFilled/>}>
+            <Button
+              className="!border-none !shadow-none hover:!text-[#FF782D]"
+              icon={<PlusCircleFilled />}
+            >
               New Lesson
             </Button>
           </div>

@@ -1,10 +1,9 @@
 import { Col, Form, Input, Row } from "antd";
-import React from "react";
 
 const CreateSession = () => {
-    // handle submit o day 
+  // handle submit o day
 
-    //sau khi submit add data session vao state de get session id cho create lesson
+  //sau khi submit add data session vao state de get session id cho create lesson
 
   return (
     <div>
@@ -37,11 +36,8 @@ const CreateSession = () => {
         </Row>
 
         {/*  */}
-        <Form.Item
-          label="Course Id"
-          name="course_id"
-        >
-          <Input value={"Course id get dc o step 1"} disabled/>
+        <Form.Item label="Course Id" name="course_id">
+          <Input value={"Course id get dc o step 1"} disabled />
         </Form.Item>
 
         {/* description */}

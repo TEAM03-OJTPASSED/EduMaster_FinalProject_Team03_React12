@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Lesson } from "../../../AdminDashboard/monitors/course/couseList";
 import { Button, Divider } from "antd";
 import { DownOutlined, UpOutlined } from "@ant-design/icons";
@@ -21,16 +21,16 @@ const LessonItem = (props: LessonItemType) => {
           </span>
           {/* description */}
           {viewMore ? (
-            <Button 
-              icon={<UpOutlined />} 
-              onClick={() => setViewMore(false)} 
-              className="flex items-center !border-none" 
+            <Button
+              icon={<UpOutlined />}
+              onClick={() => setViewMore(false)}
+              className="flex items-center !border-none"
             />
           ) : (
-            <Button 
-              icon={<DownOutlined />} 
-              onClick={() => setViewMore(true)} 
-              className="flex items-center !border-none" 
+            <Button
+              icon={<DownOutlined />}
+              onClick={() => setViewMore(true)}
+              className="flex items-center !border-none"
             />
           )}
         </div>
@@ -39,10 +39,12 @@ const LessonItem = (props: LessonItemType) => {
           <div className="mt-4">
             <Divider />
             <p className="text-gray-600">
-              <span className="font-semibold">Description:</span> {item.description}
+              <span className="font-semibold">Description:</span>{" "}
+              {item.description}
             </p>
             <p className="text-gray-600">
-              <span className="font-semibold">Time:</span> {item.full_time} minutes
+              <span className="font-semibold">Time:</span> {item.full_time}{" "}
+              minutes
             </p>
             <p className="text-gray-600">
               <span className="font-semibold">Instructor:</span> {item.user_id}

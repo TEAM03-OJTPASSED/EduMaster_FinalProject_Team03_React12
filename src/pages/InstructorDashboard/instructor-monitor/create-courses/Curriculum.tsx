@@ -1,20 +1,18 @@
 import { Button, Modal } from "antd";
-import React, { useState } from "react";
+import { useState } from "react";
 import { PlusCircleFilled } from "@ant-design/icons";
 import { listSessions } from "../../../AdminDashboard/monitors/course/couseList";
 import SessionItem from "./SessionItem";
 
 const Curriculum = () => {
-  const [isVisibleModal, setIsVisibleModal] = useState(false)
-  const handleOk = ()=>{
-    setIsVisibleModal(true)
-  }
-  const handleCancel = ()=>{
-    setIsVisibleModal(false)
-  }
-  const handleCreateSession = ()=>{
-    
-  }
+  const [isVisibleModal, setIsVisibleModal] = useState(false);
+  const handleOk = () => {
+    setIsVisibleModal(true);
+  };
+  const handleCancel = () => {
+    setIsVisibleModal(false);
+  };
+  const handleCreateSession = () => {};
   return (
     <div>
       <div>
@@ -31,7 +29,7 @@ const Curriculum = () => {
           })}
         </div>
       </div>
-      <Modal 
+      <Modal
         open={isVisibleModal}
         title="Create session"
         onOk={handleOk}

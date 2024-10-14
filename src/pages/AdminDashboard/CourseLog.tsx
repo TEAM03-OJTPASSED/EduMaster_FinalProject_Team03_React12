@@ -1,11 +1,7 @@
-import { Button, Card, Input, Select, Table, Form, Tag } from "antd";
-import {
-  SearchOutlined,
-} from "@ant-design/icons";
+import { Card, Input } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 
 const CourseLog = () => {
-
-
   return (
     <Card>
       <div className="flex">
