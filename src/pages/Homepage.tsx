@@ -108,7 +108,7 @@ const HomePage = () => {
       <main className="w-full text-left overflow-visible ">
         <section className="relative lg:h-[400px] h-[300px] w-[115vw] -ml-[15vw] flex justify-center items-center flex-col space-y-4  bg-black overflow-y-hidden">
           <img
-            className=" w-[115vw] absolute -top-36  object-bottom brightness-75"
+            className=" w-[115vw] absolute xs:-top-36  object-bottom brightness-75"
             src={heroImage}
             alt="Hero"
           />
