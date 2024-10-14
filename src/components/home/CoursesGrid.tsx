@@ -13,77 +13,18 @@ interface Course {
   price: number | string
 }
 
-const courses: Course[] = [
-  {
-    id: 1,
-    image_url: '/placeholder.svg?height=200&width=300',
-    category: 'Photography',
-    name: 'Create An LMS Website With LearnPress',
-    author: 'Determined-Poitras',
-    duration: '2Weeks',
-    students: 156,
-    price: 'Free',
-  },
-  {
-    id: 2,
-    image_url: '/placeholder.svg?height=200&width=300',
-    category: 'Photography',
-    name: 'Design A Website With ThimPresscrececerrcerverger',
-    author: 'Determined-Poitras',
-    duration: '2Weeks',
-    students: 156,
-    price: 49.0,
-  },
-  {
-    id: 3,
-    image_url: '/placeholder.svg?height=200&width=300',
-    category: 'Photography',
-    name: 'Create An LMS Website With LearnPress',
-    author: 'Determined-Poitras',
-    duration: '2Weeks',
-    students: 156,
-    price: 'Free',
-  },
-  {
-    id: 4,
-    image_url: '/placeholder.svg?height=200&width=300',
-    category: 'Photography',
-    name: 'Create An LMS Website With LearnPress',
-    author: 'Determined-Poitras',
-    duration: '2Weeks',
-    students: 156,
-    price: 'Free',
-  },
-  {
-    id: 5,
-    image_url: '/placeholder.svg?height=200&width=300',
-    category: 'Photography',
-    name: 'Create An LMS Website With LearnPress',
-    author: 'Determined-Poitras',
-    duration: '2Weeks',
-    students: 156,
-    price: 'Free',
-  },
-  {
-    id: 6,
-    image_url: '/placeholder.svg?height=200&width=300',
-    category: 'Photography',
-    name: 'Create An LMS Website With LearnPress',
-    author: 'Determined-Poitras',
-    duration: '2Weeks',
-    students: 156,
-    price: 'Free',
-  },
-]
 
+interface CoursesGridProps {
+  viewMode: "grid" | "list";
+  courses: Course[];
+}
 
-
-export default function CoursesGrid() {
+export default function CoursesGrid({ viewMode, courses }: CoursesGridProps) {
   return (
     <Row gutter={[20, 20]} className="mt-8">
       {courses.map((course) => (
-        <Col xs={24} sm={12} md={8} key={course.id}>
-          <CourseCard course={course} viewMode='grid'/>
+        <Col xs={24} sm={viewMode === "list" ? 24 : 12} md={viewMode === "list" ? 24 : 12} lg={viewMode === "list" ? 24 : 8} key={course.id}>
+          <CourseCard course={course} viewMode={viewMode}/>
         </Col>
       ))}
     </Row>

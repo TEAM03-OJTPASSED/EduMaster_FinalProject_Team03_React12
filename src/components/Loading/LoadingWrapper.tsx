@@ -11,7 +11,7 @@ const LoadingWrapper: React.FC<LoadingWrapperProps> = ({ children }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 2000);
+    }, 0);
 
     // Cleanup timer nếu component unmounts
     return () => clearTimeout(timer);

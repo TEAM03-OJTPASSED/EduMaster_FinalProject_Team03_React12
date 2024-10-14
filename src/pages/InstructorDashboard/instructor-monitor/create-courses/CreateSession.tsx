@@ -34,12 +34,10 @@ const CreateSession = () => {
             </Form.Item>
           </Col>
         </Row>
-
         {/*  */}
         <Form.Item label="Course Id" name="course_id">
           <Input value={"Course id get dc o step 1"} disabled />
         </Form.Item>
-
         {/* description */}
         <Form.Item
           label="Description"

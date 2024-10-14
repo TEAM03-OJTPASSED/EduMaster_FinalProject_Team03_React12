@@ -68,7 +68,7 @@ export default function LatestArticles() {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h2 className="text-3xl font-bold mb-2">Latest Articles</h2>
+            <h2 className="text-4xl font-bold mb-2">Latest Articles</h2>
             <p className="text-gray-600">Explore our Free Articles</p>
           </div>
           <Button type="default" onClick={() => navigate("/blog")}>

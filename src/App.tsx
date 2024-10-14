@@ -11,7 +11,6 @@ import SignUppage from "./pages/AuthPage/SignUppage";
 import ContactPage from "./pages/Contactpage";
 import FAQsPage from "./pages/FAQspage";
 import ErrorPage from "./pages/Errorpage";
-import StudentPage from "./pages/Dashboard/Studentpage";
 import AdminLayout from "./defaultLayout/AdminLayout";
 import AdminContent from "./pages/AdminDashboard/AdminContent";
 import UserManagement from "./pages/AdminDashboard/userManagement";
@@ -48,6 +47,8 @@ import PayoutManagement from "./pages/AdminDashboard/payoutManagement";
 import BlogDetailPage from "./pages/BlogDetailPage";
 import ProtectedRouter from "./utils/ProtectedRoute";
 import CourseDetailPage from "./pages/CourseDetailpage";
+import DashboardLayout from "./defaultLayout/DashboardLayout";
+import StudentProfile from "./pages/StudentDashboard/studentProfile";
 
 function App() {
   return (
@@ -153,7 +154,17 @@ function App() {
               </Route>
             </Route>
             {/* Student Layout */}
-            <Route path="/dashboard/student/*" element={<StudentPage />} />
+            <Route
+              path="/student"
+              element={
+                <ProtectedRoute allowedRoles={["student"]}></ProtectedRoute>
+              }
+            >
+              <Route element={<DashboardLayout role="student" />}>
+                <Route path="dashboard" element={<InstructorContent />} />
+                <Route path="profile" element={<StudentProfile />} />
+              </Route>
+            </Route>
           </Routes>
         </LoadingWrapper>
       </Suspense>

@@ -4,7 +4,7 @@ import { Content } from "antd/es/layout/layout";
 import { useState } from "react";
 import { FaBars } from "react-icons/fa";
 import { GrGrid } from "react-icons/gr";
-import CourseCard from "../CourseCard";
+import CoursesGrid from "../home/CoursesGrid";
 
 interface Course {
   id: number;
@@ -21,8 +21,9 @@ interface Course {
 export const SearchResults: React.FC<{
   courses: Course[];
   onSearch: (searchValue: string) => void;
+  searchQuery: string;
   // onCourseSelected: (course: Course) => void;
-}> = ({ courses, onSearch }) => {
+}> = ({ courses, onSearch, searchQuery }) => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
 
   return (
@@ -31,7 +32,8 @@ export const SearchResults: React.FC<{
         <h2 className="text-2xl font-bold">All Courses</h2>
         <div className="flex items-center space-x-4">
           <Search
-            placeholder="Search"
+            placeholder={"Search"}
+            defaultValue={searchQuery}
             style={{ width: 200 }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -47,27 +49,20 @@ export const SearchResults: React.FC<{
             icon={<GrGrid />}
             onClick={() => setViewMode("grid")}
             type={viewMode === "grid" ? "primary" : "default"}
-            className=""
+            className=" md:inline-block hidden"
           />
           <Button
             icon={<FaBars />}
             onClick={() => setViewMode("list")}
             type={viewMode === "list" ? "primary" : "default"}
-            className=""
           />
         </div>
       </div>
       {courses.length > 0 ? (<div>
-            <div
-              className={`grid gap-6 ${
-                viewMode === "grid" ? "grid-cols-2" : "grid-cols-1"
-              }`}
-            >
+            
               
-              {courses.map((course) => (
-                  <CourseCard course={course} viewMode={viewMode} key={course.id}/>
-              ))}
-            </div>
+            <CoursesGrid viewMode={viewMode} courses={courses}/>
+        
 
             <Pagination
               total={courses.length}

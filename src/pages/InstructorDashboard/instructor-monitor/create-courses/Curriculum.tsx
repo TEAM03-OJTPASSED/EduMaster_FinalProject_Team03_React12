@@ -3,16 +3,20 @@ import { useState } from "react";
 import { PlusCircleFilled } from "@ant-design/icons";
 import { listSessions } from "../../../AdminDashboard/monitors/course/couseList";
 import SessionItem from "./SessionItem";
+import CreateSession from "./CreateSession";
 
 const Curriculum = () => {
   const [isVisibleModal, setIsVisibleModal] = useState(false);
+
   const handleOk = () => {
-    setIsVisibleModal(true);
+    setIsVisibleModal(false);
   };
   const handleCancel = () => {
     setIsVisibleModal(false);
   };
-  const handleCreateSession = () => {};
+  const handleCreateSession = () => {
+    setIsVisibleModal(true);
+  };
   return (
     <div>
       <div>
@@ -34,7 +38,9 @@ const Curriculum = () => {
         title="Create session"
         onOk={handleOk}
         onCancel={handleCancel}
-      />
+      >
+        <CreateSession />
+      </Modal>
     </div>
   );
 };
