@@ -81,11 +81,92 @@ const categories: Category[] = [
   },
 ];
 
+interface Course {
+  id: number;
+  image_url: string;
+  category: string;
+  name: string;
+  author: string;
+  duration: string;
+  students: number;
+  price: number | string;
+  lessons: number;
+}
+
+const courses: Course[] = [
+  {
+    id: 1,
+    image_url: "/placeholder.svg?height=200&width=300",
+    category: "Photography",
+    name: "Create An LMS Website With LearnPress",
+    author: "Determined-Poitras",
+    duration: "2Weeks",
+    students: 156,
+    price: "Free",
+    lessons: 2,
+  },
+  {
+    id: 2,
+    image_url: "/placeholder.svg?height=200&width=300",
+    category: "Photography",
+    name: "Design A Website With ThimPresscrececerrcerverger",
+    author: "Determined-Poitras",
+    duration: "2Weeks",
+    students: 156,
+    price: 49.0,
+    lessons: 2,
+  },
+  {
+    id: 3,
+    image_url: "/placeholder.svg?height=200&width=300",
+    category: "Photography",
+    name: "Create An LMS Website With LearnPress",
+    author: "Determined-Poitras",
+    duration: "2Weeks",
+    students: 156,
+    price: "Free",
+    lessons: 2,
+  },
+  {
+    id: 4,
+    image_url: "/placeholder.svg?height=200&width=300",
+    category: "Photography",
+    name: "Create An LMS Website With LearnPress",
+    author: "Determined-Poitras",
+    duration: "2Weeks",
+    students: 156,
+    price: "Free",
+    lessons: 2,
+  },
+  {
+    id: 5,
+    image_url: "/placeholder.svg?height=200&width=300",
+    category: "Photography",
+    name: "Create An LMS Website With LearnPress",
+    author: "Determined-Poitras",
+    duration: "2Weeks",
+    students: 156,
+    price: "Free",
+    lessons: 2,
+  },
+  {
+    id: 6,
+    image_url: "/placeholder.svg?height=200&width=300",
+    category: "Photography",
+    name: "Create An LMS Website With LearnPress",
+    author: "Determined-Poitras",
+    duration: "2Weeks",
+    students: 156,
+    price: "Free",
+    lessons: 2,
+  },
+];
+
 const HomePage = () => {
   const navigate = useCustomNavigate();
   return (
     <div className="flex flex-col items-center">
-      <div className="flex flex-col md:flex-row gap-4">
+      {/* <div className="flex flex-col md:flex-row gap-4">
         <button
           className="px-4 py-2 bg-yellow-500 text-white rounded-md w-full md:w-auto"
           onClick={() => navigate("/admin/dashboard")}
@@ -104,7 +185,7 @@ const HomePage = () => {
         >
           Student Dashboard
         </button>
-      </div>
+      </div> */}
       <main className="w-full text-left overflow-visible ">
         <section className="relative lg:h-[400px] h-[300px] w-[115vw] -ml-[15vw] flex justify-center items-center flex-col space-y-4  bg-black overflow-y-hidden">
           <img
@@ -112,10 +193,10 @@ const HomePage = () => {
             src={heroImage}
             alt="Hero"
           />
-          <div className="z-50 text-white text-5xl font-bold w-[400px] text-center">
+          <div className="z-40 text-white text-5xl font-bold w-[400px] text-center">
             Build Skills With <span className="underline">Online Courses</span>
           </div>
-          <div className="z-50 w-[400px] text-white text-center italic">
+          <div className="z-40 w-[400px] text-white text-center italic">
             "All the courses you need, all in one place." Get started today to
             unlock your hidden potential!
           </div>
@@ -174,7 +255,7 @@ const HomePage = () => {
                   All Courses
                 </Button>
               </div>
-              <CoursesGrid />
+              <CoursesGrid courses={courses} viewMode="grid" />
             </div>
           </div>
         </section>

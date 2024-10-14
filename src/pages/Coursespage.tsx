@@ -250,7 +250,7 @@ const CoursesPage: React.FC = () => {
 
   return (
     <main>
-      <Layout>
+      <Layout className="relative">
         <SearchResults courses={filteredCourses} onSearch={handleSearch} searchQuery={searchQuery} />
         <SearchFilter
           onFilterChange={handleFilterChange}

@@ -42,8 +42,8 @@ const CourseCard: React.FC<{ course: Course; viewMode: string }> = ({
             alt={course.name}
             src={"https://picsum.photos/400/192"}
             className={`${
-              viewMode === "list" ? "w-[400px]" : "w-full"
-            } h-48 object-cover`}
+              viewMode === "list" ? "min-w-[250px] w-[250px]" : "w-full"
+            } h-56 object-cover`}
           />
           <Tag className="absolute top-2 left-2 bg-black text-white">
             {course.category}
@@ -61,12 +61,12 @@ const CourseCard: React.FC<{ course: Course; viewMode: string }> = ({
         </h2>
       </div>
       <div>
-        <div className="flex justify-between text-sm text-gray-500 mb-4">
+        <div className="grid grid-cols-2 grid-rows-2 justify-between text-sm text-gray-500 mb-4">
           <span className="flex items-center">
             <AiOutlineClockCircle className="mr-1" />
             {course.duration}
           </span>
-          <span className="flex items-center">
+          <span className="flex items-center justify-end">
             <TiUserOutline className="mr-1" />
             {course.students} Students
           </span>

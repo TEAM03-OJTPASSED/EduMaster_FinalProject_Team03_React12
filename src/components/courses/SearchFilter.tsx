@@ -1,6 +1,7 @@
-import React from 'react';
-import { Checkbox, Rate } from "antd";
-import Sider from "antd/es/layout/Sider";
+import React, { useState, useEffect } from 'react';
+import { Checkbox, Rate, Drawer, Button } from "antd";
+import { FilterOutlined } from '@ant-design/icons';
+import Sider from 'antd/es/layout/Sider';
 
 interface FilterOption {
   value: string | number;
@@ -11,9 +12,9 @@ interface FilterOption {
 interface Filters {
   category: string[];
   author: string[];
-  price: string[];  
-  review: number[]; 
-  level: string[];  
+  price: string[];
+  review: number[];
+  level: string[];
 }
 
 interface FilterSection {
@@ -29,6 +30,22 @@ interface SearchFilterProps {
 }
 
 export const SearchFilter: React.FC<SearchFilterProps> = ({ filters, onFilterChange, selectedFilters }) => {
+  const [visible, setVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 992);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
+
   const handleFilterChange = (filterType: keyof Filters, checkedValues: string[] | number[]) => {
     onFilterChange({ [filterType]: checkedValues });
   };
@@ -36,7 +53,7 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({ filters, onFilterCha
   const renderCheckboxGroup = (section: FilterSection) => (
     <Checkbox.Group
       className="flex flex-col space-y-2"
-      value={selectedFilters[section.type] as string[]} // Type cast added here
+      value={selectedFilters[section.type] as string[]}
       onChange={(checkedValues) => handleFilterChange(section.type, checkedValues)}
     >
       {section.options.map((option) => (
@@ -50,7 +67,7 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({ filters, onFilterCha
   const renderRatingGroup = (section: FilterSection) => (
     <Checkbox.Group
       className="flex flex-col space-y-2"
-      value={selectedFilters[section.type] as number[]} // type cast for reviews
+      value={selectedFilters[section.type] as number[]}
       onChange={(checkedValues) => handleFilterChange(section.type, checkedValues)}
     >
       {section.options.map((option) => (
@@ -61,14 +78,44 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({ filters, onFilterCha
     </Checkbox.Group>
   );
 
-  return (
-    <Sider width={300} theme="light" className="p-4">
+  const renderFilters = () => (
+    <>
       {filters.map((section) => (
-        <div key={section.type}>
-          <h3 className="text-lg font-semibold mt-6 mb-4">{section.title}</h3>
+        <div key={section.type} className="mb-6">
+          <h3 className="text-lg font-semibold mb-4">{section.title}</h3>
           {section.type === 'review' ? renderRatingGroup(section) : renderCheckboxGroup(section)}
         </div>
       ))}
-    </Sider>
+    </>
+  );
+
+  return (
+    <>
+      {isMobile ? (
+        <div className='absolute -top-2 right-4'>
+          <Button
+            type="primary"
+            icon={<FilterOutlined />}
+            onClick={() => setVisible(true)}
+            className="mb-4"
+          >
+            Filters
+          </Button>
+          <Drawer
+            title="Filters"
+            placement="right"
+            onClose={() => setVisible(false)}
+            visible={visible}
+            width={300}
+          >
+            {renderFilters()}
+          </Drawer>
+        </div>
+      ) : ( 
+        <Sider width={250} theme="light" className="p-4">          {renderFilters()}
+      </Sider>
+
+      )}
+    </>
   );
 };

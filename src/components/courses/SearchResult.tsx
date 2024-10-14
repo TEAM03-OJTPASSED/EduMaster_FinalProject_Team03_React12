@@ -4,7 +4,7 @@ import { Content } from "antd/es/layout/layout";
 import { useState } from "react";
 import { FaBars } from "react-icons/fa";
 import { GrGrid } from "react-icons/gr";
-import CourseCard from "../CourseCard";
+import CoursesGrid from "../home/CoursesGrid";
 
 interface Course {
   id: number;
@@ -49,27 +49,20 @@ export const SearchResults: React.FC<{
             icon={<GrGrid />}
             onClick={() => setViewMode("grid")}
             type={viewMode === "grid" ? "primary" : "default"}
-            className=""
+            className=" md:inline-block hidden"
           />
           <Button
             icon={<FaBars />}
             onClick={() => setViewMode("list")}
             type={viewMode === "list" ? "primary" : "default"}
-            className=""
           />
         </div>
       </div>
       {courses.length > 0 ? (<div>
-            <div
-              className={`grid gap-6 ${
-                viewMode === "grid" ? "grid-cols-2" : "grid-cols-1"
-              }`}
-            >
+            
               
-              {courses.map((course) => (
-                  <CourseCard course={course} viewMode={viewMode} key={course.id}/>
-              ))}
-            </div>
+            <CoursesGrid viewMode={viewMode} courses={courses}/>
+        
 
             <Pagination
               total={courses.length}
