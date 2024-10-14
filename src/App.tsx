@@ -4,7 +4,6 @@ import LoadingWrapper from "./components/Loading/LoadingWrapper";
 import { Suspense } from "react";
 import CoursesPage from "./pages/CoursesPage";
 import BlogPage from "./pages/BlogPage";
-import CourseDetailPage from "./pages/CourseDetailPage";
 import GeneralLayout from "./defaultLayout/Layout";
 import HomePage from "./pages/Homepage";
 import Loginpage from "./pages/AuthPage/Loginpage";
@@ -47,6 +46,8 @@ import InstructorSetting from "./pages/InstructorDashboard/InstructorSetting";
 import ForgotPasswordPage from "./pages/AuthPage/ForgotPasswordPage";
 import PayoutManagement from "./pages/AdminDashboard/payoutManagement";
 import BlogDetailPage from "./pages/BlogDetailPage";
+import ProtectedRouter from "./utils/ProtectedRoute";
+import CourseDetailPage from "./pages/CourseDetailpage";
 
 function App() {
   return (
@@ -68,45 +69,45 @@ function App() {
               <Route
                 path="/course-detail/:id"
                 element={
-                  <ProtectedRoute
+                  <ProtectedRouter
                     allowedRoles={["student", "instructor", "admin"]}
-                  />
+                  >
+                    <CourseDetailPage />
+                  </ProtectedRouter>
                 }
-              >
-                <Route index element={<CourseDetailPage />} />
-              </Route>
+              />
               <Route
                 path="/blog-detail/:id"
                 element={
                   <ProtectedRoute
                     allowedRoles={["student", "instructor", "admin"]}
-                  />
+                  >
+                    <BlogDetailPage />
+                  </ProtectedRoute>
                 }
-              >
-                <Route index element={<BlogDetailPage />} />
-              </Route>
-
-              <Route
-                path="/dashboard/student/*"
-                element={<ProtectedRoute allowedRoles={["student"]} />}
-              >
-                <Route index element={<StudentPage />} />
-              </Route>
+              />
             </Route>
-
-            {/* Admin Layout */}
+            // Student Dashboard
+            <Route
+              path="/dashboard/student/*"
+              element={<ProtectedRoute allowedRoles={["student"]} />}
+            >
+              <Route index element={<StudentPage />} />
+            </Route>
+            // Admin Dashboard
             <Route
               path="/admin"
               element={<ProtectedRoute allowedRoles={["admin"]} />}
             >
               <Route element={<AdminLayout />}>
+                {" "}
+                {/* Use AdminLayout here */}
                 <Route index element={<AdminContent />} />
                 <Route path="dashboard" element={<AdminContent />} />
                 <Route path="users" element={<UserManagement />} />
                 <Route path="request-management" element={<RequestUser />} />
                 <Route path="categories" element={<CategoryManagement />} />
                 <Route path="payout" element={<PayoutManagement />} />
-
                 <Route path="all-courses" element={<AllCourse />}>
                   <Route index element={<CourseList />} />
                   <Route path="session" element={<SessionList />} />
@@ -122,13 +123,9 @@ function App() {
                 <Route path="purchase-log" element={<PurchaseLog />} />
               </Route>
             </Route>
-
-            {/* Instructor Layout */}
             <Route
               path="/instructor"
-              element={
-                <ProtectedRoute allowedRoles={["instructor"]}></ProtectedRoute>
-              }
+              element={<ProtectedRoute allowedRoles={["instructor"]} />}
             >
               <Route element={<InstructorLayout />}>
                 <Route index element={<InstructorContent />} />
@@ -155,11 +152,8 @@ function App() {
                 <Route path="settings" element={<InstructorSetting />} />
               </Route>
             </Route>
-
             {/* Student Layout */}
-            <Route element={<AdminLayout />}>
-              <Route path="/dashboard/student/*" element={<StudentPage />} />
-            </Route>
+            <Route path="/dashboard/student/*" element={<StudentPage />} />
           </Routes>
         </LoadingWrapper>
       </Suspense>

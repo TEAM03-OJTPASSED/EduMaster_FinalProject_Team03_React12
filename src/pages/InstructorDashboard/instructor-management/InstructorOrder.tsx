@@ -1,9 +1,5 @@
-import React from 'react'
-
 const InstructorOrder = () => {
-  return (
-    <div>InstructorOrder</div>
-  )
-}
+  return <div>InstructorOrder</div>;
+};
 
-export default InstructorOrder
+export default InstructorOrder;
