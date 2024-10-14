@@ -2,7 +2,7 @@
 import { useCustomNavigate } from "../hooks/customNavigate";
 import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import { LatLngExpression } from 'leaflet'; 
+import { LatLngExpression } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Input, Button } from 'antd';
 
@@ -16,11 +16,13 @@ const ContactPage: React.FC = () => {
     <div>
       <div className="bg-gray-150 pl-3 pr-3">
         <div className="w-full h-14 content-center ">
-          <ul className="flex ">
-            <li className="arrow mr-3 ">
-              <a className='cursor-pointer ' onClick={() => { navigate("/") }}>Home</a>
+          <ul className="flex">
+            <li className="mr-3">
+              <a className='cursor-pointer hover:text-orange-400' onClick={() => { navigate("/") }}>Home
+                <i className="fas fa-chevron-right ml-3 text-sm"></i>
+              </a>
             </li>
-            <li>Contact Us</li>
+            <li className="text-gray-400">Contact Us</li>
           </ul>
         </div>
         <hr className="border-b border-gray-300" />
@@ -58,7 +60,7 @@ const ContactPage: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="w-3/4 p-4"  style={{ zIndex: -1, position: 'relative' }}>
+          <div className="w-3/4 p-4">
             <MapContainer center={position} zoom={16} style={{ height: '400px', width: '100%', borderRadius: '2.5%' }}>
               <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
