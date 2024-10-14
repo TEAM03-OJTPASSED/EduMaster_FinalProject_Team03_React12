@@ -1,25 +1,40 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./utils/ProtectedRoute";
-import AdminContent from "./pages/AdminDashboard/AdminContent";
-import UserManagement from "./pages/AdminDashboard/userManagement";
-import RequestUser from "./pages/RequestUser";
-import InstructorPage from "./pages/Dashboard/Instructorpage";
-import StudentPage from "./pages/Dashboard/Studentpage";
-import GeneralLayout from "./defaultLayout/Layout";
-import HomePage from "./pages/Homepage";
-import Loginpage from "./pages/AuthPage/Loginpage";
-import SignUppage from "./pages/AuthPage/SignUppage";
-import CoursesPage from "./pages/CoursesPage";
-import BlogPage from "./pages/BlogPage";
-import ContactPage from "./pages/Contactpage";
-import FAQsPage from "./pages/FAQspage";
-import ErrorPage from "./pages/Errorpage";
-import CourseDetailPage from "./pages/CourseDetailPage";
-import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-import InstructorLayout from "./defaultLayout/InstructorLayout";
-import InstructorContent from "./pages/InstructorDashboard/InstructorContent";
-import AdminLayout from "./defaultLayout/AdminLayout";
 import LoadingWrapper from "./components/Loading/LoadingWrapper";
+import React from "react";
+
+// Lazy loading components
+const AdminContent = React.lazy(
+  () => import("./pages/AdminDashboard/AdminContent")
+);
+const UserManagement = React.lazy(
+  () => import("./pages/AdminDashboard/userManagement")
+);
+const RequestUser = React.lazy(() => import("./pages/RequestUser"));
+const InstructorPage = React.lazy(
+  () => import("./pages/Dashboard/Instructorpage")
+);
+const StudentPage = React.lazy(() => import("./pages/Dashboard/Studentpage"));
+const GeneralLayout = React.lazy(() => import("./defaultLayout/Layout"));
+const HomePage = React.lazy(() => import("./pages/Homepage"));
+const Loginpage = React.lazy(() => import("./pages/AuthPage/Loginpage"));
+const SignUppage = React.lazy(() => import("./pages/AuthPage/SignUppage"));
+const CoursesPage = React.lazy(() => import("./pages/CoursesPage"));
+const BlogPage = React.lazy(() => import("./pages/BlogPage"));
+const ContactPage = React.lazy(() => import("./pages/Contactpage"));
+const FAQsPage = React.lazy(() => import("./pages/FAQspage"));
+const ErrorPage = React.lazy(() => import("./pages/Errorpage"));
+const CourseDetailPage = React.lazy(() => import("./pages/CourseDetailPage"));
+const ForgotPasswordPage = React.lazy(
+  () => import("./pages/ForgotPasswordPage")
+);
+const InstructorLayout = React.lazy(
+  () => import("./defaultLayout/InstructorLayout")
+);
+const InstructorContent = React.lazy(
+  () => import("./pages/InstructorDashboard/InstructorContent")
+);
+const AdminLayout = React.lazy(() => import("./defaultLayout/AdminLayout"));
 
 function App() {
   return (
