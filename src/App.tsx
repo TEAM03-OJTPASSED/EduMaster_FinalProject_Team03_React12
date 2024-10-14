@@ -2,7 +2,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import LoadingWrapper from "./components/Loading/LoadingWrapper";
 import { Suspense } from "react";
-import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import CoursesPage from "./pages/CoursesPage";
 import BlogPage from "./pages/BlogPage";
 import CourseDetailPage from "./pages/CourseDetailPage";
@@ -45,6 +44,7 @@ import InstructorEarning from "./pages/InstructorDashboard/instructor-report/Ins
 import InstructorDiscount from "./pages/InstructorDashboard/instructor-management/InstructorDiscount";
 import InstructorReview from "./pages/InstructorDashboard/InstructorReview";
 import InstructorSetting from "./pages/InstructorDashboard/InstructorSetting";
+import ForgotPasswordPage from "./pages/AuthPage/ForgotPasswordPage";
 
 function App() {
   return (
@@ -57,6 +57,7 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<Loginpage />} />
               <Route path="/signup" element={<SignUppage />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/course" element={<CoursesPage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/contact" element={<ContactPage />} />
