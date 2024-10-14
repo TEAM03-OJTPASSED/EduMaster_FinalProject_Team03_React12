@@ -32,7 +32,6 @@ export const Reviews = ({ items }: Props) => {
   const itemRender = (
     page: number,
     type: "page" | "prev" | "next" | "jump-prev" | "jump-next",
-    originalElement: React.ReactNode
   ) => {
     if (type === "prev") {
       return (
