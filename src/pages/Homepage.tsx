@@ -1,6 +1,6 @@
 import { useCustomNavigate } from "../hooks/customNavigate";
 import { Button } from "antd";
-import heroImage from "../assets/pexels-armin-rimoldi-5553045.jpg";
+import heroImage from "../assets/pexels-kseniachernaya-7301126.jpg";
 // import { BiSearch } from "react-icons/bi";
 import CategoriesGrid from "../components/home/CategoriesGrid";
 
@@ -21,6 +21,8 @@ import CTABanner from "../components/home/CTABanner";
 import LatestArticles from "../components/home/LatestArticles";
 import { ProofOfProduct } from "../components/home/ProofOfProduct";
 import Search from "antd/es/input/Search";
+import { BiSolidArrowFromLeft } from "react-icons/bi";
+import { IoArrowUpOutline } from "react-icons/io5";
 
 interface Category {
   icon: React.ReactNode;
@@ -164,9 +166,42 @@ const courses: Course[] = [
 
 const HomePage = () => {
   const navigate = useCustomNavigate();
+
+  window.addEventListener("scroll", function () {
+    const floatElements = document.querySelectorAll(".float-animation");
+  
+    floatElements.forEach((el) => {
+      const position = el.getBoundingClientRect().top;
+      const windowHeight = window.innerHeight;
+  
+      if (position < windowHeight) {
+        el.classList.add("show");
+      }
+    });
+  });
+
+  const backToTop = () => {
+    document.documentElement.style.scrollBehavior = "smooth";
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  };
+
+
+
+  
+
   return (
     <div className="flex flex-col items-center">
-      {/* <div className="flex flex-col md:flex-row gap-4">
+      <div className="flex-col flex items-center">
+        <div className="w-4 h-4 rounded-full bg-orange-500 bottom-32 right-8 fixed"></div>
+        <div className="w-4 h-4 rounded-full bg-orange-500 bottom-[100px] right-8 fixed"></div>
+
+      <button onClick={backToTop}>
+        <div className=" w-12 h-12 rounded-full bottom-10 right-4 hover:scale-110 transition duration-500 bg-orange-500 fixed justify-center flex items-center"><IoArrowUpOutline size={36} color="white" />
+        </div>
+      </button>
+      </div>
+      <div className="flex flex-col md:flex-row gap-4">
         <button
           className="px-4 py-2 bg-yellow-500 text-white rounded-md w-full md:w-auto"
           onClick={() => navigate("/admin/dashboard")}
@@ -185,16 +220,16 @@ const HomePage = () => {
         >
           Student Dashboard
         </button>
-      </div> */}
-      <main className="w-full text-left overflow-visible ">
-        <section className="relative lg:h-[400px] h-[300px] w-[115vw] -ml-[15vw] flex justify-center items-center flex-col space-y-4  bg-black overflow-y-hidden">
+      </div>
+      <main className="w-full text-left overflow-visible font-jost ">
+        <section className="relative lg:h-[400px] font-jost h-[300px] w-[115vw] -ml-[15vw] flex justify-center items-center flex-col space-y-4 shadow-2xl shadow-orange-300  bg-black overflow-y-hidden">
           <img
-            className=" w-[115vw] absolute xs:-top-36  object-bottom brightness-75"
+            className=" w-[115vw] absolute xs:-top-36  object-bottom brightness-75 "
             src={heroImage}
             alt="Hero"
           />
-          <div className="z-40 text-white text-5xl font-bold w-[400px] text-center">
-            Build Skills With <span className="underline">Online Courses</span>
+          <div className="z-40 text-white text-5xl font-bold w-[500px] text-center">
+            Elavate Your Skills With <span className="underline">Online Courses</span>
           </div>
           <div className="z-40 w-[400px] text-white text-center italic">
             "All the courses you need, all in one place." Get started today to
@@ -211,12 +246,12 @@ const HomePage = () => {
           />
         </section>
 
-        <section>
-          <div className="py-24">
+        <section className="float-animation show">
+          <div className="py-12">
             <div className="container mx-auto px-4">
               <div className="flex justify-between items-center mb-8">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-800">
+                  <h2 className="text-4xl font-bold text-gray-800">
                     Featured Categories
                   </h2>
                   <p className="text-gray-600 mt-2">
@@ -225,34 +260,52 @@ const HomePage = () => {
                 </div>
                 <Button
                   type="default"
-                  className="hover:bg-orange-500 hover:text-white transition-colors"
+                  className="group hover:bg-orange-500 hover:text-white text-base transition-colors py-6 px-6 rounded-3xl font-jost"
+                  style={{
+                    backgroundColor: "#f97316",
+                    color:"white"
+                    
+                  }}
+                  onClick={() => navigate("/course")}
+
                 >
-                  All Courses
+                  All Courses <BiSolidArrowFromLeft className="group-hover:scale-150 transition "/>
                 </Button>
               </div>
               <CategoriesGrid categories={categories} />
+              
             </div>
+            <p className="text-gray-600 mt-12 text-2xl mx-auto text-center w-full italic font-semibold ">
+                    ...and many more to come!
+                  </p>
           </div>
         </section>
 
-        <section>
-          <div className="py-24">
+        <section className="float-animation">
+          <div className="py-12 pt-0">
             <div className="container mx-auto px-4">
               <div className="flex justify-between items-center mb-8">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-800">
+                  <h2 className="text-4xl font-bold text-gray-800">
                     Featured Courses
                   </h2>
                   <p className="text-gray-600 mt-2">
                     Explore our Popular Courses
                   </p>
                 </div>
+                
                 <Button
+                                  onClick={() => navigate("/course")}
+
                   type="default"
-                  className="hover:bg-orange-500 hover:text-white transition-colors"
-                  onClick={() => navigate("/course")}
+                  className="group hover:bg-orange-500 hover:text-white text-base transition-colors py-6 px-6 rounded-3xl font-jost"
+                  style={{
+                    backgroundColor: "#f97316",
+                    color:"white"
+                    
+                  }}
                 >
-                  All Courses
+                  All Courses <BiSolidArrowFromLeft className="group-hover:scale-150 transition "/>
                 </Button>
               </div>
               <CoursesGrid courses={courses} viewMode="grid" />
@@ -260,15 +313,22 @@ const HomePage = () => {
           </div>
         </section>
 
-        <section>
+        <section className="p-4 float-animation">
+        <div>
+                  <h2 className="text-4xl font-bold text-gray-800">
+Students Love Us. Instructors Do Too                  </h2>
+                  <p className="text-gray-600">
+                    Learn anything from home with experts 
+                  </p>
+                </div>
           <ProofOfProduct />
         </section>
 
-        <section>
+        <section className="float-animation">
           <CTABanner />
         </section>
 
-        <section>
+        <section className="float-animation">
           <LatestArticles />
         </section>
       </main>
