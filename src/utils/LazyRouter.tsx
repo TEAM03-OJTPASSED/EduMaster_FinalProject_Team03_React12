@@ -142,3 +142,6 @@ export const InstructorContent = React.lazy(
 export const AdminLayout = React.lazy(
   () => import("../defaultLayout/AdminLayout")
 );
+export const ForgotPasswordPage = React.lazy(
+  () => import("../pages/AuthPage/ForgotPasswordPage")
+);
