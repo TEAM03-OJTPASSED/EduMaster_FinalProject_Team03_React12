@@ -65,6 +65,8 @@ const Navbar = () => {
   const handleMenuClick: MenuProps["onClick"] = (e) => {
     const selectedItem = items.find((item) => item.key === e.key);
     if (selectedItem) {
+      // Set the active button to "pages" when navigating to any page in the dropdown
+      setActiveButton("pages");
       navigate(selectedItem.path);
     }
   };
@@ -127,7 +129,11 @@ const Navbar = () => {
 
             {/* Dropdown Menu */}
             <Dropdown menu={menuProps}>
-              <Button color="default" variant="text">
+              <Button
+                className={`navbar-button ${
+                  activeButton === "pages" ? "active" : ""
+                } text-xs sm:text-base`}
+              >
                 <Space className="text-base font-semibold">
                   Pages
                   <DownOutlined />

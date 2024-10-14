@@ -1,146 +1,56 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import LoadingWrapper from "./components/Loading/LoadingWrapper";
-import React, { Suspense } from "react";
+import { Suspense } from "react";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import CoursesPage from "./pages/CoursesPage";
 import BlogPage from "./pages/BlogPage";
 import CourseDetailPage from "./pages/CourseDetailPage";
-
-const CategoryManagement = React.lazy(
-  () => import("./pages/AdminDashboard/categoryManagement")
-);
-const AllCourse = React.lazy(
-  () => import("./pages/AdminDashboard/monitors/course/AllCourse")
-);
-const SessionList = React.lazy(
-  () => import("./pages/AdminDashboard/monitors/course/SessionList")
-);
-const LessonList = React.lazy(
-  () => import("./pages/AdminDashboard/monitors/course/LessonList")
-);
-const PendingCourse = React.lazy(
-  () => import("./pages/AdminDashboard/monitors/pending_course/PendingCourse")
-);
-const CourseList = React.lazy(
-  () => import("./pages/AdminDashboard/monitors/course/CourseList")
-);
-const PendingCourseList = React.lazy(
-  () =>
-    import("./pages/AdminDashboard/monitors/pending_course/PendingCourseList")
-);
-const PendingSessionList = React.lazy(
-  () =>
-    import("./pages/AdminDashboard/monitors/pending_course/PendingSessionList")
-);
-const PendingLessonList = React.lazy(
-  () =>
-    import("./pages/AdminDashboard/monitors/pending_course/PendingLessonList")
-);
-const BlogManagement = React.lazy(
-  () => import("./pages/AdminDashboard/BlogManagement")
-);
-const CourseLog = React.lazy(() => import("./pages/AdminDashboard/CourseLog"));
-const PurchaseLog = React.lazy(
-  () => import("./pages/AdminDashboard/PurchaseLog")
-);
-const InstructorPayout = React.lazy(
-  () =>
-    import("./pages/InstructorDashboard/instructor-management/InstructorPayout")
-);
-const InstructorOrder = React.lazy(
-  () =>
-    import("./pages/InstructorDashboard/instructor-management/InstructorOrder")
-);
-const InstructorCourses = React.lazy(
-  () =>
-    import("./pages/InstructorDashboard/instructor-monitor/InstructorCourses")
-);
-const InstructorCourseList = React.lazy(
-  () =>
-    import(
-      "./pages/InstructorDashboard/instructor-monitor/InstructorCourseList"
-    )
-);
-const IntructorSessionList = React.lazy(
-  () =>
-    import(
-      "./pages/InstructorDashboard/instructor-monitor/IntructorSessionList"
-    )
-);
-const InstructorLessonList = React.lazy(
-  () =>
-    import(
-      "./pages/InstructorDashboard/instructor-monitor/InstructorLessonList"
-    )
-);
-const InstructorCreateCourse = React.lazy(
-  () =>
-    import(
-      "./pages/InstructorDashboard/instructor-monitor/InstructorCreateCourse"
-    )
-);
-const InstructorCourseLog = React.lazy(
-  () =>
-    import("./pages/InstructorDashboard/instructor-report/InstructorCourseLog")
-);
-const InstructorPurchaseLog = React.lazy(
-  () =>
-    import(
-      "./pages/InstructorDashboard/instructor-report/InstructorPurchaseLog"
-    )
-);
-const InstructorEarning = React.lazy(
-  () =>
-    import("./pages/InstructorDashboard/instructor-report/InstructorEarning")
-);
-const InstructorDiscount = React.lazy(
-  () =>
-    import(
-      "./pages/InstructorDashboard/instructor-management/InstructorDiscount"
-    )
-);
-const InstructorReview = React.lazy(
-  () => import("./pages/InstructorDashboard/InstructorReview")
-);
-const InstructorSetting = React.lazy(
-  () => import("./pages/InstructorDashboard/InstructorSetting")
-);
-
-// Lazy loading components
-const AdminContent = React.lazy(
-  () => import("./pages/AdminDashboard/AdminContent")
-);
-const UserManagement = React.lazy(
-  () => import("./pages/AdminDashboard/userManagement")
-);
-const RequestUser = React.lazy(
-  () => import("./pages/AdminDashboard/RequestUser")
-);
-
-const StudentPage = React.lazy(() => import("./pages/Dashboard/Studentpage"));
-const GeneralLayout = React.lazy(() => import("./defaultLayout/Layout"));
-const HomePage = React.lazy(() => import("./pages/Homepage"));
-const Loginpage = React.lazy(() => import("./pages/AuthPage/Loginpage"));
-const SignUppage = React.lazy(() => import("./pages/AuthPage/SignUppage"));
-
-const ContactPage = React.lazy(() => import("./pages/Contactpage"));
-const FAQsPage = React.lazy(() => import("./pages/FAQspage"));
-const ErrorPage = React.lazy(() => import("./pages/Errorpage"));
-
-const InstructorLayout = React.lazy(
-  () => import("./defaultLayout/InstructorLayout")
-);
-const InstructorContent = React.lazy(
-  () => import("./pages/InstructorDashboard/InstructorContent")
-);
-const AdminLayout = React.lazy(() => import("./defaultLayout/AdminLayout"));
+import GeneralLayout from "./defaultLayout/Layout";
+import HomePage from "./pages/Homepage";
+import Loginpage from "./pages/AuthPage/Loginpage";
+import SignUppage from "./pages/AuthPage/SignUppage";
+import ContactPage from "./pages/Contactpage";
+import FAQsPage from "./pages/FAQspage";
+import ErrorPage from "./pages/Errorpage";
+import StudentPage from "./pages/Dashboard/Studentpage";
+import AdminLayout from "./defaultLayout/AdminLayout";
+import AdminContent from "./pages/AdminDashboard/AdminContent";
+import UserManagement from "./pages/AdminDashboard/userManagement";
+import RequestUser from "./pages/AdminDashboard/RequestUser";
+import CategoryManagement from "./pages/AdminDashboard/categoryManagement";
+import AllCourse from "./pages/AdminDashboard/monitors/course/AllCourse";
+import CourseList from "./pages/AdminDashboard/payoutManagement";
+import SessionList from "./pages/AdminDashboard/monitors/course/SessionList";
+import LessonList from "./pages/AdminDashboard/monitors/course/LessonList";
+import PendingCourse from "./pages/AdminDashboard/monitors/pending_course/PendingCourse";
+import PendingCourseList from "./pages/AdminDashboard/monitors/pending_course/PendingCourseList";
+import PendingSessionList from "./pages/AdminDashboard/monitors/pending_course/PendingSessionList";
+import PendingLessonList from "./pages/AdminDashboard/monitors/pending_course/PendingLessonList";
+import BlogManagement from "./pages/AdminDashboard/BlogManagement";
+import CourseLog from "./pages/AdminDashboard/CourseLog";
+import PurchaseLog from "./pages/AdminDashboard/PurchaseLog";
+import InstructorLayout from "./defaultLayout/InstructorLayout";
+import InstructorContent from "./pages/InstructorDashboard/InstructorContent";
+import InstructorPayout from "./pages/InstructorDashboard/instructor-management/InstructorPayout";
+import InstructorOrder from "./pages/InstructorDashboard/instructor-management/InstructorOrder";
+import InstructorCourses from "./pages/InstructorDashboard/instructor-monitor/InstructorCourses";
+import InstructorCourseList from "./pages/InstructorDashboard/instructor-monitor/InstructorCourseList";
+import IntructorSessionList from "./pages/InstructorDashboard/instructor-monitor/IntructorSessionList";
+import InstructorLessonList from "./pages/InstructorDashboard/instructor-monitor/InstructorLessonList";
+import InstructorCreateCourse from "./pages/InstructorDashboard/instructor-monitor/InstructorCreateCourse";
+import InstructorCourseLog from "./pages/InstructorDashboard/instructor-report/InstructorCourseLog";
+import InstructorPurchaseLog from "./pages/InstructorDashboard/instructor-report/InstructorPurchaseLog";
+import InstructorEarning from "./pages/InstructorDashboard/instructor-report/InstructorEarning";
+import InstructorDiscount from "./pages/InstructorDashboard/instructor-management/InstructorDiscount";
+import InstructorReview from "./pages/InstructorDashboard/InstructorReview";
+import InstructorSetting from "./pages/InstructorDashboard/InstructorSetting";
 
 function App() {
   return (
     <BrowserRouter>
-      <LoadingWrapper>
-        <Suspense fallback>
+      <Suspense fallback={<LoadingWrapper />}>
+        <LoadingWrapper>
           <Routes>
             {/* General Layout */}
             <Route path="/" element={<GeneralLayout />}>
@@ -237,8 +147,8 @@ function App() {
               <Route path="/dashboard/student/*" element={<StudentPage />} />
             </Route>
           </Routes>
-        </Suspense>
-      </LoadingWrapper>
+        </LoadingWrapper>
+      </Suspense>
     </BrowserRouter>
   );
 }

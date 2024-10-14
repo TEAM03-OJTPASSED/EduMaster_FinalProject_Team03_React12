@@ -72,7 +72,7 @@ const CreateBlog: React.FC<BlogFormProps> = ({
   const onFinish = (values: BlogFieldType) => {
     console.log("Success:", values);
     if (onFinished) {
-      onFinished(values); 
+      onFinished(values);
     }
   };
 
