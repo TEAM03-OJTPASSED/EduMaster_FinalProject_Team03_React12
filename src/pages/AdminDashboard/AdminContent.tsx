@@ -50,6 +50,7 @@ const AdminContent = () => {
       dataIndex: "date",
       key: "date",
     }]
+    
   return (
     <div>
       <Divider orientation="left">

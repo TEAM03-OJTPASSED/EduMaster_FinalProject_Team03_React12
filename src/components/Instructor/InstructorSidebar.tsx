@@ -10,7 +10,10 @@ import {
   FormOutlined,
   FolderOutlined,
   MoneyCollectOutlined,
+  BookOutlined,
   FileTextOutlined,
+  PercentageOutlined,
+  StarOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
@@ -19,68 +22,67 @@ const menuItems = [
     key: "dashboard",
     icon: <DashboardOutlined />,
     title: "Dashboard",
-    path: "/admin/dashboard",
+    path: "/instructor/dashboard",
   },
   {
     key: "management",
     icon: <BarChartOutlined />,
-    title: "Management",
+    label: "Management",
     children: [
       {
-        key: "management-users", // Đặt key duy nhất cho mục con
-        icon: <UserOutlined />,
-        title: "Users",
-        path: "/admin/users",
-      },
-      {
-        key: "management-requests", // Đặt key duy nhất cho mục con
-        icon: <FormOutlined />,
-        title: "Request",
-        path: "/admin/request-management",
-      },
-      {
-        key: "management-categories", // Đặt key duy nhất cho mục con
-        icon: <FolderOutlined />,
-        title: "Category",
-        path: "/admin/categories",
-      },
-      {
-        key: "management-payout", // Đặt key duy nhất cho mục con
+        key: "management-payout",
         icon: <MoneyCollectOutlined />,
         title: "Payout",
-        path: "/admin/payout",
+        path: "/instructor/payout",
       },
       {
-        key: "management-blog", // Đặt key duy nhất cho mục con
-        icon: <FileTextOutlined />,
-        title: "Blog",
-        path: "/admin/blog",
+        key: "management-order", // Đặt key duy nhất cho mục con
+        icon: <BookOutlined />,
+        title: "Order",
+        path: "/instructor/order",
+      },
+      {
+        key: "management-discount", // Đặt key duy nhất cho mục con
+        icon: <PercentageOutlined />,
+        title: "Discount",
+        path: "/instructor/discount",
       },
     ],
   },
   {
-    key: "sub2",
+    key: "monitor",
     icon: <PieChartOutlined />,
-    title: "Monitor",
+    label: "Monitor",
     children: [
-      { key: "3-1", title: "All Courses", path: "/admin/all-courses" },
-      { key: "3-2", title: "Pending Course", path: "/admin/pending-courses" },
+      { key: "3-1", title: "My Courses", path: "/instructor/my-courses" },
+      {
+        key: "3-2",
+        title: "Create Course",
+        path: "/instructor/create-courses",
+      },
     ],
   },
   {
-    key: "sub3",
+    key: "reports",
     icon: <LineChartOutlined />,
-    title: "Reports",
+    label: "Reports",
     children: [
-      { key: "4-1", title: "Course log", path: "/admin/course-log" },
-      { key: "4-2", title: "Purchase log", path: "/admin/purchase-log" },
+      { key: "4-1", title: "Course log", path: "/instructor/course-log" },
+      { key: "4-2", title: "Purchase log", path: "/instructor/purchase-log" },
+      { key: "4-3", title: "Earning", path: "/instructor/earning" },
     ],
   },
   {
-    key: "5",
+    key: "settings",
     icon: <SettingOutlined />,
     title: "Settings",
-    path: "/admin/settings",
+    path: "/instructor/settings",
+  },
+  {
+    key: "6",
+    icon: <StarOutlined />,
+    title: "Review",
+    path: "/instructor/review",
   },
 ];
 
@@ -90,7 +92,7 @@ const InstructorSidebar: React.FC<{ onMenuClick?: () => void }> = ({
   const navigate = useNavigate();
 
   const handleMenuClick = (key: string) => {
-    if (onMenuClick) onMenuClick(); // Đóng Drawer nếu cần
+    if (onMenuClick) onMenuClick(); // Close Drawer if needed
 
     const selectedItem = menuItems.find(
       (item) =>
@@ -106,33 +108,38 @@ const InstructorSidebar: React.FC<{ onMenuClick?: () => void }> = ({
 
   const renderMenuItems = (items: typeof menuItems) => {
     return items.map((item) => {
+      const menuItem = {
+        key: item.key,
+        icon: item.icon,
+        label: item.label,
+        onClick: () => handleMenuClick(item.key),
+      };
+
       if (item.children) {
-        return (
-          <Menu.SubMenu
-            key={item.key}
-            icon={item.icon}
-            title={item.title}
-          >
-            {renderMenuItems(item.children)}
-          </Menu.SubMenu>
-        );
+        // For submenu, use children
+        return {
+          key: item.key,
+          icon: item.icon,
+          label: item.label,
+          children: item.children.map((child) => ({
+            key: child.key,
+            icon: child.icon,
+            label: child.label,
+            onClick: () => handleMenuClick(child.key),
+          })),
+        };
       }
-      return (
-        <Menu.Item
-          key={item.key}
-          icon={item.icon}
-          onClick={() => handleMenuClick(item.key)}
-        >
-          {item.title}
-        </Menu.Item>
-      );
+      return menuItem; // Return the regular menu item
     });
   };
 
   return (
-    <Menu theme="light" mode="inline" defaultSelectedKeys={["1"]}>
-      {renderMenuItems(menuItems)}
-    </Menu>
+    <Menu
+      theme="light"
+      mode="inline"
+      defaultSelectedKeys={["dashboard"]}
+      items={renderMenuItems(menuItems)}
+    />
   );
 };
 

@@ -1,15 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Jost:wght@100;200;300;400;500;600;700;800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Exo:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Jost:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Exo:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 .font-jost {
-  font-family: 'Jost', sans-serif;
+  font-family: "Jost", sans-serif;
 }
 .font-exo {
-  font-family: 'Exo', sans-serif;
+  font-family: "Exo", sans-serif;
 }
 
 :root {
@@ -18,24 +18,24 @@
   --font-size-base: 16px; /* Kích thước chữ cơ bản */
 
   /* Primary Colors */
-  --color-primary-default: #FF782D;
-  --color-primary-hover: #FFAB2D;
-  --color-primary-pressed: #F8620E;
+  --color-primary-default: #ff782d;
+  --color-primary-hover: #ffab2d;
+  --color-primary-pressed: #f8620e;
 
   /* Absolute Colors */
   --color-absolute-black: #000000;
-  --color-absolute-white: #FFFFFF;
+  --color-absolute-white: #ffffff;
 
   /* Neutral Colors */
   --color-neutral-dark-grey: #555555;
-  --color-neutral-grey: #9D9D9D;
-  --color-neutral-light-grey: #EAEAEA;
-  --color-neutral-white-grey: #F5F5F5;
+  --color-neutral-grey: #9d9d9d;
+  --color-neutral-light-grey: #eaeaea;
+  --color-neutral-white-grey: #f5f5f5;
 
   /* Status Colors */
-  --color-status-info: #2580D5;
-  --color-status-success: #55BE24;
-  --color-status-warning: #FFB100;
+  --color-status-info: #2580d5;
+  --color-status-success: #55be24;
+  --color-status-warning: #ffb100;
 }
 
 .h3 {
@@ -43,7 +43,6 @@
   font-weight: 600;
   color: var(--color-primary-default);
 }
-
 
 /* styles.css */
 .navbar-button {
@@ -61,7 +60,6 @@
 
 .navbar-button:hover {
   color: var(--color-primary-hover) !important; /* Màu chữ */
-
 }
 
 .navbar-button:active {
@@ -74,7 +72,9 @@
 }
 
 .navbar-button.active:hover {
-  background-color: var(--color-neutral-white-grey) !important; /* Màu nền khi click */
+  background-color: var(
+    --color-neutral-white-grey
+  ) !important; /* Màu nền khi click */
 }
 
 .dropdown-menu-button {
