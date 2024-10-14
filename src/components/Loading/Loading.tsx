@@ -2,9 +2,6 @@ import "./Loading.css";
 const CustomLoading = () => {
   return (
     <div className="w-full, h-screen">
-      <div className="loading-container">
-        <p>Please Wait !</p>
-      </div>
       <div className="loading-page">
         <svg
           id="svg"

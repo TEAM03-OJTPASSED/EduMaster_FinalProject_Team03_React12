@@ -1,62 +1,72 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./utils/ProtectedRoute";
-import AdminContent from "./pages/AdminDashboard/AdminContent";
-
-import UserManagement from "./pages/AdminDashboard/userManagement";
-import InstructorPage from "./pages/Dashboard/Instructorpage";
-
+import LoadingWrapper from "./components/Loading/LoadingWrapper";
+import React from "react";
+import CategoryManagement from "./pages/AdminDashboard/categoryManagement";
 import AllCourse from "./pages/AdminDashboard/monitors/course/AllCourse";
-import CourseList from "./pages/AdminDashboard/monitors/course/CourseList";
 import SessionList from "./pages/AdminDashboard/monitors/course/SessionList";
 import LessonList from "./pages/AdminDashboard/monitors/course/LessonList";
 import PendingCourse from "./pages/AdminDashboard/monitors/pending_course/PendingCourse";
+import CourseList from "./pages/AdminDashboard/monitors/course/CourseList";
+import PendingCourseList from "./pages/AdminDashboard/monitors/pending_course/PendingCourseList";
 import PendingSessionList from "./pages/AdminDashboard/monitors/pending_course/PendingSessionList";
 import PendingLessonList from "./pages/AdminDashboard/monitors/pending_course/PendingLessonList";
-import PendingCourseList from "./pages/AdminDashboard/monitors/pending_course/PendingCourseList";
-import PayoutManagement from "./pages/AdminDashboard/PayoutManagement";
 import BlogManagement from "./pages/AdminDashboard/BlogManagement";
-
-import StudentPage from "./pages/Dashboard/Studentpage";
-import GeneralLayout from "./defaultLayout/Layout";
-import HomePage from "./pages/Homepage";
-import Loginpage from "./pages/AuthPage/Loginpage";
-import SignUppage from "./pages/AuthPage/SignUppage";
-import CoursesPage from "./pages/CoursesPage";
-import BlogPage from "./pages/BlogPage";
-import ContactPage from "./pages/Contactpage";
-import FAQsPage from "./pages/FAQspage";
-import ErrorPage from "./pages/Errorpage";
-import CourseDetailPage from "./pages/CourseDetailPage";
-import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-import InstructorLayout from "./defaultLayout/InstructorLayout";
-import InstructorContent from "./pages/InstructorDashboard/InstructorContent";
-import AdminLayout from "./defaultLayout/AdminLayout";
-import LoadingWrapper from "./components/Loading/LoadingWrapper";
-import CategoryManagement from "./pages/AdminDashboard/CategoryManagement";
-
-import InstructorPayout from "./pages/InstructorDashboard/instructor-management/InstructorPayout";
-import InstructorOrder from "./pages/InstructorDashboard/instructor-management/InstructorOrder";
-import InstructorDiscount from "./pages/InstructorDashboard/instructor-management/InstructorDiscount";
-import InstructorCourseLog from "./pages/InstructorDashboard/instructor-report/InstructorCourseLog";
-import InstructorCourses from "./pages/InstructorDashboard/instructor-monitor/InstructorCourses";
-import InstructorCreateCourse from "./pages/InstructorDashboard/instructor-monitor/InstructorCreateCourse";
-import InstructorPurchaseLog from "./pages/InstructorDashboard/instructor-report/InstructorPurchaseLog";
-import InstructorEarning from "./pages/InstructorDashboard/instructor-report/InstructorEarning";
-import InstructorReview from "./pages/InstructorDashboard/InstructorReview";
-import InstructorSetting from "./pages/InstructorDashboard/InstructorSetting";
 import CourseLog from "./pages/AdminDashboard/CourseLog";
 import PurchaseLog from "./pages/AdminDashboard/PurchaseLog";
+import InstructorPayout from "./pages/InstructorDashboard/instructor-management/InstructorPayout";
+import InstructorOrder from "./pages/InstructorDashboard/instructor-management/InstructorOrder";
+import InstructorCourses from "./pages/InstructorDashboard/instructor-monitor/InstructorCourses";
 import InstructorCourseList from "./pages/InstructorDashboard/instructor-monitor/InstructorCourseList";
-import InstructorLessonList from "./pages/InstructorDashboard/instructor-monitor/InstructorLessonList";
 import IntructorSessionList from "./pages/InstructorDashboard/instructor-monitor/IntructorSessionList";
-import RequestUser from "./pages/AdminDashboard/RequestUser";
+import InstructorLessonList from "./pages/InstructorDashboard/instructor-monitor/InstructorLessonList";
+import InstructorCreateCourse from "./pages/InstructorDashboard/instructor-monitor/InstructorCreateCourse";
+import InstructorCourseLog from "./pages/InstructorDashboard/instructor-report/InstructorCourseLog";
+import InstructorPurchaseLog from "./pages/InstructorDashboard/instructor-report/InstructorPurchaseLog";
+import InstructorEarning from "./pages/InstructorDashboard/instructor-report/InstructorEarning";
+import InstructorDiscount from "./pages/InstructorDashboard/instructor-management/InstructorDiscount";
+import InstructorReview from "./pages/InstructorDashboard/InstructorReview";
+import InstructorSetting from "./pages/InstructorDashboard/InstructorSetting";
+
+// Lazy loading components
+const AdminContent = React.lazy(
+  () => import("./pages/AdminDashboard/AdminContent")
+);
+const UserManagement = React.lazy(
+  () => import("./pages/AdminDashboard/userManagement")
+);
+const RequestUser = React.lazy(() => import("./pages/AdminDashboard/RequestUser"));
+const InstructorPage = React.lazy(
+  () => import("./pages/Dashboard/Instructorpage")
+);
+const StudentPage = React.lazy(() => import("./pages/Dashboard/Studentpage"));
+const GeneralLayout = React.lazy(() => import("./defaultLayout/Layout"));
+const HomePage = React.lazy(() => import("./pages/Homepage"));
+const Loginpage = React.lazy(() => import("./pages/AuthPage/Loginpage"));
+const SignUppage = React.lazy(() => import("./pages/AuthPage/SignUppage"));
+const CoursesPage = React.lazy(() => import("./pages/CoursesPage"));
+const BlogPage = React.lazy(() => import("./pages/BlogPage"));
+const ContactPage = React.lazy(() => import("./pages/Contactpage"));
+const FAQsPage = React.lazy(() => import("./pages/FAQspage"));
+const ErrorPage = React.lazy(() => import("./pages/Errorpage"));
+const CourseDetailPage = React.lazy(() => import("./pages/CourseDetailPage"));
+
+const ForgotPasswordPage = React.lazy(
+  () => import("./pages/ForgotPasswordPage")
+);
+const InstructorLayout = React.lazy(
+  () => import("./defaultLayout/InstructorLayout")
+);
+const InstructorContent = React.lazy(
+  () => import("./pages/InstructorDashboard/InstructorContent")
+);
+const AdminLayout = React.lazy(() => import("./defaultLayout/AdminLayout"));
 
 function App() {
   return (
     <BrowserRouter>
-          <LoadingWrapper>
-
-Í        <Routes>
+      <LoadingWrapper>
+        <Routes>
           {/* General Layout */}
           <Route path="/" element={<GeneralLayout />}>
             <Route path="/" element={<HomePage />} />
@@ -106,7 +116,7 @@ function App() {
                 <Route path="session" element={<PendingSessionList />} />
                 <Route path="lesson" element={<PendingLessonList />} />
               </Route>
-              <Route path="payout" element={<PayoutManagement />} />
+              {/* <Route path="payout" element={<PayoutManagement />} /> */}
               <Route path="blog" element={<BlogManagement />} />
               <Route path="course-log" element={<CourseLog />} />
               <Route path="purchase-log" element={<PurchaseLog />} />
