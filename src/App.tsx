@@ -1,7 +1,11 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import LoadingWrapper from "./components/Loading/LoadingWrapper";
-import React from "react";
+import React, { Suspense } from "react";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import CoursesPage from "./pages/CoursesPage";
+import BlogPage from "./pages/BlogPage";
+import CourseDetailPage from "./pages/CourseDetailPage";
 
 const CategoryManagement = React.lazy(
   () => import("./pages/AdminDashboard/categoryManagement")
@@ -119,12 +123,10 @@ const GeneralLayout = React.lazy(() => import("./defaultLayout/Layout"));
 const HomePage = React.lazy(() => import("./pages/Homepage"));
 const Loginpage = React.lazy(() => import("./pages/AuthPage/Loginpage"));
 const SignUppage = React.lazy(() => import("./pages/AuthPage/SignUppage"));
-const CoursesPage = React.lazy(() => import("./pages/Coursespage"));
-const BlogPage = React.lazy(() => import("./pages/Blogpage"));
+
 const ContactPage = React.lazy(() => import("./pages/Contactpage"));
 const FAQsPage = React.lazy(() => import("./pages/FAQspage"));
 const ErrorPage = React.lazy(() => import("./pages/Errorpage"));
-const CourseDetailPage = React.lazy(() => import("./pages/CourseDetailpage"));
 
 const InstructorLayout = React.lazy(
   () => import("./defaultLayout/InstructorLayout")
@@ -137,8 +139,8 @@ const AdminLayout = React.lazy(() => import("./defaultLayout/AdminLayout"));
 function App() {
   return (
     <BrowserRouter>
-      <Suspense fallback={<LoadingWrapper />}>
-        <LoadingWrapper>
+      <LoadingWrapper>
+        <Suspense fallback>
           <Routes>
             {/* General Layout */}
             <Route path="/" element={<GeneralLayout />}>
@@ -235,8 +237,8 @@ function App() {
               <Route path="/dashboard/student/*" element={<StudentPage />} />
             </Route>
           </Routes>
-        </LoadingWrapper>
-      </Suspense>
+        </Suspense>
+      </LoadingWrapper>
     </BrowserRouter>
   );
 }
