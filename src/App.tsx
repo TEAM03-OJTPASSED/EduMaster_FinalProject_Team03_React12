@@ -47,6 +47,7 @@ import InstructorSetting from "./pages/InstructorDashboard/InstructorSetting";
 import ForgotPasswordPage from "./pages/AuthPage/ForgotPasswordPage";
 import PayoutManagement from "./pages/AdminDashboard/payoutManagement";
 import BlogDetailPage from "./pages/BlogDetailPage";
+import DashboardLayout from "./defaultLayout/DashboardLayout";
 
 function App() {
   return (
@@ -86,12 +87,7 @@ function App() {
                 <Route index element={<BlogDetailPage />} />
               </Route>
 
-              <Route
-                path="/dashboard/student/*"
-                element={<ProtectedRoute allowedRoles={["student"]} />}
-              >
-                <Route index element={<StudentPage />} />
-              </Route>
+  
             </Route>
 
             {/* Admin Layout */}
@@ -157,9 +153,21 @@ function App() {
             </Route>
 
             {/* Student Layout */}
-            <Route element={<AdminLayout />}>
-              <Route path="/dashboard/student/*" element={<StudentPage />} />
-            </Route>
+            
+
+            <Route
+                path="/student"
+                element={
+                  <ProtectedRoute allowedRoles={["student"]}></ProtectedRoute>
+                }
+              >
+                <Route element={<DashboardLayout role="student" />}>
+                <Route path="dashboard" element={<InstructorContent />} />
+                
+                  
+                </Route>
+              </Route>
+
           </Routes>
         </LoadingWrapper>
       </Suspense>

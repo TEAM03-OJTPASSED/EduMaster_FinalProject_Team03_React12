@@ -21,8 +21,9 @@ interface Course {
 export const SearchResults: React.FC<{
   courses: Course[];
   onSearch: (searchValue: string) => void;
+  searchQuery: string;
   // onCourseSelected: (course: Course) => void;
-}> = ({ courses, onSearch }) => {
+}> = ({ courses, onSearch, searchQuery }) => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
 
   return (
@@ -31,7 +32,8 @@ export const SearchResults: React.FC<{
         <h2 className="text-2xl font-bold">All Courses</h2>
         <div className="flex items-center space-x-4">
           <Search
-            placeholder="Search"
+            placeholder={"Search"}
+            defaultValue={searchQuery}
             style={{ width: 200 }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
