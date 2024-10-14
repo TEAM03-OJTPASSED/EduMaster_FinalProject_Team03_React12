@@ -48,6 +48,7 @@ const SessionItem = ({ items }: SessionItem) => {
       {viewMore && (
         <div className="">
           <div className="p-4 max-h-[300px] overflow-y-scroll">
+            {/* sort by position-order */}
             {listLessons.map((lesson, index) => {
               return <LessonItem key={index} index={++index} item={lesson} />;
             })}

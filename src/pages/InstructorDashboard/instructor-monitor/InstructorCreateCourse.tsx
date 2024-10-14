@@ -18,10 +18,7 @@ const InstructorCreateCourse = () => {
       title: "Curriculum",
       content: <Curriculum />,
     },
-    {
-      title: "Price",
-      content: <Price />,
-    },
+
     {
       title: "Published",
       content: "Published Successfully",
