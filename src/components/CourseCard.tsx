@@ -27,7 +27,7 @@ const CourseCard: React.FC<{ course: Course; viewMode: string }> = ({
   course,
   viewMode,
 }) => (
-  <a href={`/course/${course.id}`}>
+  <a href={`/course-detail/${course.id}`}>
     <Card
       hoverable
       styles={{

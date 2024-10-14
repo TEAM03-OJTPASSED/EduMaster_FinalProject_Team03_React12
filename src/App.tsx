@@ -45,8 +45,8 @@ import InstructorDiscount from "./pages/InstructorDashboard/instructor-managemen
 import InstructorReview from "./pages/InstructorDashboard/InstructorReview";
 import InstructorSetting from "./pages/InstructorDashboard/InstructorSetting";
 import ForgotPasswordPage from "./pages/AuthPage/ForgotPasswordPage";
-import BlogDetailPage from "./pages/BlogDetailPage";
 import PayoutManagement from "./pages/AdminDashboard/payoutManagement";
+import BlogDetailPage from "./pages/BlogDetailPage";
 
 function App() {
   return (
@@ -65,9 +65,8 @@ function App() {
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/faqs" element={<FAQsPage />} />
               <Route path="/error" element={<ErrorPage />} />
-              <Route path="/blog-detail/:id" element={<BlogDetailPage />} />
               <Route
-                path="/course/:id"
+                path="/course-detail/:id"
                 element={
                   <ProtectedRoute
                     allowedRoles={["student", "instructor", "admin"]}
@@ -76,7 +75,16 @@ function App() {
               >
                 <Route index element={<CourseDetailPage />} />
               </Route>
-              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route
+                path="/blog-detail/:id"
+                element={
+                  <ProtectedRoute
+                    allowedRoles={["student", "instructor", "admin"]}
+                  />
+                }
+              >
+                <Route index element={<BlogDetailPage />} />
+              </Route>
 
               <Route
                 path="/dashboard/student/*"
