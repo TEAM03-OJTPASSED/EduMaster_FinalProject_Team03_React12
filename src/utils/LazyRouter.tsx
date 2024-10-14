@@ -145,3 +145,7 @@ export const AdminLayout = React.lazy(
 export const ForgotPasswordPage = React.lazy(
   () => import("../pages/AuthPage/ForgotPasswordPage")
 );
+export const PayoutManagement = React.lazy(
+  () => import("../pages/AdminDashboard/payoutManagement")
+);
+
