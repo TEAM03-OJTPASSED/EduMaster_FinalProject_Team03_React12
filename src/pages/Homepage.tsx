@@ -102,7 +102,7 @@ const courses: Course[] = [
     category: "Photography",
     name: "Create An LMS Website With LearnPress",
     author: "Determined-Poitras",
-    duration: "2Weeks",
+    duration: "2 Weeks",
     students: 156,
     price: "Free",
     lessons: 2,
@@ -113,7 +113,7 @@ const courses: Course[] = [
     category: "Photography",
     name: "Design A Website With ThimPresscrececerrcerverger",
     author: "Determined-Poitras",
-    duration: "2Weeks",
+    duration: "2 Weeks",
     students: 156,
     price: 49.0,
     lessons: 2,
@@ -124,7 +124,7 @@ const courses: Course[] = [
     category: "Photography",
     name: "Create An LMS Website With LearnPress",
     author: "Determined-Poitras",
-    duration: "2Weeks",
+    duration: "2 Weeks",
     students: 156,
     price: "Free",
     lessons: 2,
@@ -135,7 +135,7 @@ const courses: Course[] = [
     category: "Photography",
     name: "Create An LMS Website With LearnPress",
     author: "Determined-Poitras",
-    duration: "2Weeks",
+    duration: "2 Weeks",
     students: 156,
     price: "Free",
     lessons: 2,
@@ -146,7 +146,7 @@ const courses: Course[] = [
     category: "Photography",
     name: "Create An LMS Website With LearnPress",
     author: "Determined-Poitras",
-    duration: "2Weeks",
+    duration: "2 Weeks",
     students: 156,
     price: "Free",
     lessons: 2,
@@ -157,7 +157,7 @@ const courses: Course[] = [
     category: "Photography",
     name: "Create An LMS Website With LearnPress",
     author: "Determined-Poitras",
-    duration: "2Weeks",
+    duration: "2 Weeks",
     students: 156,
     price: "Free",
     lessons: 2,
@@ -262,7 +262,7 @@ const HomePage = () => {
                   type="default"
                   className="group hover:bg-orange-500 hover:text-white text-base transition-colors py-6 px-6 rounded-3xl font-jost"
                   style={{
-                    backgroundColor: "#f97316",
+                    backgroundColor: "#0f0f0f",
                     color:"white"
                     
                   }}
@@ -300,7 +300,7 @@ const HomePage = () => {
                   type="default"
                   className="group hover:bg-orange-500 hover:text-white text-base transition-colors py-6 px-6 rounded-3xl font-jost"
                   style={{
-                    backgroundColor: "#f97316",
+                    backgroundColor: "#0f0f0f",
                     color:"white"
                     
                   }}
@@ -313,12 +313,12 @@ const HomePage = () => {
           </div>
         </section>
 
-        <section className="p-4 float-animation">
+        <section className="mt-4 p-8 pb-0 float-animation bg-zinc-50 rounded-3xl">
         <div>
-                  <h2 className="text-4xl font-bold text-gray-800">
+                  <h2 className="text-4xl font-bold text-gray-800 text-center">
 Students Love Us. Instructors Do Too                  </h2>
-                  <p className="text-gray-600">
-                    Learn anything from home with experts 
+                  <p className="text-orange-600 text-center">
+                    Learn <span className="underline font-semibold">anything</span> from home with experts 
                   </p>
                 </div>
           <ProofOfProduct />
