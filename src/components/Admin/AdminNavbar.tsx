@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Layout, Button, Drawer, Avatar, Dropdown, Menu } from "antd";
+import { Layout, Button, Drawer, Avatar, Dropdown } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import logoImage from "../../assets/EduMaster.png";
 import { useCustomNavigate } from "../../hooks/customNavigate";
@@ -29,19 +29,21 @@ const AdminNavBar = () => {
 
   const [isHovered, setIsHovered] = useState(false); // Thêm state cho hover
 
-  const menu = (
-    <Menu>
-      <Menu.Item key="profile" onClick={() => navigate("/profile")}>
-        Profile
-      </Menu.Item>
-      <Menu.Item key="settings" onClick={() => navigate("/settings")}>
-        Settings
-      </Menu.Item>
-      <Menu.Item key="logout" onClick={() => navigate("/logout")}>
-        Logout
-      </Menu.Item>
-    </Menu>
-  );
+  // Update the menu items to use items prop
+  const menuItems = [
+    {
+      key: "profile",
+      label: <span onClick={() => navigate("/profile")}>Profile</span>,
+    },
+    {
+      key: "settings",
+      label: <span onClick={() => navigate("/settings")}>Settings</span>,
+    },
+    {
+      key: "logout",
+      label: <span onClick={() => navigate("/logout")}>Logout</span>,
+    },
+  ];
 
   return (
     <>
@@ -92,7 +94,7 @@ const AdminNavBar = () => {
           />
         </div>
 
-        <Dropdown overlay={menu} trigger={["click"]}>
+        <Dropdown menu={{ items: menuItems }} trigger={["click"]}>
           <div
             style={{
               display: "flex",
