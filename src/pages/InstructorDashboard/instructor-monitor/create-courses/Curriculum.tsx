@@ -8,11 +8,12 @@ const Curriculum = () => {
   const [isVisibleModal, setIsVisibleModal] = useState(false)
   const handleOk = ()=>{
     setIsVisibleModal(true)
-    
   }
   const handleCancel = ()=>{
     setIsVisibleModal(false)
-   
+  }
+  const handleCreateSession = ()=>{
+    
   }
   return (
     <div>
