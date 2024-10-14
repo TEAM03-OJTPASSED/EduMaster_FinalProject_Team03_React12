@@ -46,6 +46,7 @@ import InstructorReview from "./pages/InstructorDashboard/InstructorReview";
 import InstructorSetting from "./pages/InstructorDashboard/InstructorSetting";
 import ForgotPasswordPage from "./pages/AuthPage/ForgotPasswordPage";
 import BlogDetailPage from "./pages/BlogDetailPage";
+import PayoutManagement from "./pages/AdminDashboard/payoutManagement";
 
 function App() {
   return (
@@ -96,6 +97,8 @@ function App() {
                 <Route path="users" element={<UserManagement />} />
                 <Route path="request-management" element={<RequestUser />} />
                 <Route path="categories" element={<CategoryManagement />} />
+                <Route path="payout" element={<PayoutManagement />} />
+
                 <Route path="all-courses" element={<AllCourse />}>
                   <Route index element={<CourseList />} />
                   <Route path="session" element={<SessionList />} />

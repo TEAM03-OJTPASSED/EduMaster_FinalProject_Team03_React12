@@ -148,3 +148,6 @@ export const ForgotPasswordPage = React.lazy(
 export const BlogDetailPage = React.lazy(
   () => import("../pages/BlogDetailPage")
 );
+export const PayoutManagement = React.lazy(
+  () => import("../pages/AdminDashboard/payoutManagement")
+);
