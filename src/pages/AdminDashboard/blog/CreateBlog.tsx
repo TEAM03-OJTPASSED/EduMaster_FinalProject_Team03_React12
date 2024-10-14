@@ -2,8 +2,8 @@ import { Button, Form, Upload, Input, Select, Image } from "antd";
 import React, { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import type { FormProps, UploadFile, UploadProps } from "antd";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+// import { CKEditor } from "@ckeditor/ckeditor5-react";
+// import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import "./CreateBlog.css";
 const { Option } = Select;
 
@@ -139,7 +139,7 @@ const CreateBlog: React.FC<BlogFormProps> = ({
         name="content"
         rules={[{ required: true, message: "Please enter the blog content!" }]}
       >
-        <CKEditor
+        {/* <CKEditor
           editor={ClassicEditor}
           data={form.getFieldValue("content") || ""}
           onChange={(event, editor) => {
@@ -155,7 +155,7 @@ const CreateBlog: React.FC<BlogFormProps> = ({
               editableElement.style.minHeight = "1000px";
             }
           }}
-        />
+        /> */}
       </Form.Item>
 
       {/* Submit Button */}

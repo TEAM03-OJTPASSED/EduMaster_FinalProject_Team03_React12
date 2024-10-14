@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { Layout } from "antd";
 import DynamicBreadcrumb from "../components/Breadcrumb/Breadcrumb";

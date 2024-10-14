@@ -1,26 +1,18 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import {
   Table,
-  Button,
   Input,
-  Space,
   Card,
-  Typography,
-  Select,
-  Switch,
 } from "antd";
 import {
   SearchOutlined,
-  EditOutlined,
-  DeleteOutlined,
+  
 } from "@ant-design/icons";
 import EditUserModal from "../../components/Admin/AdminModals/EditUserModal";
 
-const { Title } = Typography;
-const { Option } = Select; // Destructure Option from Select
 
 const UserManagement = () => {
-  const [dataSource, setDataSource] = useState([
+  const [dataSource] = useState([
     {
       key: "1",
       name: "Nguyễn Văn A",
@@ -54,19 +46,10 @@ const UserManagement = () => {
   ]);
 
   const [editVisible, setEditVisible] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser] = useState(null);
 
-  const handleEdit = (record) => {
-    setCurrentUser(record); // Set the current user to edit
-    setEditVisible(true); // Show edit modal
-  };
 
-  const handleDelete = (record) => {
-    console.log("Deleting user:", record);
-    // Implement delete logic
-  };
-
-  const handleSave = (values) => {
+  const handleSave = (values:any) => {
     console.log("Saving user:", values);
     // Update user logic here, possibly update dataSource state
     // setDataSource(updatedData);
@@ -97,30 +80,30 @@ const UserManagement = () => {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
-      render: (text, record) => (
-        <Switch
-          checked={text}
-          // checkedChildren="Kích hoạt"
-          // unCheckedChildren="Không kích hoạt"
-          onChange={(checked) => handleStatusChange(checked, record.key)}
-        />
-      ),
+      // render: () => (
+      //   // <Switch
+      //   //   checked={text}
+      //   //   // checkedChildren="Kích hoạt"
+      //   //   // unCheckedChildren="Không kích hoạt"
+      //   //   onChange={(checked) => handleStatusChange(checked, record.key)}
+      //   // />
+      // ),
     },
     {
       title: "Loại người dùng",
       dataIndex: "role",
       key: "role",
-      render: (text, record) => (
-        <Select
-          defaultValue={text}
-          style={{ width: 120 }}
-          onChange={(value) => handleRoleChange(value, record.key)}
-        >
-          <Option value="Admin">Admin</Option>
-          <Option value="Instructor">Instructor</Option>
-          <Option value="Student">Student</Option>
-        </Select>
-      ),
+      // render: (text, record) => (
+      //   <Select
+      //     defaultValue={text}
+      //     style={{ width: 120 }}
+      //     onChange={(value) => handleRoleChange(value, record.key)}
+      //   >
+      //     <Option value="Admin">Admin</Option>
+      //     <Option value="Instructor">Instructor</Option>
+      //     <Option value="Student">Student</Option>
+      //   </Select>
+      // ),
     },
     // {
     //   title: "Ngày tạo",
@@ -130,26 +113,26 @@ const UserManagement = () => {
     {
       title: "Hành động",
       key: "action",
-      render: (text, record) => (
-        <Space size="middle">
-          <Button
-            color="primary"
-            variant="outlined"
-            icon={<EditOutlined />}
-            onClick={() => handleEdit(record)}
-          >
-            Chỉnh sửa
-          </Button>
-          <Button
-            color="danger"
-            variant="outlined"
-            icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record)}
-          >
-            Xóa
-          </Button>
-        </Space>
-      ),
+      // render: (text, record) => (
+      //   <Space size="middle">
+      //     <Button
+      //       color="primary"
+      //       variant="outlined"
+      //       icon={<EditOutlined />}
+      //       onClick={() => handleEdit(record)}
+      //     >
+      //       Chỉnh sửa
+      //     </Button>
+      //     <Button
+      //       color="danger"
+      //       variant="outlined"
+      //       icon={<DeleteOutlined />}
+      //       onClick={() => handleDelete(record)}
+      //     >
+      //       Xóa
+      //     </Button>
+      //   </Space>
+      // ),
     },
   ];
 

@@ -2,7 +2,7 @@ import { SetStateAction, useState } from "react";
 import { Overview } from "./Detail/Overview";
 import { Curriculum } from "./Detail/Curriculum";
 import { Instructor } from "./Instructor";
-import { Reviews } from "./Detail/Review"; // Assuming you have a ReviewComponent
+import { Reviews } from "./Detail/Review"; // Assuming you have a Review component
 
 type Course = {
   name: string;
@@ -21,6 +21,45 @@ type Course = {
   updated_at: string;
   __v: number;
 };
+
+interface Instructor {
+  email: string;
+  name: string;
+  google_id: string;
+  role: string;
+  status: boolean;
+  description: string;
+  phone_number: string;
+  avatar_url: string;
+  video_url: string;
+  is_verified: boolean;
+  token_version: number;
+  balance: number;
+  balance_total: number;
+  bank_name: string;
+  bank_account_no: string;
+  bank_account_name: string;
+  is_deleted: boolean;
+  _id: string;
+  dob: string;
+  created_at: string;
+  updated_at: string;
+  __v: number;
+}
+
+interface Review {
+  _id: string;
+  user_id: string;
+  course_id: string;
+  comment: string;
+  rating: number;
+  is_deleted: boolean;
+  created_at: string;
+  updated_at: string;
+  __v: number;
+}
+
+
 const sampleCourses: Course[] = [
   {
     name: "Nodejs Beginner 2027",
@@ -242,89 +281,38 @@ export const Detail = ({ a }: Props) => {
     <div className="flex">
       <div className="border-2 border-gray-200 rounded-lg mt-12 w-2/3">
         <div className="flex justify-between items-center">
-          <label className="w-1/4 text-center font-semibold cursor-pointer">
-            <input
-              type="radio"
-              name="tab"
-              value="overview"
-              checked={selected === "overview"}
-              onChange={handleChange}
-              className="hidden"
-            />
-            <div
-              className={`p-2 ${
-                selected === "overview"
-                  ? "bg-neutral-100 text-orange-500 border-b-2 border-neutral-100 rounded-t-lg border-x-2 border-r-gray-200"
-                  : "bg-white-200 border-b-2 border-gray-200"
-              }`}
+          {["overview", "curriculum", "instructor", "reviews"].map((tab) => (
+            <label
+              key={tab}
+              className="w-1/4 text-center font-semibold cursor-pointer"
             >
-              Overview
-            </div>
-          </label>
-          <label className="w-1/4 text-center font-semibold cursor-pointer">
-            <input
-              type="radio"
-              name="tab"
-              value="curriculum"
-              checked={selected === "curriculum"}
-              onChange={handleChange}
-              className="hidden"
-            />
-            <div
-              className={`p-2 ${
-                selected === "curriculum"
-                  ? "bg-neutral-100 text-orange-500 border-b-2 border-neutral-100 rounded-t-lg border-x-2 border-x-gray-200"
-                  : "bg-white-200 border-b-2 border-gray-200"
-              }`}
-            >
-              Curriculum
-            </div>
-          </label>
-          <label className="w-1/4 text-center font-semibold cursor-pointer">
-            <input
-              type="radio"
-              name="tab"
-              value="instructor"
-              checked={selected === "instructor"}
-              onChange={handleChange}
-              className="hidden"
-            />
-            <div
-              className={`p-2 ${
-                selected === "instructor"
-                  ? "bg-neutral-100 text-orange-500 border-b-2 border-neutral-100 rounded-t-lg border-x-2 border-x-gray-200"
-                  : "bg-white-200 border-b-2 border-gray-200"
-              }`}
-            >
-              Instructor
-            </div>
-          </label>
-          <label className="w-1/4 text-center font-semibold cursor-pointer">
-            <input
-              type="radio"
-              name="tab"
-              value="reviews"
-              checked={selected === "reviews"}
-              onChange={handleChange}
-              className="hidden"
-            />
-            <div
-              className={`p-2 ${
-                selected === "reviews"
-                  ? "bg-neutral-100 text-orange-500 border-b-2 border-neutral-100 rounded-t-lg border-x-2 border-l-gray-200"
-                  : "bg-white-200 border-b-2 border-gray-200"
-              }`}
-            >
-              Reviews
-            </div>
-          </label>
+              <input
+                type="radio"
+                name="tab"
+                value={tab}
+                checked={selected === tab}
+                onChange={handleChange}
+                className="hidden"
+              />
+              <div
+                className={`p-2 ${
+                  selected === tab
+                    ? "bg-neutral-100 text-orange-500 border-b-2 border-neutral-100 rounded-t-lg border-x-2 border-gray-200"
+                    : "bg-white-200 border-b-2 border-gray-200"
+                }`}
+              >
+                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              </div>
+            </label>
+          ))}
         </div>
+
         <div className="p-4 bg-neutral-100">
-          {selected === "overview" && <Overview a="1" />}
+          {selected === "overview" && <Overview a={a} />}
           {selected === "curriculum" && (
             <Curriculum courses={sampleCourses} lessons={sampleLessons} />
           )}
-          {selected ==="instructor" && <Instructor items={sampleInstructor} />}
+          {selected === "instructor" && <Instructor items={sampleInstructor} />}
           {selected === "reviews" && <Reviews items={sampleReviews} />}
         </div>
       </div>

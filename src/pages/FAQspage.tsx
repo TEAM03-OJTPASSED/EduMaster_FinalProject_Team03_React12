@@ -1,5 +1,5 @@
 import { useCustomNavigate } from "../hooks/customNavigate";
-import React, { useState } from "react";
+import  { useState } from "react";
 
 const FAQsPage = () => {
   const navigate = useCustomNavigate();
