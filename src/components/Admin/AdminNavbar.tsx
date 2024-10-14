@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Button, Drawer, Avatar, Dropdown } from "antd";
-import { MenuOutlined } from "@ant-design/icons";
+import {
+  MenuOutlined,
+  UserOutlined,
+  SettingOutlined,
+  LogoutOutlined,
+} from "@ant-design/icons";
 import logoImage from "../../assets/EduMaster.png";
 import { useCustomNavigate } from "../../hooks/customNavigate";
 import AdminSidebar from "./AdminSidebar";
@@ -29,19 +34,22 @@ const AdminNavBar = () => {
 
   const [isHovered, setIsHovered] = useState(false); // Thêm state cho hover
 
-  // Update the menu items to use items prop
+  // The menu items
   const menuItems = [
     {
       key: "profile",
       label: <span onClick={() => navigate("/profile")}>Profile</span>,
+      icon: <UserOutlined />, // Thêm icon UserOutlined cho Profile
     },
     {
       key: "settings",
       label: <span onClick={() => navigate("/settings")}>Settings</span>,
+      icon: <SettingOutlined />, // Thêm icon SettingOutlined cho Settings
     },
     {
       key: "logout",
       label: <span onClick={() => navigate("/logout")}>Logout</span>,
+      icon: <LogoutOutlined />, // Thêm icon LogoutOutlined cho Logout
     },
   ];
 

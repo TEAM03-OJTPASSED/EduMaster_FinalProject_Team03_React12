@@ -9,15 +9,8 @@ import {
   Select,
   Switch,
 } from "antd";
-import {
-  SearchOutlined,
-  EditOutlined,
-  DeleteOutlined,
-} from "@ant-design/icons";
-import EditUser from "../../components/Admin/AdminModals/EditUserModal";
-
-const { Title } = Typography;
-const { Option } = Select; // Destructure Option from Select
+import { SearchOutlined } from "@ant-design/icons";
+import useSearch from "../../hooks/useSearch";
 
 const RequestUser = () => {
   const [dataSource, setDataSource] = useState([
@@ -53,9 +46,14 @@ const RequestUser = () => {
     },
   ]);
 
+  const { searchText, filteredData, handleSearchChange } = useSearch(
+    dataSource,
+    ["name", "email"]
+  ); // useSearch hook
+
   const columns = [
     {
-      title: "Họ và tên",
+      title: "Name",
       dataIndex: "name",
       key: "name",
     },
@@ -105,9 +103,11 @@ const RequestUser = () => {
           placeholder="Tìm kiếm..."
           prefix={<SearchOutlined />}
           style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
+          value={searchText}
+          onChange={handleSearchChange}
         />
         <Table
-          dataSource={dataSource}
+          dataSource={filteredData}
           columns={columns}
           pagination={{ pageSize: 5 }}
           rowKey="key"

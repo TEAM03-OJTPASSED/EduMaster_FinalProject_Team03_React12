@@ -1,22 +1,97 @@
-import { Button, Card, Input, Select, Table, Form, Tag } from "antd";
-import {
-  SearchOutlined,
-} from "@ant-design/icons";
+import React, { useState } from "react";
+import { Button, Card, Input, Table, Tag } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
+import { CourseStatusEnum, listCourses } from "./monitors/course/couseList";
+
+// Cột cho bảng Course Log
+const columns = [
+  {
+    title: "Course Name",
+    dataIndex: "name",
+    key: "name",
+  },
+  {
+    title: "Status",
+    dataIndex: "status",
+    key: "status",
+    render: (status) => (
+      <Tag
+        color={
+          status === CourseStatusEnum.ACTIVE
+            ? "green"
+            : status === CourseStatusEnum.APPROVED
+            ? "blue"
+            : status === CourseStatusEnum.REJECTED
+            ? "red"
+            : "orange" // cho các trạng thái khác
+        }
+      >
+        {status}
+      </Tag>
+    ),
+  },
+  {
+    title: "Price",
+    dataIndex: "price",
+    key: "price",
+    render: (price) => `$${price}`,
+  },
+  {
+    title: "Discount",
+    dataIndex: "discount",
+    key: "discount",
+    render: (discount) => `${discount}%`,
+  },
+  {
+    title: "Action",
+    key: "action",
+    render: (record) => (
+      <Button type="primary" onClick={() => handleAction(record)}>
+        View Details
+      </Button>
+    ),
+  },
+];
 
 const CourseLog = () => {
+  const [searchText, setSearchText] = useState("");
 
+  // Hàm tìm kiếm
+  const handleSearch = (event) => {
+    setSearchText(event.target.value);
+  };
+
+  // Lọc danh sách khóa học dựa trên tên
+  const filteredCourses = listCourses.filter((course) =>
+    course.name.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   return (
     <Card>
-      <div className="flex">
-        <h3 className="text-2xl my-5">Course Log</h3>
-      </div>
+      <h3 className="text-2xl my-5">Course Log</h3>
       <Input
         placeholder="Search By Course Name"
         prefix={<SearchOutlined />}
         style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
+        value={searchText}
+        onChange={handleSearch}
+      />
+      <Table
+        dataSource={filteredCourses}
+        columns={columns}
+        pagination={{ pageSize: 5 }}
+        rowKey="name" // Nên thay thế bằng id nếu có
+        bordered
+        style={{ borderRadius: "8px" }}
+        scroll={{ x: true }}
       />
     </Card>
   );
 };
+
 export default CourseLog;
+
+// Hàm xử lý khi bấm nút "View Details"
+const handleAction = (course) => {
+  // Có thể mở modal hoặc điều hướng đến trang chi tiết
+};
