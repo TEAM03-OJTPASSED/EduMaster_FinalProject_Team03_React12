@@ -224,7 +224,7 @@ const HomePage = () => {
       <main className="w-full text-left overflow-visible font-jost ">
         <section className="relative lg:h-[400px] font-jost h-[300px] w-[115vw] -ml-[15vw] flex justify-center items-center flex-col space-y-4 shadow-2xl shadow-orange-300  bg-black overflow-y-hidden">
           <img
-            className=" w-[115vw] absolute xs:-top-36  object-bottom brightness-75 "
+            className=" w-[115vw] absolute xs:-top-36  object-bottom brightness-75 float-animation show "
             src={heroImage}
             alt="Hero"
           />
