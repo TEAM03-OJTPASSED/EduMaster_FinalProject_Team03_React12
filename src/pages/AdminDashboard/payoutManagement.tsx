@@ -9,21 +9,17 @@ import {
   Modal,
   Select,
 } from "antd";
-<<<<<<< HEAD
-import { SearchOutlined, EyeOutlined } from "@ant-design/icons";
-import { Payout, payouts, PayoutStatusEnum } from "./monitors/course/courseList";
-import dayjs from "dayjs";
-=======
 import {
   SearchOutlined,
   CloseOutlined,
   CheckOutlined,
 } from "@ant-design/icons";
-import { Payout, payouts, PayoutStatusEnum } from "./monitors/course/couseList";
-
->>>>>>> AnLe-DucTri_ADMIN_INSTRUCTOR
+import {
+  Payout,
+  payouts,
+  PayoutStatusEnum,
+} from "./monitors/course/courseList";
 import { InputSearchProps } from "../../hooks/useDebounce";
-
 const PayoutManagement: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   // const [selectedCourse, setSelectedCourse] = useState<Payout | null>(null);
@@ -53,8 +49,6 @@ const PayoutManagement: React.FC = () => {
   //   // console.log("Accepted course:", selectedCourse?.payout_no);
   //   setIsModalVisible(false);
   // };
-
-
 
   const handleCancel = () => {
     setIsModalVisible(false);
@@ -109,7 +103,9 @@ const PayoutManagement: React.FC = () => {
       render: () => {
         return (
           <div>
-            <p className="underline font font-medium text-blue-500 cursor-pointer hover:font-bold active:text-blue-300">View</p>
+            <p className="underline font font-medium text-blue-500 cursor-pointer hover:font-bold active:text-blue-300">
+              View
+            </p>
           </div>
         );
       },
@@ -187,10 +183,7 @@ const PayoutManagement: React.FC = () => {
           visible={isModalVisible}
           // onOk={handleOk}
           onCancel={handleCancel}
-        >
-       
-
-        </Modal>
+        ></Modal>
       </Card>
     </div>
   );
