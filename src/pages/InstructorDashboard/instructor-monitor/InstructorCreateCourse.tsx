@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Button, Divider, Steps } from "antd";
 import CourseInformation from "./create-courses/CourseInformation";
 import Curriculum from "./create-courses/Curriculum";
-import Price from "./create-courses/Price";
 // 1: tao step va content
 // 2: o trang curriculum tao session va ben trong do co o nut create lession
 

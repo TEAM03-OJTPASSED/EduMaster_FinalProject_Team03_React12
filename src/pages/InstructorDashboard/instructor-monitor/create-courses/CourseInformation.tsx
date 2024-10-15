@@ -1,178 +1,240 @@
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import { Col, Form, Input, Row, Select, Upload } from "antd";
-import { PlusOutlined, } from "@ant-design/icons";
-import React from "react";
-/**
- * {
-  "course": {
-    "name": "Course Name",
-    "category_id": "category_id-1",
-    "description": "Course description",
-    "content": "Detailed content",
-    "video_url": "video_url_here",
-    "image_url": "image_url_here",
-    "status": "PUBLISHED",
-    "price": 100,
-    "discount": 10,
-    "sessions": [
-      {
-     
-        "name": "Session 1",
-        "user_id": "user_id_1",
-        "description": "Session 1 description",
-        "position_order": 1,
-        "created_at": "2024-10-11T00:00:00Z",
-        "updated_at": "2024-10-11T00:00:00Z",
-        "is_deleted": false,
-        "lessons": [
-          {
-           
-            "name": "Lesson 1",
-            "course_id": "course_id_1",
-            "session_id": "session_id_1",
-            "user_id": "user_id_1",
-            "lesson_type": "VIDEO",
-            "description": "Lesson 1 description",
-            "video_url": "lesson_video_url",
-            "image_url": "lesson_image_url",
-            "full_time": 1200,
-            "position_order": 1,
-            "created_at": "2024-10-11T00:00:00Z",
-            "updated_at": "2024-10-11T00:00:00Z",
-            "is_deleted": false
-          }
-        ]
-      }
-    ]
-  }
-}
- */
+import {
+  Button,
+  Col,
+  Form,
+  FormProps,
+  Input,
+  Radio,
+  RadioChangeEvent,
+  Row,
+  Select,
+  Upload,
+  UploadFile,
+  UploadProps,
+} from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import React, { useEffect, useState } from "react";
+import { Course } from "../../../AdminDashboard/monitors/course/couseList";
 
-// type CourseInfoFiled = {
-//   name: string;
-//   category_id: string;
-//   description: string;
-//   content: string;
-//   video_url: string;
-//   image_url: string;
-// };
+type CourseInformationProps = {
+  initializeValue: Course;
+};
 
-const CourseInformation = () => {
+type CoursePriceType = "Free" | "Paid";
 
-  const normFile = (e: any) => {
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e?.fileList;
+const CourseInformation: React.FC<CourseInformationProps> = ({
+  initializeValue,
+}) => {
+  const [imageFileList, setImageFileList] = useState<UploadFile[]>([]);
+
+  const [videoFileList, setVideoFileList] = useState<UploadFile[]>([]);
+
+  const [selectTypePrice, setSelectPriceType] = useState<CoursePriceType>(
+    initializeValue.price > 0 ? "Paid" : "Free"
+  );
+
+  const [form] = Form.useForm<Course>();
+
+  useEffect(() => {
+    setImageFileList(
+      initializeValue.image_url
+        ? [
+            {
+              uid: "-1",
+              name: "image.png",
+              status: "done",
+              url: initializeValue.image_url,
+            },
+          ]
+        : []
+    );
+    setVideoFileList(
+      initializeValue.video_url
+        ? [
+            {
+              uid: "-1",
+              name: "video.mp4",
+              status: "done",
+              url: initializeValue.video_url,
+            },
+          ]
+        : []
+    );
+    form.setFieldsValue({
+      ...initializeValue,
+    });
+  }, [initializeValue, form]);
+
+  const handleImageChange: UploadProps["onChange"] = ({
+    fileList: newFileList,
+  }) => {
+    setImageFileList(newFileList || []);
+    console.log("image", newFileList);
+  };
+
+  const handleVideoChange: UploadProps["onChange"] = ({
+    fileList: newFileList,
+  }) => {
+    setVideoFileList(newFileList || []);
+  };
+
+  const handleSelectPrice = (e: RadioChangeEvent) => {
+    const value = e.target.value;
+    setSelectPriceType(value);
+  };
+
+  const handleFinished: FormProps["onFinish"] = (values) => {
+    console.log("Submitted:", values);
   };
   return (
-    <div>
-      <Form
-        labelCol={{ span: 24 }}
-        wrapperCol={{ span: 24 }}
-        layout="horizontal"
-      >
-        <Row justify={`space-around`} gutter={[16, 16]}>
-          <Col xs={{ span: 12 }}>
-            <Form.Item
-              label="Course Name"
-              name="name"
-              rules={[{ required: true, message: "Please input course name" }]}
-            >
-              <Input placeholder="Course Name" />
-            </Form.Item>
-          </Col>
-          <Col xs={{ span: 12 }}>
-            <Form.Item
-              label="Category"
-              name="category_id"
-              rules={[
-                { required: true, message: "Please input Category name" },
+    <Form
+      form={form}
+      layout="vertical"
+      initialValues={initializeValue}
+      onFinish={handleFinished}
+     
+    >
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item
+            label="Course Name"
+            name="name"
+            rules={[{ required: true, message: "Please input course name" }]}
+          >
+            <Input placeholder="Course Name" />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            label="Category"
+            name="category_id"
+            rules={[{ required: true, message: "Please select a category" }]}
+          >
+            <Select
+              placeholder="Select category"
+              options={[
+                { label: "Javascript", value: "category_id-1" },
+                { label: "TypeScript", value: "category_id-2" },
+                { label: "Machine Learning", value: "category_id-3" },
               ]}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+      <Form.Item
+        label="Description"
+        name="description"
+        rules={[{ required: true, message: "Please input description" }]}
+      >
+        <Input.TextArea
+          maxLength={200}
+          style={{ height: "100px" }}
+          placeholder="Course description"
+        />
+      </Form.Item>
+      <Form.Item label="Content" name="content">
+        <CKEditor
+          editor={ClassicEditor}
+          data={form.getFieldValue("content") || ""}
+          onChange={(_, editor) =>
+            form.setFieldsValue({ content: editor.getData() })
+          }
+        />
+      </Form.Item>
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item label="Course Image" name="image_url">
+            <Upload
+              accept="image/*"
+              listType="picture-card"
+              fileList={imageFileList}
+              onChange={handleImageChange}
+              maxCount={1}
             >
-              <Select
-              
-                placeholder="select category"
-                options={[
-                  {
-                    label: "Javascript",
-                    value: "category_id-1",
-                  },
-                  {
-                    label: "TypeScript",
-                    value: "category_id-2",
-                  },
-                  {
-                    label: "Machine learning",
-                    value: "category_id-3",
-                  },
-                ]}
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-        {/* description */}
-        <Form.Item
-          label="Description"
-          name="description"
-          rules={[{ required: true, message: "Please input description" }]}
+              {imageFileList.length >= 1 ? null : (
+                <div>
+                  <PlusOutlined />
+                  <div>Upload</div>
+                </div>
+              )}
+            </Upload>
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item label="Course Video" name="video_url">
+            <Upload
+              accept="video/*"
+              listType="picture-card"
+              fileList={videoFileList}
+              onChange={handleVideoChange}
+              maxCount={1}
+            >
+              {videoFileList.length >= 1 ? null : (
+                <div>
+                  <PlusOutlined />
+                  <div>Upload</div>
+                </div>
+              )}
+            </Upload>
+          </Form.Item>
+        </Col>
+      </Row>
+      {/* Course Type Price */}
+      <Form.Item
+        label="Course Price"
+        rules={[{ required: true, message: "Please select course price type" }]}
+      >
+        <Radio.Group onChange={handleSelectPrice} value={selectTypePrice}>
+          <Radio value="Free"> Free </Radio>
+          <Radio value="Paid"> Paid </Radio>
+        </Radio.Group>
+      </Form.Item>
+
+      {/* hidden when type free */}
+      {selectTypePrice === "Free" && (
+        <div>
+          <Form.Item name="price" hidden>
+            <Input type="number" value={0} />
+          </Form.Item>
+          <Form.Item name="discount" hidden>
+            <Input type="number" value={0} />
+          </Form.Item>
+        </div>
+      )}
+
+      {selectTypePrice === "Paid" && (
+        <div>
+          <Form.Item
+            label="Price"
+            name="price"
+            rules={[{ required: true, message: "Please input price" }]}
+          >
+            <Input type="number" placeholder="Input price" />
+          </Form.Item>
+          {/* discount */}
+          <Form.Item
+            label="Discount"
+            name="discount"
+            rules={[{ required: true, message: "Please input discount" }]}
+          >
+            <Input type="number" placeholder="Input discount" />
+          </Form.Item>
+        </div>
+      )}
+      {/* Button Submit */}
+      <Form.Item>
+        <Button
+          className="w-full"
+          variant="solid"
+          color="primary"
+          htmlType="submit"
         >
-          <Input.TextArea
-            showCount
-            maxLength={100}
-            // onChange={onChange}
-            placeholder="Course description"
-            style={{ height: 120, resize: "none" }}
-          />
-        </Form.Item>
-        {/* Content */}
-        <Form.Item label="Content" name="content">
-          <CKEditor
-            editor={ClassicEditor}
-            onChange={(event, editor) => {
-              const data = editor.getData();
-              // setForm(content:data)
-            }}
-            config={{
-              placeholder: "Enter blog content...",
-            }}
-          />
-        </Form.Item>
-        <Row>
-          <Col>
-            <Form.Item
-              label="Course Image"
-              name="image_url"
-              valuePropName="fileList"
-              getValueFromEvent={normFile}
-            >
-              <Upload accept="image/*" listType="picture-card">
-                <button style={{ border: 0, background: "none" }} type="button">
-                  <PlusOutlined />
-                  <div style={{ marginTop: 8 }}>Upload</div>
-                </button>
-              </Upload>
-            </Form.Item>
-          </Col>
-          <Col>
-            <Form.Item
-              label="Course Video"
-              name="video_url"
-              valuePropName="fileList"
-              getValueFromEvent={normFile}
-            >
-              <Upload accept="video/*" listType="picture-card">
-                <button style={{ border: 0, background: "none" }} type="button">
-                  <PlusOutlined />
-                  <div style={{ marginTop: 8 }}>Upload</div>
-                </button>
-              </Upload>
-            </Form.Item>
-          </Col>
-        </Row>
-      </Form>
-    </div>
+          Change
+        </Button>
+      </Form.Item>
+    </Form>
   );
 };
 

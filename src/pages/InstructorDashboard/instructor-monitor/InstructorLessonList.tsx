@@ -1,24 +1,36 @@
 import React, { useState } from "react";
 import { Table, Input, Card, Tag, TableProps, Button, Modal } from "antd";
-import { SearchOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
-import { Lesson, LessonTypeEnum, listLessons } from "../../AdminDashboard/monitors/course/couseList";
-
+import {
+  SearchOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  PlusCircleOutlined,
+} from "@ant-design/icons";
+import {
+  Lesson,
+  LessonTypeEnum,
+  listLessons,
+} from "../../AdminDashboard/monitors/course/couseList";
+import dayjs from "dayjs";
+import LessonIOptions from "./create-courses/LessonIOptions";
 
 const InstructorLessonList = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
+  const [isModalCreateVisible, setIsModalCreateVisible] = useState(false);
+  const [selectedLesson, setSelectedLesson] = useState<Lesson>({} as Lesson);
 
   const showModal = (lesson: Lesson) => {
     setSelectedLesson(lesson);
     setIsModalVisible(true);
   };
 
-  const handleOk = () => {
-    setIsModalVisible(false);
+  const showCreateModal = () => {
+    setIsModalCreateVisible(true);
   };
 
   const handleCancel = () => {
     setIsModalVisible(false);
+    setIsModalCreateVisible(false);
   };
 
   const columns: TableProps<Lesson>["columns"] = [
@@ -51,6 +63,15 @@ const InstructorLessonList = () => {
       key: "full_time",
     },
     {
+      title: "Created At",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (created_at) => {
+        return <div>{dayjs(created_at).format("DD/MM/YYYY")}</div>;
+      },
+    },
+
+    {
       title: "Action",
       key: "action",
       render: (_, record: Lesson) => (
@@ -62,7 +83,7 @@ const InstructorLessonList = () => {
           />
           <Button
             type="text"
-            icon={<EyeOutlined style={{ color: "blue" }} />}
+            icon={<EditOutlined style={{ color: "blue" }} />}
             onClick={() => showModal(record)}
           />
         </>
@@ -77,11 +98,25 @@ const InstructorLessonList = () => {
   return (
     <Card>
       <h3 className="text-2xl my-5">Lesson Management</h3>
-      <Input
-        placeholder="Search By Lesson Name"
-        prefix={<SearchOutlined />}
-        style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
-      />
+      <div className="flex justify-between">
+        <Input
+          placeholder="Search By Lesson Name"
+          prefix={<SearchOutlined />}
+          style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
+        />
+        <div className="flex">
+          <Button
+            onClick={showCreateModal}
+            icon={<PlusCircleOutlined />}
+            shape="round"
+            variant="solid"
+            color="primary"
+            className="items-center"
+          >
+            Create Session
+          </Button>
+        </div>
+      </div>
       <Table
         dataSource={listLessons}
         columns={columns}
@@ -92,21 +127,43 @@ const InstructorLessonList = () => {
         scroll={{ x: true }}
       />
 
+      {/* update */}
       <Modal
         title="Lesson Details"
-        visible={isModalVisible}
-        onOk={handleOk}
+        open={isModalVisible}
         onCancel={handleCancel}
+        footer={null}
       >
         {selectedLesson && (
-          <div>
-            <p><strong>Name:</strong> {selectedLesson.name}</p>
-            <p><strong>Session ID:</strong> {selectedLesson.session_id}</p>
-            <p><strong>Instructor ID:</strong> {selectedLesson.user_id}</p>
-            <p><strong>Type:</strong> {selectedLesson.lesson_type}</p>
-            <p><strong>Time:</strong> {selectedLesson.full_time} minutes</p>
-          </div>
+          <LessonIOptions
+            onFinished={(values) => {
+              console.log("Lesson update", {
+                ...values,
+                create_at: new Date(),
+              });
+            }}
+            mode="update"
+            initialValues={selectedLesson}
+          />
         )}
+      </Modal>
+
+      {/* create */}
+      <Modal
+        title="Lesson Details"
+        open={isModalCreateVisible}
+        onCancel={handleCancel}
+        footer={null}
+      >
+        <LessonIOptions
+          onFinished={(values) => {
+            console.log("Lesson create", {
+              ...values,
+              create_at: new Date(),
+            });
+          }}
+          mode="create"
+        />
       </Modal>
     </Card>
   );
