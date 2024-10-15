@@ -3,10 +3,10 @@ import { Table, Input, Card, TableProps, Tag, Button, Modal } from "antd";
 import { SearchOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 
 import dayjs from "dayjs";
-import { listSessions, Session } from "../../AdminDashboard/monitors/course/couseList";
+import { listSessions, Session } from "../../AdminDashboard/monitors/course/courseList";
 
 
-const IntructorSessionList = () => {
+const InstructorSessionList = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
 
@@ -119,4 +119,4 @@ const IntructorSessionList = () => {
   );
 };
 
-export default IntructorSessionList;
+export default InstructorSessionList;

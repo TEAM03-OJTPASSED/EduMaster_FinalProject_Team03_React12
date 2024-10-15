@@ -17,8 +17,9 @@ export const PendingCourse = React.lazy(
 );
 
 export const CourseList = React.lazy(
-  () => import("../pages/AdminDashboard/monitors/course/CourseList")
+  () => import("../pages/AdminDashboard/monitors/course/CourseList.tsx")
 );
+
 export const PendingCourseList = React.lazy(
   () =>
     import("../pages/AdminDashboard/monitors/pending_course/PendingCourseList")
@@ -63,7 +64,7 @@ export const InstructorCourseList = React.lazy(
 export const IntructorSessionList = React.lazy(
   () =>
     import(
-      "../pages/InstructorDashboard/instructor-monitor/IntructorSessionList"
+      "../pages/InstructorDashboard/instructor-monitor/InstructorSessionList"
     )
 );
 export const InstructorLessonList = React.lazy(
@@ -123,15 +124,15 @@ export const GeneralLayout = React.lazy(
 );
 export const HomePage = React.lazy(() => import("../pages/Homepage"));
 export const Loginpage = React.lazy(
-  () => import("../pages/AuthPage/Loginpage")
+  () => import("../pages/AuthPage/LoginPage")
 );
 export const SignUppage = React.lazy(
-  () => import("../pages/AuthPage/SignUppage")
+  () => import("../pages/AuthPage/SignUpPage")
 );
 
-export const ContactPage = React.lazy(() => import("../pages/Contactpage"));
-export const FAQsPage = React.lazy(() => import("../pages/FAQspage"));
-export const ErrorPage = React.lazy(() => import("../pages/Errorpage"));
+export const ContactPage = React.lazy(() => import("../pages/ContactPage"));
+export const FAQsPage = React.lazy(() => import("../pages/FAQPage"));
+export const ErrorPage = React.lazy(() => import("../pages/ErrorPage"));
 
 export const InstructorLayout = React.lazy(
   () => import("../defaultLayout/InstructorLayout")

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Table, Input, Card, TableProps, Tag, Button, Modal } from "antd";
 import { SearchOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
-import { listSessions, Session } from "./couseList";
+import { listSessions, Session } from "./courseList";
 import dayjs from "dayjs";
 
 

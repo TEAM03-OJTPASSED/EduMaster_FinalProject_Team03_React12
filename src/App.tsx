@@ -2,16 +2,16 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import LoadingWrapper from "./components/Loading/LoadingWrapper";
 import { Suspense } from "react";
-import CoursesPage from "./pages/CoursesPage";
+import CoursesPage from "./pages/CoursePage";
 import BlogPage from "./pages/BlogPage";
 import CourseDetailPage from "./pages/CourseDetailPage";
 import GeneralLayout from "./defaultLayout/Layout";
 import HomePage from "./pages/Homepage";
-import Loginpage from "./pages/AuthPage/Loginpage";
-import SignUppage from "./pages/AuthPage/SignUppage";
-import ContactPage from "./pages/Contactpage";
-import FAQsPage from "./pages/FAQspage";
-import ErrorPage from "./pages/Errorpage";
+import LoginPage from "./pages/AuthPage/LoginPage";
+import SignUpPage from "./pages/AuthPage/SignUpPage";
+import ContactPage from "./pages/ContactPage";
+import FAQsPage from "./pages/FAQPage";
+import ErrorPage from "./pages/ErrorPage";
 import AdminLayout from "./defaultLayout/AdminLayout";
 import AdminContent from "./pages/AdminDashboard/AdminContent";
 import UserManagement from "./pages/AdminDashboard/userManagement";
@@ -34,7 +34,7 @@ import InstructorPayout from "./pages/InstructorDashboard/instructor-management/
 import InstructorOrder from "./pages/InstructorDashboard/instructor-management/InstructorOrder";
 import InstructorCourses from "./pages/InstructorDashboard/instructor-monitor/InstructorCourses";
 import InstructorCourseList from "./pages/InstructorDashboard/instructor-monitor/InstructorCourseList";
-import IntructorSessionList from "./pages/InstructorDashboard/instructor-monitor/IntructorSessionList";
+import IntructorSessionList from "./pages/InstructorDashboard/instructor-monitor/InstructorSessionList";
 import InstructorLessonList from "./pages/InstructorDashboard/instructor-monitor/InstructorLessonList";
 import InstructorCreateCourse from "./pages/InstructorDashboard/instructor-monitor/InstructorCreateCourse";
 import InstructorCourseLog from "./pages/InstructorDashboard/instructor-report/InstructorCourseLog";
@@ -58,8 +58,8 @@ function App() {
             {/* General Layout */}
             <Route path="/" element={<GeneralLayout />}>
               <Route path="/" element={<HomePage />} />
-              <Route path="/login" element={<Loginpage />} />
-              <Route path="/signup" element={<SignUppage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignUpPage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/course" element={<CoursesPage />} />
               <Route path="/blog" element={<BlogPage />} />

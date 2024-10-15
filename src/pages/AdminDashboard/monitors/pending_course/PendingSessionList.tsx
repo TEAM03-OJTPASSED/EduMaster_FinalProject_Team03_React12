@@ -2,7 +2,7 @@ import  { useState } from "react";
 import { Table, Input, Card, TableProps, Tag, Button, Modal } from "antd";
 import { SearchOutlined, EyeOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
-import { listSessions, Session } from "../course/couseList";
+import { listSessions, Session } from "../course/courseList";
 
 const PendingSessionList = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);

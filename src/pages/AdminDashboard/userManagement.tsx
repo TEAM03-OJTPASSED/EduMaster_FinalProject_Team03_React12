@@ -8,7 +8,6 @@ import {
   SearchOutlined,
   
 } from "@ant-design/icons";
-import EditUserModal from "../../components/Admin/AdminModals/EditUserModal";
 
 
 const UserManagement = () => {
@@ -45,15 +44,15 @@ const UserManagement = () => {
     },
   ]);
 
-  const [editVisible, setEditVisible] = useState(false);
-  const [currentUser] = useState(null);
+  // const [editVisible, setEditVisible] = useState(false);
+  // const [currentUser] = useState(null);
 
 
-  const handleSave = (values:any) => {
-    console.log("Saving user:", values);
-    // Update user logic here, possibly update dataSource state
-    // setDataSource(updatedData);
-  };
+  // const handleSave = (values:any) => {
+  //   console.log("Saving user:", values);
+  //   // Update user logic here, possibly update dataSource state
+  //   // setDataSource(updatedData);
+  // };
 
   const columns = [
     {
@@ -157,12 +156,12 @@ const UserManagement = () => {
           scroll={{ x: true }} // Thêm scroll cho bảng
         />
       </Card>
-      <EditUserModal
+      {/* <EditUserModal
         visible={editVisible}
         onClose={() => setEditVisible(false)}
         user={currentUser}
         onSave={handleSave}
-      />
+      /> */}
     </div>
   );
 };

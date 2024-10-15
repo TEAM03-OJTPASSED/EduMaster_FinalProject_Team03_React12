@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Table, Input, Card, Tag, TableProps, Button, Modal } from "antd";
 import { SearchOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
-import { Course, CourseStatusEnum, listCourses } from "../course/couseList";
+import { Course, CourseStatusEnum, listCourses } from "../course/courseList";
 
 const PendingCourseList: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);

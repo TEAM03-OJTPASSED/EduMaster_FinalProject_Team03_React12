@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Table, Input, Card, Tag, TableProps, Button, Modal } from "antd";
 import { SearchOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
-import { Lesson, LessonTypeEnum, listLessons } from "../../AdminDashboard/monitors/course/couseList";
+import { Lesson, LessonTypeEnum, listLessons } from "../../AdminDashboard/monitors/course/courseList";
 
 
 const InstructorLessonList = () => {
