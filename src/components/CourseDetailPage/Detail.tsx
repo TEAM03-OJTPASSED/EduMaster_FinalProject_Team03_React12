@@ -265,10 +265,9 @@ const sampleReviews: Review[] = [
   },
 ];
 
-type Props = {
-  a: string;
-};
-export const Detail = ({ a }: Props) => {
+
+
+export const Detail = () => {
   const [selected, setSelected] = useState("overview");
 
   const handleChange = (event: {

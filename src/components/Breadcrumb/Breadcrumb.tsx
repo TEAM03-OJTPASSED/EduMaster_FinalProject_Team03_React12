@@ -8,7 +8,6 @@ const DynamicBreadcrumb: React.FC = () => {
     .split("/")
     .filter((segment) => segment); // Tách đường dẫn thành các phần
 
-  // Hàm xử lý các đoạn segment để chuyển đổi 'Request-management' thành 'Request Management'
   const formatSegment = (segment: string) => {
     return segment
       .split("-") // Tách chuỗi bằng dấu "-"
@@ -16,7 +15,6 @@ const DynamicBreadcrumb: React.FC = () => {
       .join(" "); // Nối lại thành chuỗi với dấu cách
   };
 
-  // Tạo danh sách items cho Breadcrumb
   const breadcrumbItems = [
     {
       title: <Link to="/">Home</Link>, // Trang chính

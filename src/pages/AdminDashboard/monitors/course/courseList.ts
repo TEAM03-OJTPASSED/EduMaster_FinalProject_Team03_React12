@@ -1,10 +1,15 @@
 export enum CourseStatusEnum {
-  new,
-  waiting_approve,
-  approve,
-  reject,
-  active,
-  inactive,
+  NEW = "New",
+  WAITING_APPROVE = "Waiting for Approval",
+  APPROVED = "Approved",
+  REJECTED = "Rejected",
+  ACTIVE = "Active",
+  INACTIVE = "Inactive",
+}
+
+export enum CoursePriceType {
+  FREE="Free",
+  PAID="Paid"
 }
 export enum LessonTypeEnum {
   video = "video",
@@ -18,15 +23,16 @@ export enum PayoutStatusEnum {
   completed = "Completed",
   rejected = "Rejected",
 }
- export interface Blog {
-  id:string,
-  title:string,
-  title_image:string,
-  type:string,
-  publishedDate: Date
-  content:string
- }
+export interface Blog {
+  id: string;
+  title: string;
+  title_image: string;
+  type: string;
+  publishedDate: Date;
+  content: string;
+}
 export interface Course {
+  id:string
   name: string;
   category_id: string;
   description: string;
@@ -93,22 +99,32 @@ interface AdminTransaction {
 }
 
 const randomString = () => Math.random().toString(36).substring(2, 10);
-const randomNumber = () => Math.floor(Math.random() * 10000) / 100; 
+const randomNumber = () => Math.floor(Math.random() * 10000) / 100;
 const randomBoolean = () => Math.random() < 0.5;
 
-const randomString1 = (length: number) => Math.random().toString(36).substring(2, length + 2);
-const randomDate = () => new Date(Date.now() - Math.floor(Math.random() * 10000000000)); 
-const randomTypes = ["Technology", "Health", "Education", "Lifestyle", "Business"];
-
+const randomString1 = (length: number) =>
+  Math.random()
+    .toString(36)
+    .substring(2, length + 2);
+const randomDate = () =>
+  new Date(Date.now() - Math.floor(Math.random() * 10000000000));
+const randomTypes = [
+  "Technology",
+  "Health",
+  "Education",
+  "Lifestyle",
+  "Business",
+];
 
 export const listBlogs: Blog[] = Array.from({ length: 10 }, () => ({
-  id:randomString(),
+  id: randomString(),
   title: `Blog ${randomString1(10)}`,
-  title_image: `https://placehold.jp/150x150.png`, 
-  type: randomTypes[Math.floor(Math.random() * randomTypes.length)], 
+  title_image: `https://placehold.jp/150x150.png`,
+  type: randomTypes[Math.floor(Math.random() * randomTypes.length)],
   publishedDate: randomDate(),
-  content: `Content for ${randomString1(20)}...`, 
+  content: `Content for ${randomString1(20)}...`,
 }));
+
 export const payouts: Payout[] = Array.from({ length: 10 }, () => ({
   id: randomString(),
   payout_no: `P-${randomString()}`,
@@ -127,12 +143,11 @@ export const payouts: Payout[] = Array.from({ length: 10 }, () => ({
   timestamp: new Date(),
 }));
 
-
 export const adminTransactions: AdminTransaction[] = Array.from(
   { length: 10 },
   () => ({
     id: randomString(),
-    payout_id: payouts[Math.floor(Math.random() * payouts.length)].id, 
+    payout_id: payouts[Math.floor(Math.random() * payouts.length)].id,
     payout_amount: randomNumber(),
     created_at: new Date(),
     updated_at: new Date(),
@@ -366,6 +381,7 @@ export const listSessions: Session[] = [
 
 export const listCourses: Course[] = [
   {
+    id:"1",
     name: "Introduction to Web Development",
     category_id: "cat01",
     description:
@@ -373,33 +389,36 @@ export const listCourses: Course[] = [
     content: "HTML, CSS, JavaScript basics",
     video_url: "https://example.com/intro-web-dev",
     image_url: "https://example.com/images/web-dev.jpg",
-    status: CourseStatusEnum.active,
+    status: CourseStatusEnum.ACTIVE,
     price: 100,
     discount: 10,
   },
   {
+    id:"2",
     name: "JavaScript Advanced Techniques",
     category_id: "cat02",
     description: "Master advanced JavaScript concepts and design patterns.",
     content: "Closures, Async Programming, Promises, Design Patterns",
     video_url: "https://example.com/js-advanced",
     image_url: "https://example.com/images/js-advanced.jpg",
-    status: CourseStatusEnum.active,
+    status: CourseStatusEnum.ACTIVE,
     price: 150,
     discount: 20,
   },
   {
+    id:"3",
     name: "React for Beginners",
     category_id: "cat03",
     description: "Get started with React.js and build dynamic user interfaces.",
     content: "JSX, Components, Props, State",
     video_url: "https://example.com/react-beginners",
     image_url: "https://example.com/images/react-beginners.jpg",
-    status: CourseStatusEnum.active,
+    status: CourseStatusEnum.REJECTED,
     price: 120,
     discount: 15,
   },
   {
+    id:"4",
     name: "Node.js and Express",
     category_id: "cat04",
     description:
@@ -407,11 +426,12 @@ export const listCourses: Course[] = [
     content: "Node.js basics, Express.js, Middleware, REST APIs",
     video_url: "https://example.com/node-express",
     image_url: "https://example.com/images/node-express.jpg",
-    status: CourseStatusEnum.active,
+    status: CourseStatusEnum.WAITING_APPROVE,
     price: 130,
     discount: 10,
   },
   {
+    id:"5",
     name: "Fullstack Development with MERN",
     category_id: "cat05",
     description:
@@ -419,22 +439,24 @@ export const listCourses: Course[] = [
     content: "MERN stack, MongoDB, React, Express, Node.js",
     video_url: "https://example.com/mern-fullstack",
     image_url: "https://example.com/images/mern-fullstack.jpg",
-    status: CourseStatusEnum.active,
+    status: CourseStatusEnum.ACTIVE,
     price: 200,
     discount: 25,
   },
   {
+    id:"6",
     name: "Introduction to Data Science",
     category_id: "cat06",
     description: "Explore the world of data science and machine learning.",
     content: "Data Analysis, Python, Pandas, Machine Learning",
     video_url: "https://example.com/data-science",
     image_url: "https://example.com/images/data-science.jpg",
-    status: CourseStatusEnum.active,
+    status: CourseStatusEnum.APPROVED,
     price: 180,
     discount: 15,
   },
   {
+    id:"7",
     name: "Python for Beginners",
     category_id: "cat07",
     description: "Learn Python programming from scratch.",
@@ -442,10 +464,11 @@ export const listCourses: Course[] = [
     video_url: "https://example.com/python-beginners",
     image_url: "https://example.com/images/python-beginners.jpg",
     price: 90,
-    status: CourseStatusEnum.active,
+    status: CourseStatusEnum.ACTIVE,
     discount: 5,
   },
   {
+    id:"8",
     name: "Cloud Computing with AWS",
     category_id: "cat08",
     description:
@@ -454,21 +477,23 @@ export const listCourses: Course[] = [
     video_url: "https://example.com/cloud-aws",
     image_url: "https://example.com/images/cloud-aws.jpg",
     price: 210,
-    status: CourseStatusEnum.inactive,
+    status: CourseStatusEnum.INACTIVE,
     discount: 20,
   },
   {
+    id:"9",
     name: "DevOps Fundamentals",
     category_id: "cat09",
     description: "Learn the fundamental practices and tools in DevOps.",
     content: "CI/CD, Docker, Kubernetes, Jenkins",
     video_url: "https://example.com/devops-fundamentals",
     image_url: "https://example.com/images/devops.jpg",
-    status: CourseStatusEnum.inactive,
+    status: CourseStatusEnum.INACTIVE,
     price: 160,
     discount: 10,
   },
   {
+    id:"10",
     name: "Cybersecurity Basics",
     category_id: "cat10",
     description:
@@ -477,7 +502,7 @@ export const listCourses: Course[] = [
       "Cybersecurity principles, Firewalls, Encryption, Threat Detection",
     video_url: "https://example.com/cybersecurity-basics",
     image_url: "https://example.com/images/cybersecurity.jpg",
-    status: CourseStatusEnum.inactive,
+    status: CourseStatusEnum.INACTIVE,
     price: 140,
     discount: 10,
   },

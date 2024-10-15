@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { Button, Divider, Steps } from "antd";
 import CourseInformation from "./create-courses/CourseInformation";
 import Curriculum from "./create-courses/Curriculum";

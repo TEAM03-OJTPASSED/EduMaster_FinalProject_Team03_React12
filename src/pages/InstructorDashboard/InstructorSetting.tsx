@@ -1,4 +1,3 @@
-
 const InstructorSetting = () => {
   return (
     <div>InstructorSetting</div>
