@@ -201,7 +201,7 @@ const HomePage = () => {
         </div>
       </button>
       </div>
-      <div className="flex flex-col md:flex-row gap-4">
+      {/* <div className="flex flex-col md:flex-row gap-4">
         <button
           className="px-4 py-2 bg-yellow-500 text-white rounded-md w-full md:w-auto"
           onClick={() => navigate("/admin/dashboard")}
@@ -220,7 +220,7 @@ const HomePage = () => {
         >
           Student Dashboard
         </button>
-      </div>
+      </div> */}
       <main className="w-full text-left overflow-visible font-jost ">
         <section className="relative lg:h-[400px] font-jost h-[300px] w-[115vw] -ml-[15vw] flex justify-center items-center flex-col space-y-4 shadow-2xl shadow-orange-300  bg-black overflow-y-hidden">
           <img
@@ -228,8 +228,8 @@ const HomePage = () => {
             src={heroImage}
             alt="Hero"
           />
-          <div className="z-40 text-white text-5xl font-bold w-[500px] text-center">
-            Elavate Your Skills With <span className="underline">Online Courses</span>
+          <div className="z-40 text-white text-5xl font-semibold w-[500px] text-center font-exo">
+            Elevate Your Skills With <span className="underline">Online Courses</span>
           </div>
           <div className="z-40 w-[400px] text-white text-center italic">
             "All the courses you need, all in one place." Get started today to

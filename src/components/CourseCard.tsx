@@ -57,7 +57,8 @@ const CourseCard: React.FC<{ course: Course; viewMode: string }> = ({
     >
       <div className="flex-grow">
         <p className="text-gray-500 text-sm mb-2">by {course.author}</p>
-        <h2 className="text-base font-semibold mb-4 overflow-ellipsis overflow-hidden whitespace-nowrap transition group-hover:text-[#FFAB2D]">
+        <h2 
+        className="text-base font-semibold mb-4 overflow-ellipsis overflow-hidden whitespace-nowrap transition group-hover:text-[#FFAB2D]">
           {course.name}
         </h2>
       </div>

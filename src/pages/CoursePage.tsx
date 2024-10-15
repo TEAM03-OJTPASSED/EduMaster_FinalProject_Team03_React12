@@ -3,6 +3,7 @@ import { SearchFilter } from "../components/courses/SearchFilter";
 import { SearchResults } from "../components/courses/SearchResult";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import DynamicBreadcrumb from "../components/Breadcrumb/Breadcrumb";
 
 interface Course {
   id: number;
@@ -249,7 +250,10 @@ const CoursesPage: React.FC = () => {
   };
 
   return (
-    <main>
+    <main className="mt-2">
+      <div className="p-4 pb-0">
+      <DynamicBreadcrumb/> 
+      </div>
       <Layout className="relative">
         <SearchResults courses={filteredCourses} onSearch={handleSearch} searchQuery={searchQuery} />
         <SearchFilter

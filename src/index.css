@@ -44,6 +44,11 @@
   color: var(--color-primary-default);
 }
 
+h1, h2, h3 {
+  font-family: "Exo", sans-serif;
+  font-weight: 400;
+}
+
 /* styles.css */
 .navbar-button {
   background-color: transparent; /* Màu nền mặc định */
@@ -56,6 +61,7 @@
   width: 100px;
   font-size: var(--font-size-base);
   font-weight: 500;
+  font-family: "Exo", sans-serif;
 }
 
 .navbar-button:hover {
@@ -69,6 +75,30 @@
 .navbar-button.active {
   background-color: var(--color-neutral-white-grey); /* Màu nền khi click */
   color: var(--color-primary-pressed); /* Màu chữ */
+}
+
+
+.view-button {
+  color: var(--color-primary-default) !important;
+  border:var(--color-primary-default) !important;
+
+}
+
+.view-button:hover {
+  color: var(--color-primary-hover) !important;
+  border:var(--color-primary-hover) !important;
+}
+
+.view-button.active {
+  color:  white !important;
+  border:var(--color-primary-default) !important;
+  background-color: var(--color-primary-default) !important;
+}
+
+.view-button.ant-btn-variant-solid {
+  color:  white !important;
+  border:var(--color-primary-default) !important;
+  background-color: var(--color-primary-default) !important;
 }
 
 
