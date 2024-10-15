@@ -71,6 +71,10 @@
   color: var(--color-primary-pressed); /* Màu chữ */
 }
 
+
+
+
+
 .navbar-button.active:hover {
   background-color: var(
     --color-neutral-white-grey

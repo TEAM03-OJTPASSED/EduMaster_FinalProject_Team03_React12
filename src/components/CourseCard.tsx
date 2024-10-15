@@ -1,5 +1,6 @@
 import { Button, Card, Tag } from "antd";
 import { AiOutlineClockCircle } from "react-icons/ai";
+import { BiBook } from "react-icons/bi";
 import { TiUserOutline } from "react-icons/ti";
 
 interface Course {
@@ -27,7 +28,7 @@ const CourseCard: React.FC<{ course: Course; viewMode: string }> = ({
   course,
   viewMode,
 }) => (
-  <a href={`/course-detail/${course.id}`}>
+  <a href={`/course-detail/${course.id}`} >
     <Card
       hoverable
       styles={{
@@ -50,7 +51,7 @@ const CourseCard: React.FC<{ course: Course; viewMode: string }> = ({
           </Tag>
         </div>
       }
-      className={`h-full rounded-3xl overflow-hidden group  ${
+      className={`h-full rounded-3xl overflow-hidden group font-jost  ${
         viewMode === "list" ? "flex" : ""
       }`}
     >
@@ -61,18 +62,18 @@ const CourseCard: React.FC<{ course: Course; viewMode: string }> = ({
         </h2>
       </div>
       <div>
-        <div className="grid grid-cols-2 grid-rows-2 justify-between text-sm text-gray-500 mb-4">
+        <div className="grid grid-cols-2 grid-rows-2 gap-2 justify-between text-sm text-gray-500 mb-4">
           <span className="flex items-center">
-            <AiOutlineClockCircle className="mr-1" />
+            <AiOutlineClockCircle className="mr-1 text-orange-500" size={18}/>
             {course.duration}
           </span>
           <span className="flex items-center justify-end">
-            <TiUserOutline className="mr-1" />
+            <TiUserOutline className="mr-1 text-orange-500" size={20} />
             {course.students} Students
           </span>
           {course.lessons && (
             <span className="flex items-center">
-              <TiUserOutline className="mr-1" />
+              <BiBook className="mr-1 text-orange-500" size={18} />
               {course.lessons} Lessons
             </span>
           )}
