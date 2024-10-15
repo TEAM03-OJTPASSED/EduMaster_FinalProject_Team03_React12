@@ -31,12 +31,11 @@ export const Reviews = ({ items }: Props) => {
 
   const itemRender = (
     page: number,
-    type: "page" | "prev" | "next" | "jump-prev" | "jump-next",
-    originalElement: React.ReactNode
+    type: "page" | "prev" | "next" | "jump-prev" | "jump-next"
   ) => {
     if (type === "prev") {
       return (
-        <button className="px-4 py-1 bg-neutral-100 font-bold text-white rounded-full border border-gray-300 hover:bg-orange-500 hover:text-white" >
+        <button className="px-4 py-1 bg-neutral-100 font-bold text-white rounded-full border border-gray-300 hover:bg-orange-500 hover:text-white">
           {"<"}
         </button>
       );

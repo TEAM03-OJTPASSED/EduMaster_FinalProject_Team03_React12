@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { Lesson } from "../../../AdminDashboard/monitors/course/couseList";
 import { Button, Divider } from "antd";
 import { DownOutlined, UpOutlined } from "@ant-design/icons";

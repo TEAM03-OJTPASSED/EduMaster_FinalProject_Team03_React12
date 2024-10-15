@@ -118,6 +118,7 @@ export const listBlogs: Blog[] = Array.from({ length: 10 }, () => ({
   publishedDate: randomDate(),
   content: `Content for ${randomString1(20)}...`,
 }));
+
 export const payouts: Payout[] = Array.from({ length: 10 }, () => ({
   id: randomString(),
   payout_no: `P-${randomString()}`,

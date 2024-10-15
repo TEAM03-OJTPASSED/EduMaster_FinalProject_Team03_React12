@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button, Card, Input, Table, Tag } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { CourseStatusEnum, listCourses } from "./monitors/course/couseList";
@@ -14,7 +14,7 @@ const columns = [
     title: "Status",
     dataIndex: "status",
     key: "status",
-    render: (status) => (
+    render: (status: any) => (
       <Tag
         color={
           status === CourseStatusEnum.ACTIVE
@@ -34,18 +34,18 @@ const columns = [
     title: "Price",
     dataIndex: "price",
     key: "price",
-    render: (price) => `$${price}`,
+    render: (price: any) => `$${price}`,
   },
   {
     title: "Discount",
     dataIndex: "discount",
     key: "discount",
-    render: (discount) => `${discount}%`,
+    render: (discount: any) => `${discount}%`,
   },
   {
     title: "Action",
     key: "action",
-    render: (record) => (
+    render: (record: any) => (
       <Button type="primary" onClick={() => handleAction(record)}>
         View Details
       </Button>
@@ -57,7 +57,7 @@ const CourseLog = () => {
   const [searchText, setSearchText] = useState("");
 
   // Hàm tìm kiếm
-  const handleSearch = (event) => {
+  const handleSearch = (event: any) => {
     setSearchText(event.target.value);
   };
 
@@ -91,7 +91,6 @@ const CourseLog = () => {
 
 export default CourseLog;
 
-// Hàm xử lý khi bấm nút "View Details"
-const handleAction = (course) => {
-  // Có thể mở modal hoặc điều hướng đến trang chi tiết
+const handleAction = (record: any) => {
+  console.log("Viewing details for:", record);
 };

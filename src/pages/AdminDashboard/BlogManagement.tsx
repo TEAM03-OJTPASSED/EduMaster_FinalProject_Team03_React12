@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Blog, listBlogs } from "./monitors/course/couseList";
 import { Button, Card, Input, Modal, Table, TableProps, Tag } from "antd";
 import {

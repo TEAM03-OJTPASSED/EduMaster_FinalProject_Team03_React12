@@ -38,17 +38,17 @@ const InstructorCourseList: React.FC = () => {
       key: "status",
       render: (status: CourseStatusEnum) => {
         switch (status) {
-          case CourseStatusEnum.new:
+          case CourseStatusEnum.NEW:
             return <Tag color="green">New</Tag>;
-          case CourseStatusEnum.waiting_approve:
+          case CourseStatusEnum.WAITING_APPROVE:
             return <Tag color="red">Waiting Approve</Tag>;
-          case CourseStatusEnum.approve:
+          case CourseStatusEnum.APPROVED:
             return <Tag color="yellow">Approve</Tag>;
-          case CourseStatusEnum.reject:
+          case CourseStatusEnum.REJECTED:
             return <Tag color="yellow">Reject</Tag>;
-          case CourseStatusEnum.active:
+          case CourseStatusEnum.ACTIVE:
             return <Tag color="yellow">Active</Tag>;
-          case CourseStatusEnum.inactive:
+          case CourseStatusEnum.INACTIVE:
             return <Tag color="yellow">Inactive</Tag>;
           default:
             return <Tag color="gray">Unknown</Tag>;

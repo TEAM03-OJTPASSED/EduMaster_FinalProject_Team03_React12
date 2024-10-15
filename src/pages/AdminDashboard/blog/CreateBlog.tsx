@@ -142,7 +142,7 @@ const CreateBlog: React.FC<BlogFormProps> = ({
         <CKEditor
           editor={ClassicEditor}
           data={form.getFieldValue("content") || ""}
-          onChange={(event, editor) => {
+          onChange={(_, editor) => {
             const data = editor.getData();
             form.setFieldsValue({ content: data }); // Set CKEditor content to form field
           }}
