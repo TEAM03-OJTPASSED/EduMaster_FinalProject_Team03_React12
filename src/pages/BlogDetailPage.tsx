@@ -1,6 +1,9 @@
 import { useParams } from "react-router-dom";
 import { BlogHeader } from "../components/BlogDetailPage/Header";
 import { TagList } from "../components/BlogDetailPage/TagList";
+import { RecentBlog } from "../components/BlogDetailPage/RecentBlog";
+import { Comment } from "../components/BlogDetailPage/Comment";
+import { LeaveAComment } from "../components/LeaveAComment";
 
 interface Blog {
   name: string;
@@ -31,6 +34,57 @@ const blog: Blog = {
   __v: 0,
 };
 
+const comments = [
+  {
+    avatar: "https://picsum.photos/seed/picsum/200/300",
+    name: "John Doe",
+    date: "2024-07-18T04:16:27.274Z",
+    content: "Great blog",
+  },
+  {
+    avatar: "https://picsum.photos/seed/picsum/200/300",
+    name: "John Doe",
+    date: "2024-07-18T04:16:27.274Z",
+    content: "Great blog",
+  },
+  {
+    avatar: "https://picsum.photos/seed/picsum/200/300",
+    name: "John Doe",
+    date: "2024-07-18T04:16:27.274Z",
+    content: "Great blog",
+  },
+  {
+    avatar: "https://picsum.photos/seed/picsum/200/300",
+    name: "John Doe",
+    date: "2024-07-18T04:16:27.274Z",
+    content: "Great blog",
+  },
+  {
+    avatar: "https://picsum.photos/seed/picsum/200/300",
+    name: "John Doe",
+    date: "2024-07-18T04:16:27.274Z",
+    content: "Great blog",
+  },
+  {
+    avatar: "https://picsum.photos/seed/picsum/200/300",
+    name: "John Doe",
+    date: "2024-07-18T04:16:27.274Z",
+    content: "Great blog",
+  },
+  {
+    avatar: "https://picsum.photos/seed/picsum/200/300",
+    name: "John Doe",
+    date: "2024-07-18T04:16:27.274Z",
+    content: "Great blog",
+  },
+  {
+    avatar: "https://picsum.photos/seed/picsum/200/300",
+    name: "John Doe",
+    date: "2024-07-18T04:16:27.274Z",
+    content: "Great blog",
+  },
+];
+
 const BlogDetailPage = () => {
   const { id } = useParams();
   return (
@@ -49,8 +103,25 @@ const BlogDetailPage = () => {
         />
         <div className="mt-8">{blog.content}</div>
         <TagList tags={["1", "2", "6", "7"]} />
+        <div>
+          <h2 className="text-lg font-semibold mt-8">Recent Blogs</h2>
+          <div className="flex gap-4">
+            <RecentBlog category="Java" title="New Blog Java 1" />
+            <RecentBlog category="Java" title="New Blog Java 2" />
+          </div>
+        </div>
+        <div>
+          <h2 className="text-lg font-semibold mt-8">Comment</h2>
+          <div>
+            {comments.length === 0
+              ? "No comment"
+              : `${comments.length} comments`}
+          </div>
+          <Comment items={comments} />
+        </div>
+        <LeaveAComment />
       </div>
-      <div></div>
+      <div className="w-1/4"></div>
     </div>
   );
 

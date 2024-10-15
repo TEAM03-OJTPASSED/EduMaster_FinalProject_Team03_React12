@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Pagination } from "antd";
 
 interface Review {
@@ -31,7 +31,7 @@ export const Reviews = ({ items }: Props) => {
 
   const itemRender = (
     page: number,
-    type: "page" | "prev" | "next" | "jump-prev" | "jump-next",
+    type: "page" | "prev" | "next" | "jump-prev" | "jump-next"
   ) => {
     if (type === "prev") {
       return (
@@ -97,27 +97,29 @@ export const Reviews = ({ items }: Props) => {
     return stars;
   };
 
-  const renderRatingSummary = (counts: any[]) => {
-    return counts.map((count, index) => {
-      const percentage = ((count / currentItems.length) * 100).toFixed(0);
-      return (
-        <div key={index} className="flex items-center font-exo text-sm">
-          <span className="w-12 flex items-center">
-            {renderStars(index + 1)}
-          </span>
-          <span className="w-16 px-4">{percentage}%</span>
-          <div className="w-full bg-gray-200 rounded h-2 mx-2">
-            <div
-              className="bg-orange-500 h-2 rounded"
-              style={{ width: `${percentage}%` }}
-            ></div>
+  const renderRatingSummary = useMemo(() => {
+    return () => {
+      const totalRatings = items.length;
+      const counts = calculateRatingCounts(items);
+      return counts.map((count, index) => {
+        const percentage = ((count / totalRatings) * 100).toFixed(0);
+        return (
+          <div key={index} className="flex items-center font-exo text-sm">
+            <span className="w-12 flex items-center">
+              {renderStars(index + 1)}
+            </span>
+            <span className="w-16 px-4">{percentage}%</span>
+            <div className="w-full bg-gray-200 rounded h-2 mx-2">
+              <div
+                className="bg-orange-500 h-2 rounded"
+                style={{ width: `${percentage}%` }}
+              ></div>
+            </div>
           </div>
-        </div>
-      );
-    });
-  };
-
-  const ratingCounts = calculateRatingCounts(items);
+        );
+      });
+    };
+  }, [items]);
 
   return (
     <div>
@@ -141,8 +143,9 @@ export const Reviews = ({ items }: Props) => {
             </div>
           </div>
         </div>
-        <div className="mb-4">{renderRatingSummary(ratingCounts)}</div>
+        <div className="mb-4">{renderRatingSummary()}</div>
       </div>
+
       {currentItems.map((items) => (
         <div
           key={items._id}

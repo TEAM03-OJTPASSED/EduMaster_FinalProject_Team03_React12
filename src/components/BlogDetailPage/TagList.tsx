@@ -16,7 +16,7 @@ type Props = {
 export const TagList = ({ tags }: Props) => {
   return (
     <div className="mt-8 flex items-center">
-      Tag:
+      <h2 className="text-lg font-semibold">Tag:</h2>
       {tags.map((tagId) => {
         const tag = allTags.find((t) => t.id === tagId);
         return tag ? (

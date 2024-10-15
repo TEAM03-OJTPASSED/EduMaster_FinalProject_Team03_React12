@@ -19,7 +19,9 @@ const CourseDetailPage = () => {
         />
       </div>
       <Detail a="asdasd" />
-      <LeaveAComment />
+      <div className="w-2/3">
+        <LeaveAComment />
+      </div>
     </div>
   );
 
