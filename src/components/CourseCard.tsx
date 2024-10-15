@@ -51,7 +51,7 @@ const CourseCard: React.FC<{ course: Course; viewMode: string }> = ({
           </Tag>
         </div>
       }
-      className={`h-full rounded-3xl overflow-hidden group font-jost  ${
+      className={`h-full rounded-3xl overflow-hidden group font-jost  hover:-translate-y-2 transition-all duration-500 ${
         viewMode === "list" ? "flex" : ""
       }`}
     >
