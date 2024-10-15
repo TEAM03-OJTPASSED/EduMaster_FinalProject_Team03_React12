@@ -4,7 +4,7 @@ import {
   Payout,
   payouts,
   PayoutStatusEnum,
-} from "../../../AdminDashboard/monitors/course/couseList";
+} from "../../../AdminDashboard/monitors/course/courseList";
 
 import dayjs from "dayjs";
 

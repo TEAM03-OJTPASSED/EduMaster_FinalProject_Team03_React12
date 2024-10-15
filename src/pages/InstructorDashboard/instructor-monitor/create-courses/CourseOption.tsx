@@ -16,7 +16,7 @@ import {
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
-import { Course } from "../../../AdminDashboard/monitors/course/couseList";
+import { Course } from "../../../AdminDashboard/monitors/course/courseList";
 
 type CourseInformationProps = {
   initializeValue: Course;

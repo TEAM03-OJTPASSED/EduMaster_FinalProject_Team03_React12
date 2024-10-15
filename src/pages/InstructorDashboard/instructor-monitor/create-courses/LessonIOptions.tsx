@@ -19,7 +19,7 @@ import {
   LessonTypeEnum,
   listCourses,
   listSessions,
-} from "../../../AdminDashboard/monitors/course/couseList";
+} from "../../../AdminDashboard/monitors/course/courseList";
 
 type LessonOptionsProps = {
   initialValues?: Lesson;

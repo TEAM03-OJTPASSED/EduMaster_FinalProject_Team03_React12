@@ -3,7 +3,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import {
   Payout,
   payouts,
-} from "../../../AdminDashboard/monitors/course/couseList";
+} from "../../../AdminDashboard/monitors/course/courseList";
 
 
 const CompletedPayout = () => {

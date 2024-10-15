@@ -3,7 +3,8 @@ import React, { useEffect } from "react";
 import {
   listCourses,
   Session,
-} from "../../../AdminDashboard/monitors/course/couseList";
+} from "../../../AdminDashboard/monitors/course/courseList";
+import { Course } from "../../../AdminDashboard/monitors/course/courseList";
 
 type SessionOptionsProps = {
   initialState?: Session;
@@ -64,7 +65,7 @@ const SessionOptions: React.FC<SessionOptionsProps> = ({
           {mode === "create" && (
             <Select
               placeholder="Select course name"
-              options={listCourses.map((course) => ({
+              options={listCourses.map((course:Course) => ({
                 label: course.name,
                 value: course.id,
               }))}
