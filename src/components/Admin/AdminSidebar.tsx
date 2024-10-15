@@ -14,7 +14,15 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
-const menuItems = [
+interface MenuItem {
+  key: string;
+  icon?: React.ReactNode; // Icon là tùy chọn
+  label: string;
+  path?: string;
+  items?: MenuItem[]; // Các item con là một danh sách MenuItem
+}
+
+const menuItems: MenuItem[] = [
   {
     key: "dashboard",
     icon: <DashboardOutlined />,

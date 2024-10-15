@@ -124,10 +124,13 @@ function App() {
               <Route element={<InstructorLayout />}>
                 <Route index element={<InstructorContent />} />
                 <Route path="dashboard" element={<InstructorContent />} />
-                <Route path="payout" element={<InstructorPayout />} >
+                <Route path="payout" element={<InstructorPayout />}>
                   <Route index element={<RequestPayout />} />
-                  <Route path="completed-payout" element={<CompletedPayout />} />
-                  </Route>
+                  <Route
+                    path="completed-payout"
+                    element={<CompletedPayout />}
+                  />
+                </Route>
                 <Route path="order" element={<InstructorOrder />} />
                 <Route path="my-courses" element={<InstructorCourses />}>
                   <Route index element={<InstructorCourseList />} />

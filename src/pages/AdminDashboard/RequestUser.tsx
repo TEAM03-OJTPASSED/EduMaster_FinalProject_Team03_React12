@@ -1,19 +1,16 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import {
   Table,
   Button,
   Input,
   Space,
   Card,
-  Typography,
-  Select,
-  Switch,
 } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import useSearch from "../../hooks/useSearch";
 
 const RequestUser = () => {
-  const [dataSource, setDataSource] = useState([
+  const [dataSource] = useState([
     {
       key: "1",
       name: "Nguyễn Văn A",
@@ -80,7 +77,7 @@ const RequestUser = () => {
     {
       title: "Hành động",
       key: "action",
-      render: (text, record) => (
+      render: () => (
         <Space size="middle">
           <Button color="primary" variant="outlined">
             Approve

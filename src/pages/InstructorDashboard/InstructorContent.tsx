@@ -14,7 +14,7 @@ const cardStyle = {
 };
 
 const InstructorContent = () => {
-  const [dataSource, setDataSource] = useState([{
+  const [dataSource] = useState([{
     key: "1",
     number: "Nguyễn Văn A",
     amount: "a@example.com",

@@ -10,7 +10,7 @@ import {
   CourseStatusEnum,
   listCourses,
 } from "../../AdminDashboard/monitors/course/couseList";
-import CourseInformation from "./create-courses/CourseInformation";
+import CourseOption from "./create-courses/CourseOption";
 const InstructorCourseList: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course>({} as Course);
@@ -125,7 +125,7 @@ const InstructorCourseList: React.FC = () => {
         footer={null}
         width={800}
       >
-        <CourseInformation initializeValue={selectedCourse} />
+        <CourseOption initializeValue={selectedCourse} />
       </Modal>
     </Card>
   );
