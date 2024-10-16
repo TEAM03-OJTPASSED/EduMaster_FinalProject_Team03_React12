@@ -17,7 +17,7 @@ interface Blog {
 const blogs: Blog[] = [
   {
     id: 1,
-    image_url: "/placeholder.svg?height=200&width=300",
+    image_url: "https://picsum.photos/300/200",
     category: "Technology",
     title: "Understanding React Hooks",
     author: "Jane Doe",
@@ -26,14 +26,85 @@ const blogs: Blog[] = [
   },
   {
     id: 2,
-    image_url: "/placeholder.svg?height=200&width=300",
+    image_url: "https://picsum.photos/300/200",
     category: "Health",
     title: "The Benefits of a Healthy Lifestyle",
     author: "John Smith",
     date: "2023-02-15",
     content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   },
-  // Add more blog entries here
+  {
+    id: 3,
+    image_url: "https://picsum.photos/300/200",
+    category: "Finance",
+    title: "Investing for Beginners",
+    author: "Alice Johnson",
+    date: "2023-03-10",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  },
+  {
+    id: 4,
+    image_url: "https://picsum.photos/300/200",
+    category: "Travel",
+    title: "Top 10 Destinations for 2023",
+    author: "Bob Brown",
+    date: "2023-04-05",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  },
+  {
+    id: 5,
+    image_url: "https://picsum.photos/300/200",
+    category: "Education",
+    title: "The Future of Online Learning",
+    author: "Carol White",
+    date: "2023-05-20",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  },
+  {
+    id: 6,
+    image_url: "https://picsum.photos/300/200",
+    category: "Food",
+    title: "Healthy Recipes for Busy People",
+    author: "David Green",
+    date: "2023-06-15",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  },
+  {
+    id: 7,
+    image_url: "https://picsum.photos/300/200",
+    category: "Lifestyle",
+    title: "Minimalism: A Guide to Simplifying Your Life",
+    author: "Eve Black",
+    date: "2023-07-10",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  },
+  {
+    id: 8,
+    image_url: "https://picsum.photos/300/200",
+    category: "Fitness",
+    title: "10 Tips for Staying Fit at Home",
+    author: "Frank Blue",
+    date: "2023-08-25",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  },
+  {
+    id: 9,
+    image_url: "https://picsum.photos/300/200",
+    category: "Entertainment",
+    title: "The Best Movies of 2023",
+    author: "Grace Yellow",
+    date: "2023-09-15",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  },
+  {
+    id: 10,
+    image_url: "https://picsum.photos/300/200",
+    category: "Science",
+    title: "Breakthroughs in Quantum Computing",
+    author: "Henry Red",
+    date: "2023-10-05",
+    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  },
 ];
 
 interface FilterOption {
@@ -155,7 +226,11 @@ const BlogPage: React.FC = () => {
   return (
     <main>
       <Layout className="relative">
-        <SearchResults blogs={filteredBlogs} onSearch={handleSearch} searchQuery={searchQuery} />
+        <SearchResults
+          blogs={filteredBlogs}
+          onSearch={handleSearch}
+          searchQuery={searchQuery}
+        />
         <SearchFilter
           onFilterChange={handleFilterChange}
           filters={filterSections}
