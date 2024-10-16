@@ -3,20 +3,9 @@ import ProtectedRoute from "./utils/ProtectedRoute";
 import LoadingWrapper from "./components/Loading/LoadingWrapper";
 import { Suspense } from "react";
 import CoursesPage from "./pages/CoursePage";
-import CoursesPage from "./pages/CoursePage";
 import BlogPage from "./pages/BlogPage";
 import GeneralLayout from "./defaultLayout/Layout";
 import HomePage from "./pages/Homepage";
-import LoginPage from "./pages/AuthPage/LoginPage";
-import SignUpPage from "./pages/AuthPage/SignUpPage";
-import ContactPage from "./pages/ContactPage";
-import FAQsPage from "./pages/FAQPage";
-import ErrorPage from "./pages/ErrorPage";
-import LoginPage from "./pages/AuthPage/LoginPage";
-import SignUpPage from "./pages/AuthPage/SignUpPage";
-import ContactPage from "./pages/ContactPage";
-import FAQsPage from "./pages/FAQPage";
-import ErrorPage from "./pages/ErrorPage";
 import AdminLayout from "./defaultLayout/AdminLayout";
 import AdminContent from "./pages/AdminDashboard/AdminContent";
 import UserManagement from "./pages/AdminDashboard/userManagement";
@@ -56,6 +45,9 @@ import DashboardLayout from "./defaultLayout/DashboardLayout";
 import StudentProfile from "./pages/StudentDashboard/studentProfile";
 import StudentPage from "./pages/Dashboard/Studentpage";
 import CourseDetailPage from "./pages/CourseDetailPage";
+import SignUppage from "./pages/AuthPage/SignUpPage";
+import FAQsPage from "./pages/FAQPage";
+import ErrorPage from "./pages/ErrorPage";
 
 function App() {
   return (
@@ -66,8 +58,8 @@ function App() {
             {/* General Layout */}
             <Route path="/" element={<GeneralLayout />}>
               <Route path="/" element={<HomePage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/signup" element={<SignUpPage />} />
+              <Route path="/login" element={<Loginpage />} />
+              <Route path="/signup" element={<SignUppage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/course" element={<CoursesPage />} />
               <Route path="/blog" element={<BlogPage />} />
