@@ -72,8 +72,8 @@ function App() {
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/faqs" element={<FAQsPage />} />
               <Route path="/error" element={<ErrorPage />} />
-              <Route path="/cart" element={<CartPage/>}/>
-              <Route path="/checkout" element={<CheckoutPage/>}/>
+              <Route path="/cart" element={<CartPage />} />
+              <Route path="/checkout" element={<CheckoutPage />} />
 
               <Route
                 path="/course-detail/:id"
