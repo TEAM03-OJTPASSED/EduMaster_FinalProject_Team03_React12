@@ -1,14 +1,6 @@
-import  { useState } from "react";
-import {
-  Table,
-  Input,
-  Card,
-} from "antd";
-import {
-  SearchOutlined,
-  
-} from "@ant-design/icons";
-
+import { useState } from "react";
+import { Table, Input, Card } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 
 const UserManagement = () => {
   const [dataSource] = useState([
@@ -46,7 +38,6 @@ const UserManagement = () => {
 
   // const [editVisible, setEditVisible] = useState(false);
   // const [currentUser] = useState(null);
-
 
   // const handleSave = (values:any) => {
   //   console.log("Saving user:", values);
