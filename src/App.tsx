@@ -49,7 +49,6 @@ import ProtectedRouter from "./utils/ProtectedRoute";
 import DashboardLayout from "./defaultLayout/DashboardLayout";
 import StudentProfile from "./pages/StudentDashboard/studentProfile";
 import StudentPage from "./pages/Dashboard/Studentpage";
-import CoursesPage from "./pages/CoursePage";
 import CourseDetailPage from "./pages/CourseDetailPage";
 
 function App() {

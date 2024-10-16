@@ -1,7 +1,6 @@
 import { Button, Card, Tag } from "antd";
 import { AiOutlineClockCircle } from "react-icons/ai";
 import { BiBook } from "react-icons/bi";
-import { BiBook } from "react-icons/bi";
 import { TiUserOutline } from "react-icons/ti";
 
 interface Course {
