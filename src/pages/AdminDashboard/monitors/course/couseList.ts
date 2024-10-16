@@ -8,8 +8,8 @@ export enum CourseStatusEnum {
 }
 
 export enum CoursePriceType {
-  FREE="Free",
-  PAID="Paid"
+  FREE = "Free",
+  PAID = "Paid",
 }
 export enum LessonTypeEnum {
   video = "video",
@@ -32,7 +32,7 @@ export interface Blog {
   content: string;
 }
 export interface Course {
-  id:string
+  id: string;
   name: string;
   category_id: string;
   description: string;
@@ -96,6 +96,27 @@ interface AdminTransaction {
   is_deleted: boolean;
   number: number;
   timestamp: Date;
+}
+
+interface PurchaseLog {
+  courseName: string;
+  purchaseNumber: string;
+  status: "Completed" | "Pending" | "Refunded";
+  pricePaid: number;
+  discount: number;
+  studentName: string;
+  instructorName: string;
+  createdAt: string; // ISO date string (e.g., "2024-10-01")
+}
+interface SalesHistory {
+  courseName: string;
+  purchaseNumber: string;
+  status: "Completed" | "Pending" | "Refunded";
+  pricePaid: number;
+  discount: number;
+  studentName: string;
+  CartNo: string;
+  createdAt: string; // ISO date string (e.g., "2024-10-01")
 }
 
 const randomString = () => Math.random().toString(36).substring(2, 10);
@@ -381,7 +402,7 @@ export const listSessions: Session[] = [
 
 export const listCourses: Course[] = [
   {
-    id:"1",
+    id: "1",
     name: "Introduction to Web Development",
     category_id: "cat01",
     description:
@@ -394,7 +415,7 @@ export const listCourses: Course[] = [
     discount: 10,
   },
   {
-    id:"2",
+    id: "2",
     name: "JavaScript Advanced Techniques",
     category_id: "cat02",
     description: "Master advanced JavaScript concepts and design patterns.",
@@ -406,7 +427,7 @@ export const listCourses: Course[] = [
     discount: 20,
   },
   {
-    id:"3",
+    id: "3",
     name: "React for Beginners",
     category_id: "cat03",
     description: "Get started with React.js and build dynamic user interfaces.",
@@ -418,7 +439,7 @@ export const listCourses: Course[] = [
     discount: 15,
   },
   {
-    id:"4",
+    id: "4",
     name: "Node.js and Express",
     category_id: "cat04",
     description:
@@ -431,7 +452,7 @@ export const listCourses: Course[] = [
     discount: 10,
   },
   {
-    id:"5",
+    id: "5",
     name: "Fullstack Development with MERN",
     category_id: "cat05",
     description:
@@ -444,7 +465,7 @@ export const listCourses: Course[] = [
     discount: 25,
   },
   {
-    id:"6",
+    id: "6",
     name: "Introduction to Data Science",
     category_id: "cat06",
     description: "Explore the world of data science and machine learning.",
@@ -456,7 +477,7 @@ export const listCourses: Course[] = [
     discount: 15,
   },
   {
-    id:"7",
+    id: "7",
     name: "Python for Beginners",
     category_id: "cat07",
     description: "Learn Python programming from scratch.",
@@ -468,7 +489,7 @@ export const listCourses: Course[] = [
     discount: 5,
   },
   {
-    id:"8",
+    id: "8",
     name: "Cloud Computing with AWS",
     category_id: "cat08",
     description:
@@ -481,7 +502,7 @@ export const listCourses: Course[] = [
     discount: 20,
   },
   {
-    id:"9",
+    id: "9",
     name: "DevOps Fundamentals",
     category_id: "cat09",
     description: "Learn the fundamental practices and tools in DevOps.",
@@ -493,7 +514,7 @@ export const listCourses: Course[] = [
     discount: 10,
   },
   {
-    id:"10",
+    id: "10",
     name: "Cybersecurity Basics",
     category_id: "cat10",
     description:
@@ -505,5 +526,201 @@ export const listCourses: Course[] = [
     status: CourseStatusEnum.INACTIVE,
     price: 140,
     discount: 10,
+  },
+];
+
+export const purchaseLog: PurchaseLog[] = [
+  {
+    courseName: "Introduction to Web Development",
+    purchaseNumber: "PUR001",
+    status: "Completed",
+    pricePaid: 90,
+    discount: 10,
+    studentName: "John Doe",
+    instructorName: "Jane Smith",
+    createdAt: "2024-10-01",
+  },
+  {
+    courseName: "JavaScript Advanced Techniques",
+    purchaseNumber: "PUR002",
+    status: "Pending",
+    pricePaid: 120,
+    discount: 30,
+    studentName: "Alice Johnson",
+    instructorName: "Tom Brown",
+    createdAt: "2024-10-03",
+  },
+  {
+    courseName: "Introduction to Web Development",
+    purchaseNumber: "PUR003",
+    status: "Completed",
+    pricePaid: 90,
+    discount: 10,
+    studentName: "Michael Green",
+    instructorName: "Jane Smith",
+    createdAt: "2024-10-05",
+  },
+  {
+    courseName: "JavaScript Advanced Techniques",
+    purchaseNumber: "PUR004",
+    status: "Refunded",
+    pricePaid: 120,
+    discount: 30,
+    studentName: "Sarah White",
+    instructorName: "Tom Brown",
+    createdAt: "2024-10-07",
+  },
+  {
+    courseName: "Introduction to Web Development",
+    purchaseNumber: "PUR001",
+    status: "Completed",
+    pricePaid: 90,
+    discount: 10,
+    studentName: "John Doe",
+    instructorName: "Jane Smith",
+    createdAt: "2024-10-01",
+  },
+  {
+    courseName: "JavaScript Advanced Techniques",
+    purchaseNumber: "PUR002",
+    status: "Pending",
+    pricePaid: 120,
+    discount: 30,
+    studentName: "Alice Johnson",
+    instructorName: "Tom Brown",
+    createdAt: "2024-10-03",
+  },
+  {
+    courseName: "Introduction to Web Development",
+    purchaseNumber: "PUR003",
+    status: "Completed",
+    pricePaid: 90,
+    discount: 10,
+    studentName: "Michael Green",
+    instructorName: "Jane Smith",
+    createdAt: "2024-10-05",
+  },
+  {
+    courseName: "JavaScript Advanced Techniques",
+    purchaseNumber: "PUR004",
+    status: "Refunded",
+    pricePaid: 120,
+    discount: 30,
+    studentName: "Sarah White",
+    instructorName: "Tom Brown",
+    createdAt: "2024-10-07",
+  },
+  {
+    courseName: "Introduction to Web Development",
+    purchaseNumber: "PUR001",
+    status: "Completed",
+    pricePaid: 90,
+    discount: 10,
+    studentName: "John Doe",
+    instructorName: "Jane Smith",
+    createdAt: "2024-10-01",
+  },
+  {
+    courseName: "JavaScript Advanced Techniques",
+    purchaseNumber: "PUR002",
+    status: "Pending",
+    pricePaid: 120,
+    discount: 30,
+    studentName: "Alice Johnson",
+    instructorName: "Tom Brown",
+    createdAt: "2024-10-03",
+  },
+  {
+    courseName: "Introduction to Web Development",
+    purchaseNumber: "PUR003",
+    status: "Completed",
+    pricePaid: 90,
+    discount: 10,
+    studentName: "Michael Green",
+    instructorName: "Jane Smith",
+    createdAt: "2024-10-05",
+  },
+  {
+    courseName: "JavaScript Advanced Techniques",
+    purchaseNumber: "PUR004",
+    status: "Refunded",
+    pricePaid: 120,
+    discount: 30,
+    studentName: "Sarah White",
+    instructorName: "Tom Brown",
+    createdAt: "2024-10-07",
+  },
+  {
+    courseName: "Introduction to Web Development",
+    purchaseNumber: "PUR001",
+    status: "Completed",
+    pricePaid: 90,
+    discount: 10,
+    studentName: "John Doe",
+    instructorName: "Jane Smith",
+    createdAt: "2024-10-01",
+  },
+  {
+    courseName: "JavaScript Advanced Techniques",
+    purchaseNumber: "PUR002",
+    status: "Pending",
+    pricePaid: 120,
+    discount: 30,
+    studentName: "Alice Johnson",
+    instructorName: "Tom Brown",
+    createdAt: "2024-10-03",
+  },
+  {
+    courseName: "Introduction to Web Development",
+    purchaseNumber: "PUR003",
+    status: "Completed",
+    pricePaid: 90,
+    discount: 10,
+    studentName: "Michael Green",
+    instructorName: "Jane Smith",
+    createdAt: "2024-10-05",
+  },
+  {
+    courseName: "JavaScript Advanced Techniques",
+    purchaseNumber: "PUR004",
+    status: "Refunded",
+    pricePaid: 120,
+    discount: 30,
+    studentName: "Sarah White",
+    instructorName: "Tom Brown",
+    createdAt: "2024-10-07",
+  },
+];
+
+export const salesHistory: SalesHistory[] = [
+  {
+    courseName: "Introduction to Web Development",
+    purchaseNumber: "PUR001",
+    status: "Completed",
+    pricePaid: 90,
+    discount: 10,
+    studentName: "John Doe",
+    CartNo: "CART_JB97IV20241016",
+    createdAt: "2024-10-01",
+  },
+  {
+    courseName: "JavaScript Advanced Techniques",
+    purchaseNumber: "PUR002",
+    status: "Pending",
+    pricePaid: 120,
+    discount: 30,
+    studentName: "Alice Johnson",
+    CartNo: "CART_JB97IV20241016",
+    createdAt: "2024-10-03",
+  },
+  {
+    courseName: "Introduction to Web Development",
+    purchaseNumber: "PUR003",
+    status: "Completed",
+    pricePaid: 90,
+    discount: 10,
+    studentName: "Michael Green",
+    CartNo: "CART_JB97IV20241016",
+    createdAt: "2024-10-05",
   },
 ];
