@@ -15,9 +15,10 @@ interface Review {
 
 type Props = {
   items: Review[];
+  label?: boolean;
 };
 
-export const Reviews = ({ items }: Props) => {
+export const Reviews = ({ items, label }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 3;
 
@@ -124,7 +125,7 @@ export const Reviews = ({ items }: Props) => {
   return (
     <div>
       <div>
-        <div className="font-exo font-bold text-lg">Comment</div>
+        {label && <div className="font-exo font-bold text-lg">Comment</div>}
         <div>
           <div className="flex items-center mb-4">
             <span className="font-exo font-bold text-5xl mr-2">
