@@ -84,10 +84,10 @@ const InstructorCourseList: React.FC = () => {
   // Filter courses based on the active tab
   const filteredCourses = listCourses.filter(course => {
     if (activeTab === "in-progress") {
-      return course.status === CourseStatusEnum.active;
+      return course.status === CourseStatusEnum.ACTIVE;
     }
     if (activeTab === "completed") {
-      return course.status === CourseStatusEnum.completed;
+      return course.status === CourseStatusEnum.APPROVED;
     }
     return true;
   });
