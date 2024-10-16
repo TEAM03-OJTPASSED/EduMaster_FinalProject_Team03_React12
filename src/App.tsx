@@ -7,14 +7,6 @@ import BlogPage from "./pages/BlogPage";
 import CourseDetailPage from "./pages/CourseDetailPage";
 import GeneralLayout from "./defaultLayout/Layout";
 import HomePage from "./pages/Homepage";
-<<<<<<< HEAD
-=======
-import LoginPage from "./pages/AuthPage/LoginPage";
-import SignUpPage from "./pages/AuthPage/SignUpPage";
-import ContactPage from "./pages/ContactPage";
-import FAQsPage from "./pages/FAQPage";
-import ErrorPage from "./pages/ErrorPage";
->>>>>>> c48f45afe1bc51addf0de51ab423601df2923820
 import AdminLayout from "./defaultLayout/AdminLayout";
 import AdminContent from "./pages/AdminDashboard/AdminContent";
 import UserManagement from "./pages/AdminDashboard/userManagement";
@@ -53,15 +45,12 @@ import CompletedPayout from "./pages/InstructorDashboard/instructor-management/p
 import { BlogDetailPage } from "./utils/LazyRouter";
 import DashboardLayout from "./defaultLayout/DashboardLayout";
 import StudentProfile from "./pages/StudentDashboard/studentProfile";
-<<<<<<< HEAD
-import StudentPage from "./pages/Dashboard/Studentpage";
-import CourseDetailPage from "./pages/CourseDetailPage";
+import StudentCourses from "./pages/StudentDashboard/StudentCourses";
+import Loginpage from "./pages/AuthPage/LoginPage";
 import SignUppage from "./pages/AuthPage/SignUpPage";
 import FAQsPage from "./pages/FAQPage";
 import ErrorPage from "./pages/ErrorPage";
-=======
-import StudentCourses from "./pages/StudentDashboard/StudentCourses";
->>>>>>> c48f45afe1bc51addf0de51ab423601df2923820
+import ContactPage from "./pages/ContactPage";
 
 function App() {
   return (
@@ -102,8 +91,6 @@ function App() {
               >
                 <Route index element={<BlogDetailPage />} />
               </Route>
-
-  
             </Route>
 
             {/* Admin Layout */}
@@ -175,24 +162,19 @@ function App() {
             </Route>
 
             {/* Student Layout */}
-            
 
             <Route
-                path="/student"
-                element={
-                  <ProtectedRoute allowedRoles={["student"]}></ProtectedRoute>
-                }
-              >
-                <Route element={<DashboardLayout role="student" />}>
+              path="/student"
+              element={
+                <ProtectedRoute allowedRoles={["student"]}></ProtectedRoute>
+              }
+            >
+              <Route element={<DashboardLayout role="student" />}>
                 <Route path="dashboard" element={<InstructorContent />} />
                 <Route path="profile" element={<StudentProfile />} />
                 <Route path="my-courses" element={<StudentCourses />} />
-
-
-              
-                </Route>
               </Route>
-
+            </Route>
           </Routes>
         </LoadingWrapper>
       </Suspense>
