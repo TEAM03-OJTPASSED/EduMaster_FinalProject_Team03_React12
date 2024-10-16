@@ -28,7 +28,7 @@ const Loginpage = () => {
     }
   }, []);
   return (
-    <div className="w-full lg:flex lg:h-[35rem] lg:flex-row lg:rounded-lg overflow-hidden shadow-xl">
+    <div className="w-full lg:flex lg:h-[35rem] lg:flex-row lg:rounded-lg mt-12 overflow-hidden shadow-xl">
       {/* BACKGROUND */}
       <div className="lg:w-1/2 bg-gray-100 flex items-center justify-center">
         <Player
