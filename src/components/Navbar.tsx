@@ -75,7 +75,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="w-full h-16 flex items-center justify-between p-4 bg-white shadow-md relative z-0">
+    <div className="w-full h-20 flex items-center justify-between p-4 bg-white shadow-md relative z-0">
       {!isSearchActive ? (
         <>
           <img
@@ -125,18 +125,28 @@ const Navbar = () => {
 
           {/* Log In / Sign Up and Search Icons */}
           <div className="hidden md:flex items-center gap-4"> {/* Hide on smaller screens */}
-            <button
+            {/* <button
               className="px-3 py-1.5 bg-blue-500 text-white rounded-md transition duration-200 hover:bg-blue-600 text-sm md:text-base"
               onClick={() => navigate("/login")}
             >
               Log In
-            </button>
-            <button
+            </button> */}
+            <div className="border-2 border-black rounded-3xl">
+              <div className="pt-1.5 pb-2 pl-3 pr-3">
+                <a className="text-sm text-bold navbar-button cursor-pointer" onClick={() => navigate("/login")}>Login</a>
+              </div>
+            </div>
+            {/* <button
               className="px-3 py-1.5 bg-green-500 text-white rounded-md transition duration-200 hover:bg-green-600 text-sm md:text-base"
               onClick={() => navigate("/signup")}
             >
               Sign Up
-            </button>
+            </button> */}
+            <div className="border-2 border-black rounded-3xl">
+              <div className="pt-1.5 pb-2 pl-3 pr-3">
+                <a className="text-sm text-bold navbar-button cursor-pointer" onClick={() => navigate("/signup")}>Sign up</a>
+              </div>
+            </div>
             <div
               className="flex items-center justify-center w-10 h-10 bg-gray-200 rounded-full cursor-pointer"
               onClick={() => setIsSearchActive(true)}
@@ -162,44 +172,44 @@ const Navbar = () => {
             className="flex flex-col "
           >
             <div className="flex flex-col justify-center items-center">
-            <Button
-              className={`navbar-button ${activeButton === "home" ? "active" : ""} text-sm w-full`}
-              onClick={() => {
-                setActiveButton("home");
-                navigate("/");
-                setIsDrawerOpen(false); // Close drawer
-              }}
-            >
-              Home
-            </Button>
-            <Button
-              className={`navbar-button ${activeButton === "courses" ? "active" : ""} text-sm w-full`}
-              onClick={() => {
-                setActiveButton("courses");
-                navigate("/course");
-                setIsDrawerOpen(false); // Close drawer
-              }}
-            >
-              Courses
-            </Button>
-            <Button
-              className={`navbar-button ${activeButton === "blog" ? "active" : ""} text-sm w-full`}
-              onClick={() => {
-                setActiveButton("blog");
-                navigate("/blog");
-                setIsDrawerOpen(false); // Close drawer
-              }}
-            >
-              Blog
-            </Button>
-            <Dropdown menu={menuProps}>
-              <Button className={`navbar-button ${activeButton === "pages" ? "active" : ""} text-sm w-full`}>
-                <Space className="text-base font-semibold">
-                  Pages
-                  <DownOutlined />
-                </Space>
+              <Button
+                className={`navbar-button ${activeButton === "home" ? "active" : ""} text-sm w-full`}
+                onClick={() => {
+                  setActiveButton("home");
+                  navigate("/");
+                  setIsDrawerOpen(false); // Close drawer
+                }}
+              >
+                Home
               </Button>
-            </Dropdown>
+              <Button
+                className={`navbar-button ${activeButton === "courses" ? "active" : ""} text-sm w-full`}
+                onClick={() => {
+                  setActiveButton("courses");
+                  navigate("/course");
+                  setIsDrawerOpen(false); // Close drawer
+                }}
+              >
+                Courses
+              </Button>
+              <Button
+                className={`navbar-button ${activeButton === "blog" ? "active" : ""} text-sm w-full`}
+                onClick={() => {
+                  setActiveButton("blog");
+                  navigate("/blog");
+                  setIsDrawerOpen(false); // Close drawer
+                }}
+              >
+                Blog
+              </Button>
+              <Dropdown menu={menuProps}>
+                <Button className={`navbar-button ${activeButton === "pages" ? "active" : ""} text-sm w-full`}>
+                  <Space className="text-base font-semibold">
+                    Pages
+                    <DownOutlined />
+                  </Space>
+                </Button>
+              </Dropdown>
             </div>
           </Drawer>
         </>

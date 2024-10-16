@@ -1,4 +1,6 @@
 import { MdOutlineLocalPhone, MdOutlineEmail } from "react-icons/md";
+import SessionResponsive from "./SessionResponsive";
+import { Reviews } from "./Detail/Review";
 
 type Course = {
   name: string;
@@ -100,7 +102,7 @@ type Session = {
 const sampleSessions: Session[] = [
   {
     _id: "667f9376734773e8a46c8a13",
-    name: "Session One",
+    name: "Ask Questions to Make Data-Driven Decisions",
     user_id: "667ed37ca20b693592628508",
     course_id: "667ecee48039581edcd01af5",
     description: "Introduction to the course",
@@ -112,7 +114,7 @@ const sampleSessions: Session[] = [
   },
   {
     _id: "667f9376734773e8a46c8a14",
-    name: "Session Two",
+    name: "Prepare Data for Exploration",
     user_id: "667ed37ca20b693592628508",
     course_id: "667ecee48039581edcd01af5",
     description: "Setting up the environment",
@@ -124,7 +126,7 @@ const sampleSessions: Session[] = [
   },
   {
     _id: "667f9376734773e8a46c8a15",
-    name: "Session Three",
+    name: "Process Data from Dirty to Clean",
     user_id: "667ed37ca20b693592628508",
     course_id: "667ecee48039581edcd01af5",
     description: "Basic concepts",
@@ -136,7 +138,7 @@ const sampleSessions: Session[] = [
   },
   {
     _id: "667f9376734773e8a46c8a16",
-    name: "Session Four",
+    name: "Share Data Through the Art of Visualization",
     user_id: "667ed37ca20b693592628508",
     course_id: "667ecee48039581edcd01af5",
     description: "Advanced topics",
@@ -171,8 +173,9 @@ const sampleLessons: Lesson[] = [
     course_id: "667ecee48039581edcd01af5",
     session_id: "667f9376734773e8a46c8a13",
     user_id: "667ed37ca20b693592628508",
-    lesson_type: "video",
-    description: "",
+    lesson_type: "text",
+    description:
+      "lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     video_url: "https://www.youtube.com/watch?v=JJ0pjRotdKI",
     image_url: "",
     full_time: 100,
@@ -464,44 +467,12 @@ export const DetailResponsive = ({}: Props) => {
         <div className="font-bold text-xl">Curriculum</div>
         <div className="flex-grow border-t border-orange-300 ml-2"></div>
       </div>
-      {sampleSessions.map((session) => (
-        <div key={session._id} className="mt-2">
-          <div className="font-bold">{session.name}</div>
-          <div>{session.description}</div>
-          <div className="ml-4">
-            {sampleLessons
-              .filter((lesson) => lesson.session_id === session._id)
-              .map((lesson) => (
-                <div key={lesson._id} className="mt-2">
-                  <div className="font-semibold">{lesson.name}</div>
-                  <div>{lesson.description}</div>
-                  {lesson.lesson_type === "video" && (
-                    <div>
-                      <a
-                        href={lesson.video_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Watch Video
-                      </a>
-                    </div>
-                  )}
-                </div>
-              ))}
-          </div>
-        </div>
-      ))}
+      <SessionResponsive sessions={sampleSessions} lessons={sampleLessons} />
       <div className="flex items-center mt-4">
         <div className="font-bold text-xl">Comment</div>
         <div className="flex-grow border-t border-orange-300 ml-2"></div>
       </div>
-      {sampleReviews.map((review) => (
-        <div key={review._id} className="mt-2">
-          <div className="font-bold">{review.user_id}</div>
-          <div>{review.comment}</div>
-          <div>Rating: {review.rating}</div>
-        </div>
-      ))}
+      <Reviews items={sampleReviews} label={false} />
     </div>
   );
 };
