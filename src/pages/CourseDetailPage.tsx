@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { Banner } from "../components/CourseDetailPage/Banner";
 import { Detail } from "../components/CourseDetailPage/Detail";
 import { LeaveAComment } from "../components/LeaveAComment";
+import { DetailResponsive } from "../components/CourseDetailPage/DetailResponsive";
 
 const CourseDetailPage = () => {
   const { id } = useParams();
@@ -18,8 +19,13 @@ const CourseDetailPage = () => {
           discount={50}
         />
       </div>
-      <Detail a="asdasd" />
-      <div className="w-2/3">
+      <div className="hidden lg:block">
+        <Detail />
+      </div>
+      <div className="lg:hidden">
+        <DetailResponsive />
+      </div>
+      <div className="lg:w-2/3">
         <LeaveAComment />
       </div>
     </div>
