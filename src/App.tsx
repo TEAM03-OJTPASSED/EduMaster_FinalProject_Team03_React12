@@ -41,7 +41,6 @@ import InstructorCreateCourse from "./pages/InstructorDashboard/instructor-monit
 import InstructorCourseLog from "./pages/InstructorDashboard/instructor-report/InstructorCourseLog";
 import InstructorPurchaseLog from "./pages/InstructorDashboard/instructor-report/InstructorPurchaseLog";
 import InstructorEarning from "./pages/InstructorDashboard/instructor-report/InstructorEarning";
-import InstructorDiscount from "./pages/InstructorDashboard/instructor-management/InstructorDiscount";
 import InstructorReview from "./pages/InstructorDashboard/InstructorReview";
 import InstructorSetting from "./pages/InstructorDashboard/setting/InstructorSetting";
 import ForgotPasswordPage from "./pages/AuthPage/ForgotPasswordPage";
@@ -53,6 +52,8 @@ import AdminProfile from "./pages/AdminDashboard/setting/AdminProfile"
 import InstructorProfile from "./pages/InstructorDashboard/setting/InstructorProfile";
 import InstructorChangePassword from "./pages/InstructorDashboard/setting/InstructorChangePassword";
 import AdminChangePassword from "./pages/AdminDashboard/setting/AdminChangePassword";
+import InstructorSalesHistory from "./pages/InstructorDashboard/instructor-management/InstructorSalesHistory";
+import InstructorSubscription from "./pages/InstructorDashboard/InstructorSubscription";
 
 function App() {
   return (
@@ -144,6 +145,7 @@ function App() {
                   />
                 </Route>
                 <Route path="order" element={<InstructorOrder />} />
+                <Route path="sales-history" element={<InstructorSalesHistory />} />
                 <Route path="my-courses" element={<InstructorCourses />}>
                   <Route index element={<InstructorCourseList />} />
                   <Route path="session" element={<IntructorSessionList />} />
@@ -159,7 +161,7 @@ function App() {
                   element={<InstructorPurchaseLog />}
                 />
                 <Route path="earning" element={<InstructorEarning />} />
-                <Route path="discount" element={<InstructorDiscount />} />
+                <Route path="subscription" element={<InstructorSubscription />} />
                 <Route path="review" element={<InstructorReview />} />
                 <Route path="settings" element={<InstructorSetting />} >
                 <Route index element={<InstructorProfile />} />

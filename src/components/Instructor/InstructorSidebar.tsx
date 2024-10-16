@@ -9,8 +9,9 @@ import {
   MoneyCollectOutlined,
   BookOutlined,
   FileTextOutlined,
-  PercentageOutlined,
+  ShoppingCartOutlined,
   StarOutlined,
+  BellOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
@@ -40,10 +41,10 @@ const menuItems = [
         path: "/instructor/order",
       },
       {
-        key: "management-discount",
-        icon: <PercentageOutlined />,
-        title: "Discount",
-        path: "/instructor/discount",
+        key: "management-sales-history",
+        icon: <ShoppingCartOutlined />,
+        title: "Sales History",
+        path: "/instructor/sales-history",
       },
     ],
   },
@@ -92,11 +93,11 @@ const menuItems = [
     ],
   },
   {
-    key: "settings",
-    icon: <SettingOutlined />,
-    title: "Settings",
-    label: "Settings",
-    path: "/instructor/settings",
+    key: "subscription",
+    icon: <BellOutlined />,
+    title: "Subscription",
+    label: "Subscription",
+    path: "/instructor/subscription",
   },
   {
     key: "6",
@@ -104,6 +105,13 @@ const menuItems = [
     title: "Review",
     label: "Review",
     path: "/instructor/review",
+  },
+  {
+    key: "settings",
+    icon: <SettingOutlined />,
+    title: "Settings",
+    label: "Settings",
+    path: "/instructor/settings",
   },
 ];
 
