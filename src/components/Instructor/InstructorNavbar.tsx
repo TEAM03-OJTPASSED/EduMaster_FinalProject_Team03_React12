@@ -31,11 +31,7 @@ const InstructorNavbar = () => {
   const menuItems = [
     {
       key: "profile",
-      label: <span onClick={() => navigate("/profile")}>Profile</span>,
-    },
-    {
-      key: "settings",
-      label: <span onClick={() => navigate("/settings")}>Settings</span>,
+      label: <span onClick={() => navigate("/instructor/settings")}>Profile</span>,
     },
     {
       key: "logout",

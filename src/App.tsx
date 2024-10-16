@@ -43,11 +43,13 @@ import InstructorPurchaseLog from "./pages/InstructorDashboard/instructor-report
 import InstructorEarning from "./pages/InstructorDashboard/instructor-report/InstructorEarning";
 import InstructorDiscount from "./pages/InstructorDashboard/instructor-management/InstructorDiscount";
 import InstructorReview from "./pages/InstructorDashboard/InstructorReview";
-import InstructorSetting from "./pages/InstructorDashboard/InstructorSetting";
+import InstructorSetting from "./pages/InstructorDashboard/setting/InstructorSetting";
 import ForgotPasswordPage from "./pages/AuthPage/ForgotPasswordPage";
 import PayoutManagement from "./pages/AdminDashboard/payoutManagement";
 import RequestPayout from "./pages/InstructorDashboard/instructor-management/payout/RequestPayout";
 import CompletedPayout from "./pages/InstructorDashboard/instructor-management/payout/CompletedPayout";
+import Profile from "./pages/InstructorDashboard/setting/Profile";
+import ChangePassword from "./pages/InstructorDashboard/setting/ChangePassword";
 
 function App() {
   return (
@@ -149,7 +151,13 @@ function App() {
                 <Route path="earning" element={<InstructorEarning />} />
                 <Route path="discount" element={<InstructorDiscount />} />
                 <Route path="review" element={<InstructorReview />} />
-                <Route path="settings" element={<InstructorSetting />} />
+                <Route path="settings" element={<InstructorSetting />} >
+                <Route index element={<Profile />} />
+                  <Route
+                    path="change-password"
+                    element={<ChangePassword />}
+                  />
+                </Route>
               </Route>
             </Route>
 
