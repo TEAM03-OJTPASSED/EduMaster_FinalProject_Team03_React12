@@ -17,13 +17,10 @@ const ContactPage: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className='mt-2'>
       {/* Breadcrumb Section */}
-      <div className="bg-gray-150 p-2 md:p-3">
-        <div className="w-full h-14 flex items-center">
-        <DynamicBreadcrumb/>
-        </div>
-        <hr className="border-b border-gray-300" />
+      <div className="p-4 pb-0">
+        <DynamicBreadcrumb />
       </div>
 
       {/* Contact Section */}
@@ -34,7 +31,7 @@ const ContactPage: React.FC = () => {
           <div className="lg:w-1/3 p-3 pl-0 mb-8 lg:mb-0">
             <h1 className="font-semibold text-2xl sm:text-3xl lg:text-4xl mb-2.5">Need a direct line?</h1>
             <p className="text-lg sm:text-xl mt-2.5">
-              Cras massa et odio donec faucibus in. Vitae pretium massa dolor ullamcorper lectus elit quam. 
+              Cras massa et odio donec faucibus in. Vitae pretium massa dolor ullamcorper lectus elit quam.
               Nec eu pellentesque blandit urna. A lacus sagittis nec fermentum id sed in. Lacus feugiat eget nulla.
             </p>
             <div className="pt-5">
@@ -42,14 +39,14 @@ const ContactPage: React.FC = () => {
                 <i className="fas fa-phone-alt text-orange-500 text-3xl p-5 bg-gray-100 rounded-md"></i>
                 <div className="ml-8">
                   <h3 className="text-gray-400 mt-5 mb-2">Phone</h3>
-                  <p className="font-semibold">(123) 456 7890</p>
+                  <p className="font-semibold">0901 661 669</p>
                 </div>
               </div>
               <div className="flex items-start pt-4">
                 <i className="fas fa-envelope text-orange-500 text-3xl p-5 bg-gray-100 rounded-md"></i>
                 <div className="ml-8">
                   <h3 className="text-gray-400 mt-5 mb-2">Email</h3>
-                  <p className="font-semibold">Demo@Domain.Com</p>
+                  <p className="font-semibold">team03ojt@gmail.com</p>
                 </div>
               </div>
             </div>
@@ -57,7 +54,7 @@ const ContactPage: React.FC = () => {
 
           {/* Right Column - Map */}
           <div className="lg:w-2/3 p-4">
-            <MapContainer center={position} zoom={16} style={{ height: '300px', width: '100%', borderRadius: '2.5%' }}>
+            <MapContainer center={position} zoom={16} style={{ height: '400px', width: '100%', borderRadius: '2.5%' }}>
               <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution="&copy; OpenStreetMap contributors"

@@ -3,6 +3,7 @@ import { SearchFilter } from "../components/Blogs/SearchFilter";
 import { SearchResults } from "../components/Blogs/SearchResults";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import DynamicBreadcrumb from "../components/Breadcrumb/Breadcrumb";
 
 interface Blog {
   id: number;
@@ -224,7 +225,10 @@ const BlogPage: React.FC = () => {
   };
 
   return (
-    <main>
+    <main className="mt-2">
+      <div className="p-4 pb-0">
+        <DynamicBreadcrumb />
+      </div>
       <Layout className="relative">
         <SearchResults
           blogs={filteredBlogs}
