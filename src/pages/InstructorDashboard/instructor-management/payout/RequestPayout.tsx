@@ -73,7 +73,7 @@ const RequestPayout = () => {
         dataSource={payouts}
         columns={columns}
         pagination={{ pageSize: 5 }}
-        rowKey="name"
+        rowKey="payout_no"
         bordered
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
