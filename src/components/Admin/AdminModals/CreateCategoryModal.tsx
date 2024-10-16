@@ -12,7 +12,7 @@ interface CreateCategoryProps {
 }
 
 const CreateCategory: FC<CreateCategoryProps> = ({
-  visible,
+  open,
   onCreate,
   onCancel,
   form,
@@ -20,7 +20,7 @@ const CreateCategory: FC<CreateCategoryProps> = ({
   return (
     <Modal
       title="Create Category"
-      visible={visible}
+      open={open}
       onOk={onCreate}
       onCancel={onCancel}
     >

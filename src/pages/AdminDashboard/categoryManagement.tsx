@@ -36,7 +36,7 @@ const CategoryManagement = () => {
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [form] = Form.useForm();
-  const [setEditingRecord] = useState<any>(null);
+  const [editingRecord, setEditingRecord] = useState<any>(null);
 
   const { searchText, filteredData, handleSearchChange } = useSearch(
     dataSource,
@@ -60,7 +60,7 @@ const CategoryManagement = () => {
 
   // Show Edit Modal with existing data
   const showModalEdit = (record: any) => {
-    setEditingRecord(record);
+    setEditingRecord(record);  
     form.setFieldsValue({
       categoryName: record.name,
       description: record.description,
@@ -178,7 +178,7 @@ const CategoryManagement = () => {
 
       {/* Modal for Create */}
       <CreateCategoryModal
-        visible={isCreateModalVisible}
+         open={isCreateModalVisible}
         onCreate={handleOkCreate}
         onCancel={handleCancel}
         form={form}
@@ -186,7 +186,7 @@ const CategoryManagement = () => {
 
       {/* Modal for Edit */}
       <UpdateCategoryModal
-        visible={isEditModalVisible}
+        open={isEditModalVisible}
         onUpdate={handleOkEdit}
         onCancel={handleCancel}
         form={form}

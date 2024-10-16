@@ -10,7 +10,7 @@ interface UpdateCategoryProps {
 }
 
 const UpdateCategory: FC<UpdateCategoryProps> = ({
-  visible,
+  open,
   onUpdate,
   onCancel,
   form,
@@ -18,7 +18,7 @@ const UpdateCategory: FC<UpdateCategoryProps> = ({
   return (
     <Modal
       title="Edit Category"
-      visible={visible}
+      open={open}
       onOk={onUpdate}
       onCancel={onCancel}
     >

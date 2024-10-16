@@ -125,7 +125,7 @@ const PendingCourseList: React.FC = () => {
 
       <Modal
         title="Course Details"
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={handleCancel}
         footer={[
           <Button key="reject" onClick={handleReject}>

@@ -83,7 +83,7 @@ const PendingSessionList = () => {
       />
       <Modal
         title="Session Details"
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={handleCancel}
       >
         {selectedSession && (

@@ -183,6 +183,51 @@ const UserManagement: React.FC = () => {
   const unverifiedAccounts = dataSource.filter((user) => !user.verified);
   const blockedAccounts = dataSource.filter((user) => user.blocked);
 
+  const items = [
+    {
+      key: "1",
+      label: "All Users",
+      children: (
+        <Table
+          dataSource={filteredData}
+          columns={columns}
+          pagination={{ pageSize: 5 }}
+          rowKey="key"
+          bordered
+          scroll={{ x: true }}
+        />
+      ),
+    },
+    {
+      key: "2",
+      label: "Unverified Accounts",
+      children: (
+        <Table
+          dataSource={unverifiedAccounts}
+          columns={columns}
+          pagination={{ pageSize: 5 }}
+          rowKey="key"
+          bordered
+          scroll={{ x: true }}
+        />
+      ),
+    },
+    {
+      key: "3",
+      label: "Blocked Accounts",
+      children: (
+        <Table
+          dataSource={blockedAccounts}
+          columns={columns}
+          pagination={{ pageSize: 5 }}
+          rowKey="key"
+          bordered
+          scroll={{ x: true }}
+        />
+      ),
+    },
+  ];
+
   return (
     <div>
       <Card>
@@ -191,42 +236,10 @@ const UserManagement: React.FC = () => {
           placeholder="Search by name or email"
           prefix={<SearchOutlined />}
           className="w-full md:w-1/3 mb-2 md:mb-0"
-          value={searchText} // Liên kết với searchText
-          onChange={handleSearchChange} // Gọi hàm khi người dùng nhập
+          value={searchText}
+          onChange={handleSearchChange}
         />
-        <Tabs defaultActiveKey="1">
-          <TabPane tab="All Users" key="1">
-            <Table
-              // dataSource={allUsers}
-              dataSource={filteredData} // Sử dụng filteredData cho bảng
-              columns={columns}
-              pagination={{ pageSize: 5 }}
-              rowKey="key"
-              bordered
-              scroll={{ x: true }} // Thêm scroll cho bảng
-            />
-          </TabPane>
-          <TabPane tab="Unverified Accounts" key="2">
-            <Table
-              dataSource={unverifiedAccounts}
-              columns={columns}
-              pagination={{ pageSize: 5 }}
-              rowKey="key"
-              bordered
-              scroll={{ x: true }}
-            />
-          </TabPane>
-          <TabPane tab="Blocked Accounts" key="3">
-            <Table
-              dataSource={blockedAccounts}
-              columns={columns}
-              pagination={{ pageSize: 5 }}
-              rowKey="key"
-              bordered
-              scroll={{ x: true }}
-            />
-          </TabPane>
-        </Tabs>
+        <Tabs defaultActiveKey="1" items={items} />
       </Card>
       <EditUserModal
         visible={editVisible}

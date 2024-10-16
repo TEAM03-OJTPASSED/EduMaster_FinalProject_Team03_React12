@@ -170,7 +170,7 @@ const PayoutManagement: React.FC = () => {
           dataSource={payouts}
           columns={columns}
           pagination={{ pageSize: 5 }}
-          rowKey="name"
+          rowKey="payout_no"
           bordered
           style={{ borderRadius: "8px" }}
           scroll={{ x: true }}
@@ -178,7 +178,7 @@ const PayoutManagement: React.FC = () => {
 
         <Modal
           title="Course Details"
-          visible={isModalVisible}
+          open={isModalVisible}
           // onOk={handleOk}
           onCancel={handleCancel}
         >

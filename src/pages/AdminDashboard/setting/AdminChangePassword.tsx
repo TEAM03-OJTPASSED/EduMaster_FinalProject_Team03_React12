@@ -1,7 +1,7 @@
 import { Button, Card, Input, Space, Form } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 
-const ChangePassword = () => {
+const AdminChangePassword = () => {
   return (
     <Card>
       <div className="flex">
@@ -61,4 +61,4 @@ const ChangePassword = () => {
   );
 };
 
-export default ChangePassword;
+export default AdminChangePassword;

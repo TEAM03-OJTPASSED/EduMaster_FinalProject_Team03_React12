@@ -48,8 +48,11 @@ import ForgotPasswordPage from "./pages/AuthPage/ForgotPasswordPage";
 import PayoutManagement from "./pages/AdminDashboard/payoutManagement";
 import RequestPayout from "./pages/InstructorDashboard/instructor-management/payout/RequestPayout";
 import CompletedPayout from "./pages/InstructorDashboard/instructor-management/payout/CompletedPayout";
-import Profile from "./pages/InstructorDashboard/setting/Profile";
-import ChangePassword from "./pages/InstructorDashboard/setting/ChangePassword";
+import AdminSetting from "./pages/AdminDashboard/setting/AdminSetting";
+import AdminProfile from "./pages/AdminDashboard/setting/AdminProfile"
+import InstructorProfile from "./pages/InstructorDashboard/setting/InstructorProfile";
+import InstructorChangePassword from "./pages/InstructorDashboard/setting/InstructorChangePassword";
+import AdminChangePassword from "./pages/AdminDashboard/setting/AdminChangePassword";
 
 function App() {
   return (
@@ -113,6 +116,13 @@ function App() {
                 <Route path="blog" element={<BlogManagement />} />
                 <Route path="course-log" element={<CourseLog />} />
                 <Route path="purchase-log" element={<PurchaseLog />} />
+                <Route path="settings" element={<AdminSetting />} >
+                <Route index element={<AdminProfile />} />
+                  <Route
+                    path="change-password"
+                    element={<AdminChangePassword />}
+                  />
+                </Route>
               </Route>
             </Route>
 
@@ -152,10 +162,10 @@ function App() {
                 <Route path="discount" element={<InstructorDiscount />} />
                 <Route path="review" element={<InstructorReview />} />
                 <Route path="settings" element={<InstructorSetting />} >
-                <Route index element={<Profile />} />
+                <Route index element={<InstructorProfile />} />
                   <Route
                     path="change-password"
-                    element={<ChangePassword />}
+                    element={<InstructorChangePassword />}
                   />
                 </Route>
               </Route>

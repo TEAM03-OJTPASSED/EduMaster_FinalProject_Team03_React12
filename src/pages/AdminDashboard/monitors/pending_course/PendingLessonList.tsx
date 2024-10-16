@@ -79,7 +79,7 @@ const PendingLessonList = () => {
 
       <Modal
         title="Lesson Details"
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={handleCancel}
 
       >

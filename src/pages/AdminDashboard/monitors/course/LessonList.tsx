@@ -94,7 +94,7 @@ const LessonList = () => {
 
       <Modal
         title="Lesson Details"
-        visible={isModalVisible}
+        open={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
       >

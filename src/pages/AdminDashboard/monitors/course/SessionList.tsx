@@ -101,7 +101,7 @@ const SessionList = () => {
 
       <Modal
         title="Session Details"
-        visible={isModalVisible}
+        open={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
       >

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
-const Profile = () => {
+const InstructorProfile = () => {
   const [formData, setFormData] = useState({
     avatar: "",
     fullName: "",
@@ -88,4 +88,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default InstructorProfile;
