@@ -5,7 +5,6 @@ import logoImage from "../assets/EduMaster.png";
 import { useCustomNavigate } from "../hooks/customNavigate";
 import { AiOutlineSearch } from "react-icons/ai";
 
-
 // Define the type for menu items
 interface MenuItem {
   label: string;
@@ -66,6 +65,8 @@ const Navbar = () => {
   const handleMenuClick: MenuProps["onClick"] = (e) => {
     const selectedItem = items.find((item) => item.key === e.key);
     if (selectedItem) {
+      // Set the active button to "pages" when navigating to any page in the dropdown
+      setActiveButton("pages");
       navigate(selectedItem.path);
     }
   };
@@ -87,54 +88,58 @@ const Navbar = () => {
             style={{ objectFit: "cover", width: "250px", cursor: "pointer" }}
           />
           <div>
-          {/* Home Button */}
-          <Button
-            className={`navbar-button ${
-              activeButton === "home" ? "active" : ""
-            } text-xs sm:text-base`}
-            onClick={() => {
-              setActiveButton("home");
-              navigate("/");
-            }}
-          >
-            Home
-          </Button>
-
-          {/* Courses Button */}
-          <Button
-            className={`navbar-button ${
-              activeButton === "courses" ? "active" : ""
-            } text-xs sm:text-base`}
-            onClick={() => {
-              setActiveButton("courses");
-              navigate("/course");
-            }}
-          >
-            Courses
-          </Button>
-
-          {/* Blog Button */}
-          <Button
-            className={`navbar-button ${
-              activeButton === "blog" ? "active" : ""
-            } text-xs sm:text-base`}
-            onClick={() => {
-              setActiveButton("blog");
-              navigate("/blog");
-            }}
-          >
-            Blog
-          </Button>
-
-          {/* Dropdown Menu */}
-          <Dropdown menu={menuProps}>
-            <Button color="default" variant="text">
-              <Space className="text-base font-semibold">
-                Pages
-                <DownOutlined />
-              </Space>
+            {/* Home Button */}
+            <Button
+              className={`navbar-button ${
+                activeButton === "home" ? "active" : ""
+              } text-xs sm:text-base`}
+              onClick={() => {
+                setActiveButton("home");
+                navigate("/");
+              }}
+            >
+              Home
             </Button>
-          </Dropdown>
+
+            {/* Courses Button */}
+            <Button
+              className={`navbar-button ${
+                activeButton === "courses" ? "active" : ""
+              } text-xs sm:text-base`}
+              onClick={() => {
+                setActiveButton("courses");
+                navigate("/course");
+              }}
+            >
+              Courses
+            </Button>
+
+            {/* Blog Button */}
+            <Button
+              className={`navbar-button ${
+                activeButton === "blog" ? "active" : ""
+              } text-xs sm:text-base`}
+              onClick={() => {
+                setActiveButton("blog");
+                navigate("/blog");
+              }}
+            >
+              Blog
+            </Button>
+
+            {/* Dropdown Menu */}
+            <Dropdown menu={menuProps}>
+              <Button
+                className={`navbar-button ${
+                  activeButton === "pages" ? "active" : ""
+                } text-xs sm:text-base`}
+              >
+                <Space className="text-base font-semibold">
+                  Pages
+                  <DownOutlined />
+                </Space>
+              </Button>
+            </Dropdown>
           </div>
 
           {/* Log In / Sign Up and Search Icons */}

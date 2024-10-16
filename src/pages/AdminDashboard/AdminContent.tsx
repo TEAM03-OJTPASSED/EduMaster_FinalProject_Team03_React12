@@ -15,7 +15,8 @@ const cardStyle = {
   margin: "8px 0",
 };
 const AdminContent = () => {
-  const [dataSource, setDataSource] = useState([{
+  const [dataSource] = useState([
+    {
       key: "1",
       number: "Nguyễn Văn A",
       amount: "a@example.com",
@@ -49,7 +50,9 @@ const AdminContent = () => {
       title: "Date",
       dataIndex: "date",
       key: "date",
-    }]
+    },
+  ];
+
   return (
     <div>
       <Divider orientation="left">
@@ -98,7 +101,7 @@ const AdminContent = () => {
           </Card>
         </Col>
         <Col xs={24} sm={12} md={8} lg={6}>
-        <Card
+          <Card
             style={{
               ...cardStyle,
               background: "linear-gradient(to bottom, #fed7d7, #fff5f5)",
@@ -107,7 +110,7 @@ const AdminContent = () => {
           >
             <div style={{ display: "flex", alignItems: "center" }}>
               <div style={{ marginRight: "16px" }}>
-              <div
+                <div
                   style={{
                     backgroundColor: "#e53e3e",
                     borderRadius: "50%",
@@ -153,7 +156,9 @@ const AdminContent = () => {
                     display: "inline-block",
                   }}
                 >
-                  <SnippetsOutlined style={{ fontSize: "24px", color: "#fff" }} />
+                  <SnippetsOutlined
+                    style={{ fontSize: "24px", color: "#fff" }}
+                  />
                 </div>
               </div>
               <div style={{ flex: 1, textAlign: "right" }}>
@@ -229,7 +234,9 @@ const AdminContent = () => {
                     display: "inline-block",
                   }}
                 >
-                  <CommentOutlined style={{ fontSize: "24px", color: "#fff" }} />
+                  <CommentOutlined
+                    style={{ fontSize: "24px", color: "#fff" }}
+                  />
                 </div>
               </div>
               <div style={{ flex: 1, textAlign: "right" }}>
@@ -254,14 +261,14 @@ const AdminContent = () => {
         <span style={{ fontSize: "18px" }}>Latest Transactions</span>
       </Divider>
       <Table
-          dataSource={dataSource}
-          columns={columns}
-          pagination={{ pageSize: 5 }}
-          rowKey="key"
-          bordered
-          style={{ borderRadius: "8px" }}
-          scroll={{ x: true }} // Thêm scroll cho bảng
-        />
+        dataSource={dataSource}
+        columns={columns}
+        pagination={{ pageSize: 5 }}
+        rowKey="key"
+        bordered
+        style={{ borderRadius: "8px" }}
+        scroll={{ x: true }} // Thêm scroll cho bảng
+      />
     </div>
   );
 };

@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { Layout, Button, Drawer, Avatar, Dropdown, Menu } from "antd";
+import { useState, useEffect } from "react";
+import { Layout, Button, Drawer, Avatar, Dropdown } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import logoImage from "../../assets/EduMaster.png"; // Đường dẫn đến logo
 import { useCustomNavigate } from "../../hooks/customNavigate"; // Hook tùy chỉnh cho điều hướng
-import InstructorSidebar from "./instructorSidebar";
-
+import InstructorSidebar from "./InstructorSidebar";
 
 const { Sider } = Layout; // Chỉ destructure Sider
 
@@ -28,20 +27,21 @@ const InstructorNavbar = () => {
     setDrawerVisible(!drawerVisible); // Toggle Drawer khi click
   };
 
-  // Menu items for the dropdown
-  const menu = (
-    <Menu>
-      <Menu.Item key="profile" onClick={() => navigate("/profile")}>
-        Profile
-      </Menu.Item>
-      <Menu.Item key="settings" onClick={() => navigate("/settings")}>
-        Settings
-      </Menu.Item>
-      <Menu.Item key="logout" onClick={() => navigate("/logout")}>
-        Logout
-      </Menu.Item>
-    </Menu>
-  );
+  // Update the menu items to use items prop
+  const menuItems = [
+    {
+      key: "profile",
+      label: <span onClick={() => navigate("/profile")}>Profile</span>,
+    },
+    {
+      key: "settings",
+      label: <span onClick={() => navigate("/settings")}>Settings</span>,
+    },
+    {
+      key: "logout",
+      label: <span onClick={() => navigate("/logout")}>Logout</span>,
+    },
+  ];
 
   return (
     <>
@@ -72,8 +72,9 @@ const InstructorNavbar = () => {
           visible={drawerVisible} // Control visibility
         >
           {/* Sử dụng AdminSiderMenu bên trong Drawer */}
-          < InstructorSidebar onMenuClick={toggleDrawer} />
+          <InstructorSidebar onMenuClick={toggleDrawer} />
         </Drawer>
+
         {/* Logo ở Navbar */}
         <div
           style={{
@@ -94,7 +95,7 @@ const InstructorNavbar = () => {
         </div>
 
         {/* Avatar cho Navbar */}
-        <Dropdown overlay={menu} trigger={["click"]}>
+        <Dropdown menu={{ items: menuItems }} trigger={["click"]}>
           <div
             style={{
               display: "flex",
@@ -140,7 +141,6 @@ const InstructorNavbar = () => {
                 Admin
               </span>
             )}
-            {/* Improved text color on hover */}
           </div>
         </Dropdown>
       </div>

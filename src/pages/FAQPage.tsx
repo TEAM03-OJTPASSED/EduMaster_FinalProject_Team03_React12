@@ -1,5 +1,5 @@
 import { useCustomNavigate } from "../hooks/customNavigate";
-import React, { useState } from "react";
+import  { useState } from "react";
 
 const FAQsPage = () => {
   const navigate = useCustomNavigate();
@@ -14,13 +14,13 @@ const FAQsPage = () => {
     <div>
       <div className="bg-gray-150 pl-4 pr-4">
         <div className="w-full h-14 content-center">
-          <ul className="flex ">
-            <li className="arrow mr-3 ">
-              <a className="cursor-pointer" onClick={() => navigate("/")}>
-                Home
+          <ul className="flex">
+            <li className="mr-3">
+              <a className='cursor-pointer hover:text-orange-400' onClick={() => { navigate("/") }}>Home
+                <i className="fas fa-chevron-right ml-3 text-sm"></i>
               </a>
             </li>
-            <li>FAQs</li>
+            <li className="text-gray-400">Faqs</li>
           </ul>
         </div>
         <hr className="border-b border-gray-300" />

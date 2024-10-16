@@ -1,26 +1,18 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import {
   Table,
   Button,
   Input,
   Space,
   Card,
-  Typography,
-  Select,
-  Switch,
 } from "antd";
 import {
   SearchOutlined,
-  EditOutlined,
-  DeleteOutlined,
 } from "@ant-design/icons";
-import EditUser from "../components/Admin/AdminModals/EditUserModal";
 
-const { Title } = Typography;
-const { Option } = Select; // Destructure Option from Select
 
 const RequestUser = () => {
-  const [dataSource, setDataSource] = useState([
+  const [dataSource] = useState([
     {
       key: "1",
       name: "Nguyễn Văn A",
@@ -82,7 +74,7 @@ const RequestUser = () => {
     {
       title: "Hành động",
       key: "action",
-      render: (text, record) => (
+      render: () => (
         <Space size="middle">
           <Button color="primary" variant="outlined">
             Approve
@@ -96,9 +88,11 @@ const RequestUser = () => {
   ];
 
   return (
-    <div style={{ padding: "10px", backgroundColor: "#f0f2f5" }}>
+    <div>
       <Card>
-        <h3>Quản lý người dùng</h3>
+        <div className="flex">
+          <h3 className="text-2xl my-5">Request Management</h3>
+        </div>
         <Input
           placeholder="Tìm kiếm..."
           prefix={<SearchOutlined />}

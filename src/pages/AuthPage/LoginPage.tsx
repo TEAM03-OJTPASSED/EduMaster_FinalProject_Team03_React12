@@ -23,7 +23,7 @@ const Loginpage = () => {
         <img
           src="../src/assets/EduAuth.jpeg"
           alt=""
-          className="h-44 w-full md:h-60 lg:h-full lg:w-[40.625rem]"
+          className="h-44 w-full md:h-60 lg:h-full lg:w-full"
         />
       </div>
       {/* FORM */}

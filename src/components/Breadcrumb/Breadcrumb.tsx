@@ -16,24 +16,20 @@ const DynamicBreadcrumb: React.FC = () => {
       .join(" "); // Nối lại thành chuỗi với dấu cách
   };
 
-  return (
-    <Breadcrumb style={{ margin: "16px 0" }}>
-      <Breadcrumb.Item>
-        <Link to="/">Home</Link> {/* Trang chính */}
-      </Breadcrumb.Item>
-      {pathSegments.map((segment, index) => {
-        const path = `/${pathSegments.slice(0, index + 1).join("/")}`;
-        return (
-          <Breadcrumb.Item key={path}>
-            <Link to={path}>
-              {formatSegment(segment)}{" "}
-              {/* Gọi hàm formatSegment để định dạng */}
-            </Link>
-          </Breadcrumb.Item>
-        );
-      })}
-    </Breadcrumb>
-  );
+  // Tạo danh sách items cho Breadcrumb
+  const breadcrumbItems = [
+    {
+      title: <Link to="/">Home</Link>, // Trang chính
+    },
+    ...pathSegments.map((segment, index) => {
+      const path = `/${pathSegments.slice(0, index + 1).join("/")}`;
+      return {
+        title: <Link to={path}>{formatSegment(segment)}</Link>,
+      };
+    }),
+  ];
+
+  return <Breadcrumb style={{ margin: "16px 0" }} items={breadcrumbItems} />;
 };
 
 export default DynamicBreadcrumb;
