@@ -50,8 +50,10 @@ import SignUppage from "./pages/AuthPage/SignUpPage";
 import FAQsPage from "./pages/FAQPage";
 import ErrorPage from "./pages/ErrorPage";
 import ContactPage from "./pages/ContactPage";
-import BlogDetailPage from "./pages/BlogDetailPage";
+import CartPage from "./pages/cart/CartPage";
+import CheckoutPage from "./pages/checkout/CheckoutPage";
 import Firebase from "./pages/Firebase";
+import BlogDetailPage from "./pages/BlogDetailPage";
 
 function App() {
   return (
@@ -70,8 +72,31 @@ function App() {
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/faqs" element={<FAQsPage />} />
               <Route path="/error" element={<ErrorPage />} />
-              <Route path="/course-detail/:id" element={<CourseDetailPage />} />
-              <Route path="/blog-detail/:id" element={<BlogDetailPage />} />
+              <Route path="/cart" element={<CartPage/>}/>
+              <Route path="/checkout" element={<CheckoutPage/>}/>
+
+              <Route
+                path="/course-detail/:id"
+                element={
+                  <ProtectedRoute
+                    allowedRoles={["student", "instructor", "admin"]}
+                  >
+                    <CourseDetailPage />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<CourseDetailPage />} />
+              </Route>
+              <Route
+                path="/blog-detail/:id"
+                element={
+                  <ProtectedRoute
+                    allowedRoles={["student", "instructor", "admin"]}
+                  />
+                }
+              >
+                <Route index element={<BlogDetailPage />} />
+              </Route>
               <Route path="/firebase" element={<Firebase />} />
             </Route>
 

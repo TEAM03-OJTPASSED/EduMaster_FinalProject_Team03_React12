@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { Button, Dropdown, Input, InputRef, MenuProps, Space, Drawer } from "antd"; // Import Drawer
-import { DownOutlined, MenuOutlined } from "@ant-design/icons";
+import { DownOutlined, MenuOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import logoImage from "../assets/EduMaster.png";
 import { useCustomNavigate } from "../hooks/customNavigate";
 import { AiOutlineSearch } from "react-icons/ai";
+import { useLocation } from "react-router-dom";
 
 // Define the type for menu items
 interface MenuItem {
@@ -34,9 +35,30 @@ const items: MenuItem[] = [
 const Navbar = () => {
   const navigate = useCustomNavigate();
   const [isSearchActive, setIsSearchActive] = useState(false);
-  const [activeButton, setActiveButton] = useState<string>("home");
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false); // State to control drawer
+  const [activeButton, setActiveButton] = useState<string>("");
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false); 
   const searchInputRef = useRef<InputRef>(null);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    const pathToButtonKeyMap: { [key: string]: string } = {
+      "/": "home",
+      "/course": "courses",
+      "/blog": "blog",
+      "/contact": "pages",
+      "/faqs": "pages",
+      "/error": "pages",
+    };
+
+    const selectedKey = pathToButtonKeyMap[location.pathname];
+    if (selectedKey) {
+      setActiveButton(selectedKey);
+    }
+  }, [location.pathname]);
+
+  
+
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -125,12 +147,17 @@ const Navbar = () => {
 
           {/* Log In / Sign Up and Search Icons */}
           <div className="hidden md:flex items-center gap-4"> {/* Hide on smaller screens */}
-            {/* <button
-              className="px-3 py-1.5 bg-blue-500 text-white rounded-md transition duration-200 hover:bg-blue-600 text-sm md:text-base"
-              onClick={() => navigate("/login")}
-            >
-              Log In
-            </button> */}
+          <button
+                className="p-0 w-10 h-10 text-2xl mr-6 relative"
+                onClick={() => navigate("/cart")}
+              >
+                <ShoppingCartOutlined  width={32} height={32} color="black"/>
+                <span className="absolute top-0 right-0 w-4 h-4 bg-orange-500 rounded-full text-xs text-white font-semibold">
+                  2
+                </span>
+
+            </button>
+            
             <div className="border-2 border-black rounded-3xl">
               <div className="pt-1.5 pb-2 pl-3 pr-3">
                 <a className="text-sm text-bold navbar-button cursor-pointer" onClick={() => navigate("/login")}>Login</a>
