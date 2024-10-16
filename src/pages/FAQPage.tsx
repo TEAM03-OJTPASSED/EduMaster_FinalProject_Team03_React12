@@ -9,14 +9,12 @@ const FAQsPage = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4">
-      <div className="bg-gray-150">
-        <div className="w-full h-14 flex items-center pl-4">
-          <DynamicBreadcrumb />
-        </div>
+    <div className="mt-2">
+      <div className="p-4 pb-0">
+        <DynamicBreadcrumb />
       </div>
 
-      <section className="pt-5">
+      <section>
         <div className="p-4">
           <h1 className="mt-5 mb-2.5 font-semibold text-3xl sm:text-4xl">
             Faqs
@@ -38,9 +36,8 @@ const FAQsPage = () => {
                 </a>
                 <span>
                   <i
-                    className={`fas fa-chevron-${
-                      openFAQ === 1 ? "up" : "down"
-                    }`}
+                    className={`fas fa-chevron-${openFAQ === 1 ? "up" : "down"
+                      }`}
                   ></i>
                 </span>
               </div>
@@ -75,9 +72,8 @@ const FAQsPage = () => {
                 </a>
                 <span>
                   <i
-                    className={`fas fa-chevron-${
-                      openFAQ === 2 ? "up" : "down"
-                    }`}
+                    className={`fas fa-chevron-${openFAQ === 2 ? "up" : "down"
+                      }`}
                   ></i>
                 </span>
               </div>
@@ -127,9 +123,8 @@ const FAQsPage = () => {
                 </a>
                 <span>
                   <i
-                    className={`fas fa-chevron-${
-                      openFAQ === 3 ? "up" : "down"
-                    }`}
+                    className={`fas fa-chevron-${openFAQ === 3 ? "up" : "down"
+                      }`}
                   ></i>
                 </span>
               </div>
@@ -166,9 +161,8 @@ const FAQsPage = () => {
                 </a>
                 <span>
                   <i
-                    className={`fas fa-chevron-${
-                      openFAQ === 4 ? "up" : "down"
-                    }`}
+                    className={`fas fa-chevron-${openFAQ === 4 ? "up" : "down"
+                      }`}
                   ></i>
                 </span>
               </div>
@@ -200,9 +194,8 @@ const FAQsPage = () => {
                 </a>
                 <span>
                   <i
-                    className={`fas fa-chevron-${
-                      openFAQ === 5 ? "up" : "down"
-                    }`}
+                    className={`fas fa-chevron-${openFAQ === 5 ? "up" : "down"
+                      }`}
                   ></i>
                 </span>
               </div>
@@ -275,7 +268,7 @@ const FAQsPage = () => {
                       Delete the add-ons that you want to update on your website
                     </li>
                     <li>
-                      Go to this page: 
+                      Go to this page:
                       <a
                         href="https://thimpress.com/my-account/downloads/"
                         target="_blank"
@@ -333,9 +326,8 @@ const FAQsPage = () => {
                 </a>
                 <span>
                   <i
-                    className={`fas fa-chevron-${
-                      openFAQ === 6 ? "up" : "down"
-                    }`}
+                    className={`fas fa-chevron-${openFAQ === 6 ? "up" : "down"
+                      }`}
                   ></i>
                 </span>
               </div>
