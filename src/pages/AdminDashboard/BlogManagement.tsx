@@ -1,15 +1,14 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Blog, listBlogs } from "./monitors/course/couseList";
 import { Button, Card, Input, Modal, Table, TableProps, Tag } from "antd";
 import {
   SearchOutlined,
   DeleteOutlined,
   EditOutlined,
-  PlusCircleOutlined,
+  PlusCircleOutlined
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 import CreateBlog from "./blog/CreateBlog";
-import useSearch from "../../hooks/useSearch";
 
 const BlogManagement = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -26,11 +25,6 @@ const BlogManagement = () => {
   const showModalCreate = () => {
     setIsModalCreateVisible(true);
   };
-
-  const { searchText, filteredData, handleSearchChange } = useSearch(
-    listBlogs,
-    ["title"]
-  ); // useSearch hook
 
   const columns: TableProps<Blog>["columns"] = [
     {
@@ -84,31 +78,30 @@ const BlogManagement = () => {
   };
   return (
     <Card>
+      <h3 className="text-2xl my-5">Blog Management</h3>
+      <div className="flex justify-between">
+
+      <Input
+        placeholder="Search By Course Name"
+        prefix={<SearchOutlined />}
+        style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
+      />
       <div className="flex">
-        <h3 className="text-2xl my-5">Blog Management</h3>
-      </div>
-      <div className="flex flex-wrap items-center mb-4">
-        <Input
-          placeholder="Search By Course Name"
-          prefix={<SearchOutlined />}
-          className="w-full md:w-1/3 mb-2 md:mb-0"
-          value={searchText}
-          onChange={handleSearchChange}
-        />
         <Button
           onClick={showModalCreate}
           icon={<PlusCircleOutlined />}
           shape="round"
           variant="solid"
           color="primary"
-          className="w-full md:w-auto ml-0 md:ml-auto"
+          className="items-center"
         >
           Create Blog
         </Button>
       </div>
+      </div>
 
       <Table
-        dataSource={filteredData}
+        dataSource={listBlogs}
         columns={columns}
         pagination={{ pageSize: 5 }}
         rowKey="name"

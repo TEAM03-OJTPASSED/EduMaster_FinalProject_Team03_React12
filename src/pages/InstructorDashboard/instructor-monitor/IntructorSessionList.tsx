@@ -1,27 +1,40 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Table, Input, Card, TableProps, Tag, Button, Modal } from "antd";
-import { SearchOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
+import {
+  SearchOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  PlusCircleOutlined,
+} from "@ant-design/icons";
 
 import dayjs from "dayjs";
-import { listSessions, Session } from "../../AdminDashboard/monitors/course/couseList";
-
+import {
+  listSessions,
+  Session,
+} from "../../AdminDashboard/monitors/course/couseList";
+import SessionOptions from "./create-courses/SessionOptions";
 
 const IntructorSessionList = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
+  const [isModalCreateVisible, setIsModalCreateVisible] = useState(false)
 
   const showModal = (session: Session) => {
     setSelectedSession(session);
     setIsModalVisible(true);
   };
 
-  const handleOk = () => {
-    setIsModalVisible(false);
+  const showModalCreate = () => {
+    setIsModalCreateVisible(true);
   };
 
   const handleCancel = () => {
     setIsModalVisible(false);
+    setIsModalCreateVisible(false)
   };
+
+  //get all course id
+  
 
   const columns: TableProps<Session>["columns"] = [
     {
@@ -70,7 +83,7 @@ const IntructorSessionList = () => {
           />
           <Button
             type="text"
-            icon={<EyeOutlined style={{ color: "blue" }} />}
+            icon={<EditOutlined style={{ color: "blue" }} />}
             onClick={() => showModal(record)}
           />
         </>
@@ -85,11 +98,25 @@ const IntructorSessionList = () => {
   return (
     <Card>
       <h3 className="text-2xl my-5">Session Management</h3>
-      <Input
-        placeholder="Search By Course Name"
-        prefix={<SearchOutlined />}
-        style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
-      />
+      <div className="flex justify-between">
+        <Input
+          placeholder="Search By Course Name"
+          prefix={<SearchOutlined />}
+          style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
+        />
+        <div className="flex">
+          <Button
+            onClick={showModalCreate}
+            icon={<PlusCircleOutlined />}
+            shape="round"
+            variant="solid"
+            color="primary"
+            className="items-center"
+          >
+            Create Session
+          </Button>
+        </div>
+      </div>
       <Table
         dataSource={listSessions}
         columns={columns}
@@ -100,20 +127,43 @@ const IntructorSessionList = () => {
         scroll={{ x: true }}
       />
 
+      {/* update */}
       <Modal
-        title="Session Details"
-        visible={isModalVisible}
-        onOk={handleOk}
+        title="Change Session"
         onCancel={handleCancel}
+        open={isModalVisible}
+        footer={null}
       >
         {selectedSession && (
-          <div>
-            <p><strong>Name:</strong> {selectedSession.name}</p>
-            <p><strong>Course ID:</strong> {selectedSession.course_id}</p>
-            <p><strong>Created At:</strong> {dayjs(selectedSession.created_at).format("DD/MM/YYYY")}</p>
-            <p><strong>Status:</strong> {selectedSession.is_deleted ? "Enabled" : "Disabled"}</p>
-          </div>
+          <SessionOptions
+            initialState={selectedSession}
+            mode="update"
+            onFinish={(values) => {
+              console.log("submitted session update", {
+                ...values,
+                created_at: new Date(),
+              });
+            }}
+          />
         )}
+      </Modal>
+
+      {/* Create */}
+      <Modal
+        title="Create Session"
+        onCancel={handleCancel}
+        open={isModalCreateVisible}
+        footer={null}
+      >
+        <SessionOptions
+          mode="create"
+          onFinish={(values) => {
+            console.log("submitted session create", {
+              ...values,
+              created_at: new Date(),
+            });
+          }}
+        />
       </Modal>
     </Card>
   );

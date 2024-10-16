@@ -1,8 +1,12 @@
 import { useState, useEffect } from "react";
 
-const useSearch = (data, keysToSearch) => {
-  const [searchText, setSearchText] = useState("");
-  const [filteredData, setFilteredData] = useState(data);
+// type SearchableItem<T> = {
+//   [key in keyof T]: string | object | unknown; // Giữ nguyên kiểu cho các thuộc tính
+// };
+
+const useSearch = <T extends object>(data: T[], keysToSearch: (keyof T)[]) => {
+  const [searchText, setSearchText] = useState<string>("");
+  const [filteredData, setFilteredData] = useState<T[]>(data);
 
   useEffect(() => {
     if (searchText) {
@@ -13,11 +17,14 @@ const useSearch = (data, keysToSearch) => {
           if (typeof item[key] === "string") {
             return item[key].toLowerCase().includes(lowerCaseSearchText);
           }
-          // Nếu key là một chuỗi, nhưng trong item[key] lại là một đối tượng, ví dụ: {name: 'John', email: 'john@example.com'}
-          if (typeof item[key] === "object") {
-            return Object.values(item[key]).some((value) =>
-              value.toLowerCase().includes(lowerCaseSearchText)
-            );
+          // Nếu key là một chuỗi, nhưng trong item[key] lại là một đối tượng
+          if (typeof item[key] === "object" && item[key] !== null) {
+            return Object.values(item[key]).some((value) => {
+              if (typeof value === "string") {
+                return value.toLowerCase().includes(lowerCaseSearchText);
+              }
+              return false; // Bỏ qua nếu không phải là chuỗi
+            });
           }
           return false;
         })
@@ -28,7 +35,7 @@ const useSearch = (data, keysToSearch) => {
     }
   }, [searchText, data, keysToSearch]);
 
-  const handleSearchChange = (e) => {
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
   };
 

@@ -36,7 +36,7 @@ const CategoryManagement = () => {
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [form] = Form.useForm();
-  const [editingRecord, setEditingRecord] = useState<any>(null);
+  const [setEditingRecord] = useState<any>(null);
 
   const { searchText, filteredData, handleSearchChange } = useSearch(
     dataSource,
@@ -114,7 +114,7 @@ const CategoryManagement = () => {
     {
       title: "Actions",
       key: "action",
-      render: (_, record) => (
+      render: (record: any) => (
         <>
           <Button
             type="text"

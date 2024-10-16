@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { Table, Button, Input, Space, Card, Select, Switch, Tabs } from "antd";
 import {
   SearchOutlined,
@@ -19,7 +19,20 @@ PUT /users/:id - Cập nhật thông tin người dùng.
 DELETE /users/:id - Xóa người dùng.
 */
 
-const UserManagement = () => {
+// interface User {
+//   key: string;
+//   name: string;
+//   email: string;
+//   phone: string;
+//   username: string;
+//   status: boolean;
+//   role: string;
+//   verified: boolean;
+//   blocked: boolean;
+//   createdAt: string;
+// }
+
+const UserManagement: React.FC = () => {
   const [dataSource, setDataSource] = useState([
     {
       key: "1",
@@ -66,22 +79,22 @@ const UserManagement = () => {
     ["name", "email"]
   ); // useSearch hook
 
-  const handleEdit = (record) => {
+  const handleEdit = (record: any) => {
     setCurrentUser(record);
     setEditVisible(true);
   };
 
-  const handleDelete = (record) => {
+  const handleDelete = (record: any) => {
     console.log("Deleting user:", record);
     // Thực hiện logic xóa
   };
 
-  const handleSave = (values) => {
+  const handleSave = (values: any) => {
     console.log("Saving user:", values);
     // Thực hiện logic lưu user
   };
 
-  const handleStatusChange = (checked, key) => {
+  const handleStatusChange = (checked: any, key: any) => {
     // Update trạng thái tài khoản
     const updatedData = dataSource.map((user) =>
       user.key === key ? { ...user, status: checked } : user
@@ -89,7 +102,7 @@ const UserManagement = () => {
     setDataSource(updatedData);
   };
 
-  const handleRoleChange = (value, key) => {
+  const handleRoleChange = (value: any, key: any) => {
     // Update vai trò
     const updatedData = dataSource.map((user) =>
       user.key === key ? { ...user, role: value } : user
@@ -122,7 +135,7 @@ const UserManagement = () => {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
-      render: (text, record) => (
+      render: (text: any, record: any) => (
         <Switch
           checked={text}
           onChange={(checked) => handleStatusChange(checked, record.key)}
@@ -133,7 +146,7 @@ const UserManagement = () => {
       title: "Loại người dùng",
       dataIndex: "role",
       key: "role",
-      render: (text, record) => (
+      render: (text: any, record: any) => (
         <Select
           defaultValue={text}
           style={{ width: 120 }}
@@ -148,7 +161,7 @@ const UserManagement = () => {
     {
       title: "Hành động",
       key: "action",
-      render: (text, record) => (
+      render: (record: any) => (
         <Space size="middle">
           <Button icon={<EditOutlined />} onClick={() => handleEdit(record)}>
             Chỉnh sửa

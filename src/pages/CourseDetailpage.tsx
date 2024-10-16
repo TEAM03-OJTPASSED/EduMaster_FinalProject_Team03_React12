@@ -18,7 +18,7 @@ const CourseDetailPage = () => {
           discount={50}
         />
       </div>
-      <Detail a="asdasd" />
+      <Detail />
       <LeaveAComment />
     </div>
   );

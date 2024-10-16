@@ -1,5 +1,5 @@
 import { Button, Modal } from "antd";
-import React, { useState } from "react";
+import  { useState } from "react";
 import { PlusCircleFilled } from "@ant-design/icons";
 import { listSessions } from "../../../AdminDashboard/monitors/course/couseList";
 import SessionItem from "./SessionItem";
