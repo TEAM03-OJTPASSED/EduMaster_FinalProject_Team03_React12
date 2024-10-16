@@ -1,5 +1,6 @@
 import React from "react";
 
+// Lazy-loaded components
 export const CategoryManagement = React.lazy(
   () => import("../pages/AdminDashboard/categoryManagement")
 );
@@ -15,7 +16,6 @@ export const LessonList = React.lazy(
 export const PendingCourse = React.lazy(
   () => import("../pages/AdminDashboard/monitors/pending_course/PendingCourse")
 );
-
 export const CourseList = React.lazy(
   () => import("../pages/AdminDashboard/monitors/course/CourseList.tsx")
 );
@@ -105,7 +105,6 @@ export const InstructorReview = React.lazy(
 export const InstructorSetting = React.lazy(
   () => import("../pages/InstructorDashboard/InstructorSetting")
 );
-
 export const AdminContent = React.lazy(
   () => import("../pages/AdminDashboard/AdminContent")
 );
@@ -115,7 +114,6 @@ export const UserManagement = React.lazy(
 export const RequestUser = React.lazy(
   () => import("../pages/AdminDashboard/RequestUser")
 );
-
 export const StudentPage = React.lazy(
   () => import("../pages/Dashboard/Studentpage")
 );

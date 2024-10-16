@@ -1,7 +1,5 @@
 const InstructorSetting = () => {
-  return (
-    <div>InstructorSetting</div>
-  )
-}
+  return <div>InstructorSetting</div>;
+};
 
-export default InstructorSetting
+export default InstructorSetting;

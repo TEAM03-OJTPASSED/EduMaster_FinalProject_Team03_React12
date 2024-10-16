@@ -44,7 +44,9 @@
   color: var(--color-primary-default);
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-family: "Exo", sans-serif;
   font-weight: 400;
 }
@@ -77,33 +79,27 @@ h1, h2, h3 {
   color: var(--color-primary-pressed); /* Màu chữ */
 }
 
-
 .view-button {
   color: var(--color-primary-default) !important;
-  border:var(--color-primary-default) !important;
-
+  border: var(--color-primary-default) !important;
 }
 
 .view-button:hover {
   color: var(--color-primary-hover) !important;
-  border:var(--color-primary-hover) !important;
+  border: var(--color-primary-hover) !important;
 }
 
 .view-button.active {
-  color:  white !important;
-  border:var(--color-primary-default) !important;
+  color: white !important;
+  border: var(--color-primary-default) !important;
   background-color: var(--color-primary-default) !important;
 }
 
 .view-button.ant-btn-variant-solid {
-  color:  white !important;
-  border:var(--color-primary-default) !important;
+  color: white !important;
+  border: var(--color-primary-default) !important;
   background-color: var(--color-primary-default) !important;
 }
-
-
-
-
 
 .navbar-button.active:hover {
   background-color: var(
@@ -169,28 +165,26 @@ h1, h2, h3 {
 }
 
 .custom-search .ant-input-group-addon .ant-btn {
-  background-color: #ff782d; 
-  border-radius: 0.5rem !important; 
-  color: white; 
+  background-color: #ff782d;
+  border-radius: 0.5rem !important;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.75rem ;
+  padding: 0.75rem;
   margin-right: 0.5rem !important;
-
 }
 
-
-.custom-search .ant-input-group-addon{
+.custom-search .ant-input-group-addon {
   background-color: white;
 }
 
 .custom-search .ant-input-group-addon .ant-btn:hover {
-  background-color: #e56a1f; 
+  background-color: #e56a1f;
 }
 
 .custom-search .ant-input-group-addon .anticon {
-  font-size: 1.2rem; 
+  font-size: 1.2rem;
 }
 
 @keyframes floatIn {
@@ -213,4 +207,3 @@ h1, h2, h3 {
 .float-animation.show {
   animation: floatIn 0.75s ease forwards;
 }
-

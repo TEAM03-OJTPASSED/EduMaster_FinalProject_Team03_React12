@@ -4,7 +4,6 @@ import LoadingWrapper from "./components/Loading/LoadingWrapper";
 import { Suspense } from "react";
 import CoursesPage from "./pages/CoursePage";
 import BlogPage from "./pages/BlogPage";
-import CourseDetailPage from "./pages/CourseDetailPage";
 import GeneralLayout from "./defaultLayout/Layout";
 import HomePage from "./pages/Homepage";
 import LoginPage from "./pages/AuthPage/LoginPage";
@@ -50,6 +49,8 @@ import CompletedPayout from "./pages/InstructorDashboard/instructor-management/p
 import { BlogDetailPage } from "./utils/LazyRouter";
 import DashboardLayout from "./defaultLayout/DashboardLayout";
 import StudentProfile from "./pages/StudentDashboard/studentProfile";
+import StudentPage from "./pages/Dashboard/Studentpage";
+import CourseDetailPage from "./pages/CourseDetailPage";
 
 function App() {
   return (
@@ -73,31 +74,37 @@ function App() {
                 element={
                   <ProtectedRoute
                     allowedRoles={["student", "instructor", "admin"]}
-                  />
+                  >
+                    <CourseDetailPage />
+                  </ProtectedRoute>
                 }
-              >
-                <Route index element={<CourseDetailPage />} />
-              </Route>
+              />
               <Route
                 path="/blog-detail/:id"
                 element={
                   <ProtectedRoute
                     allowedRoles={["student", "instructor", "admin"]}
-                  />
+                  >
+                    <BlogDetailPage />
+                  </ProtectedRoute>
                 }
-              >
-                <Route index element={<BlogDetailPage />} />
-              </Route>
-
-  
+              />
             </Route>
-
-            {/* Admin Layout */}
+            // Student Dashboard
+            <Route
+              path="/dashboard/student/*"
+              element={<ProtectedRoute allowedRoles={["student"]} />}
+            >
+              <Route index element={<StudentPage />} />
+            </Route>
+            // Admin Dashboard
             <Route
               path="/admin"
               element={<ProtectedRoute allowedRoles={["admin"]} />}
             >
               <Route element={<AdminLayout />}>
+                {" "}
+                {/* Use AdminLayout here */}
                 <Route index element={<AdminContent />} />
                 <Route path="dashboard" element={<AdminContent />} />
                 <Route path="users" element={<UserManagement />} />
@@ -119,13 +126,9 @@ function App() {
                 <Route path="purchase-log" element={<PurchaseLog />} />
               </Route>
             </Route>
-
-            {/* Instructor Layout */}
             <Route
               path="/instructor"
-              element={
-                <ProtectedRoute allowedRoles={["instructor"]}></ProtectedRoute>
-              }
+              element={<ProtectedRoute allowedRoles={["instructor"]} />}
             >
               <Route element={<InstructorLayout />}>
                 <Route index element={<InstructorContent />} />
@@ -158,24 +161,18 @@ function App() {
                 <Route path="settings" element={<InstructorSetting />} />
               </Route>
             </Route>
-
             {/* Student Layout */}
-            
-
             <Route
-                path="/student"
-                element={
-                  <ProtectedRoute allowedRoles={["student"]}></ProtectedRoute>
-                }
-              >
-                <Route element={<DashboardLayout role="student" />}>
+              path="/student"
+              element={
+                <ProtectedRoute allowedRoles={["student"]}></ProtectedRoute>
+              }
+            >
+              <Route element={<DashboardLayout role="student" />}>
                 <Route path="dashboard" element={<InstructorContent />} />
                 <Route path="profile" element={<StudentProfile />} />
-
-              
-                </Route>
               </Route>
-
+            </Route>
           </Routes>
         </LoadingWrapper>
       </Suspense>

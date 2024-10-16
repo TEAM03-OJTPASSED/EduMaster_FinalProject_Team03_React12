@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useState } from "react";
 import { Button, Card, Input, Table, Tag } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
@@ -66,6 +67,12 @@ const CourseLog = () => {
     course.name.toLowerCase().includes(searchText.toLowerCase())
   );
 
+=======
+import { Card, Input } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
+
+const CourseLog = () => {
+>>>>>>> 993a458ee6cbb0ffb547dea417d3c657ecbe91e4
   return (
     <Card>
       <h3 className="text-2xl my-5">Course Log</h3>

@@ -1,8 +1,9 @@
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
-import { Button, Checkbox, Form, Input, Divider } from "antd";
+import { Button, Checkbox, Divider, Form, Input, notification } from "antd";
 import { FormProps } from "antd";
 import { Player } from "@lottiefiles/react-lottie-player";
 import { jwtDecode } from "jwt-decode";
+import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 
 export type LoginProps = {
@@ -16,6 +17,16 @@ const onFinish: FormProps<LoginProps>["onFinish"] = (values) => {
 };
 
 const Loginpage = () => {
+  useEffect(() => {
+    const unauthorized = localStorage.getItem("unauthorized");
+    if (unauthorized) {
+      notification.error({
+        message: "Unauthorized",
+        description: "You do not have permission to access that page.",
+      });
+      localStorage.removeItem("unauthorized"); // Clear flag after showing notification
+    }
+  }, []);
   return (
     <div className="w-full lg:flex lg:h-[35rem] lg:flex-row lg:rounded-lg overflow-hidden shadow-xl">
       {/* BACKGROUND */}
@@ -73,12 +84,9 @@ const Loginpage = () => {
             <Form.Item<LoginProps> name="remember" valuePropName="checked">
               <Checkbox>Remember me</Checkbox>
             </Form.Item>
-            <NavLink
-              to={"/forgot-password"}
-              className="text-[#FF782D] hover:underline"
-            >
-              Forgot password?
-            </NavLink>
+            <div className="min-h-8 flex mt-1 underline px-1">
+              <NavLink to={"/forgot-password"}>Forgot password</NavLink>
+            </div>
           </div>
           {/* login */}
           <Form.Item>

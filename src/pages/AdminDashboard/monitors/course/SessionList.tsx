@@ -4,7 +4,6 @@ import { SearchOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import { listSessions, Session } from "./courseList";
 import dayjs from "dayjs";
 
-
 const SessionList = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
@@ -107,10 +106,20 @@ const SessionList = () => {
       >
         {selectedSession && (
           <div>
-            <p><strong>Name:</strong> {selectedSession.name}</p>
-            <p><strong>Course ID:</strong> {selectedSession.course_id}</p>
-            <p><strong>Created At:</strong> {dayjs(selectedSession.created_at).format("DD/MM/YYYY")}</p>
-            <p><strong>Status:</strong> {selectedSession.is_deleted ? "Enabled" : "Disabled"}</p>
+            <p>
+              <strong>Name:</strong> {selectedSession.name}
+            </p>
+            <p>
+              <strong>Course ID:</strong> {selectedSession.course_id}
+            </p>
+            <p>
+              <strong>Created At:</strong>{" "}
+              {dayjs(selectedSession.created_at).format("DD/MM/YYYY")}
+            </p>
+            <p>
+              <strong>Status:</strong>{" "}
+              {selectedSession.is_deleted ? "Enabled" : "Disabled"}
+            </p>
           </div>
         )}
       </Modal>

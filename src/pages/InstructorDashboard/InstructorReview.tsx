@@ -1,8 +1,5 @@
-
 const InstructorReview = () => {
-  return (
-    <div>InstructorReview</div>
-  )
-}
+  return <div>InstructorReview</div>;
+};
 
-export default InstructorReview
+export default InstructorReview;

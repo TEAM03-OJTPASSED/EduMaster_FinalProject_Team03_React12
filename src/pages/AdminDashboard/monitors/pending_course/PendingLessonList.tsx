@@ -81,15 +81,24 @@ const PendingLessonList = () => {
         title="Lesson Details"
         visible={isModalVisible}
         onCancel={handleCancel}
-
       >
         {selectedLesson && (
           <div>
-            <p><strong>Name:</strong> {selectedLesson.name}</p>
-            <p><strong>Session ID:</strong> {selectedLesson.session_id}</p>
-            <p><strong>Instructor:</strong> {selectedLesson.user_id}</p>
-            <p><strong>Type:</strong> {selectedLesson.lesson_type}</p>
-            <p><strong>Time:</strong> {selectedLesson.full_time} minutes</p>
+            <p>
+              <strong>Name:</strong> {selectedLesson.name}
+            </p>
+            <p>
+              <strong>Session ID:</strong> {selectedLesson.session_id}
+            </p>
+            <p>
+              <strong>Instructor:</strong> {selectedLesson.user_id}
+            </p>
+            <p>
+              <strong>Type:</strong> {selectedLesson.lesson_type}
+            </p>
+            <p>
+              <strong>Time:</strong> {selectedLesson.full_time} minutes
+            </p>
           </div>
         )}
       </Modal>

@@ -169,11 +169,11 @@ const HomePage = () => {
 
   window.addEventListener("scroll", function () {
     const floatElements = document.querySelectorAll(".float-animation");
-  
+
     floatElements.forEach((el) => {
       const position = el.getBoundingClientRect().top;
       const windowHeight = window.innerHeight;
-  
+
       if (position < windowHeight) {
         el.classList.add("show");
       }
@@ -186,20 +186,17 @@ const HomePage = () => {
     document.documentElement.scrollTop = 0;
   };
 
-
-
-  
-
   return (
     <div className="flex flex-col items-center">
       <div className="flex-col flex items-center">
         <div className="w-4 h-4 rounded-full bg-orange-500 bottom-32 right-8 fixed"></div>
         <div className="w-4 h-4 rounded-full bg-orange-500 bottom-[100px] right-8 fixed"></div>
 
-      <button onClick={backToTop}>
-        <div className=" w-12 h-12 rounded-full bottom-10 right-4 hover:scale-110 transition duration-500 bg-orange-500 fixed justify-center flex items-center"><IoArrowUpOutline size={36} color="white" />
-        </div>
-      </button>
+        <button onClick={backToTop}>
+          <div className=" w-12 h-12 rounded-full bottom-10 right-4 hover:scale-110 transition duration-500 bg-orange-500 fixed justify-center flex items-center">
+            <IoArrowUpOutline size={36} color="white" />
+          </div>
+        </button>
       </div>
       {/* <div className="flex flex-col md:flex-row gap-4">
         <button
@@ -229,7 +226,8 @@ const HomePage = () => {
             alt="Hero"
           />
           <div className="z-40 text-white text-5xl font-semibold w-[500px] text-center font-exo">
-            Elevate Your Skills With <span className="underline">Online Courses</span>
+            Elevate Your Skills With{" "}
+            <span className="underline">Online Courses</span>
           </div>
           <div className="z-40 w-[400px] text-white text-center italic">
             "All the courses you need, all in one place." Get started today to
@@ -263,21 +261,19 @@ const HomePage = () => {
                   className="group hover:bg-orange-500 hover:text-white text-base transition-colors py-6 px-6 rounded-3xl font-jost"
                   style={{
                     backgroundColor: "#0f0f0f",
-                    color:"white"
-                    
+                    color: "white",
                   }}
                   onClick={() => navigate("/course")}
-
                 >
-                  All Courses <BiSolidArrowFromLeft className="group-hover:scale-150 transition "/>
+                  All Courses{" "}
+                  <BiSolidArrowFromLeft className="group-hover:scale-150 transition " />
                 </Button>
               </div>
               <CategoriesGrid categories={categories} />
-              
             </div>
             <p className="text-gray-600 mt-12 text-2xl mx-auto text-center w-full italic font-semibold ">
-                    ...and many more to come!
-                  </p>
+              ...and many more to come!
+            </p>
           </div>
         </section>
 
@@ -293,19 +289,18 @@ const HomePage = () => {
                     Explore our Popular Courses
                   </p>
                 </div>
-                
-                <Button
-                                  onClick={() => navigate("/course")}
 
+                <Button
+                  onClick={() => navigate("/course")}
                   type="default"
                   className="group hover:bg-orange-500 hover:text-white text-base transition-colors py-6 px-6 rounded-3xl font-jost"
                   style={{
                     backgroundColor: "#0f0f0f",
-                    color:"white"
-                    
+                    color: "white",
                   }}
                 >
-                  All Courses <BiSolidArrowFromLeft className="group-hover:scale-150 transition "/>
+                  All Courses{" "}
+                  <BiSolidArrowFromLeft className="group-hover:scale-150 transition " />
                 </Button>
               </div>
               <CoursesGrid courses={courses} viewMode="grid" />
@@ -314,13 +309,15 @@ const HomePage = () => {
         </section>
 
         <section className="mt-4 p-8 pb-0 float-animation bg-zinc-50 rounded-3xl">
-        <div>
-                  <h2 className="text-4xl font-bold text-gray-800 text-center">
-Students Love Us. Instructors Do Too                  </h2>
-                  <p className="text-orange-600 text-center">
-                    Learn <span className="underline font-semibold">anything</span> from home with experts 
-                  </p>
-                </div>
+          <div>
+            <h2 className="text-4xl font-bold text-gray-800 text-center">
+              Students Love Us. Instructors Do Too{" "}
+            </h2>
+            <p className="text-orange-600 text-center">
+              Learn <span className="underline font-semibold">anything</span>{" "}
+              from home with experts
+            </p>
+          </div>
           <ProofOfProduct />
         </section>
 

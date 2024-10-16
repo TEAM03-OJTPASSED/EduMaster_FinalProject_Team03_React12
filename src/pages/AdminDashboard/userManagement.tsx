@@ -2,7 +2,8 @@ import React, {  useState } from "react";
 import { Table, Button, Input, Space, Card, Select, Switch, Tabs } from "antd";
 import {
   SearchOutlined,
-  
+  EditOutlined,
+  DeleteOutlined
 } from "@ant-design/icons";
 import EditUserModal from "../../components/Admin/AdminModals/EditUserModal";
 import useSearch from "../../hooks/useSearch";

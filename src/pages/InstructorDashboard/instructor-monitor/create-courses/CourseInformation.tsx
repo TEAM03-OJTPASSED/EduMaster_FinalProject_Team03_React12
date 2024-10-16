@@ -78,7 +78,7 @@ const CourseInformation = () => {
               rules={[{ required: true, message: "Please select a category" }]}
             >
               <Select
-                placeholder="Select category"
+                placeholder="select category"
                 options={[
                   { label: "Javascript", value: "category_id-1" },
                   { label: "TypeScript", value: "category_id-2" },

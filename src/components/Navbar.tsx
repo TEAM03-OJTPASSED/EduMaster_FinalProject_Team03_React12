@@ -130,9 +130,11 @@ const Navbar = () => {
             {/* Dropdown Menu */}
             <Dropdown menu={menuProps}>
               <Button
+                color="default"
+                variant="text"
                 className={`navbar-button ${
                   activeButton === "pages" ? "active" : ""
-                } text-xs sm:text-base`}
+                }`}
               >
                 <Space className="text-base font-semibold">
                   Pages
