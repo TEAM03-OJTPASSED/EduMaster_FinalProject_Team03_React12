@@ -42,7 +42,6 @@ import ForgotPasswordPage from "./pages/AuthPage/ForgotPasswordPage";
 import PayoutManagement from "./pages/AdminDashboard/payoutManagement";
 import RequestPayout from "./pages/InstructorDashboard/instructor-management/payout/RequestPayout";
 import CompletedPayout from "./pages/InstructorDashboard/instructor-management/payout/CompletedPayout";
-import { BlogDetailPage } from "./utils/LazyRouter";
 import DashboardLayout from "./defaultLayout/DashboardLayout";
 import StudentProfile from "./pages/StudentDashboard/studentProfile";
 import StudentCourses from "./pages/StudentDashboard/StudentCourses";
@@ -51,6 +50,7 @@ import SignUppage from "./pages/AuthPage/SignUpPage";
 import FAQsPage from "./pages/FAQPage";
 import ErrorPage from "./pages/ErrorPage";
 import ContactPage from "./pages/ContactPage";
+import BlogDetailPage from "./pages/BlogDetailPage";
 
 function App() {
   return (
@@ -69,28 +69,8 @@ function App() {
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/faqs" element={<FAQsPage />} />
               <Route path="/error" element={<ErrorPage />} />
-              <Route
-                path="/course-detail/:id"
-                element={
-                  <ProtectedRoute
-                    allowedRoles={["student", "instructor", "admin"]}
-                  >
-                    <CourseDetailPage />
-                  </ProtectedRoute>
-                }
-              >
-                <Route index element={<CourseDetailPage />} />
-              </Route>
-              <Route
-                path="/blog-detail/:id"
-                element={
-                  <ProtectedRoute
-                    allowedRoles={["student", "instructor", "admin"]}
-                  />
-                }
-              >
-                <Route index element={<BlogDetailPage />} />
-              </Route>
+              <Route path="/course-detail/:id" element={<CourseDetailPage />} />
+              <Route path="/blog-detail/:id" element={<BlogDetailPage />} />
             </Route>
 
             {/* Admin Layout */}

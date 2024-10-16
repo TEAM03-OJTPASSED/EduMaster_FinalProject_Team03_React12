@@ -1,5 +1,5 @@
 import { useCustomNavigate } from "../hooks/customNavigate";
-import { Button } from "antd";
+import { Button, notification } from "antd";
 import heroImage from "../assets/pexels-kseniachernaya-7301126.jpg";
 // import { BiSearch } from "react-icons/bi";
 import CategoriesGrid from "../components/home/CategoriesGrid";
@@ -23,6 +23,7 @@ import { ProofOfProduct } from "../components/home/ProofOfProduct";
 import Search from "antd/es/input/Search";
 import { BiSolidArrowFromLeft } from "react-icons/bi";
 import { IoArrowUpOutline } from "react-icons/io5";
+import { useEffect } from "react";
 
 interface Category {
   icon: React.ReactNode;
@@ -166,7 +167,21 @@ const courses: Course[] = [
 
 const HomePage = () => {
   const navigate = useCustomNavigate();
+  useEffect(() => {
+    // Check if the user tried to access an unauthorized page
+    const unauthorized = localStorage.getItem("unauthorized");
 
+    if (unauthorized) {
+      notification.error({
+        message: "Unauthorized Access",
+        description:
+          "You are logged in, but you do not have permission to access this page.",
+      });
+
+      // Clear the unauthorized flag from localStorage after showing the notification
+      localStorage.removeItem("unauthorized");
+    }
+  }, []);
   window.addEventListener("scroll", function () {
     const floatElements = document.querySelectorAll(".float-animation");
 

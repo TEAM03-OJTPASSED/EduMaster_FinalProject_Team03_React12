@@ -34,8 +34,8 @@ const refreshToken = async (): Promise<RefreshTokenResponse | null> => {
 export const createAxios = (
   user: User,
   dispatch: AppDispatch,
-  stateSuccess: (user: User) => any,
-//   stateErrors: (error : AxiosError) => any
+  stateSuccess: (user: User) => any
+  //   stateErrors: (error : AxiosError) => any
 ): AxiosInstance => {
   const axiosJWT = axios.create();
 
