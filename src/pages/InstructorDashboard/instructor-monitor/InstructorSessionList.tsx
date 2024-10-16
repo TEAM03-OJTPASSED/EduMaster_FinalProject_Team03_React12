@@ -3,8 +3,10 @@ import { Table, Input, Card, TableProps, Tag, Button, Modal } from "antd";
 import { SearchOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 
 import dayjs from "dayjs";
-import { listSessions, Session } from "../../AdminDashboard/monitors/course/courseList";
-
+import {
+  listSessions,
+  Session,
+} from "../../AdminDashboard/monitors/course/courseList";
 
 const InstructorSessionList = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -108,10 +110,20 @@ const InstructorSessionList = () => {
       >
         {selectedSession && (
           <div>
-            <p><strong>Name:</strong> {selectedSession.name}</p>
-            <p><strong>Course ID:</strong> {selectedSession.course_id}</p>
-            <p><strong>Created At:</strong> {dayjs(selectedSession.created_at).format("DD/MM/YYYY")}</p>
-            <p><strong>Status:</strong> {selectedSession.is_deleted ? "Enabled" : "Disabled"}</p>
+            <p>
+              <strong>Name:</strong> {selectedSession.name}
+            </p>
+            <p>
+              <strong>Course ID:</strong> {selectedSession.course_id}
+            </p>
+            <p>
+              <strong>Created At:</strong>{" "}
+              {dayjs(selectedSession.created_at).format("DD/MM/YYYY")}
+            </p>
+            <p>
+              <strong>Status:</strong>{" "}
+              {selectedSession.is_deleted ? "Enabled" : "Disabled"}
+            </p>
           </div>
         )}
       </Modal>

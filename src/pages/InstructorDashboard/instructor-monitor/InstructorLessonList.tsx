@@ -1,8 +1,12 @@
 import { useState } from "react";
+import { useState } from "react";
 import { Table, Input, Card, Tag, TableProps, Button, Modal } from "antd";
 import { SearchOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
-import { Lesson, LessonTypeEnum, listLessons } from "../../AdminDashboard/monitors/course/courseList";
-
+import {
+  Lesson,
+  LessonTypeEnum,
+  listLessons,
+} from "../../AdminDashboard/monitors/course/courseList";
 
 const InstructorLessonList = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -100,11 +104,21 @@ const InstructorLessonList = () => {
       >
         {selectedLesson && (
           <div>
-            <p><strong>Name:</strong> {selectedLesson.name}</p>
-            <p><strong>Session ID:</strong> {selectedLesson.session_id}</p>
-            <p><strong>Instructor ID:</strong> {selectedLesson.user_id}</p>
-            <p><strong>Type:</strong> {selectedLesson.lesson_type}</p>
-            <p><strong>Time:</strong> {selectedLesson.full_time} minutes</p>
+            <p>
+              <strong>Name:</strong> {selectedLesson.name}
+            </p>
+            <p>
+              <strong>Session ID:</strong> {selectedLesson.session_id}
+            </p>
+            <p>
+              <strong>Instructor ID:</strong> {selectedLesson.user_id}
+            </p>
+            <p>
+              <strong>Type:</strong> {selectedLesson.lesson_type}
+            </p>
+            <p>
+              <strong>Time:</strong> {selectedLesson.full_time} minutes
+            </p>
           </div>
         )}
       </Modal>

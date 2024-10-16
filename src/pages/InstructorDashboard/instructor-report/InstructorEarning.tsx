@@ -1,8 +1,5 @@
-
 const InstructorEarning = () => {
-  return (
-    <div>InstructorEarning</div>
-  )
-}
+  return <div>InstructorEarning</div>;
+};
 
-export default InstructorEarning
+export default InstructorEarning;

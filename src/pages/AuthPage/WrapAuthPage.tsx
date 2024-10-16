@@ -1,8 +1,5 @@
-
 const WrapAuthPage = () => {
-  return (
-    <div>WrapAuthPage</div>
-  )
-}
+  return <div>WrapAuthPage</div>;
+};
 
-export default WrapAuthPage
+export default WrapAuthPage;

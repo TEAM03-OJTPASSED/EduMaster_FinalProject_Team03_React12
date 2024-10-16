@@ -5,6 +5,7 @@ export enum CourseStatusEnum {
   reject,
   active,
   inactive,
+  completed
 }
 export enum LessonTypeEnum {
   video = "video",
@@ -27,6 +28,7 @@ export enum PayoutStatusEnum {
   content:string
  }
 export interface Course {
+  id: number;
   name: string;
   category_id: string;
   description: string;
@@ -366,6 +368,7 @@ export const listSessions: Session[] = [
 
 export const listCourses: Course[] = [
   {
+    id: 1,
     name: "Introduction to Web Development",
     category_id: "cat01",
     description:
@@ -378,6 +381,7 @@ export const listCourses: Course[] = [
     discount: 10,
   },
   {
+    id: 2,
     name: "JavaScript Advanced Techniques",
     category_id: "cat02",
     description: "Master advanced JavaScript concepts and design patterns.",
@@ -389,6 +393,7 @@ export const listCourses: Course[] = [
     discount: 20,
   },
   {
+    id: 3,
     name: "React for Beginners",
     category_id: "cat03",
     description: "Get started with React.js and build dynamic user interfaces.",
@@ -400,6 +405,7 @@ export const listCourses: Course[] = [
     discount: 15,
   },
   {
+    id: 4,
     name: "Node.js and Express",
     category_id: "cat04",
     description:
@@ -412,6 +418,7 @@ export const listCourses: Course[] = [
     discount: 10,
   },
   {
+    id:4,
     name: "Fullstack Development with MERN",
     category_id: "cat05",
     description:
@@ -424,6 +431,7 @@ export const listCourses: Course[] = [
     discount: 25,
   },
   {
+    id:5,
     name: "Introduction to Data Science",
     category_id: "cat06",
     description: "Explore the world of data science and machine learning.",
@@ -435,6 +443,7 @@ export const listCourses: Course[] = [
     discount: 15,
   },
   {
+    id: 6,
     name: "Python for Beginners",
     category_id: "cat07",
     description: "Learn Python programming from scratch.",
@@ -446,6 +455,7 @@ export const listCourses: Course[] = [
     discount: 5,
   },
   {
+    id: 7,
     name: "Cloud Computing with AWS",
     category_id: "cat08",
     description:
@@ -458,6 +468,7 @@ export const listCourses: Course[] = [
     discount: 20,
   },
   {
+    id: 8,
     name: "DevOps Fundamentals",
     category_id: "cat09",
     description: "Learn the fundamental practices and tools in DevOps.",
@@ -469,6 +480,7 @@ export const listCourses: Course[] = [
     discount: 10,
   },
   {
+    id: 9,
     name: "Cybersecurity Basics",
     category_id: "cat10",
     description:

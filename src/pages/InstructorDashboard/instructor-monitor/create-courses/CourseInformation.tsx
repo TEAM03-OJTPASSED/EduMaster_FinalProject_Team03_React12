@@ -1,6 +1,5 @@
-
 import { Col, Form, Input, Row, Select, Upload } from "antd";
-import { PlusOutlined, } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 /**
  * {
   "course": {
@@ -57,8 +56,7 @@ import { PlusOutlined, } from "@ant-design/icons";
 // };
 
 const CourseInformation = () => {
-
-  const normFile = (e: any) => {
+  const normFile = (e) => {
     if (Array.isArray(e)) {
       return e;
     }
@@ -90,7 +88,6 @@ const CourseInformation = () => {
               ]}
             >
               <Select
-              
                 placeholder="select category"
                 options={[
                   {
@@ -128,10 +125,10 @@ const CourseInformation = () => {
         <Form.Item label="Content" name="content">
           {/* <CKEditor
             editor={ClassicEditor}
-            onChange={(event, editor) => {
-              const data = editor.getData();
-              // setForm(content:data)
-            }}
+            // onChange={(event, editor) => {
+            // const data = editor.getData();
+            // setForm(content:data)
+            // }}
             config={{
               placeholder: "Enter blog content...",
             }}

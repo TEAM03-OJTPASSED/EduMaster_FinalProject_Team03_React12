@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { Button, Dropdown, Input, InputRef, MenuProps, Space } from "antd"; // Import InputRef
-import { DownOutlined } from "@ant-design/icons";
+import { Button, Dropdown, Input, InputRef, MenuProps, Space, Drawer } from "antd"; // Import Drawer
+import { DownOutlined, MenuOutlined } from "@ant-design/icons";
 import logoImage from "../assets/EduMaster.png";
 import { useCustomNavigate } from "../hooks/customNavigate";
 import { AiOutlineSearch } from "react-icons/ai";
@@ -35,11 +35,9 @@ const Navbar = () => {
   const navigate = useCustomNavigate();
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [activeButton, setActiveButton] = useState<string>("home");
-
-  // Use InputRef instead of HTMLInputElement
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false); // State to control drawer
   const searchInputRef = useRef<InputRef>(null);
 
-  // Close search input when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -65,9 +63,9 @@ const Navbar = () => {
   const handleMenuClick: MenuProps["onClick"] = (e) => {
     const selectedItem = items.find((item) => item.key === e.key);
     if (selectedItem) {
-      // Set the active button to "pages" when navigating to any page in the dropdown
       setActiveButton("pages");
       navigate(selectedItem.path);
+      setIsDrawerOpen(false); // Close drawer on menu item click
     }
   };
 
@@ -87,12 +85,9 @@ const Navbar = () => {
             onClick={() => navigate("/")}
             style={{ objectFit: "cover", width: "250px", cursor: "pointer" }}
           />
-          <div>
-            {/* Home Button */}
+          <div className="hidden md:flex"> {/* Hide on smaller screens */}
             <Button
-              className={`navbar-button ${
-                activeButton === "home" ? "active" : ""
-              } text-xs sm:text-base`}
+              className={`navbar-button ${activeButton === "home" ? "active" : ""} text-xs sm:text-base`}
               onClick={() => {
                 setActiveButton("home");
                 navigate("/");
@@ -100,12 +95,8 @@ const Navbar = () => {
             >
               Home
             </Button>
-
-            {/* Courses Button */}
             <Button
-              className={`navbar-button ${
-                activeButton === "courses" ? "active" : ""
-              } text-xs sm:text-base`}
+              className={`navbar-button ${activeButton === "courses" ? "active" : ""} text-xs sm:text-base`}
               onClick={() => {
                 setActiveButton("courses");
                 navigate("/course");
@@ -113,12 +104,8 @@ const Navbar = () => {
             >
               Courses
             </Button>
-
-            {/* Blog Button */}
             <Button
-              className={`navbar-button ${
-                activeButton === "blog" ? "active" : ""
-              } text-xs sm:text-base`}
+              className={`navbar-button ${activeButton === "blog" ? "active" : ""} text-xs sm:text-base`}
               onClick={() => {
                 setActiveButton("blog");
                 navigate("/blog");
@@ -126,14 +113,8 @@ const Navbar = () => {
             >
               Blog
             </Button>
-
-            {/* Dropdown Menu */}
             <Dropdown menu={menuProps}>
-              <Button
-                className={`navbar-button ${
-                  activeButton === "pages" ? "active" : ""
-                } text-xs sm:text-base`}
-              >
+              <Button className={`navbar-button ${activeButton === "pages" ? "active" : ""} text-xs sm:text-base`}>
                 <Space className="text-base font-semibold">
                   Pages
                   <DownOutlined />
@@ -143,7 +124,7 @@ const Navbar = () => {
           </div>
 
           {/* Log In / Sign Up and Search Icons */}
-          <div className="flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-4"> {/* Hide on smaller screens */}
             <button
               className="px-3 py-1.5 bg-blue-500 text-white rounded-md transition duration-200 hover:bg-blue-600 text-sm md:text-base"
               onClick={() => navigate("/login")}
@@ -156,8 +137,6 @@ const Navbar = () => {
             >
               Sign Up
             </button>
-
-            {/* Search Icon */}
             <div
               className="flex items-center justify-center w-10 h-10 bg-gray-200 rounded-full cursor-pointer"
               onClick={() => setIsSearchActive(true)}
@@ -165,6 +144,64 @@ const Navbar = () => {
               <AiOutlineSearch size={24} />
             </div>
           </div>
+
+          {/* Burger Menu for mobile */}
+          <div className="md:hidden"> {/* Show on smaller screens */}
+            <MenuOutlined
+              className="text-xl cursor-pointer"
+              onClick={() => setIsDrawerOpen(true)}
+            />
+          </div>
+
+          {/* Drawer for mobile menu */}
+          <Drawer
+            title="EduMaster"
+            placement="right"
+            onClose={() => setIsDrawerOpen(false)}
+            open={isDrawerOpen}
+            className="flex flex-col "
+          >
+            <div className="flex flex-col justify-center items-center">
+            <Button
+              className={`navbar-button ${activeButton === "home" ? "active" : ""} text-sm w-full`}
+              onClick={() => {
+                setActiveButton("home");
+                navigate("/");
+                setIsDrawerOpen(false); // Close drawer
+              }}
+            >
+              Home
+            </Button>
+            <Button
+              className={`navbar-button ${activeButton === "courses" ? "active" : ""} text-sm w-full`}
+              onClick={() => {
+                setActiveButton("courses");
+                navigate("/course");
+                setIsDrawerOpen(false); // Close drawer
+              }}
+            >
+              Courses
+            </Button>
+            <Button
+              className={`navbar-button ${activeButton === "blog" ? "active" : ""} text-sm w-full`}
+              onClick={() => {
+                setActiveButton("blog");
+                navigate("/blog");
+                setIsDrawerOpen(false); // Close drawer
+              }}
+            >
+              Blog
+            </Button>
+            <Dropdown menu={menuProps}>
+              <Button className={`navbar-button ${activeButton === "pages" ? "active" : ""} text-sm w-full`}>
+                <Space className="text-base font-semibold">
+                  Pages
+                  <DownOutlined />
+                </Space>
+              </Button>
+            </Dropdown>
+            </div>
+          </Drawer>
         </>
       ) : (
         <Input
@@ -182,7 +219,7 @@ const Navbar = () => {
             height: "50px",
           }}
           autoFocus
-          ref={searchInputRef} // Use correct ref type here
+          ref={searchInputRef}
         />
       )}
     </div>

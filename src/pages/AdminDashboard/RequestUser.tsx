@@ -1,15 +1,6 @@
-import  { useState } from "react";
-import {
-  Table,
-  Button,
-  Input,
-  Space,
-  Card,
-} from "antd";
-import {
-  SearchOutlined,
-} from "@ant-design/icons";
-
+import { useState } from "react";
+import { Table, Button, Input, Space, Card } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 
 const RequestUser = () => {
   const [dataSource] = useState([

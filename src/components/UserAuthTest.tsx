@@ -25,6 +25,7 @@ interface User {
 }
 
 export interface Course {
+  id: number;
   name: string;
   category_id: string;
   description: string;
@@ -147,6 +148,7 @@ const UserAuth = () => {
   };
   const generateRandomCourse = (): Course => {
     return {
+      id: Math.floor(Math.random() * 100000) + 1,
       name: `Course ${generateRandomString(5)}`,
       category_id: generateRandomString(24),
       description:
@@ -212,31 +214,6 @@ const UserAuth = () => {
             onClick={() => setUser("Admin")}
           >
             Admin
-          </div>
-        </div>
-      </div>
-      <div className="w-1/2 flex items-center">
-        <div className="w-40">
-          <div>Sample Course</div>
-        </div>
-        <div className="flex gap-2">
-          <div
-            className="border-2 border-blue-400 p-2 rounded-md w-20 text-center cursor-pointer"
-            onClick={() => removeAllCourses()}
-          >
-            -All
-          </div>
-          <div
-            className="border-2 border-blue-400 p-2 rounded-md w-10 text-center cursor-pointer"
-            onClick={() => removeCourse()}
-          >
-            -1
-          </div>
-          <div
-            className="border-2 border-blue-400 p-2 rounded-md w-10 text-center cursor-pointer"
-            onClick={() => addCourse()}
-          >
-            +1
           </div>
         </div>
       </div>

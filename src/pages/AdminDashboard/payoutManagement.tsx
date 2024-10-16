@@ -10,7 +10,11 @@ import {
   Select,
 } from "antd";
 import { SearchOutlined, EyeOutlined } from "@ant-design/icons";
-import { Payout, payouts, PayoutStatusEnum } from "./monitors/course/courseList";
+import {
+  Payout,
+  payouts,
+  PayoutStatusEnum,
+} from "./monitors/course/courseList";
 import dayjs from "dayjs";
 import { InputSearchProps } from "../../hooks/useDebounce";
 
@@ -33,7 +37,6 @@ const PayoutManagement: React.FC = () => {
       setFilterSelection({ ...filterSelection, [name]: value });
     }
     console.log(filterSelection);
-    
   };
   const showModal = (course: Payout) => {
     setSelectedCourse(course);

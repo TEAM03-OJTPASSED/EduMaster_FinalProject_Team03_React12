@@ -28,7 +28,7 @@ const CourseCard: React.FC<{ course: Course; viewMode: string }> = ({
   course,
   viewMode,
 }) => (
-  <a href={`/course-detail/${course.id}`} >
+  <a href={`/course-detail/${course.id}`}>
     <Card
       hoverable
       styles={{
@@ -64,7 +64,7 @@ const CourseCard: React.FC<{ course: Course; viewMode: string }> = ({
       <div>
         <div className="grid grid-cols-2 grid-rows-2 gap-2 justify-between text-sm text-gray-500 mb-4">
           <span className="flex items-center">
-            <AiOutlineClockCircle className="mr-1 text-orange-500" size={18}/>
+            <AiOutlineClockCircle className="mr-1 text-orange-500" size={18} />
             {course.duration}
           </span>
           <span className="flex items-center justify-end">

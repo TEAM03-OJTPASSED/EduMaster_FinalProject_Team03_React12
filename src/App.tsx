@@ -48,6 +48,7 @@ import PayoutManagement from "./pages/AdminDashboard/payoutManagement";
 import BlogDetailPage from "./pages/BlogDetailPage";
 import DashboardLayout from "./defaultLayout/DashboardLayout";
 import StudentProfile from "./pages/StudentDashboard/studentProfile";
+import StudentCourses from "./pages/StudentDashboard/StudentCourses";
 
 function App() {
   return (
@@ -164,6 +165,8 @@ function App() {
                 <Route element={<DashboardLayout role="student" />}>
                 <Route path="dashboard" element={<InstructorContent />} />
                 <Route path="profile" element={<StudentProfile />} />
+                <Route path="my-courses" element={<StudentCourses />} />
+
 
               
                 </Route>
