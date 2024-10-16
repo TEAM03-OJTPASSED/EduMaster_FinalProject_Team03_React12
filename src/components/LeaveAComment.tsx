@@ -13,7 +13,7 @@ export const LeaveAComment = ({ name, email }: Props) => {
   };
 
   return (
-    <div className="font-exo my-4 w-2/3">
+    <div className="font-exo my-4">
       <div className="font-bold pt-4">Leave A Comment</div>
       <div className="text-sm pt-1 pb-4">Your email address will not be published. Required fields are marked *</div>
       <Form

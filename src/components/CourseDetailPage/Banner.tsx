@@ -19,7 +19,7 @@ export const Banner = ({
 }: Props) => {
   return (
     <div className="flex flex-col bg-neutral-900 text-white px-20 py-10 gap-5 -mx-24">
-      <div className="flex flex-col w-2/3 gap-5">
+      <div className="flex flex-col gap-5 w-full lg:w-2/3">
         <div className="flex items-baseline font-jost">
           <div className="bg-neutral-600 px-3 py-2 rounded-lg mr-2">
             {category}
@@ -30,7 +30,7 @@ export const Banner = ({
         </div>
         <div className="font-exo font-semibold text-4xl">{title}</div>
       </div>
-      <div className="absolute right-20 w-1/5 font-jost">
+      <div className="hidden absolute right-20 font-jost lg:block w-1/5">
         <div className="h-60 w-full flex justify-center items-center overflow-hidden rounded-t-lg">
           <img src={imageUrl} alt={title} className="object-contain w-full" />
         </div>
@@ -51,7 +51,16 @@ export const Banner = ({
           </div>
         </div>
       </div>
-      <CourseSummary time={2} student={156} level={"All"} lessons={20} quizzes={3} />
+      <CourseSummary
+        time={2}
+        student={156}
+        level={"All"}
+        lessons={20}
+        quizzes={3}
+      />
+      <div className="lg:hidden font-exo text-xl font-bold text-center bg-orange-500 py-4 rounded-lg">
+        Start Now
+      </div>
     </div>
   );
 };

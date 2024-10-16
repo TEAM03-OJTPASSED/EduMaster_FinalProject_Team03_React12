@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import StudentProfile from "./studentProfile";
-import StudentCourseDetail from "./student-courseDetail";
+import StudentCourseDetail from "./StudentCourses";
 
 const StudentContent = () => {
   return (

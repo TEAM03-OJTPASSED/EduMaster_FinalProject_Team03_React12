@@ -24,6 +24,18 @@ interface User {
   updated_at: string;
 }
 
+export interface Course {
+  id: number;
+  name: string;
+  category_id: string;
+  description: string;
+  content: string;
+  video_url: string;
+  image_url: string;
+  price: number;
+  discount: number;
+}
+
 const student: User = {
   email: "student@example.com",
   name: "Student",
@@ -119,6 +131,56 @@ const UserAuth = () => {
       }
     }
     navigate("/");
+  };
+  const removeAllCourses = () => {
+    localStorage.removeItem("Courses");
+  };
+  const generateRandomString = (length: number): string => {
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let result = "";
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(
+        Math.floor(Math.random() * characters.length)
+      );
+    }
+    return result;
+  };
+  const generateRandomCourse = (): Course => {
+    return {
+      id: Math.floor(Math.random() * 100000) + 1,
+      name: `Course ${generateRandomString(5)}`,
+      category_id: generateRandomString(24),
+      description:
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+      content: "",
+      video_url: "https://www.youtube.com/watch?v=" + generateRandomString(11),
+      image_url: "",
+      price: Math.floor(Math.random() * 100000) + 1000,
+      discount: Math.floor(Math.random() * 100),
+    };
+  };
+  const addCourse = () => {
+    const course = generateRandomCourse();
+    const courses = localStorage.getItem("Courses");
+    if (courses) {
+      const courseList = JSON.parse(courses);
+      courseList.push(course);
+      localStorage.setItem("Courses", JSON.stringify(courseList));
+    } else {
+      localStorage.setItem("Courses", JSON.stringify([course]));
+    }
+  };
+  const removeCourse = () => {
+    const courses = localStorage.getItem("Courses");
+    if (courses) {
+      const courseList = JSON.parse(courses);
+      if (courseList.length > 0) {
+        const randomIndex = Math.floor(Math.random() * courseList.length);
+        courseList.splice(randomIndex, 1);
+        localStorage.setItem("Courses", JSON.stringify(courseList));
+      }
+    }
   };
 
   return (

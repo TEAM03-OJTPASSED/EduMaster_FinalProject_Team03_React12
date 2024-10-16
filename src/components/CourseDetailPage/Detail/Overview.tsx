@@ -1,5 +1,5 @@
 type Props = {
-  a: string;
+  a?: string;
 };
 export const Overview = ({ a }: Props) => {
   return (
