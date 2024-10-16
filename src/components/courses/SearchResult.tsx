@@ -5,6 +5,7 @@ import { useState } from "react";
 import { FaBars } from "react-icons/fa";
 import { GrGrid } from "react-icons/gr";
 import CoursesGrid from "../home/CoursesGrid";
+import NoResult from "../../assets/no-result.jpg"
 
 interface Course {
   id: number;
@@ -34,6 +35,7 @@ export const SearchResults: React.FC<{
           <Search
             placeholder={"Search"}
             defaultValue={searchQuery}
+            className=""
             style={{ width: 200 }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -49,12 +51,13 @@ export const SearchResults: React.FC<{
             icon={<GrGrid />}
             onClick={() => setViewMode("grid")}
             type={viewMode === "grid" ? "primary" : "default"}
-            className=" md:inline-block hidden"
+            className="view-button"
           />
           <Button
             icon={<FaBars />}
             onClick={() => setViewMode("list")}
             type={viewMode === "list" ? "primary" : "default"}
+            className=" md:inline-block hidden view-button"
           />
         </div>
       </div>
@@ -72,8 +75,10 @@ export const SearchResults: React.FC<{
             />
             </div>)
         : (
-          <div className="text-center mt-8">
-            No courses found
+          <div className="text-center mt-8 flex flex-col justify-center items-center">
+            <img src={NoResult} width={400} alt="no search results"/>
+            <h1 className="text-2xl">We couldn't find what you were looking for. Please try again.</h1> 
+
           </div>
         )}
     </Content>

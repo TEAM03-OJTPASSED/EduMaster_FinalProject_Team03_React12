@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import { Layout, Button, Drawer, Avatar, Dropdown } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import logoImage from "../../assets/EduMaster.png";

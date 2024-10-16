@@ -1,8 +1,5 @@
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { Col, Form, Input, Row, Select, Upload } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-
 /**
  * {
   "course": {
@@ -126,7 +123,7 @@ const CourseInformation = () => {
         </Form.Item>
         {/* Content */}
         <Form.Item label="Content" name="content">
-          <CKEditor
+          {/* <CKEditor
             editor={ClassicEditor}
             // onChange={(event, editor) => {
             // const data = editor.getData();
@@ -135,7 +132,7 @@ const CourseInformation = () => {
             config={{
               placeholder: "Enter blog content...",
             }}
-          />
+          /> */}
         </Form.Item>
         <Row>
           <Col>

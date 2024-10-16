@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Table, Input, Card, Tag, TableProps, Button, Modal } from "antd";
 import { SearchOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
-import { Course, CourseStatusEnum, listCourses } from "../../AdminDashboard/monitors/course/couseList";
+import { Course, CourseStatusEnum, listCourses } from "../../AdminDashboard/monitors/course/courseList";
 const InstructorCourseList: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);

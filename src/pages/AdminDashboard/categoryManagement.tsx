@@ -16,7 +16,7 @@ const CategoryManagement = () => {
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [form] = Form.useForm();
-  const [editingRecord, setEditingRecord] = useState<any>(null);
+  const [ setEditingRecord] = useState<any>(null);
 
   const handleCategoryChange = (value: string) => {
     setSelectedCategory(value);
@@ -106,17 +106,17 @@ const CategoryManagement = () => {
     {
       title: "Actions",
       key: "action",
-      render: (_, record) => (
+      render: () => (
         <>
           <Button
             type="text"
             icon={<DeleteOutlined style={{ color: "red" }} />}
-            onClick={() => handleDelete(record.key)}
+            onClick={() => handleDelete}
           />
           <Button
             type="text"
             icon={<EditOutlined style={{ color: "blue" }} />}
-            onClick={() => showModalEdit(record)}
+            onClick={() => showModalEdit}
           />
         </>
       ),

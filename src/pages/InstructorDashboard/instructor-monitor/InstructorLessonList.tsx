@@ -5,7 +5,7 @@ import {
   Lesson,
   LessonTypeEnum,
   listLessons,
-} from "../../AdminDashboard/monitors/course/couseList";
+} from "../../AdminDashboard/monitors/course/courseList";
 
 const InstructorLessonList = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);

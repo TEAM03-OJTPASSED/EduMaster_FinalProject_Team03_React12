@@ -78,7 +78,7 @@ export const Reviews = ({ items }: Props) => {
     return counts;
   };
 
-  const renderStars = (rating) => {
+  const renderStars = (rating: number) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
       stars.push(

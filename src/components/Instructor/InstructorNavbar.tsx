@@ -1,13 +1,5 @@
-import React, { useState, useEffect } from "react";
-import {
-  Layout,
-  Button,
-  Drawer,
-  Avatar,
-  Dropdown,
-  Menu,
-  MenuProps,
-} from "antd";
+import { useState, useEffect } from "react";
+import { Layout, Button, Drawer, Avatar, Dropdown } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import logoImage from "../../assets/EduMaster.png"; // Đường dẫn đến logo
 import { useCustomNavigate } from "../../hooks/customNavigate"; // Hook tùy chỉnh cho điều hướng
@@ -51,9 +43,6 @@ const InstructorNavbar = () => {
     },
   ];
 
-  // Sử dụng items cho menu
-  const menu = <Menu items={menuItems} />;
-
   return (
     <>
       {/* Navbar */}
@@ -80,11 +69,12 @@ const InstructorNavbar = () => {
           title="Menu"
           placement="left"
           onClose={toggleDrawer}
-          // visible={drawerVisible} // Control visibility
+          visible={drawerVisible} // Control visibility
         >
           {/* Sử dụng AdminSiderMenu bên trong Drawer */}
           <InstructorSidebar onMenuClick={toggleDrawer} />
         </Drawer>
+
         {/* Logo ở Navbar */}
         <div
           style={{
@@ -105,7 +95,7 @@ const InstructorNavbar = () => {
         </div>
 
         {/* Avatar cho Navbar */}
-        <Dropdown menu={menu} trigger={["click"]}>
+        <Dropdown menu={{ items: menuItems }} trigger={["click"]}>
           <div
             style={{
               display: "flex",
@@ -151,7 +141,6 @@ const InstructorNavbar = () => {
                 Admin
               </span>
             )}
-            {/* Improved text color on hover */}
           </div>
         </Dropdown>
       </div>

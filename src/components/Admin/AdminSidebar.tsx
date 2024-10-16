@@ -129,7 +129,6 @@ const AdminSidebar: React.FC<{ onMenuClick?: () => void }> = ({
           label: item.label,
           children: item.items.map((child) => ({
             key: child.key,
-            icon: child.icon,
             label: child.label,
             onClick: () => handleMenuClick(child.key),
           })),

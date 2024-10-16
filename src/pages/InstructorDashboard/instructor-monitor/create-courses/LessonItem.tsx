@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Lesson } from "../../../AdminDashboard/monitors/course/couseList";
+import { Lesson } from "../../../AdminDashboard/monitors/course/courseList";
 import { Button, Divider } from "antd";
 import { DownOutlined, UpOutlined } from "@ant-design/icons";
 

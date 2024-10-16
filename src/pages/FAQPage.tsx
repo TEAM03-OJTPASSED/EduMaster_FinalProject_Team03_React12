@@ -1,5 +1,5 @@
 import { useCustomNavigate } from "../hooks/customNavigate";
-import { useState } from "react";
+import React, { useState } from "react";
 
 const FAQsPage = () => {
   const navigate = useCustomNavigate();
@@ -66,7 +66,7 @@ const FAQsPage = () => {
                       className="hover:text-orange-400 font-semibold"
                     >
                       {" "}
-                      Read this article carefully
+                      Read this article carefully
                     </a>
                     . There are many reasons why the theme runs fast on some
                     sites but slow on some other sites.
@@ -94,7 +94,7 @@ const FAQsPage = () => {
               {openFAQ === 2 && (
                 <div className="mt-4 text-gray-700">
                   <p className="text-lg">
-                    Piracy of Digital<strong>Content </strong>
+                    Piracy of Digital <strong>Content </strong>
                     is now one of the most irritating problems regarding
                     copyright and selling products online. This is seemingly
                     more correct in the world of online course when people could
@@ -288,7 +288,7 @@ const FAQsPage = () => {
                       Delete the add-ons that you want to update on your website
                     </li>
                     <li>
-                      Go to this page:
+                      Go to this page: 
                       <a
                         href="https://thimpress.com/my-account/downloads/"
                         target="_blank"
@@ -315,7 +315,7 @@ const FAQsPage = () => {
                     it to download the new add-ons. In this case, you need to
                     delete your ThimCore and you will receive the notification
                     about re-install it. Click to this notification to install
-                    the newest version of<strong>ThimCore (2.x.x)</strong>. If
+                    the newest version of <strong>ThimCore (2.x.x)</strong>. If
                     after re-install ThimCore plugin still have version 1.x.x,
                     you can download version 2.x.x on our GitHub, click
                     <strong>
