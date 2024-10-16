@@ -231,5 +231,5 @@ h3 {
 
 .zigzag {
   animation: zigzag 3s ease-in-out infinite; /* Set animation to last 3 seconds */
-  animation-delay: 5s; /* Pause for 5 seconds before the next shake */
+  animation-delay: 3s; /* Pause for 5 seconds before the next shake */
 }

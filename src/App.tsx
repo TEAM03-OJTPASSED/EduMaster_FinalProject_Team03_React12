@@ -74,6 +74,7 @@ function App() {
               <Route path="/error" element={<ErrorPage />} />
               <Route path="/cart" element={<CartPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
+              <Route path="/firebase" element={<Firebase />} />
 
               <Route
                 path="/course-detail/:id"
@@ -97,12 +98,11 @@ function App() {
               >
                 <Route index element={<BlogDetailPage />} />
               </Route>
-              <Route path="/firebase" element={<Firebase />} />
             </Route>
 
             {/* Admin Layout */}
             <Route
-              path="/dashboard/admin"
+              path="admin"
               element={<ProtectedRoute allowedRoles={["admin"]} />}
             >
               <Route element={<AdminLayout />}>
@@ -131,7 +131,7 @@ function App() {
 
             {/* Instructor Layout */}
             <Route
-              path="/dashboard/instructor"
+              path="instructor"
               element={
                 <ProtectedRoute allowedRoles={["instructor"]}></ProtectedRoute>
               }
@@ -171,7 +171,7 @@ function App() {
             {/* Student Layout */}
 
             <Route
-              path="/dashboard/student"
+              path="student"
               element={
                 <ProtectedRoute allowedRoles={["student"]}></ProtectedRoute>
               }
