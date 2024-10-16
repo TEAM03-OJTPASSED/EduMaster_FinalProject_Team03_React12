@@ -2,10 +2,36 @@ import { Modal, Form, Input, Select, Switch, Button } from "antd";
 
 const { Option } = Select;
 
-const EditUser = ({ visible, onClose, user, onSave }) => {
+// Assuming the User interface is available for import
+interface User {
+  key: string;
+  name: string;
+  email: string;
+  phone: string;
+  username: string;
+  status: boolean;
+  role: string;
+  verified: boolean;
+  blocked: boolean;
+  createdAt: string;
+}
+
+interface EditUserProps {
+  visible: boolean; // Update this to use boolean
+  onClose: () => void; // Function type for onClose
+  user: User | any; // User can be null when editing is not active
+  onSave: (values: User) => void; // Function to handle save action
+}
+
+const EditUser: React.FC<EditUserProps> = ({
+  visible,
+  onClose,
+  user,
+  onSave,
+}) => {
   const [form] = Form.useForm();
 
-  const handleFinish = (values) => {
+  const handleFinish = (values: any) => {
     onSave(values);
     onClose(); // Close modal after saving
   };

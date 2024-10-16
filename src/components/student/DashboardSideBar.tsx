@@ -105,7 +105,7 @@ const StudentMenuItems: MenuItem[] = [
   {
     key: "courses",
     icon: <FolderOutlined />,
-    title: "My Courses",
+    title: "My Learning",
     path: "/student/my-courses",
   },
   {

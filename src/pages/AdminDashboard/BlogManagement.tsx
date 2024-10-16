@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { Blog, listBlogs } from "./monitors/course/courseList";
-import { Blog, listBlogs } from "./monitors/course/courseList";
 import { Button, Card, Input, Modal, Table, TableProps, Tag } from "antd";
 import {
   SearchOutlined,
   DeleteOutlined,
   EditOutlined,
-  PlusCircleOutlined,
+  PlusCircleOutlined
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 import CreateBlog from "./blog/CreateBlog";
@@ -79,26 +78,27 @@ const BlogManagement = () => {
   };
   return (
     <Card>
-      <div className="flex">
-        <h3 className="text-2xl my-5">Blog Management</h3>
-        <div className="flex items-center mx-3">
-          <Button
-            onClick={showModalCreate}
-            icon={<PlusCircleOutlined />}
-            shape="round"
-            variant="solid"
-            color="primary"
-            className="items-center"
-          >
-            Create Blog
-          </Button>
-        </div>
-      </div>
+      <h3 className="text-2xl my-5">Blog Management</h3>
+      <div className="flex justify-between">
+
       <Input
         placeholder="Search By Course Name"
         prefix={<SearchOutlined />}
         style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
       />
+      <div className="flex">
+        <Button
+          onClick={showModalCreate}
+          icon={<PlusCircleOutlined />}
+          shape="round"
+          variant="solid"
+          color="primary"
+          className="items-center"
+        >
+          Create Blog
+        </Button>
+      </div>
+      </div>
 
       <Table
         dataSource={listBlogs}

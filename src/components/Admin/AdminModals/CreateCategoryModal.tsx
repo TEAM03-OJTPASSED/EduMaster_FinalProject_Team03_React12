@@ -1,5 +1,5 @@
 // createCategory.tsx
-import { Modal, Form, Input, Select } from "antd";
+import { Modal, Form, Input, Select, FormInstance } from "antd";
 import { FC } from "react";
 
 const { Option } = Select;
@@ -8,7 +8,7 @@ interface CreateCategoryProps {
   visible: boolean;
   onCreate: () => void;
   onCancel: () => void;
-  form: any;
+  form: FormInstance;
 }
 
 const CreateCategory: FC<CreateCategoryProps> = ({

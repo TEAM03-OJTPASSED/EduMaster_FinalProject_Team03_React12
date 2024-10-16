@@ -9,18 +9,20 @@ import {
   Modal,
   Select,
 } from "antd";
-import { SearchOutlined, EyeOutlined } from "@ant-design/icons";
+import {
+  SearchOutlined,
+  CloseOutlined,
+  CheckOutlined,
+} from "@ant-design/icons";
 import {
   Payout,
   payouts,
   PayoutStatusEnum,
 } from "./monitors/course/courseList";
-import dayjs from "dayjs";
 import { InputSearchProps } from "../../hooks/useDebounce";
-
 const PayoutManagement: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<Payout | null>(null);
+  // const [selectedCourse, setSelectedCourse] = useState<Payout | null>(null);
 
   const [filterSelection, setFilterSelection] = useState<InputSearchProps>({
     selection: "",
@@ -38,20 +40,15 @@ const PayoutManagement: React.FC = () => {
     }
     console.log(filterSelection);
   };
-  const showModal = (course: Payout) => {
-    setSelectedCourse(course);
-    setIsModalVisible(true);
-  };
+  // const showModal = (course: Payout) => {
+  //   setSelectedCourse(course);
+  //   setIsModalVisible(true);
+  // };
 
-  const handleOk = () => {
-    console.log("Accepted course:", selectedCourse?.payout_no);
-    setIsModalVisible(false);
-  };
-
-  const handleReject = () => {
-    console.log("Rejected course:", selectedCourse?.payout_no);
-    setIsModalVisible(false);
-  };
+  // const handleOk = () => {
+  //   // console.log("Accepted course:", selectedCourse?.payout_no);
+  //   setIsModalVisible(false);
+  // };
 
   const handleCancel = () => {
     setIsModalVisible(false);
@@ -85,16 +82,34 @@ const PayoutManagement: React.FC = () => {
         }
       },
     },
-
     {
-      title: "Created at",
-      dataIndex: "created_at",
-      key: "created_at",
-      render: (created_at) => {
-        return <div>{dayjs(created_at).format("DD/MM/YYYY")}</div>;
+      title: "Balance Origin",
+      dataIndex: "balance_origin",
+      key: "balance_origin",
+    },
+    {
+      title: "Balance Instructor paid",
+      dataIndex: "balance_instructor_paid",
+      key: "balance_instructor_paid",
+    },
+    {
+      title: "Balance Instructor Receive",
+      dataIndex: "balance_instructor_received",
+      key: "balance_instructor_received",
+    },
+    {
+      title: "Transaction",
+      key: "balance_origin",
+      render: () => {
+        return (
+          <div>
+            <p className="underline font font-medium text-blue-500 cursor-pointer hover:font-bold active:text-blue-300">
+              View
+            </p>
+          </div>
+        );
       },
     },
-
     {
       title: "Action",
       key: "action",
@@ -102,9 +117,20 @@ const PayoutManagement: React.FC = () => {
         <>
           <Button
             type="text"
-            icon={<EyeOutlined style={{ color: "blue" }} />}
-            onClick={() => showModal(record)}
-          />
+            className="text-green-600"
+            icon={<CheckOutlined />}
+            disabled={record.status !== PayoutStatusEnum.request_payout}
+          >
+            Approve
+          </Button>
+          <Button
+            className="text-red-600"
+            type="text"
+            icon={<CloseOutlined />}
+            disabled={record.status !== PayoutStatusEnum.request_payout}
+          >
+            Reject
+          </Button>
         </>
       ),
     },
@@ -114,28 +140,33 @@ const PayoutManagement: React.FC = () => {
     <div>
       <Card>
         <h3 className="text-2xl my-5">Payout Management</h3>
-        <div>
+        <div className="flex flex-col justify-between mb-5 lg:flex-row ">
+          {/* Search */}
           <Input
             placeholder="Search..."
             prefix={<SearchOutlined />}
-            style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
+            className="w-full mb-5 rounded-sm md:w-[30rem]"
             onChange={(e) => handleOnChange(e)}
-            name="search" // Ensure the input has a name for identifying the field
+            name="search"
           />
 
-          <Select
-            style={{ width: "10rem" }}
-            placeholder="Select a status"
-            defaultValue=""
-            onChange={(value) => handleOnChange(value)} // Pass the selected value
-            options={[
-              { value: "", label: "All" },
-              { value: "New", label: "New" },
-              { value: "Request Payout", label: "Request Payout" },
-              { value: "Completed", label: "Completed" },
-              { value: "Rejected", label: "Rejected" },
-            ]}
-          />
+          {/* Select status */}
+          <div className="flex gap-2">
+            <p className="text-base">Select Status:</p>
+            <Select
+              style={{ width: "10rem" }}
+              placeholder="Select a status"
+              defaultValue=""
+              onChange={(value) => handleOnChange(value)} // Pass the selected value
+              options={[
+                { value: "", label: "All" },
+                { value: "New", label: "New" },
+                { value: "Request Payout", label: "Request Payout" },
+                { value: "Completed", label: "Completed" },
+                { value: "Rejected", label: "Rejected" },
+              ]}
+            />
+          </div>
         </div>
         <Table
           dataSource={payouts}
@@ -150,36 +181,9 @@ const PayoutManagement: React.FC = () => {
         <Modal
           title="Course Details"
           visible={isModalVisible}
-          onOk={handleOk}
+          // onOk={handleOk}
           onCancel={handleCancel}
-          footer={[
-            <Button key="reject" onClick={handleReject}>
-              Reject
-            </Button>,
-            <Button key="accept" type="primary" onClick={handleOk}>
-              Accept
-            </Button>,
-          ]}
-        >
-          {selectedCourse && (
-            <div>
-              <p>
-                <strong>Name:</strong> {selectedCourse.balance_instructor_paid}
-              </p>
-              <p>
-                <strong>Category:</strong>{" "}
-                {selectedCourse.balance_instructor_paid}
-              </p>
-              <p>
-                <strong>Content:</strong>{" "}
-                {selectedCourse.balance_instructor_received}
-              </p>
-              <p>
-                <strong>Price:</strong> {selectedCourse.balance_origin}
-              </p>
-            </div>
-          )}
-        </Modal>
+        ></Modal>
       </Card>
     </div>
   );

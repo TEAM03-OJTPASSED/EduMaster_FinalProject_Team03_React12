@@ -44,7 +44,7 @@ export const PurchaseLog = React.lazy(
 export const InstructorPayout = React.lazy(
   () =>
     import(
-      "../pages/InstructorDashboard/instructor-management/InstructorPayout"
+      "../pages/InstructorDashboard/instructor-management/payout/InstructorPayout"
     )
 );
 export const InstructorOrder = React.lazy(
