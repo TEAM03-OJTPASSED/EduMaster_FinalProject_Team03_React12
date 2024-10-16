@@ -101,6 +101,10 @@ h3 {
   background-color: var(--color-primary-default) !important;
 }
 
+.view-button.ant-btn-variant-solid:hover {
+  background-color: var(--color-primary-pressed) !important;
+}
+
 .navbar-button.active:hover {
   background-color: var(
     --color-neutral-white-grey
