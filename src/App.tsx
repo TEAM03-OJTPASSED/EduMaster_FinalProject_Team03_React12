@@ -51,6 +51,7 @@ import FAQsPage from "./pages/FAQPage";
 import ErrorPage from "./pages/ErrorPage";
 import ContactPage from "./pages/ContactPage";
 import BlogDetailPage from "./pages/BlogDetailPage";
+import Firebase from "./pages/Firebase";
 
 function App() {
   return (
@@ -71,6 +72,7 @@ function App() {
               <Route path="/error" element={<ErrorPage />} />
               <Route path="/course-detail/:id" element={<CourseDetailPage />} />
               <Route path="/blog-detail/:id" element={<BlogDetailPage />} />
+              <Route path="/firebase" element={<Firebase />} />
             </Route>
 
             {/* Admin Layout */}
