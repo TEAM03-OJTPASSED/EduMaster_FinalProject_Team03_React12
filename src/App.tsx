@@ -53,6 +53,7 @@ import ContactPage from "./pages/ContactPage";
 import CartPage from "./pages/cart/CartPage";
 import CheckoutPage from "./pages/checkout/CheckoutPage";
 import Firebase from "./pages/Firebase";
+import BlogDetailPage from "./pages/BlogDetailPage";
 
 function App() {
   return (
