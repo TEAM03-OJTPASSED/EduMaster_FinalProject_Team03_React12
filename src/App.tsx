@@ -3,15 +3,10 @@ import ProtectedRoute from "./utils/ProtectedRoute";
 import LoadingWrapper from "./components/Loading/LoadingWrapper";
 import { Suspense } from "react";
 import CoursesPage from "./pages/CoursePage";
-import CoursesPage from "./pages/CoursePage";
 import BlogPage from "./pages/BlogPage";
+import CourseDetailPage from "./pages/CourseDetailPage";
 import GeneralLayout from "./defaultLayout/Layout";
 import HomePage from "./pages/Homepage";
-import LoginPage from "./pages/AuthPage/LoginPage";
-import SignUpPage from "./pages/AuthPage/SignUpPage";
-import ContactPage from "./pages/ContactPage";
-import FAQsPage from "./pages/FAQPage";
-import ErrorPage from "./pages/ErrorPage";
 import LoginPage from "./pages/AuthPage/LoginPage";
 import SignUpPage from "./pages/AuthPage/SignUpPage";
 import ContactPage from "./pages/ContactPage";
@@ -51,11 +46,9 @@ import InstructorSetting from "./pages/InstructorDashboard/InstructorSetting";
 import ForgotPasswordPage from "./pages/AuthPage/ForgotPasswordPage";
 import PayoutManagement from "./pages/AdminDashboard/payoutManagement";
 import BlogDetailPage from "./pages/BlogDetailPage";
-import ProtectedRouter from "./utils/ProtectedRoute";
 import DashboardLayout from "./defaultLayout/DashboardLayout";
 import StudentProfile from "./pages/StudentDashboard/studentProfile";
-import StudentPage from "./pages/Dashboard/Studentpage";
-import CourseDetailPage from "./pages/CourseDetailPage";
+import StudentCourses from "./pages/StudentDashboard/StudentCourses";
 
 function App() {
   return (
@@ -77,45 +70,40 @@ function App() {
               <Route
                 path="/course-detail/:id"
                 element={
-                  <ProtectedRouter
+                  <ProtectedRoute
                     allowedRoles={["student", "instructor", "admin"]}
-                  >
-                    <CourseDetailPage />
-                  </ProtectedRouter>
+                  />
                 }
-              />
+              >
+                <Route index element={<CourseDetailPage />} />
+              </Route>
               <Route
                 path="/blog-detail/:id"
                 element={
                   <ProtectedRoute
                     allowedRoles={["student", "instructor", "admin"]}
-                  >
-                    <BlogDetailPage />
-                  </ProtectedRoute>
+                  />
                 }
-              />
+              >
+                <Route index element={<BlogDetailPage />} />
+              </Route>
+
+  
             </Route>
-            // Student Dashboard
-            <Route
-              path="/dashboard/student/*"
-              element={<ProtectedRoute allowedRoles={["student"]} />}
-            >
-              <Route index element={<StudentPage />} />
-            </Route>
-            // Admin Dashboard
+
+            {/* Admin Layout */}
             <Route
               path="/admin"
               element={<ProtectedRoute allowedRoles={["admin"]} />}
             >
               <Route element={<AdminLayout />}>
-                {" "}
-                {/* Use AdminLayout here */}
                 <Route index element={<AdminContent />} />
                 <Route path="dashboard" element={<AdminContent />} />
                 <Route path="users" element={<UserManagement />} />
                 <Route path="request-management" element={<RequestUser />} />
                 <Route path="categories" element={<CategoryManagement />} />
                 <Route path="payout" element={<PayoutManagement />} />
+
                 <Route path="all-courses" element={<AllCourse />}>
                   <Route index element={<CourseList />} />
                   <Route path="session" element={<SessionList />} />
@@ -131,9 +119,13 @@ function App() {
                 <Route path="purchase-log" element={<PurchaseLog />} />
               </Route>
             </Route>
+
+            {/* Instructor Layout */}
             <Route
               path="/instructor"
-              element={<ProtectedRoute allowedRoles={["instructor"]} />}
+              element={
+                <ProtectedRoute allowedRoles={["instructor"]}></ProtectedRoute>
+              }
             >
               <Route element={<InstructorLayout />}>
                 <Route index element={<InstructorContent />} />
@@ -160,18 +152,26 @@ function App() {
                 <Route path="settings" element={<InstructorSetting />} />
               </Route>
             </Route>
+
             {/* Student Layout */}
+            
+
             <Route
-              path="/student"
-              element={
-                <ProtectedRoute allowedRoles={["student"]}></ProtectedRoute>
-              }
-            >
-              <Route element={<DashboardLayout role="student" />}>
+                path="/student"
+                element={
+                  <ProtectedRoute allowedRoles={["student"]}></ProtectedRoute>
+                }
+              >
+                <Route element={<DashboardLayout role="student" />}>
                 <Route path="dashboard" element={<InstructorContent />} />
                 <Route path="profile" element={<StudentProfile />} />
+                <Route path="my-courses" element={<StudentCourses />} />
+
+
+              
+                </Route>
               </Route>
-            </Route>
+
           </Routes>
         </LoadingWrapper>
       </Suspense>
