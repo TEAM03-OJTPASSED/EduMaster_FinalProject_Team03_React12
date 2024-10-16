@@ -85,6 +85,7 @@ const sampleInstructor: Instructor = {
   updated_at: "2024-10-03T03:17:50.593Z",
   __v: 0,
 };
+/*
 type Session = {
   _id: string;
   name: string;
@@ -427,7 +428,7 @@ const sampleReviews: Review[] = [
     __v: 0,
   },
 ];
-
+*/
 type Props = {};
 
 export const DetailResponsive = ({}: Props) => {
@@ -465,7 +466,7 @@ export const DetailResponsive = ({}: Props) => {
         <div className="font-bold text-xl">Curriculum</div>
         <div className="flex-grow border-t border-orange-300 ml-2"></div>
       </div>
-
+        
       <div className="flex items-center mt-4">
         <div className="font-bold text-xl">Comment</div>
         <div className="flex-grow border-t border-orange-300 ml-2"></div>
