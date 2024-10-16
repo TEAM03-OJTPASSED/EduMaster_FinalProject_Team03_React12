@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import { Table, Input, Card, Tag, Button, Tabs } from "antd";
 import { SearchOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import { Course } from "../../components/UserAuthTest";
-import { CourseStatusEnum, listCourses } from "../AdminDashboard/monitors/course/courseList";
+import {
+  CourseStatusEnum,
+  listCourses,
+} from "../AdminDashboard/monitors/course/courseList";
 import { useCustomNavigate } from "../../hooks/customNavigate";
 
 const InstructorCourseList: React.FC = () => {
-  const navigate = useCustomNavigate();  
+  const navigate = useCustomNavigate();
   const [activeTab, setActiveTab] = useState<string>("in-progress");
 
   // Navigate to course details page
@@ -32,10 +35,8 @@ const InstructorCourseList: React.FC = () => {
       dataIndex: "author_id",
       key: "author_id",
       width: 250,
-      ellipsis: true, 
-      render: () => (
-        <p>University Of Michigan</p>
-      )
+      ellipsis: true,
+      render: () => <p>University Of Michigan</p>,
     },
     {
       title: "Category",
@@ -55,9 +56,7 @@ const InstructorCourseList: React.FC = () => {
       dataIndex: "status",
       key: "status",
       width: 120,
-      render: () => (
-        <Tag>80%</Tag>
-      )
+      render: () => <Tag>80%</Tag>,
     },
     {
       title: "Actions",
@@ -82,12 +81,12 @@ const InstructorCourseList: React.FC = () => {
   ];
 
   // Filter courses based on the active tab
-  const filteredCourses = listCourses.filter(course => {
+  const filteredCourses = listCourses.filter((course) => {
     if (activeTab === "in-progress") {
-      return course.status === CourseStatusEnum.active;
+      return course.status === CourseStatusEnum.ACTIVE;
     }
     if (activeTab === "completed") {
-      return course.status === CourseStatusEnum.completed;
+      return course.status === CourseStatusEnum.ACTIVE;
     }
     return true;
   });

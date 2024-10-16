@@ -8,8 +8,8 @@ export enum CourseStatusEnum {
 }
 
 export enum CoursePriceType {
-  FREE="Free",
-  PAID="Paid"
+  FREE = "Free",
+  PAID = "Paid",
 }
 export enum LessonTypeEnum {
   video = "video",
@@ -431,7 +431,7 @@ export const listCourses: Course[] = [
     discount: 10,
   },
   {
-    id:4,
+    id: 4,
     name: "Fullstack Development with MERN",
     category_id: "cat05",
     description:
@@ -444,7 +444,7 @@ export const listCourses: Course[] = [
     discount: 25,
   },
   {
-    id:5,
+    id: 5,
     name: "Introduction to Data Science",
     category_id: "cat06",
     description: "Explore the world of data science and machine learning.",

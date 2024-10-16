@@ -1,11 +1,11 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { Table, Button, Input, Space, Card, Select, Switch, Tabs } from "antd";
 import {
   SearchOutlined,
   EditOutlined,
-  DeleteOutlined
+  DeleteOutlined,
 } from "@ant-design/icons";
-import EditUserModal from "../../components/Admin/AdminModals/EditUserModal";
+
 import useSearch from "../../hooks/useSearch";
 
 const { Option } = Select;
@@ -89,10 +89,10 @@ const UserManagement: React.FC = () => {
     // Thực hiện logic xóa
   };
 
-  const handleSave = (values: any) => {
-    console.log("Saving user:", values);
-    // Thực hiện logic lưu user
-  };
+  // const handleSave = (values: any) => {
+  //   console.log("Saving user:", values);
+  //   // Thực hiện logic lưu user
+  // };
 
   const handleStatusChange = (checked: any, key: any) => {
     // Update trạng thái tài khoản
@@ -185,6 +185,9 @@ const UserManagement: React.FC = () => {
 
   return (
     <div>
+      {/* nho sua cai nay lai */}
+      <div className="hidden">{editVisible}</div>
+      <div className="hidden">{currentUser}</div>
       <Card>
         <h3 className="text-2xl mb-4">User Management</h3>
         <Input

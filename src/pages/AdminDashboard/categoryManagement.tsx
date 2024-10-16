@@ -114,7 +114,7 @@ const CategoryManagement = () => {
     {
       title: "Actions",
       key: "action",
-      render: (record: any) => (
+      render: () => (
         <>
           <Button
             type="text"

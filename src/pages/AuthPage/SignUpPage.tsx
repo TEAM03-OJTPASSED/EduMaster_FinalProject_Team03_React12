@@ -58,9 +58,7 @@ const SignUppage = () => {
           <Form.Item<RegisterType>
             label="Username"
             name="username"
-            rules={[
-              { required: true, message: "Please input your username!" },
-            ]}
+            rules={[{ required: true, message: "Please input your username!" }]}
             className="mb-6"
           >
             <Input
@@ -72,9 +70,7 @@ const SignUppage = () => {
           <Form.Item<RegisterType>
             label="Password"
             name="password"
-            rules={[
-              { required: true, message: "Please input your password!" },
-            ]}
+            rules={[{ required: true, message: "Please input your password!" }]}
             className="mb-6"
           >
             <Input.Password
