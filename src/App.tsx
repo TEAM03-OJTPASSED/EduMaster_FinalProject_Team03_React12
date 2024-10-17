@@ -41,18 +41,20 @@ import InstructorCourseLog from "./pages/InstructorDashboard/instructor-report/I
 import InstructorPurchaseLog from "./pages/InstructorDashboard/instructor-report/InstructorPurchaseLog";
 import InstructorEarning from "./pages/InstructorDashboard/instructor-report/InstructorEarning";
 import InstructorReview from "./pages/InstructorDashboard/InstructorReview";
-import InstructorSetting from "./pages/InstructorDashboard/setting/InstructorSetting";
+import InstructorSetting from "./pages/InstructorDashboard/instructor-setting/InstructorSetting";
 import ForgotPasswordPage from "./pages/AuthPage/ForgotPasswordPage";
 import PayoutManagement from "./pages/AdminDashboard/payoutManagement";
 import RequestPayout from "./pages/InstructorDashboard/instructor-management/payout/RequestPayout";
 import CompletedPayout from "./pages/InstructorDashboard/instructor-management/payout/CompletedPayout";
 import AdminSetting from "./pages/AdminDashboard/setting/AdminSetting";
 import AdminProfile from "./pages/AdminDashboard/setting/AdminProfile"
-import InstructorProfile from "./pages/InstructorDashboard/setting/InstructorProfile";
-import InstructorChangePassword from "./pages/InstructorDashboard/setting/InstructorChangePassword";
+import InstructorProfile from "./pages/InstructorDashboard/instructor-setting/InstructorProfile";
+import InstructorChangePassword from "./pages/InstructorDashboard/instructor-setting/InstructorChangePassword";
 import AdminChangePassword from "./pages/AdminDashboard/setting/AdminChangePassword";
 import InstructorSalesHistory from "./pages/InstructorDashboard/instructor-management/InstructorSalesHistory";
-import InstructorSubscription from "./pages/InstructorDashboard/InstructorSubscription";
+import InstructorSubscription from "./pages/InstructorDashboard/subscription/InstructorSubscription";
+import InstructorSubscribed from "./pages/InstructorDashboard/subscription/InstructorSubscribed";
+import InstructorSubscriber from "./pages/InstructorDashboard/subscription/InstructorSubscriber";
 
 function App() {
   return (
@@ -157,7 +159,13 @@ function App() {
                   element={<InstructorPurchaseLog />}
                 />
                 <Route path="earning" element={<InstructorEarning />} />
-                <Route path="subscription" element={<InstructorSubscription />} />
+                <Route path="subscription" element={<InstructorSubscription />} >
+                <Route index element={<InstructorSubscribed />} />
+                  <Route
+                    path="subscriber"
+                    element={<InstructorSubscriber />}
+                  />
+                </Route>
                 <Route path="review" element={<InstructorReview />} />
                 <Route path="settings" element={<InstructorSetting />} >
                 <Route index element={<InstructorProfile />} />

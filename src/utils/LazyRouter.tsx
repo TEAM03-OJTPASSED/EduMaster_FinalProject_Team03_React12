@@ -102,7 +102,7 @@ export const InstructorReview = React.lazy(
   () => import("../pages/InstructorDashboard/InstructorReview")
 );
 export const InstructorSetting = React.lazy(
-  () => import("../pages/InstructorDashboard/setting/InstructorSetting")
+  () => import("../pages/InstructorDashboard/instructor-setting/InstructorSetting")
 );
 
 export const AdminContent = React.lazy(
