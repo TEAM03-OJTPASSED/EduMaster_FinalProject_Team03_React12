@@ -48,8 +48,6 @@ const PayoutManagement: React.FC = () => {
   //   setIsModalVisible(false);
   // };
 
-
-
   const handleCancel = () => {
     setIsModalVisible(false);
   };
@@ -103,7 +101,9 @@ const PayoutManagement: React.FC = () => {
       render: () => {
         return (
           <div>
-            <p className="underline font font-medium text-blue-500 cursor-pointer hover:font-bold active:text-blue-300">View</p>
+            <p className="underline font font-medium text-blue-500 cursor-pointer hover:font-bold active:text-blue-300">
+              View
+            </p>
           </div>
         );
       },
@@ -181,10 +181,7 @@ const PayoutManagement: React.FC = () => {
           open={isModalVisible}
           // onOk={handleOk}
           onCancel={handleCancel}
-        >
-       
-
-        </Modal>
+        ></Modal>
       </Card>
     </div>
   );

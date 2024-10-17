@@ -9,29 +9,29 @@ const useSearch = <T extends object>(data: T[], keysToSearch: (keyof T)[]) => {
   const [filteredData, setFilteredData] = useState<T[]>(data);
 
   useEffect(() => {
-    if (searchText) {
-      const lowerCaseSearchText = searchText.toLowerCase();
-      const filtered = data.filter((item) =>
-        keysToSearch.some((key) => {
-          // Nếu key là một chuỗi, tìm kiếm trong item[key]
-          if (typeof item[key] === "string") {
-            return item[key].toLowerCase().includes(lowerCaseSearchText);
-          }
-          // Nếu key là một chuỗi, nhưng trong item[key] lại là một đối tượng
-          if (typeof item[key] === "object" && item[key] !== null) {
-            return Object.values(item[key]).some((value) => {
-              if (typeof value === "string") {
-                return value.toLowerCase().includes(lowerCaseSearchText);
-              }
-              return false; // Bỏ qua nếu không phải là chuỗi
-            });
-          }
-          return false;
-        })
-      );
+    const lowerCaseSearchText = searchText.toLowerCase();
+
+    const filtered = data.filter((item) =>
+      keysToSearch.some((key) => {
+        if (typeof item[key] === "string") {
+          return item[key].toLowerCase().includes(lowerCaseSearchText);
+        }
+
+        if (typeof item[key] === "object" && item[key] !== null) {
+          return Object.values(item[key]).some((value) => {
+            if (typeof value === "string") {
+              return value.toLowerCase().includes(lowerCaseSearchText);
+            }
+            return false;
+          });
+        }
+        return false; // Bỏ qua nếu không phải chuỗi hoặc đối tượng
+      })
+    );
+
+    // Chỉ cập nhật filteredData nếu có sự thay đổi
+    if (JSON.stringify(filtered) !== JSON.stringify(filteredData)) {
       setFilteredData(filtered);
-    } else {
-      setFilteredData(data);
     }
   }, [searchText, data, keysToSearch]);
 

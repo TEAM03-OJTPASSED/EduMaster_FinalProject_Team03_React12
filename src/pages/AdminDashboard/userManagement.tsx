@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { Table, Button, Input, Space, Card, Select, Switch, Tabs } from "antd";
 import {
   SearchOutlined,
@@ -7,9 +7,10 @@ import {
 } from "@ant-design/icons";
 import EditUserModal from "../../components/Admin/AdminModals/EditUserModal";
 import useSearch from "../../hooks/useSearch";
+import { users } from "./monitors/course/couseList";
 
 const { Option } = Select;
-const { TabPane } = Tabs;
+// const { TabPane } = Tabs;
 
 /*
 GET /users - Lấy danh sách tất cả người dùng.
@@ -19,65 +20,19 @@ PUT /users/:id - Cập nhật thông tin người dùng.
 DELETE /users/:id - Xóa người dùng.
 */
 
-// interface User {
-//   key: string;
-//   name: string;
-//   email: string;
-//   phone: string;
-//   username: string;
-//   status: boolean;
-//   role: string;
-//   verified: boolean;
-//   blocked: boolean;
-//   createdAt: string;
-// }
-
 const UserManagement: React.FC = () => {
-  const [dataSource, setDataSource] = useState([
-    {
-      key: "1",
-      name: "Nguyễn Văn A",
-      email: "a@example.com",
-      phone: "0123456789",
-      username: "nguyenvana",
-      status: true, // Tài khoản được kích hoạt
-      role: "Admin",
-      verified: true, // Đã xác minh
-      blocked: false, // Không bị khóa
-      createdAt: "2023-01-15",
-    },
-    {
-      key: "2",
-      name: "Trần Thị B",
-      email: "b@example.com",
-      phone: "0987654321",
-      username: "tranthib",
-      status: false, // Tài khoản không kích hoạt
-      role: "Instructor",
-      verified: false, // Chưa xác minh
-      blocked: false, // Không bị khóa
-      createdAt: "2023-02-20",
-    },
-    {
-      key: "3",
-      name: "Lê Văn C",
-      email: "c@example.com",
-      phone: "0912345678",
-      username: "levanc",
-      status: true, // Tài khoản kích hoạt
-      role: "Student",
-      verified: true, // Đã xác minh
-      blocked: true, // Tài khoản bị khóa
-      createdAt: "2023-03-05",
-    },
-  ]);
-
   const [editVisible, setEditVisible] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-  const { searchText, filteredData, handleSearchChange } = useSearch(
-    dataSource,
-    ["name", "email"]
-  ); // useSearch hook
+  // Các bộ lọc cho các tab
+  // const allUsers = dataSource;
+  const unverifiedAccounts = users.filter((user) => !user.verified);
+  const blockedAccounts = users.filter((user) => user.blocked);
+
+  // Sử dụng useSearch với users
+  const { searchText, filteredData, handleSearchChange } = useSearch(users, [
+    "name",
+    "email",
+  ]);
 
   const handleEdit = (record: any) => {
     setCurrentUser(record);
@@ -94,21 +49,21 @@ const UserManagement: React.FC = () => {
     // Thực hiện logic lưu user
   };
 
-  const handleStatusChange = (checked: any, key: any) => {
-    // Update trạng thái tài khoản
-    const updatedData = dataSource.map((user) =>
-      user.key === key ? { ...user, status: checked } : user
-    );
-    setDataSource(updatedData);
-  };
+  // const handleStatusChange = (checked: any, key: any) => {
+  //   // Update trạng thái tài khoản
+  //   const updatedData = dataSource.map((user) =>
+  //     user.key === key ? { ...user, status: checked } : user
+  //   );
+  //   setDataSource(updatedData);
+  // };
 
-  const handleRoleChange = (value: any, key: any) => {
-    // Update vai trò
-    const updatedData = dataSource.map((user) =>
-      user.key === key ? { ...user, role: value } : user
-    );
-    setDataSource(updatedData);
-  };
+  // const handleRoleChange = (value: any, key: any) => {
+  //   // Update vai trò
+  //   const updatedData = dataSource.map((user) =>
+  //     user.key === key ? { ...user, role: value } : user
+  //   );
+  //   setDataSource(updatedData);
+  // };
 
   const columns = [
     {
@@ -163,25 +118,19 @@ const UserManagement: React.FC = () => {
       key: "action",
       render: (record: any) => (
         <Space size="middle">
-          <Button icon={<EditOutlined />} onClick={() => handleEdit(record)}>
-            Chỉnh sửa
-          </Button>
+          <Button
+            icon={<EditOutlined />}
+            onClick={() => handleEdit(record)}
+          ></Button>
           <Button
             danger
             icon={<DeleteOutlined />}
             onClick={() => handleDelete(record)}
-          >
-            Xóa
-          </Button>
+          ></Button>
         </Space>
       ),
     },
   ];
-
-  // Các bộ lọc cho các tab
-  // const allUsers = dataSource;
-  const unverifiedAccounts = dataSource.filter((user) => !user.verified);
-  const blockedAccounts = dataSource.filter((user) => user.blocked);
 
   const items = [
     {

@@ -2,11 +2,16 @@
 import { Modal, Form, Input } from "antd";
 import { FC } from "react";
 
+interface Category {
+  name: string;
+  description?: string; // Nếu không bắt buộc
+}
 interface UpdateCategoryProps {
-  visible: boolean;
+  open: boolean;
   onUpdate: () => void;
   onCancel: () => void;
   form: any;
+  editingRecord: Category; // Thay đổi kiểu về Category hoặc null
 }
 
 const UpdateCategory: FC<UpdateCategoryProps> = ({
@@ -26,7 +31,9 @@ const UpdateCategory: FC<UpdateCategoryProps> = ({
         <Form.Item
           label="Category Name"
           name="categoryName"
-          rules={[{ required: true, message: "Please input the category name!" }]}
+          rules={[
+            { required: true, message: "Please input the category name!" },
+          ]}
         >
           <Input placeholder="Enter category name" />
         </Form.Item>

@@ -56,25 +56,22 @@ const AdminProfile = () => {
           />
         </Form.Item>
         <Form.Item
-        label="Date Of Birth"
-        name="dateOfBirth"
-        rules={[{ required: true, message: " " }]}
-      >
-        <Input
-          placeholder="Date Of Birth"
-          onChange={(e) =>
-            setFormData({ ...formData, dateOfBirth: e.target.value })
-          }
-        />
+          label="Date Of Birth"
+          name="dateOfBirth"
+          rules={[{ required: true, message: " " }]}
+        >
+          <Input
+            placeholder="Date Of Birth"
+            onChange={(e) =>
+              setFormData({ ...formData, dateOfBirth: e.target.value })
+            }
+          />
         </Form.Item>
-        <Form.Item
-          label="Description" 
-          name="description"
-          >
+        <Form.Item label="Description" name="description">
           <CKEditor
             editor={ClassicEditor}
             onChange={(_, editor) => {
-              const data = editor.getData(); 
+              const data = editor.getData();
               setFormData({ ...formData, description: data });
             }}
             config={{ placeholder: "Enter course content..." }}

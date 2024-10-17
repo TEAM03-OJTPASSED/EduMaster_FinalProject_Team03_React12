@@ -29,14 +29,16 @@ const AdminLayout: React.FC = () => {
           marginLeft: isMobile ? 0 : 250, // MarginLeft cho desktop
           padding: "0px 24px 0 24px",
           marginTop: "80px",
+          backgroundColor: "#e8ebee",
+
         }}
       >
-        <DynamicBreadcrumb />
+        {/* <DynamicBreadcrumb /> */}
         <Content
           style={{
             borderRadius: "15px",
             padding: "8px",
-            backgroundColor: "#e8ebee",
+            // backgroundColor: "#e8ebee",
             minHeight: "80vh",
           }}
         >

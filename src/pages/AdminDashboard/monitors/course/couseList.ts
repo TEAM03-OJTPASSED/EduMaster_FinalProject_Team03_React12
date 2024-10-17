@@ -119,6 +119,25 @@ interface SalesHistory {
   createdAt: string; // ISO date string (e.g., "2024-10-01")
 }
 
+interface User {
+  key: string; // Khóa định danh
+  name: string; // Tên người dùng
+  email: string; // Địa chỉ email
+  phone: string; // Số điện thoại
+  username: string; // Tên đăng nhập
+  status: boolean; // Trạng thái tài khoản (kích hoạt hay không)
+  role: string; // Vai trò người dùng (Admin, User, v.v.)
+  verified: boolean; // Trạng thái đã xác minh hay chưa
+  blocked: boolean; // Trạng thái bị khóa hay không
+  createdAt: string; // Ngày tạo tài khoản (có thể sử dụng Date nếu cần)
+}
+
+interface Category {
+  key: string; // Khóa định danh cho category
+  name: string; // Tên category
+  parentCat: string; // Danh mục cha (nếu có)
+}
+
 const randomString = () => Math.random().toString(36).substring(2, 10);
 const randomNumber = () => Math.floor(Math.random() * 10000) / 100;
 const randomBoolean = () => Math.random() < 0.5;
@@ -722,5 +741,62 @@ export const salesHistory: SalesHistory[] = [
     studentName: "Michael Green",
     CartNo: "CART_JB97IV20241016",
     createdAt: "2024-10-05",
+  },
+];
+
+export const users: User[] = [
+  {
+    key: "1",
+    name: "Nguyễn Văn A",
+    email: "a@example.com",
+    phone: "0123456789",
+    username: "nguyenvana",
+    status: true, // Tài khoản được kích hoạt
+    role: "Admin",
+    verified: true, // Đã xác minh
+    blocked: false, // Không bị khóa
+    createdAt: "2023-01-15",
+  },
+  {
+    key: "2",
+    name: "Trần Thị B",
+    email: "b@example.com",
+    phone: "0987654321",
+    username: "tranthib",
+    status: false, // Tài khoản không kích hoạt
+    role: "Instructor",
+    verified: false, // Chưa xác minh
+    blocked: false, // Không bị khóa
+    createdAt: "2023-02-20",
+  },
+  {
+    key: "3",
+    name: "Lê Văn C",
+    email: "c@example.com",
+    phone: "0912345678",
+    username: "levanc",
+    status: true, // Tài khoản kích hoạt
+    role: "Student",
+    verified: true, // Đã xác minh
+    blocked: true, // Tài khoản bị khóa
+    createdAt: "2023-03-05",
+  },
+];
+
+export const category: Category[] = [
+  {
+    key: "1",
+    name: "Photography & Video",
+    parentCat: "	N/A",
+  },
+  {
+    key: "2",
+    name: "Education",
+    parentCat: "N/A",
+  },
+  {
+    key: "3",
+    name: "Music Production",
+    parentCat: "Music",
   },
 ];

@@ -5,7 +5,7 @@ import { FC } from "react";
 const { Option } = Select;
 
 interface CreateCategoryProps {
-  visible: boolean;
+  open: boolean;
   onCreate: () => void;
   onCancel: () => void;
   form: any;
@@ -28,7 +28,9 @@ const CreateCategory: FC<CreateCategoryProps> = ({
         <Form.Item
           label="Category Name"
           name="categoryName"
-          rules={[{ required: true, message: "Please input the category name!" }]}
+          rules={[
+            { required: true, message: "Please input the category name!" },
+          ]}
         >
           <Input placeholder="Enter category name" />
         </Form.Item>
@@ -44,7 +46,9 @@ const CreateCategory: FC<CreateCategoryProps> = ({
         <Form.Item
           label="Parent Category"
           name="parentCategory"
-          rules={[{ required: true, message: "Please select a parent category!" }]}
+          rules={[
+            { required: true, message: "Please select a parent category!" },
+          ]}
         >
           <Select placeholder="Select a parent category">
             <Option value="parent1">N/A</Option>
