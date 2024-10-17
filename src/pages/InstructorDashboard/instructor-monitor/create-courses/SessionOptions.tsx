@@ -65,7 +65,7 @@ const SessionOptions: React.FC<SessionOptionsProps> = ({
           {mode === "create" && (
             <Select
               placeholder="Select course name"
-              // api get Course id by instructor_id
+              // api get Course id by instructor_id where status course === new
               options={listCourses.map((course:Course,index) => ({
                 key: index,
                 label: course.name,

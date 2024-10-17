@@ -25,9 +25,13 @@ type CourseInformationProps = {
 };
 
 type CoursePriceType = "Free" | "Paid";
+//nhan nut create thi no se la status new
+// Sau khi send admin thi status cap nhat la approving
 
 const CourseOption: React.FC<CourseInformationProps> = ({
   initializeValue,
+  mode,
+  onFinished,
 }) => {
   const [imageFileList, setImageFileList] = useState<UploadFile[]>([]);
   const [videoFileList, setVideoFileList] = useState<UploadFile[]>([]);
@@ -43,34 +47,37 @@ const CourseOption: React.FC<CourseInformationProps> = ({
   const [form] = Form.useForm<Course>();
 
   useEffect(() => {
-    setImageFileList(
-      initializeValue?.image_url
-        ? [
-            {
-              uid: "-1",
-              name: "image.png",
-              status: "done",
-              url: initializeValue.image_url,
-            },
-          ]
-        : []
-    );
-    setVideoFileList(
-      initializeValue?.video_url
-        ? [
-            {
-              uid: "-1",
-              name: "video.mp4",
-              status: "done",
-              url: initializeValue.video_url,
-            },
-          ]
-        : []
-    );
-    form.setFieldsValue({
-      ...initializeValue,
-    });
-  }, [initializeValue, form]);
+    if (initializeValue && mode === "update") {
+      setImageFileList(
+        initializeValue?.image_url
+          ? [
+              {
+                uid: "-1",
+                name: "image.png",
+                status: "done",
+                url: initializeValue.image_url,
+              },
+            ]
+          : []
+      );
+      setVideoFileList(
+        initializeValue?.video_url
+          ? [
+              {
+                uid: "-1",
+                name: "video.mp4",
+                status: "done",
+                url: initializeValue.video_url,
+              },
+            ]
+          : []
+      );
+      form.setFieldsValue({
+        ...initializeValue,
+        content: initializeValue.content,
+      });
+    }
+  }, [initializeValue, form, mode]);
 
   const handleImageChange: UploadProps["onChange"] = async ({
     fileList: newFileList,
@@ -102,16 +109,12 @@ const CourseOption: React.FC<CourseInformationProps> = ({
     setSelectPriceType(value);
   };
 
-  const handleFinished: FormProps["onFinish"] = (values) => {
-    console.log("Submitted:", values);
-  };
-
   return (
     <Form
       form={form}
       layout="vertical"
       initialValues={initializeValue}
-      onFinish={handleFinished}
+      onFinish={onFinished}
     >
       <Row gutter={16}>
         <Col span={12}>

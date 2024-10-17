@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { Table, Input, Card, Tag, Button, Modal, TableProps } from "antd";
+import {
+  Table,
+  Input,
+  Card,
+  Tag,
+  Button,
+  Modal,
+  TableProps,
+  Select,
+} from "antd";
 import {
   SearchOutlined,
   DeleteOutlined,
@@ -42,10 +51,17 @@ const InstructorCourseList: React.FC = () => {
   };
   // send course request to Admin
   const handleSendToAdmin = () => {
+    // kiem tra xem nhung items da seleted coi co phai status la new hay khong
+    // check xem lesson va session cua cua course do co ton tai hay chua
     // api send list courses to admin, dung message de gui
     console.log(selectedCourses);
   };
 
+  const handleSwitchChange = (id: number, value: CourseStatusEnum) => {
+    console.log("Selected ID:", id);
+    console.log("Selected Value:", value);
+    // Call the API to update the course status
+  };
   const columns = [
     {
       title: "Name",
@@ -94,6 +110,33 @@ const InstructorCourseList: React.FC = () => {
       ),
     },
     {
+      title: "Change Status",
+      key: "change status",
+      render: (record: Course) => (
+        <div className="flex">
+          <Select
+            disabled={
+              record.status === CourseStatusEnum.NEW ||
+              record.status === CourseStatusEnum.WAITING_APPROVE ||
+              record.status === CourseStatusEnum.REJECTED
+            }
+            style={{ width: 100 }}
+            onChange={(value) => handleSwitchChange(record.id, value)}
+            options={[
+              {
+                label: CourseStatusEnum.ACTIVE,
+                value: CourseStatusEnum.ACTIVE,
+              },
+              {
+                label: CourseStatusEnum.INACTIVE,
+                value: CourseStatusEnum.INACTIVE,
+              },
+            ]}
+          />
+        </div>
+      ),
+    },
+    {
       title: "Action",
       key: "action",
       render: (record: Course) => (
@@ -135,7 +178,7 @@ const InstructorCourseList: React.FC = () => {
             color="primary"
             className="items-center"
           >
-            Create Session
+            Create Course
           </Button>
           <Button
             onClick={handleSendToAdmin}
@@ -163,10 +206,11 @@ const InstructorCourseList: React.FC = () => {
 
       {/* update */}
       <Modal
-        title="Change Session"
+        title="Change Course"
         onCancel={handleCancel}
         open={isModalVisible}
         footer={null}
+        width={1000}
         forceRender
       >
         {selectedCourse && (
@@ -185,10 +229,11 @@ const InstructorCourseList: React.FC = () => {
 
       {/* Create */}
       <Modal
-        title="Create Session"
+        title="Create Course"
         onCancel={handleCancel}
         open={isModalCreateVisible}
         footer={null}
+        width={1000}
         forceRender
       >
         <CourseOption

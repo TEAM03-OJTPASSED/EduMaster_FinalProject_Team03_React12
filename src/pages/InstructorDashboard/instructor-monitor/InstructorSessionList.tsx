@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Table, Input, Card, TableProps, Tag, Button, Modal } from "antd";
+import { Table, Input, Card, TableProps, Button, Modal } from "antd";
 import {
   SearchOutlined,
   EditOutlined,
@@ -55,22 +55,7 @@ const InstructorSessionList = () => {
         return <div>{dayjs(created_at).format("DD/MM/YYYY")}</div>;
       },
     },
-    {
-      title: "Status",
-      dataIndex: "is_deleted",
-      key: "is_deleted",
-      render: (is_deleted) => {
-        return (
-          <div className="text-center">
-            {is_deleted ? (
-              <Tag color="green">Enable</Tag>
-            ) : (
-              <Tag color="red">Disable</Tag>
-            )}
-          </div>
-        );
-      },
-    },
+
     {
       title: "Action",
       key: "action",
@@ -134,6 +119,7 @@ const InstructorSessionList = () => {
         open={isModalVisible}
         footer={null}
         forceRender
+        width={1000}
       >
         {selectedSession && (
           <SessionOptions
@@ -156,6 +142,7 @@ const InstructorSessionList = () => {
         open={isModalCreateVisible}
         footer={null}
         forceRender
+        width={1000}
       >
         <SessionOptions
           mode="create"

@@ -137,6 +137,7 @@ const InstructorLessonList = () => {
         onCancel={handleCancel}
         footer={null}
         forceRender
+        width={1000}
       >
         {selectedLesson && (
           <LessonIOptions
@@ -159,6 +160,7 @@ const InstructorLessonList = () => {
         onCancel={handleCancel}
         footer={null}
         forceRender
+        width={1000}
       >
         <LessonIOptions
           onFinished={(values) => {
