@@ -15,6 +15,8 @@ interface Course {
   students: number;
   price: number | string;
   lessons?: number;
+  description?: string;
+  updatedDate?: string;
 }
 // interface Course {
 //     name: string;

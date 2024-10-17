@@ -114,9 +114,6 @@ export const UserManagement = React.lazy(
 export const RequestUser = React.lazy(
   () => import("../pages/AdminDashboard/RequestUser")
 );
-export const StudentPage = React.lazy(
-  () => import("../pages/Dashboard/Studentpage")
-);
 export const GeneralLayout = React.lazy(
   () => import("../defaultLayout/Layout")
 );

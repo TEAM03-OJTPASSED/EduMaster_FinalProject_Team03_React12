@@ -4,13 +4,12 @@ import {
   SearchOutlined,
   DeleteOutlined,
   EditOutlined,
-  PlusCircleOutlined
+  PlusCircleOutlined,
 } from "@ant-design/icons";
 import {
   Course,
   CourseStatusEnum,
   listCourses,
-  
 } from "../../AdminDashboard/monitors/course/courseList";
 import CourseOption from "./create-courses/CourseOption";
 
@@ -37,15 +36,14 @@ const InstructorCourseList: React.FC = () => {
   };
 
   const rowSelection: TableProps<Course>["rowSelection"] = {
-    onChange: (selectedRowKeys: React.Key[], selectedRows: Course[]) => {
+    onChange: (_selectedRowKeys: React.Key[], selectedRows: Course[]) => {
       setSelectedCourses(selectedRows);
     },
   };
   // send course request to Admin
   const handleSendToAdmin = () => {
-    // api send list courses to admin, dung message de gui 
+    // api send list courses to admin, dung message de gui
     console.log(selectedCourses);
-    
   };
 
   const columns = [
@@ -141,11 +139,9 @@ const InstructorCourseList: React.FC = () => {
           </Button>
           <Button
             onClick={handleSendToAdmin}
-            disabled= {selectedCourses.length < 1}
+            disabled={selectedCourses.length < 1}
             shape="round"
             variant="solid"
-           
-
           >
             Send request
           </Button>
