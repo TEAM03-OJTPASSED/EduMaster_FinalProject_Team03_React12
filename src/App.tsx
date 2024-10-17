@@ -71,11 +71,18 @@ function App() {
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/faqs" element={<FAQsPage />} />
-              <Route path="/error" element={<ErrorPage />} />
+              <Route path="/*" element={<ErrorPage />} />
               <Route path="/cart" element={<CartPage />} />
-              <Route path="/checkout" element={ <ProtectedRoute
+              <Route
+                path="/checkout"
+                element={
+                  <ProtectedRoute
                     allowedRoles={["student", "instructor", "admin"]}
-                  ><CheckoutPage /></ProtectedRoute>}/>
+                  >
+                    <CheckoutPage />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="/firebase" element={<Firebase />} />
 
               <Route
@@ -104,7 +111,7 @@ function App() {
 
             {/* Admin Layout */}
             <Route
-              path="admin"
+              path="dashboard/admin"
               element={<ProtectedRoute allowedRoles={["admin"]} />}
             >
               <Route element={<AdminLayout />}>
@@ -133,7 +140,7 @@ function App() {
 
             {/* Instructor Layout */}
             <Route
-              path="instructor"
+              path="dashboard/instructor"
               element={
                 <ProtectedRoute allowedRoles={["instructor"]}></ProtectedRoute>
               }
@@ -173,7 +180,7 @@ function App() {
             {/* Student Layout */}
 
             <Route
-              path="student"
+              path="/dashboard/student"
               element={
                 <ProtectedRoute allowedRoles={["student"]}></ProtectedRoute>
               }

@@ -137,13 +137,15 @@ const DashboardSideBar: React.FC<SideBarProps> = ({ role, onMenuClick }) => {
   }, []);
 
   const navigate = useNavigate();
-  const menuItems = role === "instructor" ? InstructorMenuItems : StudentMenuItems;
+  const menuItems =
+    role === "instructor" ? InstructorMenuItems : StudentMenuItems;
 
   const handleMenuClick = (key: string) => {
     if (onMenuClick) onMenuClick();
 
     const selectedItem = menuItems.find(
-      (item) => item.key === key || item.children?.some((child) => child.key === key)
+      (item) =>
+        item.key === key || item.children?.some((child) => child.key === key)
     );
     if (selectedItem) {
       const path =
@@ -163,7 +165,11 @@ const DashboardSideBar: React.FC<SideBarProps> = ({ role, onMenuClick }) => {
         );
       }
       return (
-        <Menu.Item key={item.key} icon={item.icon} onClick={() => handleMenuClick(item.key)}>
+        <Menu.Item
+          key={item.key}
+          icon={item.icon}
+          onClick={() => handleMenuClick(item.key)}
+        >
           {item.title}
         </Menu.Item>
       );

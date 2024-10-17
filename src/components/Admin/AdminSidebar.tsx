@@ -27,7 +27,7 @@ const menuItems: MenuItem[] = [
     key: "dashboard",
     icon: <DashboardOutlined />,
     label: "Dashboard",
-    path: "/admin/dashboard",
+    path: "/dashboard/admin/",
   },
   {
     key: "management",
@@ -38,31 +38,31 @@ const menuItems: MenuItem[] = [
         key: "management-users",
         icon: <UserOutlined />,
         label: "Users",
-        path: "/admin/users",
+        path: "/dashboard/admin/users",
       },
       {
         key: "management-requests",
         icon: <FormOutlined />,
         label: "Request",
-        path: "/admin/request-management",
+        path: "/dashboard/admin/request-management",
       },
       {
         key: "management-categories",
         icon: <FolderOutlined />,
         label: "Category",
-        path: "/admin/categories",
+        path: "/dashboard/admin/categories",
       },
       {
         key: "management-payout",
         icon: <MoneyCollectOutlined />,
         label: "Payout",
-        path: "/admin/payout",
+        path: "/dashboard/admin/payout",
       },
       {
         key: "management-blog",
         icon: <FileTextOutlined />,
         label: "Blog",
-        path: "/admin/blog",
+        path: "/dashboard/admin/blog",
       },
     ],
   },
@@ -71,11 +71,15 @@ const menuItems: MenuItem[] = [
     icon: <PieChartOutlined />,
     label: "Monitor",
     items: [
-      { key: "all-courses", label: "All Courses", path: "/admin/all-courses" },
+      {
+        key: "all-courses",
+        label: "All Courses",
+        path: "/dashboard/admin/all-courses",
+      },
       {
         key: "pending-courses",
         label: "Pending Course",
-        path: "/admin/pending-courses",
+        path: "/dashboard/admin/pending-courses",
       },
     ],
   },
@@ -84,19 +88,23 @@ const menuItems: MenuItem[] = [
     icon: <LineChartOutlined />,
     label: "Reports",
     items: [
-      { key: "course-log", label: "Course log", path: "/admin/course-log" },
+      {
+        key: "course-log",
+        label: "Course log",
+        path: "/dashboard/admin/course-log",
+      },
       {
         key: "purchase-log",
         label: "Purchase log",
-        path: "/admin/purchase-log",
+        path: "/dashboard/admin/purchase-log",
       },
     ],
   },
   {
     key: "settings",
     icon: <SettingOutlined />,
-    label: "Settings",
-    path: "/admin/settings",
+    label: "Back to Home",
+    path: "/",
   },
 ];
 
