@@ -47,6 +47,8 @@ const Navbar = () => {
     // Check for user data in local storage
     if (storedUser) {
       setUserLoggedIn(true);
+    } else {
+      setUserLoggedIn(false);
     }
   }, [storedUser]);
 
