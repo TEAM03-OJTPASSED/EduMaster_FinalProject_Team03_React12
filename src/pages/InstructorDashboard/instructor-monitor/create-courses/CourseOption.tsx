@@ -19,7 +19,9 @@ import React, { useEffect, useState } from "react";
 import { Course } from "../../../AdminDashboard/monitors/course/courseList";
 
 type CourseInformationProps = {
-  initializeValue: Course;
+  initializeValue?: Course;
+  mode: "create" | "update";
+  onFinished: FormProps["onFinish"];
 };
 
 type CoursePriceType = "Free" | "Paid";
@@ -28,18 +30,21 @@ const CourseOption: React.FC<CourseInformationProps> = ({
   initializeValue,
 }) => {
   const [imageFileList, setImageFileList] = useState<UploadFile[]>([]);
-
   const [videoFileList, setVideoFileList] = useState<UploadFile[]>([]);
 
+  const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | undefined>(
+    initializeValue?.video_url
+  );
+
   const [selectTypePrice, setSelectPriceType] = useState<CoursePriceType>(
-    initializeValue.price > 0 ? "Paid" : "Free"
+    initializeValue?.price && initializeValue.price > 0 ? "Paid" : "Free"
   );
 
   const [form] = Form.useForm<Course>();
 
   useEffect(() => {
     setImageFileList(
-      initializeValue.image_url
+      initializeValue?.image_url
         ? [
             {
               uid: "-1",
@@ -51,7 +56,7 @@ const CourseOption: React.FC<CourseInformationProps> = ({
         : []
     );
     setVideoFileList(
-      initializeValue.video_url
+      initializeValue?.video_url
         ? [
             {
               uid: "-1",
@@ -67,17 +72,29 @@ const CourseOption: React.FC<CourseInformationProps> = ({
     });
   }, [initializeValue, form]);
 
-  const handleImageChange: UploadProps["onChange"] = ({
+  const handleImageChange: UploadProps["onChange"] = async ({
     fileList: newFileList,
   }) => {
     setImageFileList(newFileList || []);
-    console.log("image", newFileList);
+    if (newFileList.length > 0 && newFileList[0].status === "done") {
+      const uploadedImageUrl = newFileList[0].response?.secure_url;
+      form.setFieldsValue({ image_url: uploadedImageUrl });
+    } else {
+      form.setFieldsValue({ image_url: "" });
+    }
   };
-
   const handleVideoChange: UploadProps["onChange"] = ({
     fileList: newFileList,
   }) => {
     setVideoFileList(newFileList || []);
+    if (newFileList.length > 0 && newFileList[0].status === "done") {
+      const uploadedVideoUrl = newFileList[0].response?.secure_url;
+      setVideoPreviewUrl(uploadedVideoUrl);
+      form.setFieldsValue({ video_url: uploadedVideoUrl });
+    } else {
+      setVideoPreviewUrl(undefined);
+      form.setFieldsValue({ video_url: "" });
+    }
   };
 
   const handleSelectPrice = (e: RadioChangeEvent) => {
@@ -95,7 +112,6 @@ const CourseOption: React.FC<CourseInformationProps> = ({
       layout="vertical"
       initialValues={initializeValue}
       onFinish={handleFinished}
-     
     >
       <Row gutter={16}>
         <Col span={12}>
@@ -179,6 +195,13 @@ const CourseOption: React.FC<CourseInformationProps> = ({
                 </div>
               )}
             </Upload>
+            {videoPreviewUrl && (
+              <video
+                src={videoPreviewUrl}
+                controls
+                style={{ width: "100%", marginTop: "16px" }}
+              />
+            )}
           </Form.Item>
         </Col>
       </Row>

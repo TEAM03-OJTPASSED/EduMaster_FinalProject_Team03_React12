@@ -9,7 +9,11 @@ import {
 
 import dayjs from "dayjs";
 import LessonIOptions from "./create-courses/LessonIOptions";
-import { Lesson, LessonTypeEnum, listLessons } from "../../AdminDashboard/monitors/course/courseList";
+import {
+  Lesson,
+  LessonTypeEnum,
+  listLessons,
+} from "../../AdminDashboard/monitors/course/courseList";
 
 const InstructorLessonList = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -72,6 +76,7 @@ const InstructorLessonList = () => {
       title: "Action",
       key: "action",
       render: (_, record: Lesson) => (
+        // chi dc cho phep chinh sua neu nhu status la accept
         <>
           <Button
             type="text"
@@ -102,6 +107,7 @@ const InstructorLessonList = () => {
           style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
         />
         <div className="flex">
+          {/* lam sau: chi show khi co course session ton tai hoac course ton tai */}
           <Button
             onClick={showCreateModal}
             icon={<PlusCircleOutlined />}
@@ -110,7 +116,7 @@ const InstructorLessonList = () => {
             color="primary"
             className="items-center"
           >
-            Create Session
+            Create Lesson
           </Button>
         </div>
       </div>
@@ -130,6 +136,7 @@ const InstructorLessonList = () => {
         open={isModalVisible}
         onCancel={handleCancel}
         footer={null}
+        forceRender
       >
         {selectedLesson && (
           <LessonIOptions
@@ -151,6 +158,7 @@ const InstructorLessonList = () => {
         open={isModalCreateVisible}
         onCancel={handleCancel}
         footer={null}
+        forceRender
       >
         <LessonIOptions
           onFinished={(values) => {

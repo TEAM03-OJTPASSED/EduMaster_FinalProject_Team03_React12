@@ -133,6 +133,7 @@ const InstructorSessionList = () => {
         onCancel={handleCancel}
         open={isModalVisible}
         footer={null}
+        forceRender
       >
         {selectedSession && (
           <SessionOptions
@@ -154,6 +155,7 @@ const InstructorSessionList = () => {
         onCancel={handleCancel}
         open={isModalCreateVisible}
         footer={null}
+        forceRender
       >
         <SessionOptions
           mode="create"
