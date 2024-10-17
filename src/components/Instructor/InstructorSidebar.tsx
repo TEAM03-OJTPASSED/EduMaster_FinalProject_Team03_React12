@@ -59,12 +59,7 @@ const menuItems = [
         icon: <BookOutlined />,
         path: "/instructor/my-courses",
       },
-      {
-        key: "3-2",
-        title: "Create Course",
-        icon: <FileTextOutlined />,
-        path: "/instructor/create-courses",
-      },
+   
     ],
   },
   {

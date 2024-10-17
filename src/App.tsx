@@ -37,7 +37,6 @@ import InstructorCourses from "./pages/InstructorDashboard/instructor-monitor/In
 import InstructorCourseList from "./pages/InstructorDashboard/instructor-monitor/InstructorCourseList";
 import IntructorSessionList from "./pages/InstructorDashboard/instructor-monitor/IntructorSessionList";
 import InstructorLessonList from "./pages/InstructorDashboard/instructor-monitor/InstructorLessonList";
-import InstructorCreateCourse from "./pages/InstructorDashboard/instructor-monitor/InstructorCreateCourse";
 import InstructorCourseLog from "./pages/InstructorDashboard/instructor-report/InstructorCourseLog";
 import InstructorPurchaseLog from "./pages/InstructorDashboard/instructor-report/InstructorPurchaseLog";
 import InstructorEarning from "./pages/InstructorDashboard/instructor-report/InstructorEarning";
@@ -151,10 +150,7 @@ function App() {
                   <Route path="session" element={<IntructorSessionList />} />
                   <Route path="lesson" element={<InstructorLessonList />} />
                 </Route>
-                <Route
-                  path="create-courses"
-                  element={<InstructorCreateCourse />}
-                />
+              
                 <Route path="course-log" element={<InstructorCourseLog />} />
                 <Route
                   path="purchase-log"
