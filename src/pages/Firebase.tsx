@@ -2,6 +2,7 @@ import { useState } from "react";
 import { storage } from "../configs/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { v4 } from "uuid";
+import { message } from "antd";
 
 const Firebase = () => {
   const [imageUpload, setImageUpload] = useState<File | null>(null);
@@ -22,23 +23,21 @@ const Firebase = () => {
         getDownloadURL(imageRef)
           .then((url) => {
             setImageUrl(url); // Set the uploaded image URL
-            alert("Image uploaded successfully!");
+            message.success("Image uploaded successfully!");
           })
           .catch((error) => {
-            console.error("Error getting image URL:", error);
-            alert("Failed to get image URL");
+            message.error("Error getting image URL:", error);
           });
       })
       .catch((error) => {
-        console.error("Upload failed", error);
-        alert("Upload failed");
+        message.error("Upload failed", error);
       });
   };
 
   // Fetch Image from Firebase by ID
   const fetchImageById = () => {
     if (imageId.trim() === "") {
-      alert("Please enter a valid image ID.");
+      message.error("Please enter a valid image ID.");
       return;
     }
 
@@ -48,7 +47,7 @@ const Firebase = () => {
         setFetchedImageUrl(url); // Set the fetched image URL
       })
       .catch((error) => {
-        console.error("Error fetching image:", error);
+        message.error("Error fetching image:", error);
         alert("No image found for this ID.");
       });
   };

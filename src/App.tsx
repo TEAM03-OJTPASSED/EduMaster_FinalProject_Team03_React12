@@ -77,6 +77,7 @@ function App() {
               <Route path="/cart" element={<CartPage />} />
               <Route path="/blog-detail/:id" element={<BlogDetailPage />} />
               <Route path="/course-detail/:id" element={<CourseDetailPage />} />
+              <Route path="/firebase" element={<Firebase />} />
               <Route
                 path="/checkout"
                 element={
@@ -87,7 +88,6 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/firebase" element={<Firebase />} />
             </Route>
 
             {/* Admin Layout */}
