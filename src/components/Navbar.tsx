@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { Button, Dropdown, Input, InputRef, MenuProps, Space, Drawer } from "antd"; // Import Drawer
-import { DownOutlined, MenuOutlined } from "@ant-design/icons";
+import { DownOutlined, MenuOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import logoImage from "../assets/EduMaster.png";
 import { useCustomNavigate } from "../hooks/customNavigate";
 import { AiOutlineSearch } from "react-icons/ai";
+import { useLocation } from "react-router-dom";
 
 // Define the type for menu items
 interface MenuItem {
@@ -34,9 +35,27 @@ const items: MenuItem[] = [
 const Navbar = () => {
   const navigate = useCustomNavigate();
   const [isSearchActive, setIsSearchActive] = useState(false);
-  const [activeButton, setActiveButton] = useState<string>("home");
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false); // State to control drawer
+  const [activeButton, setActiveButton] = useState<string>("");
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false); 
   const searchInputRef = useRef<InputRef>(null);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    const pathToButtonKeyMap: { [key: string]: string } = {
+      "/": "home",
+      "/course": "courses",
+      "/blog": "blog",
+      "/contact": "pages",
+      "/faqs": "pages",
+      "/error": "pages",
+    };
+
+    const selectedKey = pathToButtonKeyMap[location.pathname];
+    if (selectedKey) {
+      setActiveButton(selectedKey);
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -75,19 +94,19 @@ const Navbar = () => {
   };
 
   return (
-    <div className="w-full h-20 flex items-center justify-between p-4 bg-white shadow-md relative z-0">
+    <div className="w-full h-20 flex items-center justify-between p-4 pb-0 z-50 bg-white shadow-md relative">
       {!isSearchActive ? (
         <>
           <img
-            className="w-24 sm:w-36 cursor-pointer"
+            className="w-36 lg:w-56 cursor-pointer"
             src={logoImage}
             alt="EduMaster logo"
             onClick={() => navigate("/")}
-            style={{ objectFit: "cover", width: "250px", cursor: "pointer" }}
+            style={{ objectFit: "cover", cursor: "pointer" }}
           />
-          <div className="hidden md:flex"> {/* Hide on smaller screens */}
+          <div className="hidden md:flex">
             <Button
-              className={`navbar-button ${activeButton === "home" ? "active" : ""} text-xs sm:text-base`}
+              className={`navbar-button px-3 lg:px-6 ${activeButton === "home" ? "active" : ""}`}
               onClick={() => {
                 setActiveButton("home");
                 navigate("/");
@@ -96,7 +115,7 @@ const Navbar = () => {
               Home
             </Button>
             <Button
-              className={`navbar-button ${activeButton === "courses" ? "active" : ""} text-xs sm:text-base`}
+              className={`navbar-button px-3 lg:px-6 ${activeButton === "courses" ? "active" : ""}`}
               onClick={() => {
                 setActiveButton("courses");
                 navigate("/course");
@@ -105,7 +124,7 @@ const Navbar = () => {
               Courses
             </Button>
             <Button
-              className={`navbar-button ${activeButton === "blog" ? "active" : ""} text-xs sm:text-base`}
+              className={`navbar-button px-3 lg:px-6 ${activeButton === "blog" ? "active" : ""}`}
               onClick={() => {
                 setActiveButton("blog");
                 navigate("/blog");
@@ -114,8 +133,8 @@ const Navbar = () => {
               Blog
             </Button>
             <Dropdown menu={menuProps}>
-              <Button className={`navbar-button ${activeButton === "pages" ? "active" : ""} text-xs sm:text-base`}>
-                <Space className="text-base font-semibold">
+              <Button className={`navbar-button ${activeButton === "pages" ? "active" : ""}`}>
+                <Space>
                   Pages
                   <DownOutlined />
                 </Space>
@@ -123,100 +142,88 @@ const Navbar = () => {
             </Dropdown>
           </div>
 
+
+
           {/* Log In / Sign Up and Search Icons */}
-          <div className="hidden md:flex items-center gap-4"> {/* Hide on smaller screens */}
-            {/* <button
-              className="px-3 py-1.5 bg-blue-500 text-white rounded-md transition duration-200 hover:bg-blue-600 text-sm md:text-base"
-              onClick={() => navigate("/login")}
-            >
-              Log In
-            </button> */}
-            <div className="border-2 border-black rounded-3xl">
+          <div className="hidden md:flex items-center gap-4">
+            <button className="p-0 w-10 h-10 text-2xl relative" onClick={() => navigate("/cart")}>
+              <ShoppingCartOutlined />
+              <span className="absolute top-0 right-0 w-4 h-4 bg-orange-500 rounded-full text-xs text-white font-semibold">2</span>
+            </button>
+            <div className="border-[1.5px] border-black rounded-3xl">
               <div className="pt-1.5 pb-2 pl-3 pr-3">
-                <a className="text-sm text-bold navbar-button cursor-pointer" onClick={() => navigate("/login")}>Login</a>
+                <a className="text-base font-medium cursor-pointer" onClick={() => navigate("/login")}>Login</a>
               </div>
             </div>
-            {/* <button
-              className="px-3 py-1.5 bg-green-500 text-white rounded-md transition duration-200 hover:bg-green-600 text-sm md:text-base"
-              onClick={() => navigate("/signup")}
-            >
-              Sign Up
-            </button> */}
-            <div className="border-2 border-black rounded-3xl">
+            <div className="border-[1.5px] border-black rounded-3xl">
               <div className="pt-1.5 pb-2 pl-3 pr-3">
-                <a className="text-sm text-bold navbar-button cursor-pointer" onClick={() => navigate("/signup")}>Sign up</a>
+                <a className="text-base font-medium cursor-pointer" onClick={() => navigate("/signup")}>Sign up</a>
               </div>
             </div>
-            <div
-              className="flex items-center justify-center w-10 h-10 bg-gray-200 rounded-full cursor-pointer"
-              onClick={() => setIsSearchActive(true)}
-            >
+            <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center cursor-pointer" onClick={() => setIsSearchActive(true)}>
               <AiOutlineSearch size={24} />
             </div>
           </div>
 
           {/* Burger Menu for mobile */}
-          <div className="md:hidden"> {/* Show on smaller screens */}
-            <MenuOutlined
-              className="text-xl cursor-pointer"
-              onClick={() => setIsDrawerOpen(true)}
-            />
+          <div className="md:hidden flex items-center">
+            <button className="p-0 w-10 h-10 text-2xl relative mr-8" onClick={() => navigate("/cart")}>
+              <ShoppingCartOutlined />
+              <span className="absolute top-0 right-0 w-4 h-4 bg-orange-500 rounded-full text-xs text-white font-semibold">2</span>
+            </button>
+            <MenuOutlined className="text-xl cursor-pointer" onClick={() => setIsDrawerOpen(true)} />
           </div>
 
           {/* Drawer for mobile menu */}
-          <Drawer
-            title="EduMaster"
-            placement="right"
-            onClose={() => setIsDrawerOpen(false)}
-            open={isDrawerOpen}
-            className="flex flex-col "
-          >
-            <div className="flex flex-col justify-center items-center">
+          <Drawer title="EduMaster" placement="right" onClose={() => setIsDrawerOpen(false)} open={isDrawerOpen}>
+            <div className="flex flex-col">
               <Button
-                className={`navbar-button ${activeButton === "home" ? "active" : ""} text-sm w-full`}
+                className={`navbar-button ${activeButton === "home" ? "active" : ""}`}
                 onClick={() => {
                   setActiveButton("home");
                   navigate("/");
-                  setIsDrawerOpen(false); // Close drawer
+                  setIsDrawerOpen(false);
                 }}
               >
                 Home
               </Button>
               <Button
-                className={`navbar-button ${activeButton === "courses" ? "active" : ""} text-sm w-full`}
+                className={`navbar-button ${activeButton === "courses" ? "active" : ""}`}
                 onClick={() => {
                   setActiveButton("courses");
                   navigate("/course");
-                  setIsDrawerOpen(false); // Close drawer
+                  setIsDrawerOpen(false);
                 }}
               >
                 Courses
               </Button>
               <Button
-                className={`navbar-button ${activeButton === "blog" ? "active" : ""} text-sm w-full`}
+                className={`navbar-button ${activeButton === "blog" ? "active" : ""}`}
                 onClick={() => {
                   setActiveButton("blog");
                   navigate("/blog");
-                  setIsDrawerOpen(false); // Close drawer
+                  setIsDrawerOpen(false);
                 }}
               >
                 Blog
               </Button>
               <Dropdown menu={menuProps}>
-                <Button className={`navbar-button ${activeButton === "pages" ? "active" : ""} text-sm w-full`}>
-                  <Space className="text-base font-semibold">
+                <Button className={`navbar-button ${activeButton === "pages" ? "active" : ""}`}>
+                  <Space>
                     Pages
                     <DownOutlined />
                   </Space>
                 </Button>
               </Dropdown>
+              {/* Log In and Sign Up */}
+              <Button className="mt-4 h-12 w-full text-lg py-4 view-button ant-btn-variant-solid font-jost" onClick={() => { navigate("/login"); setIsDrawerOpen(false); }}>Login</Button>
+              <Button className="mt-4 h-12 w-full view-button text-lg py-4 border-orange-400 border font-jost"  onClick={() => { navigate("/signup"); setIsDrawerOpen(false); }}>Sign up</Button>
             </div>
           </Drawer>
         </>
       ) : (
         <Input
           placeholder="Search..."
-          className="transition-all duration-300 ease-in-out"
           style={{
             width: "90%",
             position: "absolute",

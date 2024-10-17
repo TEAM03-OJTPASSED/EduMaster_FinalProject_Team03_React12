@@ -50,6 +50,9 @@ import SignUppage from "./pages/AuthPage/SignUpPage";
 import FAQsPage from "./pages/FAQPage";
 import ErrorPage from "./pages/ErrorPage";
 import ContactPage from "./pages/ContactPage";
+import CartPage from "./pages/cart/CartPage";
+import CheckoutPage from "./pages/checkout/CheckoutPage";
+import Firebase from "./pages/Firebase";
 import BlogDetailPage from "./pages/BlogDetailPage";
 
 function App() {
@@ -69,13 +72,39 @@ function App() {
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/faqs" element={<FAQsPage />} />
               <Route path="/error" element={<ErrorPage />} />
-              <Route path="/course-detail/:id" element={<CourseDetailPage />} />
-              <Route path="/blog-detail/:id" element={<BlogDetailPage />} />
+              <Route path="/cart" element={<CartPage />} />
+              <Route path="/checkout" element={ <ProtectedRoute
+                    allowedRoles={["student", "instructor", "admin"]}
+                  ><CheckoutPage /></ProtectedRoute>}/>
+              <Route path="/firebase" element={<Firebase />} />
+
+              <Route
+                path="/course-detail/:id"
+                element={
+                  <ProtectedRoute
+                    allowedRoles={["student", "instructor", "admin"]}
+                  >
+                    <CourseDetailPage />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<CourseDetailPage />} />
+              </Route>
+              <Route
+                path="/blog-detail/:id"
+                element={
+                  <ProtectedRoute
+                    allowedRoles={["student", "instructor", "admin"]}
+                  />
+                }
+              >
+                <Route index element={<BlogDetailPage />} />
+              </Route>
             </Route>
 
             {/* Admin Layout */}
             <Route
-              path="/admin"
+              path="admin"
               element={<ProtectedRoute allowedRoles={["admin"]} />}
             >
               <Route element={<AdminLayout />}>
@@ -104,7 +133,7 @@ function App() {
 
             {/* Instructor Layout */}
             <Route
-              path="/instructor"
+              path="instructor"
               element={
                 <ProtectedRoute allowedRoles={["instructor"]}></ProtectedRoute>
               }
@@ -144,7 +173,7 @@ function App() {
             {/* Student Layout */}
 
             <Route
-              path="/student"
+              path="student"
               element={
                 <ProtectedRoute allowedRoles={["student"]}></ProtectedRoute>
               }

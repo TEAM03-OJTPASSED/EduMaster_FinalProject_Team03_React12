@@ -97,7 +97,7 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({ filters, onFilterCha
             type="primary"
             icon={<FilterOutlined />}
             onClick={() => setVisible(true)}
-            className="mb-4"
+            className="mb-4 font-jost view-button ant-btn-variant-solid"
           >
             Filters
           </Button>
