@@ -55,7 +55,7 @@ const Firebase = () => {
   };
 
   // Fetch Image from Firebase by title
-  const fetchImageById = () => {
+  const fetchImageByTitle = () => {
     if (imageId.trim() === "") {
       message.error("Please enter a valid image ID.");
       return;
@@ -122,7 +122,7 @@ const Firebase = () => {
           />
           <button
             className="px-4 py-2 bg-green-500 text-white rounded mb-4 cursor-pointer"
-            onClick={fetchImageById}
+            onClick={fetchImageByTitle}
           >
             Get Image
           </button>
