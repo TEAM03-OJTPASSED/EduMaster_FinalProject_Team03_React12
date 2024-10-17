@@ -115,7 +115,7 @@ const CourseCard: React.FC<{
             (index + 1) % (isMdScreen ? 3 : 2) === 0 && viewMode !== "list"
               ? "right-full -translate-x-4 mr-4"
               : "left-full translate-x-4 ml-4"
-          } top-0 w-80 font-jost bg-white p-4 rounded-3xl shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-500 transform group-hover:translate-x-0 pointer-events-none group-hover:pointer-events-auto`}
+          } top-0 w-80 font-jost bg-white p-4 rounded-3xl shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-700 transform group-hover:translate-x-0 pointer-events-none group-hover:pointer-events-auto`}
         >
           <h3 className="text-xl font-semibold mb-2">{course.name}</h3>
           <p className="text-sm text-gray-600 mb-2">

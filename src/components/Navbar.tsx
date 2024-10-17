@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Button, Dropdown, Input, InputRef, MenuProps, Space, Drawer } from "antd"; // Import Drawer
-import { DownOutlined, MenuOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import { DownOutlined, MenuOutlined, ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
 import logoImage from "../assets/EduMaster.png";
 import { useCustomNavigate } from "../hooks/customNavigate";
 import { AiOutlineSearch } from "react-icons/ai";
@@ -37,9 +37,18 @@ const Navbar = () => {
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [activeButton, setActiveButton] = useState<string>("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false); 
+  const [userLoggedIn, setUserLoggedIn] = useState(false); // Add state to track user login status
   const searchInputRef = useRef<InputRef>(null);
 
   const location = useLocation();
+
+  useEffect(() => {
+    // Check for user data in local storage
+    const storedUser = localStorage.getItem("User"); 
+    if (storedUser) {
+      setUserLoggedIn(true);
+    }
+  }, []);
 
   useEffect(() => {
     const pathToButtonKeyMap: { [key: string]: string } = {
@@ -91,6 +100,19 @@ const Navbar = () => {
   const menuProps = {
     items: items.map((item) => ({ label: item.label, key: item.key })),
     onClick: handleMenuClick,
+  };
+
+  const profileMenu: MenuProps = {
+    items: [
+      { label: "Profile", key: "profile" },
+      { label: "Settings", key: "settings" },
+      { label: "Logout", key: "logout", onClick: () => { 
+          localStorage.removeItem("User");
+          setUserLoggedIn(false);
+          navigate("/login");
+        },
+      },
+    ],
   };
 
   return (
@@ -150,16 +172,26 @@ const Navbar = () => {
               <ShoppingCartOutlined />
               <span className="absolute top-0 right-0 w-4 h-4 bg-orange-500 rounded-full text-xs text-white font-semibold">2</span>
             </button>
-            <div className="border-[1.5px] border-black rounded-3xl">
-              <div className="pt-1.5 pb-2 pl-3 pr-3">
-                <a className="text-base font-medium cursor-pointer" onClick={() => navigate("/login")}>Login</a>
-              </div>
-            </div>
-            <div className="border-[1.5px] border-black rounded-3xl">
-              <div className="pt-1.5 pb-2 pl-3 pr-3">
-                <a className="text-base font-medium cursor-pointer" onClick={() => navigate("/signup")}>Sign up</a>
-              </div>
-            </div>
+            {userLoggedIn ? (
+              <Dropdown menu={profileMenu}>
+                <div className="w-10 h-10 text-xl rounded-full flex items-center justify-center cursor-pointer">
+                  <UserOutlined/>
+                </div>
+              </Dropdown>
+            ) : (
+              <>
+                <div className="border-[1.5px] border-black rounded-3xl">
+                  <div className="pt-1.5 pb-2 pl-3 pr-3">
+                    <a className="text-base font-medium cursor-pointer" onClick={() => navigate("/login")}>Login</a>
+                  </div>
+                </div>
+                <div className="border-[1.5px] border-black rounded-3xl">
+                  <div className="pt-1.5 pb-2 pl-3 pr-3">
+                    <a className="text-base font-medium cursor-pointer" onClick={() => navigate("/signup")}>Sign up</a>
+                  </div>
+                </div>
+              </>
+            )}
             <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center cursor-pointer" onClick={() => setIsSearchActive(true)}>
               <AiOutlineSearch size={24} />
             </div>
@@ -216,8 +248,14 @@ const Navbar = () => {
                 </Button>
               </Dropdown>
               {/* Log In and Sign Up */}
-              <Button className="mt-4 h-12 w-full text-lg py-4 view-button ant-btn-variant-solid font-jost" onClick={() => { navigate("/login"); setIsDrawerOpen(false); }}>Login</Button>
-              <Button className="mt-4 h-12 w-full view-button text-lg py-4 border-orange-400 border font-jost"  onClick={() => { navigate("/signup"); setIsDrawerOpen(false); }}>Sign up</Button>
+              {!userLoggedIn ? (
+                <>
+                  <Button className="mt-4 h-12 w-full text-lg py-4 view-button ant-btn-variant-solid font-jost" onClick={() => { navigate("/login"); setIsDrawerOpen(false); }}>Log In</Button>
+                  <Button className="mt-2 h-12 w-full text-lg py-4 view-button ant-btn-variant-solid font-jost" onClick={() => { navigate("/signup"); setIsDrawerOpen(false); }}>Sign Up</Button>
+                </>
+              ) : (
+                <Button className="mt-4 h-12 w-full text-lg py-4 view-button ant-btn-variant-solid font-jost" onClick={() => { localStorage.removeItem("userToken"); setUserLoggedIn(false); setIsDrawerOpen(false); navigate("/login"); }}>Log Out</Button>
+              )}
             </div>
           </Drawer>
         </>
