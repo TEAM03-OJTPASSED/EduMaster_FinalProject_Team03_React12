@@ -41,14 +41,14 @@ const Navbar = () => {
   const searchInputRef = useRef<InputRef>(null);
 
   const location = useLocation();
+  const storedUser = localStorage.getItem("User"); 
 
   useEffect(() => {
     // Check for user data in local storage
-    const storedUser = localStorage.getItem("User"); 
     if (storedUser) {
       setUserLoggedIn(true);
     }
-  }, []);
+  }, [storedUser]);
 
   useEffect(() => {
     const pathToButtonKeyMap: { [key: string]: string } = {
@@ -106,6 +106,10 @@ const Navbar = () => {
     items: [
       { label: "Profile", key: "profile" },
       { label: "Settings", key: "settings" },
+      { label: "My Dashboard", key: "logout", onClick: () => { 
+          navigate(`/dashboard/${JSON.parse(storedUser ?? "").role}`);
+        },
+      },
       { label: "Logout", key: "logout", onClick: () => { 
           localStorage.removeItem("User");
           setUserLoggedIn(false);
