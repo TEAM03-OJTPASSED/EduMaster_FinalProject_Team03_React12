@@ -56,23 +56,16 @@ const SessionOptions: React.FC<SessionOptionsProps> = ({
             </Form.Item>
           </Col>
         </Row>
-
-        {/*  */}
+  
         <Form.Item label="Course Id" name="course_id">
-          {mode === "update" && (
-            <Input value={"Course id get dc o step 1"} disabled />
-          )}
-          {mode === "create" && (
-            <Select
-              placeholder="Select course name"
-              // api get Course id by instructor_id where status course === new
-              options={listCourses.map((course:Course,index) => ({
-                key: index,
-                label: course.name,
-                value: course.id,
-              }))}
-            />
-          )}
+          <Select
+            placeholder="Select course name"
+            options={listCourses.map((course: Course, index) => ({
+              key: index,
+              label: course.name,
+              value: course.id,
+            }))}
+          />
         </Form.Item>
         {/* description */}
         <Form.Item
