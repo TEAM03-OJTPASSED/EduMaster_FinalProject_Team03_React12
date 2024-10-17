@@ -73,7 +73,9 @@ function App() {
               <Route path="/faqs" element={<FAQsPage />} />
               <Route path="/error" element={<ErrorPage />} />
               <Route path="/cart" element={<CartPage />} />
-              <Route path="/checkout" element={<CheckoutPage />} />
+              <Route path="/checkout" element={ <ProtectedRoute
+                    allowedRoles={["student", "instructor", "admin"]}
+                  ><CheckoutPage /></ProtectedRoute>}/>
               <Route path="/firebase" element={<Firebase />} />
 
               <Route
