@@ -25,7 +25,7 @@ const InstructorSubscribed = () => {
         dataSource={data}
         renderItem={(item) => (
           <List.Item>
-            <Card>
+            <Card hoverable>
               <Card.Meta
                 avatar={<Avatar src={item.avatar} />}
                 title={item.fullname}
