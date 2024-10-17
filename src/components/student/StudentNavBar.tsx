@@ -3,7 +3,7 @@ import { Button, Drawer, Avatar, Dropdown, Menu } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import logoImage from "../../assets/EduMaster.png";
 import { useCustomNavigate } from "../../hooks/customNavigate";
-import DashboardSideBar from "./DashboardSideBar";
+import DashboardSideBar from "./StudentSideBar";
 
 
 interface DashboardNavBarProps {
@@ -129,7 +129,7 @@ interface DashboardNavBarProps {
                   transition: "color 0.3s",
                 }}
               >
-                Admin
+                Student
               </span>
             )}
           </div>

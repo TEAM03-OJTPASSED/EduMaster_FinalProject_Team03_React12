@@ -54,6 +54,8 @@ import CartPage from "./pages/cart/CartPage";
 import CheckoutPage from "./pages/checkout/CheckoutPage";
 import Firebase from "./pages/Firebase";
 import BlogDetailPage from "./pages/BlogDetailPage";
+import StudentContent from "./pages/StudentDashboard/StudentContent";
+import StudentOrders from "./pages/StudentDashboard/StudentOrders";
 
 function App() {
   return (
@@ -180,15 +182,16 @@ function App() {
             {/* Student Layout */}
 
             <Route
-              path="/dashboard/student"
+              path="dashboard/student"
               element={
                 <ProtectedRoute allowedRoles={["student"]}></ProtectedRoute>
               }
             >
               <Route element={<DashboardLayout role="student" />}>
-                <Route path="dashboard" element={<InstructorContent />} />
+                <Route index element={<StudentContent />} />
                 <Route path="profile" element={<StudentProfile />} />
                 <Route path="my-courses" element={<StudentCourses />} />
+                <Route path="orders" element={<StudentOrders />} />
               </Route>
             </Route>
           </Routes>

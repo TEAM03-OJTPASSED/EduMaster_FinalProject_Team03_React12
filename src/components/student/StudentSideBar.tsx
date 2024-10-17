@@ -1,19 +1,13 @@
 import { Layout, Menu } from "antd";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+
 import {
   DashboardOutlined,
-  BarChartOutlined,
-  PieChartOutlined,
-  LineChartOutlined,
-  SettingOutlined,
   UserOutlined,
   FolderOutlined,
-  MoneyCollectOutlined,
-  BookOutlined,
-  PercentageOutlined,
-  StarOutlined,
 } from "@ant-design/icons";
+import { useCustomNavigate } from "../../hooks/customNavigate";
+import { GoListOrdered } from "react-icons/go";
 
 const { Sider } = Layout;
 
@@ -30,99 +24,34 @@ interface MenuItem {
   children?: MenuItem[];
 }
 
-const InstructorMenuItems: MenuItem[] = [
-  {
-    key: "dashboard",
-    icon: <DashboardOutlined />,
-    title: "Dashboard",
-    path: "/instructor/dashboard",
-  },
-  {
-    key: "management",
-    icon: <BarChartOutlined />,
-    title: "Management",
-    children: [
-      {
-        key: "management-payout",
-        icon: <MoneyCollectOutlined />,
-        title: "Payout",
-        path: "/instructor/payout",
-      },
-      {
-        key: "management-order",
-        icon: <BookOutlined />,
-        title: "Order",
-        path: "/instructor/order",
-      },
-      {
-        key: "management-discount",
-        icon: <PercentageOutlined />,
-        title: "Discount",
-        path: "/instructor/discount",
-      },
-    ],
-  },
-  {
-    key: "sub2",
-    icon: <PieChartOutlined />,
-    title: "Monitor",
-    // children: [
-    //   { key: "3-1", title: "My Courses", path: "/instructor/my-courses" },
-    //   { key: "3-2", title: "Create Course", path: "/instructor/create-courses" },
-    // ],
-  },
-  {
-    key: "sub3",
-    icon: <LineChartOutlined />,
-    title: "Reports",
-    // children: [
-    //   { key: "4-1", title: "Course log", path: "/instructor/course-log" },
-    //   { key: "4-2", title: "Purchase log", path: "/instructor/purchase-log" },
-    //   { key: "4-3", title: "Earning", path: "/instructor/earning" },
-    // ],
-  },
-  {
-    key: "5",
-    icon: <SettingOutlined />,
-    title: "Settings",
-    path: "/instructor/settings",
-  },
-  {
-    key: "6",
-    icon: <StarOutlined />,
-    title: "Review",
-    path: "/instructor/review",
-  },
-];
-
 const StudentMenuItems: MenuItem[] = [
   {
     key: "dashboard",
     icon: <DashboardOutlined />,
     title: "Dashboard",
-    path: "/student/dashboard",
+    path: "/dashboard/student",
   },
   {
     key: "courses",
     icon: <FolderOutlined />,
     title: "My Learning",
-    path: "/student/my-courses",
+    path: "/dashboard/student/my-courses",
   },
   {
     key: "profile",
     icon: <UserOutlined />,
     title: "Profile",
-    path: "/student/profile",
+    path: "/dashboard/student/profile",
   },
   {
     key: "orders",
-    icon: <UserOutlined />,
+    icon: <GoListOrdered />,
     title: "Orders",
-    path: "/student/order",
+    path: "/dashboard/student/orders",
   },
 ];
 
-const DashboardSideBar: React.FC<SideBarProps> = ({ role, onMenuClick }) => {
+const DashboardSideBar: React.FC<SideBarProps> = ({ onMenuClick }) => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -136,9 +65,9 @@ const DashboardSideBar: React.FC<SideBarProps> = ({ role, onMenuClick }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const navigate = useNavigate();
-  const menuItems =
-    role === "instructor" ? InstructorMenuItems : StudentMenuItems;
+  const navigate = useCustomNavigate();
+
+  const menuItems = StudentMenuItems;
 
   const handleMenuClick = (key: string) => {
     if (onMenuClick) onMenuClick();

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { Layout } from "antd";
 import DynamicBreadcrumb from "../components/Breadcrumb/Breadcrumb";
-import DashboardNavBar from "../components/student/DashboardNavBar";
+import DashboardNavBar from "../components/student/StudentNavBar";
 
 const { Content } = Layout;
 

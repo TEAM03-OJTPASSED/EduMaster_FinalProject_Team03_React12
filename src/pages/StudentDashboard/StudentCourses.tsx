@@ -53,8 +53,8 @@ const InstructorCourseList: React.FC = () => {
     },
     {
       title: "Progress",
-      dataIndex: "status",
-      key: "status",
+      dataIndex: "progress",
+      key: "progress",
       width: 120,
       render: () => <Tag>80%</Tag>,
     },
@@ -83,11 +83,10 @@ const InstructorCourseList: React.FC = () => {
   // Filter courses based on the active tab
   const filteredCourses = listCourses.filter((course) => {
     if (activeTab === "in-progress") {
-      return course.status === CourseStatusEnum.ACTIVE;
-      return course.status === CourseStatusEnum.ACTIVE;
+      return course.status === CourseStatusEnum.ACTIVE;//just for mock purposes
     }
     if (activeTab === "completed") {
-      return course.status === CourseStatusEnum.ACTIVE;
+      return course.status === CourseStatusEnum.WAITING_APPROVE; //just for mock purposes
     }
     return true;
   });
