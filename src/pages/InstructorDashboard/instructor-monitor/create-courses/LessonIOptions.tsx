@@ -33,10 +33,11 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
   onFinished,
 }) => {
   const [imageFileList, setImageFileList] = useState<UploadFile[]>([]);
-
   const [videoFileList, setVideoFileList] = useState<UploadFile[]>([]);
-
   const [form] = Form.useForm<Lesson>();
+  const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | undefined>(
+    initialValues?.video_url
+  );
 
   useEffect(() => {
     if (mode === "update") {
@@ -68,6 +69,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
             ]
           : []
       );
+      setVideoPreviewUrl(initialValues?.video_url);
     }
   }, [initialValues, form, mode]);
 
@@ -75,15 +77,29 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
     fileList: newFileList,
   }) => {
     setImageFileList(newFileList || []);
-    console.log("image", newFileList);
+    if (newFileList.length > 0 && newFileList[0].status === "done") {
+      const uploadedImageUrl = newFileList[0].response?.secure_url;
+      form.setFieldsValue({ image_url: uploadedImageUrl });
+    } else {
+      form.setFieldsValue({ image_url: "" });
+    }
   };
 
   const handleVideoChange: UploadProps["onChange"] = ({
     fileList: newFileList,
   }) => {
     setVideoFileList(newFileList || []);
+    if (newFileList.length > 0 && newFileList[0].status === "done") {
+      const uploadVideoUrl = newFileList[0].response?.secure_url;
+      setVideoPreviewUrl(uploadVideoUrl); // Set the preview URL
+      form.setFieldsValue({ video_url: uploadVideoUrl });
+    } else {
+      setVideoPreviewUrl(undefined);
+      form.setFieldsValue({ video_url: "" });
+    }
   };
 
+  // api get user when role === "instructor"
   return (
     <Form
       form={form}
@@ -132,9 +148,10 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
       >
         <Select
           placeholder="Select category"
-          options={listCourses.map((course) => ({
+          options={listCourses.map((course, index) => ({
             label: course.name,
             value: course.id,
+            key: index,
           }))}
         />
       </Form.Item>
@@ -147,9 +164,11 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
       >
         <Select
           placeholder="Select Session"
-          options={listSessions.map((session) => ({
+          // get session by user id 
+          options={listSessions.map((session, index) => ({
             label: session.name,
             value: session.id,
+            key: index,
           }))}
         />
       </Form.Item>
@@ -170,11 +189,11 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
       </Form.Item>
 
       {/* Image and Video */}
-
       <Row gutter={16}>
         <Col span={12}>
           <Form.Item label="Lesson Image" name="image_url">
             <Upload
+              action="https://api.cloudinary.com/v1_1/dz2dv8lk4/upload?upload_preset=edumaster1"
               accept="image/*"
               listType="picture-card"
               fileList={imageFileList}
@@ -193,6 +212,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
         <Col span={12}>
           <Form.Item label="Lesson Video" name="video_url">
             <Upload
+              action="https://api.cloudinary.com/v1_1/dz2dv8lk4/upload?upload_preset=edumaster1"
               accept="video/*"
               listType="picture-card"
               fileList={videoFileList}
@@ -206,9 +226,17 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
                 </div>
               )}
             </Upload>
+            {videoPreviewUrl && (
+              <video
+                src={videoPreviewUrl}
+                controls
+                style={{ width: "100%", marginTop: "16px" }}
+              />
+            )}
           </Form.Item>
         </Col>
       </Row>
+
       {/* Instructor */}
       <Form.Item
         label="Instructor"
@@ -217,6 +245,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
       >
         <Select
           placeholder="Select Instructor"
+          // get user where role = "instructor"
           options={[
             {
               label: "Truong Anh",
