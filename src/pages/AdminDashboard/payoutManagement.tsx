@@ -1,58 +1,60 @@
-import React, { ChangeEvent, useState } from "react";
-import {
-  Table,
-  Input,
-  Card,
-  Tag,
-  TableProps,
-  Button,
-  Modal,
-  Select,
-} from "antd";
-import {
-  SearchOutlined,
-  CloseOutlined,
-  CheckOutlined,
-} from "@ant-design/icons";
-import {
-  Payout,
-  payouts,
-  PayoutStatusEnum,
-} from "./monitors/course/courseList";
+import React, { useState } from "react";
+import { Table, Input, Card, Tag, TableProps, Button, Modal, Tabs } from "antd";
+import { SearchOutlined, CloseOutlined, CheckOutlined } from "@ant-design/icons";
+import { Payout, payouts, PayoutStatusEnum } from "./monitors/course/courseList";
 import { InputSearchProps } from "../../hooks/useDebounce";
-const PayoutManagement: React.FC = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  // const [selectedCourse, setSelectedCourse] = useState<Payout | null>(null);
 
+interface Transaction {
+  transaction_id: string;
+  price: number;
+  discount: number;
+  price_paid: number;
+  purchase_id: string;
+  created_at: string;
+}
+
+const PayoutManagement: React.FC = () => {
+  const [isTransactionModalVisible, setIsTransactionModalVisible] = useState(false);
   const [filterSelection, setFilterSelection] = useState<InputSearchProps>({
     selection: "",
     search: "",
   });
+  const [activeTab, setActiveTab] = useState("Request Payout"); // Default active tab
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
 
-  const handleOnChange = (e: ChangeEvent<HTMLInputElement> | string) => {
-    if (typeof e === "string") {
-      // Handle Select
-      setFilterSelection({ ...filterSelection, selection: e });
-    } else {
-      // Handle Input
-      const { name, value } = e.target;
-      setFilterSelection({ ...filterSelection, [name]: value });
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFilterSelection({ ...filterSelection, [name]: value });
+  };
+
+  const handleTabChange = (key: string) => {
+    setActiveTab(key);
+  };
+
+  const handleTransactionModalCancel = () => {
+    setIsTransactionModalVisible(false);
+  };
+
+  const handleViewTransaction = (transaction: Transaction) => {
+    setSelectedTransaction(transaction);
+    setIsTransactionModalVisible(true);
+  };
+  // Có thể thêm button để nhập --> click button --> hiển thị kết quả search
+  const filteredPayouts = payouts.filter((payout) => {
+    // search by Payout No
+    const searchMatch = filterSelection.search ? payout.payout_no.toLowerCase().includes(filterSelection.search.toLowerCase()) : true;
+    if (activeTab === "Request Payout") {
+      return (
+        (payout.status === PayoutStatusEnum.request_payout || payout.status === PayoutStatusEnum.new) &&
+        searchMatch
+      );
+    } else if (activeTab === "Completed") {
+      return payout.status === PayoutStatusEnum.completed && searchMatch;
+    } else if (activeTab === "Rejected") {
+      return payout.status === PayoutStatusEnum.rejected && searchMatch;
     }
-    console.log(filterSelection);
-  };
-  // const showModal = (course: Payout) => {
-  //   setSelectedCourse(course);
-  //   setIsModalVisible(true);
-  // };
-
-  // const handleOk = () => {
-  //   // console.log("Accepted course:", selectedCourse?.payout_no);
-  //   setIsModalVisible(false);
-  // };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
+    return searchMatch;
+  });
 
   const columns: TableProps<Payout>["columns"] = [
     {
@@ -76,9 +78,9 @@ const PayoutManagement: React.FC = () => {
           case "Request Payout":
             return <Tag color="yellow">Request Payout</Tag>;
           case "Completed":
-            return <Tag color="green">Approve</Tag>;
+            return <Tag color="green">Completed</Tag>;
           case "Rejected":
-            return <Tag color="red">Reject</Tag>;
+            return <Tag color="red">Rejected</Tag>;
         }
       },
     },
@@ -88,12 +90,12 @@ const PayoutManagement: React.FC = () => {
       key: "balance_origin",
     },
     {
-      title: "Balance Instructor paid",
+      title: "Balance Instructor Paid",
       dataIndex: "balance_instructor_paid",
       key: "balance_instructor_paid",
     },
     {
-      title: "Balance Instructor Receive",
+      title: "Balance Instructor Received",
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
     },
@@ -101,16 +103,26 @@ const PayoutManagement: React.FC = () => {
       title: "Transaction",
       key: "balance_origin",
       render: () => {
+        const transaction: Transaction = {
+          transaction_id: "TX12345", // data test 
+          price: 100,
+          discount: 10,
+          price_paid: 90,
+          purchase_id: "PUR12345",
+          created_at: "2024-01-01",
+        };
         return (
-          <div>
-            <p className="underline font font-medium text-blue-500 cursor-pointer hover:font-bold active:text-blue-300">
-              View
-            </p>
-          </div>
+          <p
+            className="font-medium text-blue-500 cursor-pointer hover:font-bold active:text-blue-300"
+            onClick={() => handleViewTransaction(transaction)}
+          >
+            View
+          </p>
         );
       },
     },
     {
+      // Can use action with Request payout & New status only
       title: "Action",
       key: "action",
       render: (_, record: Payout) => (
@@ -119,7 +131,10 @@ const PayoutManagement: React.FC = () => {
             type="text"
             className="text-green-600"
             icon={<CheckOutlined />}
-            disabled={record.status !== PayoutStatusEnum.request_payout}
+            disabled={
+              record.status !== PayoutStatusEnum.request_payout &&
+              record.status !== PayoutStatusEnum.new
+            }
           >
             Approve
           </Button>
@@ -127,7 +142,10 @@ const PayoutManagement: React.FC = () => {
             className="text-red-600"
             type="text"
             icon={<CloseOutlined />}
-            disabled={record.status !== PayoutStatusEnum.request_payout}
+            disabled={
+              record.status !== PayoutStatusEnum.request_payout &&
+              record.status !== PayoutStatusEnum.new
+            }
           >
             Reject
           </Button>
@@ -140,50 +158,111 @@ const PayoutManagement: React.FC = () => {
     <div>
       <Card>
         <h3 className="text-2xl my-5">Payout Management</h3>
-        <div className="flex flex-col justify-between mb-5 lg:flex-row ">
+        <div className="flex flex-col justify-between mb-5 lg:flex-row">
           {/* Search */}
           <Input
-            placeholder="Search..."
+            placeholder="Search by Payout number"
             prefix={<SearchOutlined />}
-            className="w-full mb-5 rounded-sm md:w-[30rem]"
-            onChange={(e) => handleOnChange(e)}
+            className="w-full md:w-1/3 mb-2 md:mb-0"
+            onChange={handleOnChange}
             name="search"
           />
-
-          {/* Select status */}
-          <div className="flex gap-2">
-            <p className="text-base">Select Status:</p>
-            <Select
-              style={{ width: "10rem" }}
-              placeholder="Select a status"
-              defaultValue=""
-              onChange={(value) => handleOnChange(value)} // Pass the selected value
-              options={[
-                { value: "", label: "All" },
-                { value: "New", label: "New" },
-                { value: "Request Payout", label: "Request Payout" },
-                { value: "Completed", label: "Completed" },
-                { value: "Rejected", label: "Rejected" },
-              ]}
-            />
-          </div>
         </div>
-        <Table
-          dataSource={payouts}
-          columns={columns}
-          pagination={{ pageSize: 5 }}
-          rowKey="name"
-          bordered
-          style={{ borderRadius: "8px" }}
-          scroll={{ x: true }}
-        />
 
+        {/* Tabs for Request Payout, Completed, Rejected */}
+        <Tabs defaultActiveKey="Request Payout" onChange={handleTabChange}>
+          <Tabs.TabPane tab="Request Payout" key="Request Payout">
+              <Table
+                dataSource={filteredPayouts}
+                columns={columns}
+                pagination={{ pageSize: 5 }}
+                rowKey="payout_no"
+                bordered
+                style={{ borderRadius: "8px" }}
+                scroll={{ x: true }}
+              />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="Completed" key="Completed">
+              <Table
+                dataSource={filteredPayouts}
+                columns={columns}
+                pagination={{ pageSize: 5 }}
+                rowKey="payout_no"
+                bordered
+                style={{ borderRadius: "8px" }}
+                scroll={{ x: true }}
+              />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="Rejected" key="Rejected">
+              <Table
+                dataSource={filteredPayouts}
+                columns={columns}
+                pagination={{ pageSize: 5 }}
+                rowKey="payout_no"
+                bordered
+                style={{ borderRadius: "8px" }}
+                scroll={{ x: true }}
+              />
+          </Tabs.TabPane>
+        </Tabs>
+        {/* Transaction Details Modal */}
         <Modal
-          title="Course Details"
-          visible={isModalVisible}
-          // onOk={handleOk}
-          onCancel={handleCancel}
-        ></Modal>
+          title="Transaction Details"
+          visible={isTransactionModalVisible}
+          onCancel={handleTransactionModalCancel}
+          footer={null}
+          width={800} // Thêm width để không bị overflow Table
+        >
+          {selectedTransaction && (
+            <Table
+              dataSource={[
+                {
+                  key: "1",
+                  transaction_id: selectedTransaction.transaction_id,
+                  price: `$${selectedTransaction.price}`,
+                  discount: `$${selectedTransaction.discount}`,
+                  price_paid: `$${selectedTransaction.price_paid}`,
+                  purchase_id: selectedTransaction.purchase_id,
+                  created_at: selectedTransaction.created_at,
+                },
+              ]}
+              columns={[
+                {
+                  title: "Transaction ID",
+                  dataIndex: "transaction_id",
+                  key: "transaction_id",
+                },
+                {
+                  title: "Price",
+                  dataIndex: "price",
+                  key: "price",
+                },
+                {
+                  title: "Discount",
+                  dataIndex: "discount",
+                  key: "discount",
+                },
+                {
+                  title: "Price Paid",
+                  dataIndex: "price_paid",
+                  key: "price_paid",
+                },
+                {
+                  title: "Purchase ID",
+                  dataIndex: "purchase_id",
+                  key: "purchase_id",
+                },
+                {
+                  title: "Created At",
+                  dataIndex: "created_at",
+                  key: "created_at",
+                },
+              ]}
+              pagination={false} // Disable pagination 
+              bordered
+            />
+          )}
+        </Modal>
       </Card>
     </div>
   );
