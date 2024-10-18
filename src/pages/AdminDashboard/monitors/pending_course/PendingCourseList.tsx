@@ -1,30 +1,10 @@
-import React, { useState } from "react";
-import { Table, Input, Card, Tag, TableProps, Button, Modal } from "antd";
-import { SearchOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
+import React from "react";
+import { Table, Input, Card, Tag, TableProps, Button } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 import { Course, CourseStatusEnum, listCourses } from "../course/courseList";
 
 const PendingCourseList: React.FC = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
 
-  const showModal = (course: Course) => {
-    setSelectedCourse(course);
-    setIsModalVisible(true);
-  };
-
-  const handleOk = () => {
-    console.log("Accepted course:", selectedCourse?.name);
-    setIsModalVisible(false);
-  };
-
-  const handleReject = () => {
-    console.log("Rejected course:", selectedCourse?.name);
-    setIsModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
 
   const columns: TableProps<Course>["columns"] = [
     {
@@ -84,25 +64,35 @@ const PendingCourseList: React.FC = () => {
       title: "Action",
       key: "action",
       render: (_, record: Course) => (
-        <>
+        <div className="flex gap-2">
           <Button
             type="text"
-            icon={<DeleteOutlined style={{ color: "red" }} />}
-            onClick={() => handleDelete(record.name)}
-          />
-
+            color="primary"
+            variant="solid"
+            onClick={() =>
+              handleUpdateStatus(record.id, CourseStatusEnum.APPROVED)
+            }
+          >
+            Approve
+          </Button>
           <Button
             type="text"
-            icon={<EyeOutlined style={{ color: "red" }} />}
-            onClick={() => showModal(record)}
-          />
-        </>
+            color="danger"
+            variant="outlined"
+            onClick={() =>
+              handleUpdateStatus(record.id, CourseStatusEnum.REJECTED)
+            }
+          >
+            Reject
+          </Button>
+        </div>
       ),
     },
   ];
 
-  const handleDelete = (name: string) => {
-    console.log("Deleted course:", name);
+  const handleUpdateStatus = (id: number, status: string) => {
+    // tao 1 api update by id chung
+    console.log("update", { id, status });
   };
 
   return (
@@ -123,42 +113,7 @@ const PendingCourseList: React.FC = () => {
         scroll={{ x: true }}
       />
 
-      <Modal
-        title="Course Details"
-        visible={isModalVisible}
-        onCancel={handleCancel}
-        footer={[
-          <Button key="reject" onClick={handleReject}>
-            Reject
-          </Button>,
-          <Button key="accept" type="primary" onClick={handleOk}>
-            Accept
-          </Button>,
-        ]}
-      >
-        {selectedCourse && (
-          <div>
-            <p>
-              <strong>Name:</strong> {selectedCourse.name}
-            </p>
-            <p>
-              <strong>Category ID:</strong> {selectedCourse.category_id}
-            </p>
-            <p>
-              <strong>Content:</strong> {selectedCourse.content}
-            </p>
-            <p>
-              <strong>Price:</strong> ${selectedCourse.price}
-            </p>
-            <p>
-              <strong>Status:</strong> {selectedCourse.status}
-            </p>
-            <p>
-              <strong>Discount:</strong> {selectedCourse.discount}%
-            </p>
-          </div>
-        )}
-      </Modal>
+
     </Card>
   );
 };

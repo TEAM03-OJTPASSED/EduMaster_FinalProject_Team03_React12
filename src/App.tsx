@@ -13,7 +13,7 @@ import UserManagement from "./pages/AdminDashboard/userManagement";
 import RequestUser from "./pages/AdminDashboard/RequestUser";
 import CategoryManagement from "./pages/AdminDashboard/categoryManagement";
 import AllCourse from "./pages/AdminDashboard/monitors/course/AllCourse";
-import CourseList from "./pages/AdminDashboard/payoutManagement";
+
 import SessionList from "./pages/AdminDashboard/monitors/course/SessionList";
 import LessonList from "./pages/AdminDashboard/monitors/course/LessonList";
 import PendingCourse from "./pages/AdminDashboard/monitors/pending_course/PendingCourse";
@@ -56,6 +56,7 @@ import Firebase from "./pages/Firebase";
 import BlogDetailPage from "./pages/BlogDetailPage";
 import StudentContent from "./pages/StudentDashboard/StudentContent";
 import StudentOrders from "./pages/StudentDashboard/StudentOrders";
+import CourseLists from "./pages/AdminDashboard/monitors/course/CourseLists";
 
 function App() {
   return (
@@ -104,7 +105,7 @@ function App() {
                 <Route path="payout" element={<PayoutManagement />} />
 
                 <Route path="all-courses" element={<AllCourse />}>
-                  <Route index element={<CourseList />} />
+                  <Route index element={<CourseLists />} />
                   <Route path="session" element={<SessionList />} />
                   <Route path="lesson" element={<LessonList />} />
                 </Route>

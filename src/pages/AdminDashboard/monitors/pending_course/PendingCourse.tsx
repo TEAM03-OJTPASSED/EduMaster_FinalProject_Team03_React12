@@ -16,22 +16,20 @@ const items: MenuProps["items"] = [
 ];
 
 const PendingCourse = () => {
-  const naviagte = useNavigate()
+  const navigate = useNavigate();
   const handleSelectMenu: MenuProps["onClick"] = (e) => {
     switch (e.key) {
       case "Course":
-        naviagte("/admin/pending-courses")
+        navigate("/dashboard/admin/pending-courses/");
         break;
       case "Session":
-      
-        naviagte("/admin/pending-courses/session")
+        navigate("/dashboard/admin/pending-courses/session");
         break;
       case "Lesson":
-        naviagte("/admin/pending-courses/lesson")
-        
+        navigate("/dashboard/admin/pending-courses/lesson");
         break;
       default:
-        break
+        break;
     }
   };
   return (
@@ -42,7 +40,7 @@ const PendingCourse = () => {
         defaultSelectedKeys={["Course"]}
         onClick={handleSelectMenu}
       />
-      <Outlet/>
+      <Outlet />
     </div>
   );
 };

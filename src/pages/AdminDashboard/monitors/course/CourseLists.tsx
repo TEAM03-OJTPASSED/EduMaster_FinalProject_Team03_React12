@@ -1,21 +1,9 @@
-import React, { useState } from "react";
-import { Table, Input, Card, Tag, TableProps, Button, Modal } from "antd";
-import { SearchOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
+import React from "react";
+import { Table, Input, Card, Tag, TableProps } from "antd";
+import { SearchOutlined} from "@ant-design/icons";
 import { Course, CourseStatusEnum, listCourses } from "./courseList";
-const CourseList: React.FC = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-  const showModal = (course: Course) => {
-    setSelectedCourse(course);
-    setIsModalVisible(true);
-  };
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
+const CourseLists: React.FC = () => {
+ 
   const columns: TableProps<Course>["columns"] = [
     {
       title: "Name",
@@ -72,29 +60,8 @@ const CourseList: React.FC = () => {
         );
       },
     },
-    {
-      title: "Action",
-      key: "action",
-      render: (_, record: Course) => (
-        <>
-          <Button
-            type="text"
-            icon={<DeleteOutlined style={{ color: "red" }} />}
-            onClick={() => handleDelete(record.name)}
-          />
-          <Button
-            type="text"
-            icon={<EyeOutlined style={{ color: "blue" }} />}
-            onClick={() => showModal(record)}
-          />
-        </>
-      ),
-    },
+ 
   ];
-
-  const handleDelete = (name: string) => {
-    console.log(name);
-  };
 
   return (
     <Card>
@@ -113,26 +80,8 @@ const CourseList: React.FC = () => {
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
       />
-
-      <Modal
-        title="Course Details"
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        {selectedCourse && (
-          <div>
-            <p><strong>Name:</strong> {selectedCourse.name}</p>
-            <p><strong>Category:</strong> {selectedCourse.category_id}</p>
-            <p><strong>Content:</strong> {selectedCourse.content}</p>
-            <p><strong>Price:</strong> {selectedCourse.price}</p>
-            <p><strong>Discount:</strong> {selectedCourse.discount}%</p>
-            <p><strong>Status:</strong> {selectedCourse.status}</p>
-          </div>
-        )}
-      </Modal>
     </Card>
   );
 };
 
-export default CourseList;
+export default CourseLists

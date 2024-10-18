@@ -167,6 +167,7 @@ const CourseOption: React.FC<CourseInformationProps> = ({
         <Col span={12}>
           <Form.Item label="Course Image" name="image_url">
             <Upload
+              action="https://api.cloudinary.com/v1_1/dz2dv8lk4/upload?upload_preset=edumaster1"
               accept="image/*"
               listType="picture-card"
               fileList={imageFileList}
@@ -185,6 +186,7 @@ const CourseOption: React.FC<CourseInformationProps> = ({
         <Col span={12}>
           <Form.Item label="Course Video" name="video_url">
             <Upload
+              action="https://api.cloudinary.com/v1_1/dz2dv8lk4/upload?upload_preset=edumaster1"
               accept="video/*"
               listType="picture-card"
               fileList={videoFileList}
