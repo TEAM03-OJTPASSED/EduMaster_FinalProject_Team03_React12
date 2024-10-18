@@ -231,3 +231,13 @@ h3 {
   animation: zigzag 3s ease-in-out infinite; /* Set animation to last 3 seconds */
   animation-delay: 3s; /* Pause for 5 seconds before the next shake */
 }
+
+
+.custom-checkbox .ant-checkbox-inner {
+  border-color: black !important;
+}
+
+.custom-checkbox .ant-checkbox-checked .ant-checkbox-inner {
+  border-color: black !important;
+  background-color: black !important;
+}

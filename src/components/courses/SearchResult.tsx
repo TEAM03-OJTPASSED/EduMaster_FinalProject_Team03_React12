@@ -6,6 +6,7 @@ import { FaBars } from "react-icons/fa";
 import { GrGrid } from "react-icons/gr";
 import CoursesGrid from "../home/CoursesGrid";
 import NoResult from "../../assets/no-result.jpg"
+import { handleAddCart } from "../../utils/handleAddCart";
 
 interface Course {
   id: number;
@@ -16,7 +17,10 @@ interface Course {
   duration: string;
   students: number;
   price: number | string;
+  discount: number;
   lessons: number;
+  description?: string;
+  updatedDate?: string;
 }
 
 export const SearchResults: React.FC<{
@@ -64,7 +68,7 @@ export const SearchResults: React.FC<{
       {courses.length > 0 ? (<div>
             
               
-            <CoursesGrid viewMode={viewMode} courses={courses}/>
+            <CoursesGrid viewMode={viewMode} courses={courses} onAddCartClick={handleAddCart}/>
         
 
             <Pagination

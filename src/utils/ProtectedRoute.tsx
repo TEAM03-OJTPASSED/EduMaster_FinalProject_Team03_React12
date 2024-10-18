@@ -1,3 +1,4 @@
+import { message } from "antd";
 import { ReactNode } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 
@@ -12,6 +13,8 @@ const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) => {
 
   // If no user is found (not authenticated), redirect to login
   if (!userRole) {
+    message.destroy();
+    message.error("You must be logged in to do this action.")
     return <Navigate to="/login" />;
   }
 

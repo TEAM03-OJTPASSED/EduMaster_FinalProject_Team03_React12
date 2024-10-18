@@ -93,7 +93,10 @@ interface Course {
   duration: string;
   students: number;
   price: number | string;
+  discount: number;
   lessons: number;
+  description?: string;
+  updatedDate?: string;
 }
 
 const courses: Course[] = [
@@ -107,6 +110,7 @@ const courses: Course[] = [
     students: 156,
     price: "Free",
     lessons: 2,
+    discount: 0,
   },
   {
     id: 2,
@@ -118,6 +122,8 @@ const courses: Course[] = [
     students: 156,
     price: 49.0,
     lessons: 2,
+    discount: 0,
+
   },
   {
     id: 3,
@@ -129,6 +135,8 @@ const courses: Course[] = [
     students: 156,
     price: "Free",
     lessons: 2,
+    discount: 0,
+
   },
   {
     id: 4,
@@ -140,6 +148,8 @@ const courses: Course[] = [
     students: 156,
     price: "Free",
     lessons: 2,
+    discount: 0,
+
   },
   {
     id: 5,
@@ -151,6 +161,8 @@ const courses: Course[] = [
     students: 156,
     price: "Free",
     lessons: 2,
+    discount: 0,
+
   },
   {
     id: 6,
@@ -162,6 +174,8 @@ const courses: Course[] = [
     students: 156,
     price: "Free",
     lessons: 2,
+    discount: 0,
+
   },
 ];
 
@@ -194,12 +208,22 @@ const HomePage = () => {
       }
     });
   });
-
+  
   const backToTop = () => {
     document.documentElement.style.scrollBehavior = "smooth";
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
   };
+
+  const handleAddCart = (course: Course) => {
+    // Add the course to the cart
+    //...
+    console.log(course)
+    notification.success({
+      message: "Course Added to Cart",
+      description: `You have added "${course.name}" to your cart.`,
+    });
+  }
 
   return (
     <div className="flex flex-col items-center">
@@ -318,7 +342,7 @@ const HomePage = () => {
                   <BiSolidArrowFromLeft className="group-hover:scale-150 transition " />
                 </Button>
               </div>
-              <CoursesGrid courses={courses} viewMode="grid" />
+              <CoursesGrid courses={courses} viewMode="grid" onAddCartClick={handleAddCart} />
             </div>
           </div>
         </section>

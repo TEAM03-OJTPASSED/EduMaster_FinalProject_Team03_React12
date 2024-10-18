@@ -57,6 +57,7 @@ import BlogDetailPage from "./pages/BlogDetailPage";
 import StudentContent from "./pages/StudentDashboard/StudentContent";
 import StudentOrders from "./pages/StudentDashboard/StudentOrders";
 import CourseLists from "./pages/AdminDashboard/monitors/course/CourseLists";
+import StudentSubscription from "./pages/StudentDashboard/StudentSubscriptions";
 
 function App() {
   return (
@@ -172,6 +173,8 @@ function App() {
                 <Route path="profile" element={<StudentProfile />} />
                 <Route path="my-courses" element={<StudentCourses />} />
                 <Route path="orders" element={<StudentOrders />} />
+                <Route path="subscriptions" element={<StudentSubscription />} />
+
               </Route>
             </Route>
           </Routes>

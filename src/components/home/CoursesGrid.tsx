@@ -10,14 +10,19 @@ interface Course {
   duration: string;
   students: number;
   price: number | string;
+  discount: number;
+  lessons: number;
+  description?: string;
+  updatedDate?: string;
 }
 
 interface CoursesGridProps {
   viewMode: "grid" | "list";
   courses: Course[];
+  onAddCartClick: (course: Course) => void;
 }
 
-export default function CoursesGrid({ viewMode, courses }: CoursesGridProps) {
+export default function CoursesGrid({ viewMode, courses, onAddCartClick }: CoursesGridProps) {
   return (
     <Row gutter={[20, 20]} className="mt-8">
       {!courses
@@ -40,7 +45,7 @@ export default function CoursesGrid({ viewMode, courses }: CoursesGridProps) {
               lg={viewMode === "list" ? 24 : 8}
               key={course.id}
             >
-              <CourseCard course={course} index={index} viewMode={viewMode} />
+              <CourseCard course={course} index={index} viewMode={viewMode} onAddCartClick={onAddCartClick} />
             </Col>
           ))}
     </Row>

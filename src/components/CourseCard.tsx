@@ -14,7 +14,8 @@ interface Course {
   duration: string;
   students: number;
   price: number | string;
-  lessons?: number;
+  discount: number;
+  lessons: number;
   description?: string;
   updatedDate?: string;
 }
@@ -32,11 +33,12 @@ const CourseCard: React.FC<{
   course: Course;
   viewMode: string;
   index: number;
-}> = ({ course, viewMode, index }) => {
+  onAddCartClick: (course: Course) => void;
+}> = ({ course, viewMode, index, onAddCartClick }) => {
   const [isMdScreen, setIsMdScreen] = useState(false);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(min-width: 768px)");
+    const mediaQuery = window.matchMedia("(min-width: 992px)");
     const handleResize = () => setIsMdScreen(mediaQuery.matches);
     handleResize(); // Initial check
     mediaQuery.addEventListener("change", handleResize); // Listen to screen changes
@@ -92,18 +94,18 @@ const CourseCard: React.FC<{
                 <TiUserOutline className="mr-1 text-orange-500" size={20} />
                 {course.students} Students
               </span>
-              {course.lessons && (
+             
                 <span className="flex items-center">
                   <BiBook className="mr-1 text-orange-500" size={18} />
                   {course.lessons} Lessons
                 </span>
-              )}
+            
             </div>
 
             <div className="flex justify-between items-center">
               <span className="text-lg font-bold text-orange-500">
                 {typeof course.price === "number"
-                  ? `$${course.price.toFixed(2)}`
+                  ? `$${course.price.toFixed(0)}`
                   : course.price}
               </span>
               <Button type="link" className="text-blue-600 hover:text-blue-800">
@@ -112,19 +114,21 @@ const CourseCard: React.FC<{
             </div>
           </div>
         </Card>
+        
         <div
-          className={`z-10 absolute ${
+          className={`z-10 absolute w-[352px] top-0 opacity-0 px-4 group-hover:opacity-100 transition-all duration-300 transform group-hover:translate-x-0 pointer-events-none group-hover:pointer-events-auto ${
             (index + 1) % (isMdScreen ? 3 : 2) === 0 && viewMode !== "list"
-              ? "right-full -translate-x-4 mr-4"
-              : "left-full translate-x-4 ml-4"
-          } top-0 w-80 font-jost bg-white p-4 rounded-3xl shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-700 transform group-hover:translate-x-0 pointer-events-none group-hover:pointer-events-auto`}
+              ? "right-full -translate-x-4 "
+              : "left-full translate-x-4"
+          } `}
         >
+          <div className="w-80 font-jost bg-white p-4 rounded-3xl shadow-lg ">
           <h3 className="text-xl font-semibold mb-2">{course.name}</h3>
           <p className="text-sm text-gray-600 mb-2">
-            Updated {course.updatedDate || "Recently"}
+            Updated {course.updatedDate ?? "Recently"}
           </p>
           <p className="text-sm text-gray-700 mb-4">
-            {course.description ||
+            {course.description ??
               "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content."}
           </p>
           <ul className="text-sm text-gray-600 mb-4">
@@ -141,9 +145,14 @@ const CourseCard: React.FC<{
               Subtitles
             </li>
           </ul>
-          <Button className="font-jost w-full bg-primary text-primary-foreground hover:bg-primary/90 flex view-button ant-btn-variant-solid ">
+          <Button className="font-jost w-full bg-primary text-primary-foreground hover:bg-primary/90 flex view-button ant-btn-variant-solid" 
+          onClick={(e)=> {
+            e.preventDefault();
+            onAddCartClick(course) 
+            }}>
             <FaShoppingCart className="text-white" size={18} /> Add to cart
           </Button>
+          </div>
         </div>
       </a>
     </div>

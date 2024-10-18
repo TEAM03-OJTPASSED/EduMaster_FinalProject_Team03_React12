@@ -108,7 +108,7 @@ const Navbar = () => {
     items: [
       { label: "Profile", key: "profile" },
       { label: "Settings", key: "settings" },
-      { label: "My Dashboard", key: "logout", onClick: () => { 
+      { label: "My Dashboard", key: "dashboard", onClick: () => { 
           navigate(`/dashboard/${JSON.parse(storedUser ?? "").role}`);
         },
       },
