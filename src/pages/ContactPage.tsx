@@ -4,6 +4,7 @@ import { LatLngExpression } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Input, Button, Form } from 'antd';
 import DynamicBreadcrumb from "../components/Breadcrumb/Breadcrumb";
+import { sendEmail} from '../services/apiSendEmail';
 
 const { TextArea } = Input;
 
@@ -12,8 +13,8 @@ const ContactPage: React.FC = () => {
 
   const [form] = Form.useForm();
 
-  const onFinish = (values: any) => {
-    console.log('Form values: ', values);
+  const onFinish = (values: { name: string; email: string; website?: string; message: string }) => {
+    sendEmail(values);
   };
 
   return (
@@ -115,14 +116,14 @@ const ContactPage: React.FC = () => {
           </div>
 
           <Form.Item
-            label="Comment"
-            name="comment"
+            label="Message"
+            name="message"
             rules={[
-              { required: true, message: 'Please enter your comment' },
-              { min: 10, message: 'Comment must be at least 10 characters long' },
+              { required: true, message: 'Please enter your message' },
+              { min: 10, message: 'Message must be at least 10 characters long' },
             ]}
           >
-            <TextArea rows={5} placeholder="Your comment here" className="text-gray-600 text-lg mt-2.5 border-2 h-45 pt-2.5 pb-2.5 pr-5 pl-5" />
+            <TextArea rows={5} placeholder="Your message here" className="text-gray-600 text-lg mt-2.5 border-2 h-45 pt-2.5 pb-2.5 pr-5 pl-5" />
           </Form.Item>
 
           <Form.Item>
