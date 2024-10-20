@@ -12,8 +12,9 @@ const VerifySuccessToken = () => {
   // // token get tu tren link
   // const { token } = useParams();
   // const [isLoading, setIsLoading] = useState(false);
-  const [isVerifySuccess, setVerifySuccess] = useState(true);
-  setVerifySuccess(true)
+  const [isVerifySuccess] = useState(false);
+
+  
   // const navigate = useNavigate();
   // // api verify email token
   // // useEffect(() => {
