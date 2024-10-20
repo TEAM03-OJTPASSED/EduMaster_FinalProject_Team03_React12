@@ -20,7 +20,8 @@ const PayoutManagement: React.FC = () => {
     search: "",
   });
   const [activeTab, setActiveTab] = useState("Request Payout"); // Default active tab
-  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<Transaction | null>(null);
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -42,10 +43,15 @@ const PayoutManagement: React.FC = () => {
   // Có thể thêm button để nhập --> click button --> hiển thị kết quả search
   const filteredPayouts = payouts.filter((payout) => {
     // search by Payout No
-    const searchMatch = filterSelection.search ? payout.payout_no.toLowerCase().includes(filterSelection.search.toLowerCase()) : true;
+    const searchMatch = filterSelection.search
+      ? payout.payout_no
+          .toLowerCase()
+          .includes(filterSelection.search.toLowerCase())
+      : true;
     if (activeTab === "Request Payout") {
       return (
-        (payout.status === PayoutStatusEnum.request_payout || payout.status === PayoutStatusEnum.new) &&
+        (payout.status === PayoutStatusEnum.request_payout ||
+          payout.status === PayoutStatusEnum.new) &&
         searchMatch
       );
     } else if (activeTab === "Completed") {
@@ -104,7 +110,7 @@ const PayoutManagement: React.FC = () => {
       key: "balance_origin",
       render: () => {
         const transaction: Transaction = {
-          transaction_id: "TX12345", // data test 
+          transaction_id: "TX12345", // data test
           price: 100,
           discount: 10,
           price_paid: 90,
@@ -172,37 +178,37 @@ const PayoutManagement: React.FC = () => {
         {/* Tabs for Request Payout, Completed, Rejected */}
         <Tabs defaultActiveKey="Request Payout" onChange={handleTabChange}>
           <Tabs.TabPane tab="Request Payout" key="Request Payout">
-              <Table
-                dataSource={filteredPayouts}
-                columns={columns}
-                pagination={{ pageSize: 5 }}
-                rowKey="payout_no"
-                bordered
-                style={{ borderRadius: "8px" }}
-                scroll={{ x: true }}
-              />
+            <Table
+              dataSource={filteredPayouts}
+              columns={columns}
+              pagination={{ pageSize: 5 }}
+              rowKey="payout_no"
+              bordered
+              style={{ borderRadius: "8px" }}
+              scroll={{ x: true }}
+            />
           </Tabs.TabPane>
           <Tabs.TabPane tab="Completed" key="Completed">
-              <Table
-                dataSource={filteredPayouts}
-                columns={columns}
-                pagination={{ pageSize: 5 }}
-                rowKey="payout_no"
-                bordered
-                style={{ borderRadius: "8px" }}
-                scroll={{ x: true }}
-              />
+            <Table
+              dataSource={filteredPayouts}
+              columns={columns}
+              pagination={{ pageSize: 5 }}
+              rowKey="payout_no"
+              bordered
+              style={{ borderRadius: "8px" }}
+              scroll={{ x: true }}
+            />
           </Tabs.TabPane>
           <Tabs.TabPane tab="Rejected" key="Rejected">
-              <Table
-                dataSource={filteredPayouts}
-                columns={columns}
-                pagination={{ pageSize: 5 }}
-                rowKey="payout_no"
-                bordered
-                style={{ borderRadius: "8px" }}
-                scroll={{ x: true }}
-              />
+            <Table
+              dataSource={filteredPayouts}
+              columns={columns}
+              pagination={{ pageSize: 5 }}
+              rowKey="payout_no"
+              bordered
+              style={{ borderRadius: "8px" }}
+              scroll={{ x: true }}
+            />
           </Tabs.TabPane>
         </Tabs>
         {/* Transaction Details Modal */}
@@ -258,7 +264,7 @@ const PayoutManagement: React.FC = () => {
                   key: "created_at",
                 },
               ]}
-              pagination={false} // Disable pagination 
+              pagination={false} // Disable pagination
               bordered
             />
           )}
