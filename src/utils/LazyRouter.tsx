@@ -17,7 +17,7 @@ export const PendingCourse = React.lazy(
   () => import("../pages/AdminDashboard/monitors/pending_course/PendingCourse")
 );
 export const CourseList = React.lazy(
-  () => import("../pages/AdminDashboard/monitors/course/CourseList.tsx")
+  () => import("../pages/AdminDashboard/monitors/course/CourseLists")
 );
 
 export const PendingCourseList = React.lazy(

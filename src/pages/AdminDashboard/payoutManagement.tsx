@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Table, Input, Card, Tag, TableProps, Button, Modal, Tabs } from "antd";
 import { SearchOutlined, CloseOutlined, CheckOutlined } from "@ant-design/icons";
 import { Payout, payouts, PayoutStatusEnum } from "./monitors/course/courseList";
-import { InputSearchProps } from "../../hooks/useDebounce";
+// import { InputSearchProps } from "../../hooks/useDebounce";
 
 interface Transaction {
   transaction_id: string;
@@ -15,7 +15,7 @@ interface Transaction {
 
 const PayoutManagement: React.FC = () => {
   const [isTransactionModalVisible, setIsTransactionModalVisible] = useState(false);
-  const [filterSelection, setFilterSelection] = useState<InputSearchProps>({
+  const [filterSelection, setFilterSelection] = useState({
     selection: "",
     search: "",
   });

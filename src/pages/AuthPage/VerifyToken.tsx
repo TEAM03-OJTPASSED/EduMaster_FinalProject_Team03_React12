@@ -13,6 +13,7 @@ const VerifySuccessToken = () => {
   // const { token } = useParams();
   // const [isLoading, setIsLoading] = useState(false);
   const [isVerifySuccess, setVerifySuccess] = useState(true);
+  setVerifySuccess(true)
   // const navigate = useNavigate();
   // // api verify email token
   // // useEffect(() => {
