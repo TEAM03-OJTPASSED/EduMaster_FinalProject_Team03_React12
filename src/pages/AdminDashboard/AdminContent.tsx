@@ -15,7 +15,8 @@ const cardStyle = {
   margin: "8px 0",
 };
 const AdminContent = () => {
-  const [dataSource] = useState([{
+  const [dataSource] = useState([
+    {
       key: "1",
       number: "Nguyễn Văn A",
       amount: "a@example.com",
