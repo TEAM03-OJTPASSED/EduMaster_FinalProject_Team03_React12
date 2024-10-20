@@ -241,3 +241,7 @@ h3 {
   border-color: black !important;
   background-color: black !important;
 }
+
+.inline-block {
+  display: inline-block;
+}

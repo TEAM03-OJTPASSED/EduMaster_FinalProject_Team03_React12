@@ -430,11 +430,14 @@ const sampleReviews: Review[] = [
     __v: 0,
   },
 ];
-type Props = {};
+type Props = {
+  a?: string;
+};
 
-export const DetailResponsive = ({}: Props) => {
+export const DetailResponsive = ({ a }: Props) => {
   return (
     <div className="font-exo ">
+      {a}
       <div className="flex items-center mt-4">
         <div className="font-bold text-xl">Overview</div>
         <div className="flex-grow border-t border-orange-300 ml-2"></div>
