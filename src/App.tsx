@@ -58,6 +58,7 @@ import StudentContent from "./pages/StudentDashboard/StudentContent";
 import StudentOrders from "./pages/StudentDashboard/StudentOrders";
 import CourseLists from "./pages/AdminDashboard/monitors/course/CourseLists";
 import StudentSubscription from "./pages/StudentDashboard/StudentSubscriptions";
+import VerifySuccessToken from "./pages/AuthPage/VerifyToken";
 
 function App() {
   return (
@@ -71,6 +72,7 @@ function App() {
               <Route path="/login" element={<Loginpage />} />
               <Route path="/signup" element={<SignUppage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/verify-token" element={<VerifySuccessToken />} />
               <Route path="/course" element={<CoursesPage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/contact" element={<ContactPage />} />

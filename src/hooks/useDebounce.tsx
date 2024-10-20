@@ -7,19 +7,14 @@ import { useEffect, useState } from "react";
 // 3: chi chon selection:  search ""  va selection "new"  -> ?selection="new"&search="null"
 // 4: chon ca 2:  search "giatribatkhi"  va selection "new"  -> ?selection="all"&search="new"
 
-export type InputSearchProps = {
-  search?: string;
-  selection?: string;
-};
-const useDebounce = (props: InputSearchProps, delay: number) => {
-  const [value, setValue] = useState<InputSearchProps>(props);
+const useDebounce  = (search:string, delay:number) => {
+  const [value, setValue] = useState<string>(search);
   useEffect(() => {
     const timeout = setTimeout(() => {
-      setValue(props);
+      setValue(search);
     }, delay);
     return () => clearTimeout(timeout);
-  }, [props, delay]);
-
+  }, [search, delay]);
   return value;
 };
 

@@ -1,9 +1,21 @@
-import React from "react";
+import React, { ChangeEvent, useState } from "react";
 import { Table, Input, Card, Tag, TableProps } from "antd";
-import { SearchOutlined} from "@ant-design/icons";
+import { SearchOutlined } from "@ant-design/icons";
 import { Course, CourseStatusEnum, listCourses } from "./courseList";
+import useDebounce from "../../../../hooks/useDebounce";
+
+// mot de o utils sau
+
 const CourseLists: React.FC = () => {
- 
+  const [inputSearch, setInputSearch] = useState("");
+  const inputSearchDebouce = useDebounce(inputSearch, 500);
+
+  const handleInputSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    setInputSearch(e.target.value);
+    console.log(inputSearchDebouce);
+    
+  };
+
   const columns: TableProps<Course>["columns"] = [
     {
       title: "Name",
@@ -60,7 +72,6 @@ const CourseLists: React.FC = () => {
         );
       },
     },
- 
   ];
 
   return (
@@ -70,6 +81,7 @@ const CourseLists: React.FC = () => {
         placeholder="Search By Course Name"
         prefix={<SearchOutlined />}
         style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
+        onChange={handleInputSearch}
       />
       <Table
         dataSource={listCourses}
@@ -84,4 +96,4 @@ const CourseLists: React.FC = () => {
   );
 };
 
-export default CourseLists
+export default CourseLists;
