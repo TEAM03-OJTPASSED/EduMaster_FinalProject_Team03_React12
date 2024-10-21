@@ -1,18 +1,25 @@
+import { Session } from "./Session.model";
+
 export type Course = {
-  name: string;
+  average_rating: number;
   category_id: string;
-  instructor_id: string,
-  instructor_name: string,
-  description: string;
+  category_name: string;
   content: string;
-  status: "new" | "ongoing" | "completed";
-  video_url: string;
-  image_url: string;
-  price: number;
-  discount: number;
-  is_deleted: boolean;
-  _id: string;
   created_at: string;
+  description: string;
+  discount: number;
+  full_time: number;
+  image_url: string;
+  instructor_id: string;
+  instructor_name: string;
+  is_in_cart: boolean;
+  is_purchased: boolean;
+  name: string;
+  price: number;
+  price_paid: number;
+  review_count: number;
+  session_list: Session[];
+  status: "new" | "ongoing" | "completed";
   updated_at: string;
-  __v: number;
+  video_url: string;
 };

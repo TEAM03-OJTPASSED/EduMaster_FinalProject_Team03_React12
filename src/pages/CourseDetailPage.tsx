@@ -16,9 +16,10 @@ const token =
 const fetchCourse = async (courseId: string) => {
   try {
     const response = await axios.get(
-      `http://localhost:3000/api/client/course/${courseId}`
+      `/api/client/course/${courseId}`,
+      //`http://localhost:3000/api/client/course/${courseId}`
     );
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error("Error fetching course:", error);
     return null;
@@ -30,6 +31,7 @@ const fetchCategory = async (categoryId: string) => {
       `http://localhost:3000/api/category/${categoryId}`,
       {
         headers: {
+          'Access-Control-Allow-Origin': '*',
           Authorization: `Bearer ${token}`,
         },
       }
@@ -69,10 +71,10 @@ const CourseDetailPage = () => {
     fetchCourse(courseId).then((data) => {
       if (data) {
         console.log("Data:", data);
-        setCourse(data.data);
-        console.log("Course: ", course);
-        setSession(data.data.session_list);
-        console.log("Session: ", session);
+        console.log("Course: ", data);
+        setCourse(data);
+        console.log("Session List: ", data.session_list);
+        setSession(data.session_list);
       }
     });
     console.log("Course:", course);

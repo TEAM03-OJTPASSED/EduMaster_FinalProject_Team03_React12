@@ -75,7 +75,7 @@ export const Detail = ({ isEnrolled, course, session }: Props) => {
   const toggleSession = (index: number) => {
     setExpandedSession(expandedSession === index ? null : index);
   };
-
+  console.log("Session in detail: ", session);
   return isEnrolled && course ? (
     <div className="font-exo flex mt-12">
       <div className="w-2/3">
