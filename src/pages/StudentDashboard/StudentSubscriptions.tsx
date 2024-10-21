@@ -56,6 +56,7 @@ const StudentSubscriptions = () => {
 
   return (
     <div className="subscription-container">
+      <h3 className="text-2xl my-5">My Subscriptions</h3>
       <div className="search-bar">
         <input
           type="text"
