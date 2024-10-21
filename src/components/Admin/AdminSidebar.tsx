@@ -99,6 +99,18 @@ const menuItems: MenuItem[] = [
       },
     ],
   },
+  {
+    key: "settings",
+    icon: <LineChartOutlined />,
+    label: "Setting",
+    items: [
+      {
+        key: "settings",
+        label: "Settings",
+        path: "/dashboard/admin/settings",
+      },
+    ],
+  },
 ];
 
 const AdminSidebar: React.FC<{ onMenuClick?: () => void }> = ({

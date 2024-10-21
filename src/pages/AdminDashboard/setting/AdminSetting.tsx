@@ -19,7 +19,7 @@ const AdminSetting = () => {
         naviagte("/admin/settings");
         break;
       case "Change Password":
-        naviagte("/admin/settings/change-password");
+        naviagte("/dashboard/admin/settings/change-password");
         break;
       default:
         break;
@@ -39,4 +39,4 @@ const AdminSetting = () => {
   );
 };
 
-export default AdminSetting
+export default AdminSetting;

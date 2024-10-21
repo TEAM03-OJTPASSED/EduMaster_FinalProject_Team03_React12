@@ -115,7 +115,6 @@ function App() {
                 <Route path="request-management" element={<RequestUser />} />
                 <Route path="categories" element={<CategoryManagement />} />
                 <Route path="payout" element={<PayoutManagement />} />
-
                 <Route path="all-courses" element={<AllCourse />}>
                   <Route index element={<CourseLists />} />
                   <Route path="session" element={<SessionList />} />
@@ -162,10 +161,6 @@ function App() {
                   element={<InstructorSalesHistory />}
                 />
                 <Route path="order" element={<InstructorOrder />} />
-                {/* <Route
-                  path="sales-history"
-                  element={<InstructorSalesHistory />}
-                /> */}
                 <Route path="my-courses" element={<InstructorCourses />}>
                   <Route index element={<InstructorCourseList />} />
                   <Route path="session" element={<IntructorSessionList />} />
