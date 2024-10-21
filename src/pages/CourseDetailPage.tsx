@@ -16,7 +16,7 @@ const token =
 const fetchCourse = async (courseId: string) => {
   try {
     const response = await axios.get(
-      `/api/client/course/${courseId}`,
+      `/api/client/course/${courseId}`
       //`http://localhost:3000/api/client/course/${courseId}`
     );
     return response.data.data;
@@ -27,15 +27,12 @@ const fetchCourse = async (courseId: string) => {
 };
 const fetchCategory = async (categoryId: string) => {
   try {
-    const response = await axios.get(
-      `http://localhost:3000/api/category/${categoryId}`,
-      {
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await axios.get(`/api/category/${categoryId}`, {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error fetching category:", error);
@@ -44,14 +41,11 @@ const fetchCategory = async (categoryId: string) => {
 };
 const fetchInstructor = async (instructor_Id: string) => {
   try {
-    const response = await axios.get(
-      `http://localhost:3000/api/users/${instructor_Id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await axios.get(`/api/users/${instructor_Id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error fetching instructor:", error);
