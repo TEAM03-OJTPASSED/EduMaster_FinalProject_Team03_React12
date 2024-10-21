@@ -1,19 +1,24 @@
 import { useState } from "react";
 import { Button, Card, Input, Table, Tag } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import { purchaseLog } from "./monitors/course/couseList";
+import { salesHistory } from "../../AdminDashboard/monitors/course/couseList";
 
 // Cột cho bảng Purchase Log
 const columns = [
   {
-    title: "Course Name",
-    dataIndex: "courseName",
-    key: "courseName",
-  },
-  {
     title: "Purchase Number",
     dataIndex: "purchaseNumber",
     key: "purchaseNumber",
+  },
+  {
+    title: "Cart No",
+    dataIndex: "CartNo",
+    key: "CartNo",
+  },
+  {
+    title: "Course Name",
+    dataIndex: "courseName",
+    key: "courseName",
   },
   {
     title: "Status",
@@ -40,26 +45,9 @@ const columns = [
     render: (price: number) => `$${price.toFixed(2)}`,
   },
   {
-    title: "Discount",
-    dataIndex: "discount",
-    key: "discount",
-    render: (discount: number) => `${discount}%`,
-  },
-  {
     title: "Student Name",
     dataIndex: "studentName",
     key: "studentName",
-  },
-  {
-    title: "Instructor Name",
-    dataIndex: "instructorName",
-    key: "instructorName",
-  },
-  {
-    title: "Created At",
-    dataIndex: "createdAt",
-    key: "createdAt",
-    render: (date: string) => new Date(date).toLocaleDateString(),
   },
   {
     title: "Action",
@@ -72,7 +60,7 @@ const columns = [
   },
 ];
 
-const Purchaselog = () => {
+const instructorSaleHistory = () => {
   const [searchText, setSearchText] = useState("");
 
   // Hàm tìm kiếm
@@ -81,7 +69,7 @@ const Purchaselog = () => {
   };
 
   // Lọc danh sách purchase log dựa trên tên khóa học
-  const filteredCourses = purchaseLog.filter((course) =>
+  const filteredCourses = salesHistory.filter((course) =>
     course.courseName.toLowerCase().includes(searchText.toLowerCase())
   );
 
@@ -108,7 +96,7 @@ const Purchaselog = () => {
   );
 };
 
-export default Purchaselog;
+export default instructorSaleHistory;
 
 const handleAction = (record: any) => {
   console.log("Viewing details for:", record);

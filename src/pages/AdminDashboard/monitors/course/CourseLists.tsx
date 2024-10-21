@@ -13,7 +13,6 @@ const CourseLists: React.FC = () => {
   const handleInputSearch = (e: ChangeEvent<HTMLInputElement>) => {
     setInputSearch(e.target.value);
     console.log(inputSearchDebouce);
-    
   };
 
   const columns: TableProps<Course>["columns"] = [

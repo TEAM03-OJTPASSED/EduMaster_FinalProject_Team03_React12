@@ -9,39 +9,24 @@ import { useState } from "react";
 import CreateCategoryModal from "../../components/Admin/AdminModals/CreateCategoryModal";
 import UpdateCategoryModal from "../../components/Admin/AdminModals/UpdateCategoryModal";
 import useSearch from "../../hooks/useSearch";
+import { category } from "./monitors/course/couseList";
 
 const { Option } = Select;
 
 const CategoryManagement = () => {
-  const [dataSource, setDataSource] = useState([
-    {
-      key: "1",
-      name: "Photography & Video",
-      parentCat: "	N/A",
-    },
-    {
-      key: "2",
-      name: "Education",
-      parentCat: "N/A",
-    },
-    {
-      key: "3",
-      name: "Music Production",
-      parentCat: "Music",
-    },
-  ]);
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(
     undefined
   );
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [form] = Form.useForm();
-  const [setEditingRecord] = useState<any>(null);
+  const [editingRecord, setEditingRecord] = useState<any>(null);
 
-  const { searchText, filteredData, handleSearchChange } = useSearch(
-    dataSource,
-    ["name"]
-  ); // useSearch hook
+  // Sử dụng useSearch với users
+  const { searchText, filteredData, handleSearchChange } = useSearch(category, [
+    "name",
+    "parentCat",
+  ]);
 
   const handleCategoryChange = (value: string) => {
     setSelectedCategory(value);
@@ -50,7 +35,6 @@ const CategoryManagement = () => {
   const handleDelete = (id: string) => {
     // Xử lý xóa ở đây
     console.log("Deleted record ID: ", id);
-    setDataSource((prevData) => prevData.filter((item) => item.key !== id));
   };
 
   // Show Create Modal
@@ -178,7 +162,7 @@ const CategoryManagement = () => {
 
       {/* Modal for Create */}
       <CreateCategoryModal
-        visible={isCreateModalVisible}
+        open={isCreateModalVisible}
         onCreate={handleOkCreate}
         onCancel={handleCancel}
         form={form}
@@ -186,10 +170,11 @@ const CategoryManagement = () => {
 
       {/* Modal for Edit */}
       <UpdateCategoryModal
-        visible={isEditModalVisible}
+        open={isEditModalVisible}
         onUpdate={handleOkEdit}
         onCancel={handleCancel}
         form={form}
+        editingRecord={editingRecord}
       />
     </Card>
   );

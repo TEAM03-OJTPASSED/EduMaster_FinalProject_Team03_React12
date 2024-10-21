@@ -1,4 +1,4 @@
-import { Col, Divider, Row, Card, Table } from "antd";
+import { Col, Divider, Row, Card, Table, Typography } from "antd";
 import {
   WalletOutlined,
   DashboardOutlined,
@@ -17,21 +17,23 @@ const cardStyle = {
 const AdminContent = () => {
   const [dataSource] = useState([
     {
+  const [dataSource] = useState([
+    {
       key: "1",
       number: "Nguyễn Văn A",
-      amount: "a@example.com",
+      amount: "23",
       date: "2023-01-15",
     },
     {
       key: "2",
       number: "Nguyễn Văn A",
-      amount: "a@example.com",
+      amount: "20231",
       date: "2023-01-15",
     },
     {
       key: "3",
       number: "Nguyễn Văn A",
-      amount: "a@example.com",
+      amount: "2023",
       date: "2023-01-15",
     },
   ]);
@@ -45,6 +47,11 @@ const AdminContent = () => {
       title: "	Amount",
       dataIndex: "amount",
       key: "amount",
+      render: (amount: number) => (
+        <Typography.Text style={{ color: "#16DBAA", fontWeight: 500 }}>
+          ${amount}
+        </Typography.Text>
+      ),
     },
     {
       title: "Date",
@@ -265,7 +272,6 @@ const AdminContent = () => {
         columns={columns}
         pagination={{ pageSize: 5 }}
         rowKey="key"
-        bordered
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }} // Thêm scroll cho bảng
       />

@@ -1,7 +1,15 @@
 import React, { useState } from "react";
 import { Table, Input, Card, Tag, TableProps, Button, Modal, Tabs } from "antd";
-import { SearchOutlined, CloseOutlined, CheckOutlined } from "@ant-design/icons";
-import { Payout, payouts, PayoutStatusEnum } from "./monitors/course/courseList";
+import {
+  SearchOutlined,
+  CloseOutlined,
+  CheckOutlined,
+} from "@ant-design/icons";
+import {
+  Payout,
+  payouts,
+  PayoutStatusEnum,
+} from "./monitors/course/courseList";
 // import { InputSearchProps } from "../../hooks/useDebounce";
 
 interface Transaction {
@@ -14,7 +22,8 @@ interface Transaction {
 }
 
 const PayoutManagement: React.FC = () => {
-  const [isTransactionModalVisible, setIsTransactionModalVisible] = useState(false);
+  const [isTransactionModalVisible, setIsTransactionModalVisible] =
+    useState(false);
   const [filterSelection, setFilterSelection] = useState({
     selection: "",
     search: "",

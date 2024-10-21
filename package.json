@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.5.1",
     "@ckeditor/ckeditor5-build-classic": "^43.2.0",
     "@ckeditor/ckeditor5-react": "^9.3.0",
     "@emailjs/browser": "^4.4.1",

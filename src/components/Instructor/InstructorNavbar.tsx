@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import { Layout, Button, Drawer, Avatar, Dropdown } from "antd";
-import { MenuOutlined } from "@ant-design/icons";
+import {
+  MenuOutlined,
+  UserOutlined,
+  LogoutOutlined,
+} from "@ant-design/icons";
 import logoImage from "../../assets/EduMaster.png"; // Đường dẫn đến logo
 import { useCustomNavigate } from "../../hooks/customNavigate"; // Hook tùy chỉnh cho điều hướng
 import InstructorSidebar from "./InstructorSidebar";
@@ -31,15 +35,13 @@ const InstructorNavbar = () => {
   const menuItems = [
     {
       key: "profile",
-      label: <span onClick={() => navigate("/profile")}>Profile</span>,
-    },
-    {
-      key: "settings",
-      label: <span onClick={() => navigate("/settings")}>Settings</span>,
+      label: <span onClick={() => navigate("/instructor/settings")}>Profile</span>,
+      icon: <UserOutlined />, // Thêm icon UserOutlined cho Profile
     },
     {
       key: "logout",
       label: <span onClick={() => navigate("/logout")}>Logout</span>,
+      icon: <LogoutOutlined />, // Thêm icon LogoutOutlined cho Logout
     },
   ];
 

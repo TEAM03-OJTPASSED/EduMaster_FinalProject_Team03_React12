@@ -31,13 +31,10 @@ import InstructorCourses from "./pages/InstructorDashboard/instructor-monitor/In
 import InstructorCourseList from "./pages/InstructorDashboard/instructor-monitor/InstructorCourseList";
 import IntructorSessionList from "./pages/InstructorDashboard/instructor-monitor/InstructorSessionList";
 import InstructorLessonList from "./pages/InstructorDashboard/instructor-monitor/InstructorLessonList";
-import InstructorCreateCourse from "./pages/InstructorDashboard/instructor-monitor/InstructorCreateCourse";
 import InstructorCourseLog from "./pages/InstructorDashboard/instructor-report/InstructorCourseLog";
 import InstructorPurchaseLog from "./pages/InstructorDashboard/instructor-report/InstructorPurchaseLog";
-import InstructorEarning from "./pages/InstructorDashboard/instructor-report/InstructorEarning";
-import InstructorDiscount from "./pages/InstructorDashboard/instructor-management/InstructorDiscount";
 import InstructorReview from "./pages/InstructorDashboard/InstructorReview";
-import InstructorSetting from "./pages/InstructorDashboard/InstructorSetting";
+import InstructorSetting from "./pages/InstructorDashboard/instructor-setting/InstructorSetting";
 import ForgotPasswordPage from "./pages/AuthPage/ForgotPasswordPage";
 import PayoutManagement from "./pages/AdminDashboard/payoutManagement";
 import RequestPayout from "./pages/InstructorDashboard/instructor-management/payout/RequestPayout";
@@ -120,6 +117,13 @@ function App() {
                 <Route path="blog" element={<BlogManagement />} />
                 <Route path="course-log" element={<CourseLog />} />
                 <Route path="purchase-log" element={<PurchaseLog />} />
+                <Route path="settings" element={<AdminSetting />}>
+                  <Route index element={<AdminProfile />} />
+                  <Route
+                    path="change-password"
+                    element={<AdminChangePassword />}
+                  />
+                </Route>
               </Route>
             </Route>
 
@@ -141,24 +145,33 @@ function App() {
                   />
                 </Route>
                 <Route path="order" element={<InstructorOrder />} />
+                <Route
+                  path="sales-history"
+                  element={<InstructorSalesHistory />}
+                />
                 <Route path="my-courses" element={<InstructorCourses />}>
                   <Route index element={<InstructorCourseList />} />
                   <Route path="session" element={<IntructorSessionList />} />
                   <Route path="lesson" element={<InstructorLessonList />} />
                 </Route>
-                <Route
-                  path="create-courses"
-                  element={<InstructorCreateCourse />}
-                />
+
                 <Route path="course-log" element={<InstructorCourseLog />} />
                 <Route
                   path="purchase-log"
                   element={<InstructorPurchaseLog />}
                 />
-                <Route path="earning" element={<InstructorEarning />} />
-                <Route path="discount" element={<InstructorDiscount />} />
+                <Route path="subscription" element={<InstructorSubscription />}>
+                  <Route index element={<InstructorSubscribed />} />
+                  <Route path="subscriber" element={<InstructorSubscriber />} />
+                </Route>
                 <Route path="review" element={<InstructorReview />} />
-                <Route path="settings" element={<InstructorSetting />} />
+                <Route path="settings" element={<InstructorSetting />}>
+                  <Route index element={<InstructorProfile />} />
+                  <Route
+                    path="change-password"
+                    element={<InstructorChangePassword />}
+                  />
+                </Route>
               </Route>
             </Route>
 
@@ -176,7 +189,6 @@ function App() {
                 <Route path="my-courses" element={<StudentCourses />} />
                 <Route path="orders" element={<StudentOrders />} />
                 <Route path="subscriptions" element={<StudentSubscription />} />
-
               </Route>
             </Route>
           </Routes>

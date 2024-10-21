@@ -3,7 +3,6 @@ import { Layout, Button, Drawer, Avatar, Dropdown } from "antd";
 import {
   MenuOutlined,
   UserOutlined,
-  SettingOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
 import logoImage from "../../assets/EduMaster.png";
@@ -38,13 +37,8 @@ const AdminNavBar = () => {
   const menuItems = [
     {
       key: "profile",
-      label: <span onClick={() => navigate("/profile")}>Profile</span>,
+      label: <span onClick={() => navigate("/admin/settings")}>Profile</span>,
       icon: <UserOutlined />, // Thêm icon UserOutlined cho Profile
-    },
-    {
-      key: "settings",
-      label: <span onClick={() => navigate("/settings")}>Settings</span>,
-      icon: <SettingOutlined />, // Thêm icon SettingOutlined cho Settings
     },
     {
       key: "logout",

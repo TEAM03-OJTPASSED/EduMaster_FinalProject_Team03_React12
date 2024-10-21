@@ -1,52 +1,13 @@
-import  { useState } from "react";
-import {
-  Table,
-  Button,
-  Input,
-  Space,
-  Card,
-} from "antd";
+import { Table, Button, Input, Space, Card } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import useSearch from "../../hooks/useSearch";
+import { users } from "./monitors/course/couseList";
 
 const RequestUser = () => {
-  const [dataSource] = useState([
-    {
-      key: "1",
-      name: "Nguyễn Văn A",
-      email: "a@example.com",
-      phone: "0123456789",
-      username: "nguyenvana",
-      status: true, // Use boolean for status
-      role: "Admin",
-      createdAt: "2023-01-15",
-    },
-    {
-      key: "2",
-      name: "Trần Thị B",
-      email: "b@example.com",
-      phone: "0987654321",
-      username: "tranthib",
-      status: false, // Use boolean for status
-      role: "Instructor",
-      createdAt: "2023-02-20",
-    },
-    {
-      key: "3",
-      name: "Lê Văn C",
-      email: "c@example.com",
-      phone: "0912345678",
-      username: "levanc",
-      status: true, // Use boolean for status
-      role: "Student",
-      createdAt: "2023-03-05",
-    },
+  const { searchText, filteredData, handleSearchChange } = useSearch(users, [
+    "name",
+    "email",
   ]);
-
-  const { searchText, filteredData, handleSearchChange } = useSearch(
-    dataSource,
-    ["name", "email"]
-  ); // useSearch hook
 
   const columns = [
     {
@@ -71,8 +32,8 @@ const RequestUser = () => {
     },
     {
       title: "Descriptions",
-      dataIndex: "description",
-      key: "description",
+      dataIndex: "createdAt",
+      key: "createdAt",
     },
     {
       title: "Hành động",
@@ -110,7 +71,7 @@ const RequestUser = () => {
           rowKey="key"
           bordered
           style={{ borderRadius: "8px" }}
-          scroll={{ x: true }} // Thêm scroll cho bảng
+          scroll={{ x: true }}
         />
       </Card>
     </div>
