@@ -39,6 +39,7 @@ import ForgotPasswordPage from "./pages/AuthPage/ForgotPasswordPage";
 import PayoutManagement from "./pages/AdminDashboard/payoutManagement";
 import RequestPayout from "./pages/InstructorDashboard/instructor-management/payout/RequestPayout";
 import CompletedPayout from "./pages/InstructorDashboard/instructor-management/payout/CompletedPayout";
+import RejectedPayout from "./pages/InstructorDashboard/instructor-management/payout/RejectedPayout";
 import DashboardLayout from "./defaultLayout/DashboardLayout";
 import StudentProfile from "./pages/StudentDashboard/studentProfile";
 import StudentCourses from "./pages/StudentDashboard/StudentCourses";
@@ -151,6 +152,10 @@ function App() {
                   <Route
                     path="completed-payout"
                     element={<CompletedPayout />}
+                  />
+                  <Route
+                    path="rejected-payout"
+                    element={<RejectedPayout />}
                   />
                 </Route>
                 <Route
