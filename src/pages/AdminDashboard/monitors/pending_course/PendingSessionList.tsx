@@ -1,11 +1,9 @@
-
 import { Table, Input, Card, TableProps } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { listSessions, Session } from "../course/courseList";
 
 const PendingSessionList = () => {
-
   const columns: TableProps<Session>["columns"] = [
     {
       title: "Name",
@@ -30,11 +28,7 @@ const PendingSessionList = () => {
       dataIndex: "position_order",
       key: "position_order",
       render: (is_deleted) => {
-        return (
-          <div className=" text-red-600">
-           {is_deleted}
-          </div>
-        );
+        return <div className=" text-red-600">{is_deleted}</div>;
       },
     },
   ];
@@ -56,7 +50,6 @@ const PendingSessionList = () => {
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
       />
-   
     </Card>
   );
 };

@@ -1,4 +1,4 @@
-import { Col, Divider, Row, Card, Table } from "antd";
+import { Col, Divider, Row, Card, Table, Typography } from "antd";
 import {
   WalletOutlined,
   DashboardOutlined,
@@ -14,27 +14,29 @@ const cardStyle = {
   boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
   margin: "8px 0",
 };
+
 const AdminContent = () => {
   const [dataSource] = useState([
     {
       key: "1",
       number: "Nguyễn Văn A",
-      amount: "a@example.com",
+      amount: "23",
       date: "2023-01-15",
     },
     {
       key: "2",
       number: "Nguyễn Văn A",
-      amount: "a@example.com",
+      amount: "20231",
       date: "2023-01-15",
     },
     {
       key: "3",
       number: "Nguyễn Văn A",
-      amount: "a@example.com",
+      amount: "2023",
       date: "2023-01-15",
     },
   ]);
+
   const columns = [
     {
       title: "Payout Number",
@@ -42,9 +44,14 @@ const AdminContent = () => {
       key: "number",
     },
     {
-      title: "	Amount",
+      title: "Amount",
       dataIndex: "amount",
       key: "amount",
+      render: (amount: number) => (
+        <Typography.Text style={{ color: "#16DBAA", fontWeight: 500 }}>
+          ${amount}
+        </Typography.Text>
+      ),
     },
     {
       title: "Date",
@@ -94,7 +101,7 @@ const AdminContent = () => {
                   Total Balance
                 </h2>
                 <p style={{ fontWeight: "bold", fontSize: "24px", margin: 0 }}>
-                  3249{" "}
+                  3249
                 </p>
               </div>
             </div>
@@ -132,7 +139,7 @@ const AdminContent = () => {
                   Total Categories
                 </h2>
                 <p style={{ fontWeight: "bold", fontSize: "24px", margin: 0 }}>
-                  3{" "}
+                  3
                 </p>
               </div>
             </div>
@@ -172,7 +179,7 @@ const AdminContent = () => {
                   Total Courses
                 </h2>
                 <p style={{ fontWeight: "bold", fontSize: "24px", margin: 0 }}>
-                  249{" "}
+                  249
                 </p>
               </div>
             </div>
@@ -210,7 +217,7 @@ const AdminContent = () => {
                   Total Users
                 </h2>
                 <p style={{ fontWeight: "bold", fontSize: "24px", margin: 0 }}>
-                  249{" "}
+                  249
                 </p>
               </div>
             </div>
@@ -250,7 +257,7 @@ const AdminContent = () => {
                   Total Blogs
                 </h2>
                 <p style={{ fontWeight: "bold", fontSize: "24px", margin: 0 }}>
-                  249{" "}
+                  249
                 </p>
               </div>
             </div>
@@ -265,9 +272,8 @@ const AdminContent = () => {
         columns={columns}
         pagination={{ pageSize: 5 }}
         rowKey="key"
-        bordered
         style={{ borderRadius: "8px" }}
-        scroll={{ x: true }} // Thêm scroll cho bảng
+        scroll={{ x: true }}
       />
     </div>
   );

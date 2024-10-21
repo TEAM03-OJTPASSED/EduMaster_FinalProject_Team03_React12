@@ -9,6 +9,7 @@ import {
   MoneyCollectOutlined,
   BookOutlined,
   FileTextOutlined,
+  ShoppingCartOutlined,
   StarOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
@@ -37,6 +38,12 @@ const menuItems = [
         icon: <BookOutlined />,
         title: "Order",
         path: "/dashboard/instructor/order",
+      },
+      {
+        key: "management-sales-history",
+        icon: <ShoppingCartOutlined />,
+        title: "Sales History",
+        path: "/instructor/sales-history",
       },
     ],
   },

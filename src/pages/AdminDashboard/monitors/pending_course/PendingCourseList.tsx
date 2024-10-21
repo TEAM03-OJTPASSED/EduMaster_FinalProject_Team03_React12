@@ -4,8 +4,6 @@ import { SearchOutlined } from "@ant-design/icons";
 import { Course, CourseStatusEnum, listCourses } from "../course/courseList";
 
 const PendingCourseList: React.FC = () => {
-
-
   const columns: TableProps<Course>["columns"] = [
     {
       title: "Name",
@@ -112,8 +110,6 @@ const PendingCourseList: React.FC = () => {
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
       />
-
-
     </Card>
   );
 };
