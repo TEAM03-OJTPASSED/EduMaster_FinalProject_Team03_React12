@@ -60,7 +60,7 @@ const columns = [
   },
 ];
 
-const instructorSaleHistory = () => {
+const InstructorSalesHistory = () => {
   const [searchText, setSearchText] = useState("");
 
   // Hàm tìm kiếm
@@ -96,7 +96,7 @@ const instructorSaleHistory = () => {
   );
 };
 
-export default instructorSaleHistory;
+export default InstructorSalesHistory;
 
 const handleAction = (record: any) => {
   console.log("Viewing details for:", record);

@@ -64,6 +64,7 @@ import InstructorSubscriber from "./pages/InstructorDashboard/subscription/Instr
 import AdminChangePassword from "./pages/AdminDashboard/setting/AdminChangePassword";
 import AdminSetting from "./pages/AdminDashboard/setting/AdminSetting";
 import AdminProfile from "./pages/AdminDashboard/setting/AdminProfile";
+import InstructorSalesHistory from "./pages/InstructorDashboard/instructor-management/InstructorSalesHistory";
 
 function App() {
   return (
@@ -152,6 +153,10 @@ function App() {
                     element={<CompletedPayout />}
                   />
                 </Route>
+                <Route
+                  path="salesHistory"
+                  element={<InstructorSalesHistory />}
+                />
                 <Route path="order" element={<InstructorOrder />} />
                 {/* <Route
                   path="sales-history"

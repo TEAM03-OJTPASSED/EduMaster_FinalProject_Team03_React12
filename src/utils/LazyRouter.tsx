@@ -96,6 +96,14 @@ export const InstructorPurchaseLog = React.lazy(
 //       "../pages/InstructorDashboard/instructor-management/InstructorDiscount"
 //     )
 // );
+
+export const InstructorSaleHistory = React.lazy(
+  () =>
+    import(
+      "../pages/InstructorDashboard/instructor-management/InstructorSalesHistory"
+    )
+);
+
 export const InstructorReview = React.lazy(
   () => import("../pages/InstructorDashboard/InstructorReview")
 );
