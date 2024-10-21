@@ -9,7 +9,6 @@ import {
   MoneyCollectOutlined,
   BookOutlined,
   FileTextOutlined,
-  PercentageOutlined,
   StarOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
@@ -38,12 +37,6 @@ const menuItems = [
         icon: <BookOutlined />,
         title: "Order",
         path: "/dashboard/instructor/order",
-      },
-      {
-        key: "management-discount",
-        icon: <PercentageOutlined />,
-        title: "Discount",
-        path: "/dashboard/instructor/discount",
       },
     ],
   },
@@ -82,12 +75,6 @@ const menuItems = [
         title: "Purchase log",
         icon: <FileTextOutlined />,
         path: "/dashboard/instructor/purchase-log",
-      },
-      {
-        key: "4-3",
-        title: "Earning",
-        icon: <MoneyCollectOutlined />,
-        path: "/dashboard/instructor/earning",
       },
     ],
   },
