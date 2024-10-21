@@ -241,3 +241,10 @@ h3 {
   border-color: black !important;
   background-color: black !important;
 }
+
+.ant-card-body{
+  padding: 16px !important;
+  overflow: hidden !important
+}
+
+

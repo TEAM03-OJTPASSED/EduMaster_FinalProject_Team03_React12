@@ -77,12 +77,6 @@ const menuItems = [
         icon: <FileTextOutlined />,
         path: "/dashboard/instructor/purchase-log",
       },
-      {
-        key: "4-3",
-        title: "Earning",
-        icon: <MoneyCollectOutlined />,
-        path: "/dashboard/instructor/earning",
-      },
     ],
   },
   {

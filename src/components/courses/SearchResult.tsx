@@ -34,7 +34,7 @@ export const SearchResults: React.FC<{
   return (
     <Content className="py-8 px-4 bg-white">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">All Courses</h2>
+        <h2 className="text-2xl font-semibold">{searchQuery ? <span>Results for "<span className="font-bold">{searchQuery}</span>"</span>:"All Courses"}</h2>
         <div className="flex items-center space-x-4">
           <Search
             placeholder={"Search"}
@@ -80,8 +80,8 @@ export const SearchResults: React.FC<{
             </div>)
         : (
           <div className="text-center mt-8 flex flex-col justify-center items-center">
-            <img src={NoResult} width={400} alt="no search results"/>
-            <h1 className="text-2xl">We couldn't find what you were looking for. Please try again.</h1> 
+            <img src={NoResult} className="w-[250px] md:w-[400px]" alt="no search results"/>
+            <h1 className="text-xl font-medium w-96 font-jost">We couldn't find what you were looking for. Try searching for something else</h1> 
 
           </div>
         )}

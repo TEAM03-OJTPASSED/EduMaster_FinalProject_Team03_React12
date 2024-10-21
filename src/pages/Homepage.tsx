@@ -228,11 +228,11 @@ const HomePage = () => {
   return (
     <div className="flex flex-col items-center">
       <div className="flex-col flex items-center">
-        <div className="w-4 h-4 rounded-full bg-orange-500 bottom-32 right-8 fixed"></div>
-        <div className="w-4 h-4 rounded-full bg-orange-500 bottom-[100px] right-8 fixed"></div>
+        <div className="w-4 h-4 rounded-full bg-orange-500 bottom-32 right-8 fixed z-50"></div>
+        <div className="w-4 h-4 rounded-full bg-orange-500 bottom-[100px] right-8 fixed z-50"></div>
 
         <button onClick={backToTop}>
-          <div className=" w-12 h-12 rounded-full bottom-10 right-4 hover:scale-110 transition duration-500 bg-orange-500 fixed justify-center flex items-center">
+          <div className=" w-12 h-12 rounded-full bottom-10 right-4 hover:scale-110 transition duration-500 bg-orange-500 fixed justify-center flex items-center z-50">
             <IoArrowUpOutline size={36} color="white" />
           </div>
         </button>
@@ -264,7 +264,7 @@ const HomePage = () => {
             src={heroImage}
             alt="Hero"
           />
-          <div className="z-40 text-white text-5xl font-semibold w-[500px] text-center font-exo">
+          <div className="z-40 text-white text-4xl lg:text-5xl font-semibold w-[500px] text-center font-exo">
             Elevate Your Skills With{" "}
             <span className="underline">Online Courses</span>
           </div>
@@ -288,7 +288,7 @@ const HomePage = () => {
             <div className="container mx-auto px-4">
               <div className="flex justify-between items-center mb-8">
                 <div>
-                  <h2 className="text-4xl font-bold text-gray-800">
+                  <h2 className="text-2xl lg:text-4xl font-bold text-gray-800">
                     Featured Categories
                   </h2>
                   <p className="text-gray-600 mt-2">
@@ -321,7 +321,7 @@ const HomePage = () => {
             <div className="container mx-auto px-4">
               <div className="flex justify-between items-center mb-8">
                 <div>
-                  <h2 className="text-4xl font-bold text-gray-800">
+                  <h2 className="text-2xl lg:text-4xl font-bold text-gray-800">
                     Featured Courses
                   </h2>
                   <p className="text-gray-600 mt-2">
@@ -349,7 +349,7 @@ const HomePage = () => {
 
         <section className="mt-4 p-8 pb-0 float-animation bg-zinc-50 rounded-3xl">
           <div>
-            <h2 className="text-4xl font-bold text-gray-800 text-center">
+            <h2 className="text-2xl lg:text-4xl font-bold text-gray-800 text-center">
               Students Love Us. Instructors Do Too{" "}
             </h2>
             <p className="text-orange-600 text-center">
