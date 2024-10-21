@@ -90,10 +90,11 @@ const UserManagement: React.FC = () => {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
-      render: (text: any, record: any) => (
+      // render: (text: any, record: any) => (
+      render: () => (
         <Switch
-          checked={text}
-          onChange={(checked) => handleStatusChange(checked, record.key)}
+        // checked={text}
+        // onChange={(checked) => handleStatusChange(checked, record.key)}
         />
       ),
     },
@@ -101,11 +102,11 @@ const UserManagement: React.FC = () => {
       title: "Loại người dùng",
       dataIndex: "role",
       key: "role",
-      render: (text: any, record: any) => (
+      render: (text: string) => (
         <Select
           defaultValue={text}
           style={{ width: 120 }}
-          onChange={(value) => handleRoleChange(value, record.key)}
+          // onChange={(value) => handleRoleChange(value, record.key)}
         >
           <Option value="Admin">Admin</Option>
           <Option value="Instructor">Instructor</Option>
@@ -116,7 +117,7 @@ const UserManagement: React.FC = () => {
     {
       title: "Hành động",
       key: "action",
-      render: (record: any) => (
+      render: (record: string) => (
         <Space size="middle">
           <Button
             icon={<EditOutlined />}

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { DeleteOutlined } from "@ant-design/icons";
-import { Card, Button, Input, Table, Popconfirm } from "antd"; // Import Popconfirm
+import { Card, Button, Input, Table } from "antd"; // Import Popconfirm
 import "tailwindcss/tailwind.css"; // Import tailwind styles if necessary
 
 const InstructorOrder = () => {
   const [quantity1] = useState(2);
   const [quantity2] = useState(1);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]); // Store selected products
-  const [dataSource, setDataSource] = useState([
+  const [dataSource] = useState([
     {
       key: "1",
       product: {
@@ -35,10 +35,10 @@ const InstructorOrder = () => {
   ]);
 
   // Handle remove product
-  const handleRemove = (key: React.Key) => {
-    const newData = dataSource.filter((item) => item.key !== key);
-    setDataSource(newData);
-  };
+  // const handleRemove = (key: React.Key) => {
+  //   const newData = dataSource.filter((item) => item.key !== key);
+  //   setDataSource(newData);
+  // };
 
   // Columns for Ant Design Table
   const columns = [
@@ -70,16 +70,7 @@ const InstructorOrder = () => {
     {
       title: "Action",
       key: "action",
-      render: (_, record: any) => (
-        <Popconfirm
-          title="Are you sure to delete this item?"
-          onConfirm={() => handleRemove(record.key)}
-          okText="Yes"
-          cancelText="No"
-        >
-          <Button danger icon={<DeleteOutlined />}></Button>
-        </Popconfirm>
-      ),
+      render: () => <Button danger icon={<DeleteOutlined />}></Button>,
     },
   ];
 

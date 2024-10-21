@@ -2,9 +2,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import LoadingWrapper from "./components/Loading/LoadingWrapper";
 import { Suspense } from "react";
-import CoursesPage from "./pages/CoursesPage";
-import BlogPage from "./pages/BlogPage";
-import CourseDetailPage from "./pages/CourseDetailPage";
 import GeneralLayout from "./defaultLayout/Layout";
 import HomePage from "./pages/Homepage";
 import Loginpage from "./pages/AuthPage/Loginpage";
@@ -47,7 +44,7 @@ import PayoutManagement from "./pages/AdminDashboard/payoutManagement";
 import RequestPayout from "./pages/InstructorDashboard/instructor-management/payout/RequestPayout";
 import CompletedPayout from "./pages/InstructorDashboard/instructor-management/payout/CompletedPayout";
 import AdminSetting from "./pages/AdminDashboard/setting/AdminSetting";
-import AdminProfile from "./pages/AdminDashboard/setting/AdminProfile"
+import AdminProfile from "./pages/AdminDashboard/setting/AdminProfile";
 import InstructorProfile from "./pages/InstructorDashboard/instructor-setting/InstructorProfile";
 import InstructorChangePassword from "./pages/InstructorDashboard/instructor-setting/InstructorChangePassword";
 import AdminChangePassword from "./pages/AdminDashboard/setting/AdminChangePassword";
@@ -68,8 +65,8 @@ function App() {
               <Route path="/login" element={<Loginpage />} />
               <Route path="/signup" element={<SignUppage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-              <Route path="/course" element={<CoursesPage />} />
-              <Route path="/blog" element={<BlogPage />} />
+              {/* <Route path="/course" element={<CoursesPage />} /> */}
+              {/* <Route path="/blog" element={<BlogPage />} /> */}
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/faqs" element={<FAQsPage />} />
               <Route path="/error" element={<ErrorPage />} />
@@ -81,7 +78,7 @@ function App() {
                   />
                 }
               >
-                <Route index element={<CourseDetailPage />} />
+                {/* <Route index element={<CourseDetailPage />} /> */}
               </Route>
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
@@ -118,8 +115,8 @@ function App() {
                 <Route path="blog" element={<BlogManagement />} />
                 <Route path="course-log" element={<CourseLog />} />
                 <Route path="purchase-log" element={<PurchaseLog />} />
-                <Route path="settings" element={<AdminSetting />} >
-                <Route index element={<AdminProfile />} />
+                <Route path="settings" element={<AdminSetting />}>
+                  <Route index element={<AdminProfile />} />
                   <Route
                     path="change-password"
                     element={<AdminChangePassword />}
@@ -146,29 +143,29 @@ function App() {
                   />
                 </Route>
                 <Route path="order" element={<InstructorOrder />} />
-                <Route path="sales-history" element={<InstructorSalesHistory />} />
+                <Route
+                  path="sales-history"
+                  element={<InstructorSalesHistory />}
+                />
                 <Route path="my-courses" element={<InstructorCourses />}>
                   <Route index element={<InstructorCourseList />} />
                   <Route path="session" element={<IntructorSessionList />} />
                   <Route path="lesson" element={<InstructorLessonList />} />
                 </Route>
-              
+
                 <Route path="course-log" element={<InstructorCourseLog />} />
                 <Route
                   path="purchase-log"
                   element={<InstructorPurchaseLog />}
                 />
                 <Route path="earning" element={<InstructorEarning />} />
-                <Route path="subscription" element={<InstructorSubscription />} >
-                <Route index element={<InstructorSubscribed />} />
-                  <Route
-                    path="subscriber"
-                    element={<InstructorSubscriber />}
-                  />
+                <Route path="subscription" element={<InstructorSubscription />}>
+                  <Route index element={<InstructorSubscribed />} />
+                  <Route path="subscriber" element={<InstructorSubscriber />} />
                 </Route>
                 <Route path="review" element={<InstructorReview />} />
-                <Route path="settings" element={<InstructorSetting />} >
-                <Route index element={<InstructorProfile />} />
+                <Route path="settings" element={<InstructorSetting />}>
+                  <Route index element={<InstructorProfile />} />
                   <Route
                     path="change-password"
                     element={<InstructorChangePassword />}

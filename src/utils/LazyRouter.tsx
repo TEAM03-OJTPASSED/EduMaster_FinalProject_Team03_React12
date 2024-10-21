@@ -72,12 +72,12 @@ export const InstructorLessonList = React.lazy(
       "../pages/InstructorDashboard/instructor-monitor/InstructorLessonList"
     )
 );
-export const InstructorCreateCourse = React.lazy(
-  () =>
-    import(
-      "../pages/InstructorDashboard/instructor-monitor/InstructorCreateCourse"
-    )
-);
+// export const InstructorCreateCourse = React.lazy(
+//   () =>
+//     import(
+//       "../pages/InstructorDashboard/instructor-monitor/InstructorCreateCourse"
+//     )
+// );
 export const InstructorCourseLog = React.lazy(
   () =>
     import("../pages/InstructorDashboard/instructor-report/InstructorCourseLog")
@@ -92,17 +92,18 @@ export const InstructorEarning = React.lazy(
   () =>
     import("../pages/InstructorDashboard/instructor-report/InstructorEarning")
 );
-export const InstructorDiscount = React.lazy(
-  () =>
-    import(
-      "../pages/InstructorDashboard/instructor-management/InstructorDiscount"
-    )
-);
+// export const InstructorDiscount = React.lazy(
+//   () =>
+//     import(
+//       "../pages/InstructorDashboard/instructor-management/InstructorDiscount"
+//     )
+// );
 export const InstructorReview = React.lazy(
   () => import("../pages/InstructorDashboard/InstructorReview")
 );
 export const InstructorSetting = React.lazy(
-  () => import("../pages/InstructorDashboard/instructor-setting/InstructorSetting")
+  () =>
+    import("../pages/InstructorDashboard/instructor-setting/InstructorSetting")
 );
 
 export const AdminContent = React.lazy(

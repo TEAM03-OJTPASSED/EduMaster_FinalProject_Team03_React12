@@ -45,7 +45,7 @@ const AdminContent = () => {
       title: "	Amount",
       dataIndex: "amount",
       key: "amount",
-      render: (amount: num) => (
+      render: (amount: number) => (
         <Typography.Text style={{ color: "#16DBAA", fontWeight: 500 }}>
           ${amount}
         </Typography.Text>
