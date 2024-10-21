@@ -16,10 +16,10 @@ const InstructorSetting = () => {
   const handleSelectMenu: MenuProps["onClick"] = (e) => {
     switch (e.key) {
       case "Profile":
-        naviagte("/instructor/settings");
+        naviagte("/dashboard/instructor/settings");
         break;
       case "Change Password":
-        naviagte("/instructor/settings/change-password");
+        naviagte("/dashboard/instructor/settings/change-password");
         break;
       default:
         break;

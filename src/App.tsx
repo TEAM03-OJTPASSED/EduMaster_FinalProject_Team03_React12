@@ -13,7 +13,6 @@ import UserManagement from "./pages/AdminDashboard/userManagement";
 import RequestUser from "./pages/AdminDashboard/RequestUser";
 import CategoryManagement from "./pages/AdminDashboard/categoryManagement";
 import AllCourse from "./pages/AdminDashboard/monitors/course/AllCourse";
-
 import SessionList from "./pages/AdminDashboard/monitors/course/SessionList";
 import LessonList from "./pages/AdminDashboard/monitors/course/LessonList";
 import PendingCourse from "./pages/AdminDashboard/monitors/pending_course/PendingCourse";
@@ -67,6 +66,7 @@ import AdminSetting from "./pages/AdminDashboard/setting/AdminSetting";
 import AdminProfile from "./pages/AdminDashboard/setting/AdminProfile";
 import InstructorSalesHistory from "./pages/InstructorDashboard/instructor-management/InstructorSalesHistory";
 import LearnCoursePage from "./pages/LearnCoursePage";
+import TopUpPage from "./pages/topup/TopupPage";
 import AdminRequestPayout from "./pages/AdminDashboard/payout/RequestPayout";
 import AdminCompletedPayout from "./pages/AdminDashboard/payout/CompletedPayout";
 import AdminRejectedPayout from "./pages/AdminDashboard/payout/RejectedPayout";
@@ -97,16 +97,15 @@ function App() {
 
               <Route path="/learn/:id" element={<LearnCoursePage />} />
               <Route
-                    path="cart/checkout"
-                    element={
-                      <ProtectedRoute
-                        allowedRoles={["student", "instructor", "admin"]}
-                      >
-                        <CheckoutPage />
-                      </ProtectedRoute>
-                    }
-                  />  
-              
+                path="cart/checkout"
+                element={
+                  <ProtectedRoute
+                    allowedRoles={["student", "instructor", "admin"]}
+                  >
+                    <CheckoutPage />
+                  </ProtectedRoute>
+                }
+              />
             </Route>
 
             {/* Admin Layout */}
@@ -127,6 +126,7 @@ function App() {
                     element={<AdminCompletedPayout />}
                   />
                   <Route path="rejected-payout" element={<AdminRejectedPayout />} />
+                <Route path="topup" element={<TopUpPage />} />
                 </Route>
                 <Route path="all-courses" element={<AllCourse />}>
                   <Route index element={<CourseLists />} />
@@ -161,6 +161,9 @@ function App() {
               <Route element={<InstructorLayout />}>
                 <Route index element={<InstructorContent />} />
                 <Route path="dashboard" element={<InstructorContent />} />
+                <Route path="my-learning" element={<StudentCourses />} />
+                <Route path="topup" element={<TopUpPage />} />
+
                 <Route path="payout" element={<InstructorPayout />}>
                   <Route index element={<RequestPayout />} />
                   <Route
@@ -216,6 +219,7 @@ function App() {
                 <Route index element={<StudentContent />} />
                 <Route path="profile" element={<StudentProfile />} />
                 <Route path="my-courses" element={<StudentCourses />} />
+                <Route path="topup" element={<TopUpPage />} />
                 <Route path="orders" element={<StudentOrders />} />
                 <Route path="subscriptions" element={<StudentSubscription />} />
               </Route>

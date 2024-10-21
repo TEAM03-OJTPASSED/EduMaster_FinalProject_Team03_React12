@@ -2,9 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import { Button, Dropdown, Input, InputRef, MenuProps, Space, Drawer } from "antd"; // Import Drawer
 import { DownOutlined, MenuOutlined, ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
 import logoImage from "../assets/EduMaster.png";
-import { useCustomNavigate } from "../hooks/customNavigate";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useLocation } from "react-router-dom";
+import { useCustomNavigate } from "../hooks/customNavigate";
 
 // Define the type for menu items
 interface MenuItem {
@@ -108,11 +108,36 @@ const Navbar = () => {
     items: [
       { label: "Profile", key: "profile" },
       { label: "Settings", key: "settings" },
-      { label: "My Dashboard", key: "dashboard", onClick: () => { 
+      {
+        label: "My Dashboard",
+        key: "dashboard",
+        onClick: () => {
           navigate(`/dashboard/${JSON.parse(storedUser ?? "").role}`);
         },
       },
-      { label: "Logout", key: "logout", onClick: () => { 
+      {
+        label: "Balance",
+        key: "balance",
+        children: [
+          {
+            label: `Current Balance: đ200,000`, // Display balance
+            key: "current-balance",
+            disabled: true, // Disable interaction for the balance display
+          },
+          {
+            label: "Top Up",
+            key: "topup",
+            onClick: () => {
+              navigate(`/dashboard/${JSON.parse(storedUser ?? "").role}/topup`);
+              ; 
+            },
+          },
+        ],
+      },
+      {
+        label: "Logout",
+        key: "logout",
+        onClick: () => {
           localStorage.removeItem("User");
           setUserLoggedIn(false);
           navigate("/login");
