@@ -86,21 +86,23 @@ function App() {
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/faqs" element={<FAQsPage />} />
               <Route path="/*" element={<ErrorPage />} />
-              <Route path="/cart" element={<CartPage />} />
+              <Route path="cart" element={<CartPage />} />
               <Route path="/blog-detail/:id" element={<BlogDetailPage />} />
               <Route path="/course-detail/:id" element={<CourseDetailPage />} />
               <Route path="/firebase" element={<Firebase />} />
+
               <Route path="/learn/:id" element={<LearnCoursePage />} />
               <Route
-                path="/checkout"
-                element={
-                  <ProtectedRoute
-                    allowedRoles={["student", "instructor", "admin"]}
-                  >
-                    <CheckoutPage />
-                  </ProtectedRoute>
-                }
-              />
+                    path="cart/checkout"
+                    element={
+                      <ProtectedRoute
+                        allowedRoles={["student", "instructor", "admin"]}
+                      >
+                        <CheckoutPage />
+                      </ProtectedRoute>
+                    }
+                  />  
+              
             </Route>
 
             {/* Admin Layout */}
