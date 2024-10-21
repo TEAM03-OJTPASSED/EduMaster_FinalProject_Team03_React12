@@ -9,8 +9,6 @@ import {
   Space,
   Typography,
   Alert,
-  Statistic,
-  Spin,
 } from "antd";
 
 const { Text } = Typography;
