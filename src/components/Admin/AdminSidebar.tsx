@@ -10,6 +10,7 @@ import {
   FolderOutlined,
   MoneyCollectOutlined,
   FileTextOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
@@ -98,6 +99,12 @@ const menuItems: MenuItem[] = [
         path: "/dashboard/admin/purchase-log",
       },
     ],
+  },
+  {
+    key: "settings",
+    icon: <SettingOutlined />,
+    label: "Settings",
+    path: "/dashboard/admin/settings",
   },
 ];
 

@@ -131,10 +131,7 @@ function App() {
                 <Route path="purchase-log" element={<PurchaseLog />} />
                 <Route path="settings" element={<AdminSetting />}>
                   <Route index element={<AdminProfile />} />
-                  <Route
-                    path="change-password"
-                    element={<AdminChangePassword />}
-                  />
+                  <Route path="change-password"element={<AdminChangePassword />} />
                 </Route>
               </Route>
             </Route>
@@ -162,10 +159,6 @@ function App() {
                   element={<InstructorSalesHistory />}
                 />
                 <Route path="order" element={<InstructorOrder />} />
-                {/* <Route
-                  path="sales-history"
-                  element={<InstructorSalesHistory />}
-                /> */}
                 <Route path="my-courses" element={<InstructorCourses />}>
                   <Route index element={<InstructorCourseList />} />
                   <Route path="session" element={<IntructorSessionList />} />
@@ -184,10 +177,7 @@ function App() {
                 <Route path="review" element={<InstructorReview />} />
                 <Route path="settings" element={<InstructorSetting />}>
                   <Route index element={<InstructorProfile />} />
-                  <Route
-                    path="change-password"
-                    element={<InstructorChangePassword />}
-                  />
+                  <Route path="change-password" element={<InstructorChangePassword />} />
                 </Route>
               </Route>
             </Route>

@@ -16,10 +16,10 @@ const AdminSetting = () => {
   const handleSelectMenu: MenuProps["onClick"] = (e) => {
     switch (e.key) {
       case "Profile":
-        naviagte("/admin/settings");
+        naviagte("/dashboard/admin/settings");
         break;
       case "Change Password":
-        naviagte("/admin/settings/change-password");
+        naviagte("/dashboard/admin/settings/change-password");
         break;
       default:
         break;
