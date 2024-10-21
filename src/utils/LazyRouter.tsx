@@ -153,3 +153,4 @@ export const BlogDetailPage = React.lazy(
 export const PayoutManagement = React.lazy(
   () => import("../pages/AdminDashboard/payoutManagement")
 );
+export const LearnCourse = React.lazy(() => import("../pages/LearnCoursePage"));

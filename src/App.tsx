@@ -66,6 +66,7 @@ import AdminChangePassword from "./pages/AdminDashboard/setting/AdminChangePassw
 import AdminSetting from "./pages/AdminDashboard/setting/AdminSetting";
 import AdminProfile from "./pages/AdminDashboard/setting/AdminProfile";
 import InstructorSalesHistory from "./pages/InstructorDashboard/instructor-management/InstructorSalesHistory";
+import LearnCoursePage from "./pages/LearnCoursePage";
 
 function App() {
   return (
@@ -89,6 +90,7 @@ function App() {
               <Route path="/blog-detail/:id" element={<BlogDetailPage />} />
               <Route path="/course-detail/:id" element={<CourseDetailPage />} />
               <Route path="/firebase" element={<Firebase />} />
+              <Route path="/learn/:id" element={<LearnCoursePage />} />
               <Route
                 path="/checkout"
                 element={
@@ -153,10 +155,7 @@ function App() {
                     path="completed-payout"
                     element={<CompletedPayout />}
                   />
-                  <Route
-                    path="rejected-payout"
-                    element={<RejectedPayout />}
-                  />
+                  <Route path="rejected-payout" element={<RejectedPayout />} />
                 </Route>
                 <Route
                   path="salesHistory"
