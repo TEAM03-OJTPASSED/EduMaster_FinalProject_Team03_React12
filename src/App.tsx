@@ -119,14 +119,16 @@ function App() {
                 <Route path="users" element={<UserManagement />} />
                 <Route path="request-management" element={<RequestUser />} />
                 <Route path="categories" element={<CategoryManagement />} />
+                <Route path="top-up" element={<TopUpPage />} />
+
                 <Route path="payout" element={<AdminPayout />}>
+
                   <Route index element={<AdminRequestPayout />} />
                   <Route
                     path="completed-payout"
                     element={<AdminCompletedPayout />}
                   />
                   <Route path="rejected-payout" element={<AdminRejectedPayout />} />
-                <Route path="topup" element={<TopUpPage />} />
                 </Route>
                 <Route path="all-courses" element={<AllCourse />}>
                   <Route index element={<CourseLists />} />
@@ -162,7 +164,7 @@ function App() {
                 <Route index element={<InstructorContent />} />
                 <Route path="dashboard" element={<InstructorContent />} />
                 <Route path="my-learning" element={<StudentCourses />} />
-                <Route path="topup" element={<TopUpPage />} />
+                <Route path="top-up" element={<TopUpPage />} />
 
                 <Route path="payout" element={<InstructorPayout />}>
                   <Route index element={<RequestPayout />} />
@@ -219,7 +221,7 @@ function App() {
                 <Route index element={<StudentContent />} />
                 <Route path="profile" element={<StudentProfile />} />
                 <Route path="my-courses" element={<StudentCourses />} />
-                <Route path="topup" element={<TopUpPage />} />
+                <Route path="top-up" element={<TopUpPage />} />
                 <Route path="orders" element={<StudentOrders />} />
                 <Route path="subscriptions" element={<StudentSubscription />} />
               </Route>

@@ -126,9 +126,9 @@ const Navbar = () => {
           },
           {
             label: "Top Up",
-            key: "topup",
+            key: "top-up",
             onClick: () => {
-              navigate(`/dashboard/${JSON.parse(storedUser ?? "").role}/topup`);
+              navigate(`/dashboard/${JSON.parse(storedUser ?? "").role}/top-up`);
               ; 
             },
           },
