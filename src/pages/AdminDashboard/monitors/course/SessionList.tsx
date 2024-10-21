@@ -1,11 +1,9 @@
 import { Table, Input, Card, TableProps } from "antd";
-import { SearchOutlined} from "@ant-design/icons";
+import { SearchOutlined } from "@ant-design/icons";
 import { listSessions, Session } from "./courseList";
 import dayjs from "dayjs";
 
 const SessionList = () => {
- 
-
   const columns: TableProps<Session>["columns"] = [
     {
       title: "Name",
@@ -25,9 +23,7 @@ const SessionList = () => {
         return <div>{dayjs(created_at).format("DD/MM/YYYY")}</div>;
       },
     },
-   
   ];
-
 
   return (
     <Card>
@@ -46,7 +42,6 @@ const SessionList = () => {
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
       />
-
     </Card>
   );
 };

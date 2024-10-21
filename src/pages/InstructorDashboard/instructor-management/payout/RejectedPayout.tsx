@@ -1,22 +1,19 @@
-import { Card, Input, Table, Tag, TableProps, Button } from "antd";
-import { CheckOutlined, CloseOutlined, SearchOutlined } from "@ant-design/icons";
+import { Card, Input, Table, TableProps, Tag } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 import {
   Payout,
   payouts,
   PayoutStatusEnum,
 } from "../../../AdminDashboard/monitors/course/courseList";
-
-import dayjs from "dayjs";
 import { useLocation } from "react-router-dom";
 
-const RequestPayout = () => {
+
+const RejectedPayout = () => {
   const location = useLocation();
 
   const { status } = location.state || {};
 
-  const filterdPayouts = payouts.filter((payout) =>
-    Array.isArray(status) ? status.includes(payout.status) : payout.status === status
-  );
+  const filterdPayouts = payouts.filter((payout) => payout.status === status);
 
   const columns: TableProps<Payout>["columns"] = [
     {
@@ -29,21 +26,11 @@ const RequestPayout = () => {
       dataIndex: "status",
       key: "status",
       render: (status: PayoutStatusEnum) => {
-        if (status === "New") {
-          return <Tag color="blue">New</Tag>;
-        } else if (status === "Request Payout") {
-          return <Tag color="yellow">Request Payout</Tag>
+        if (status === "Rejected") {
+          return <Tag color="red">Rejected</Tag>
         }
       },
     },
-    // {
-    //   title: "Created at",
-    //   dataIndex: "created_at",
-    //   key: "created_at",
-    //   render: (created_at) => {
-    //     return <div>{dayjs(created_at).format("DD/MM/YYYY")}</div>;
-    //   },
-    // },
     {
       title: "Transaction ID",
       dataIndex: "transaction_id",
@@ -64,36 +51,7 @@ const RequestPayout = () => {
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
     },
-    {
-      title: "Action",
-      key: "action",
-      render: (_, record: Payout) => (
-        <>
-          <Button
-            type="text"
-            className="text-green-600"
-            icon={<CheckOutlined />}
-            disabled={
-              record.status !== PayoutStatusEnum.request_payout &&
-              record.status !== PayoutStatusEnum.new
-            }
-          >
-            Approve
-          </Button>
-          <Button
-            className="text-red-600"
-            type="text"
-            icon={<CloseOutlined />}
-            disabled={
-              record.status !== PayoutStatusEnum.request_payout &&
-              record.status !== PayoutStatusEnum.new
-            }
-          >
-            Reject
-          </Button>
-        </>
-      ),
-    },
+    
   ];
 
   return (
@@ -118,4 +76,4 @@ const RequestPayout = () => {
     </Card>
   );
 };
-export default RequestPayout;
+export default RejectedPayout;

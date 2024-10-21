@@ -1,4 +1,4 @@
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { Layout } from "antd";
 import DynamicBreadcrumb from "../components/Breadcrumb/Breadcrumb";
@@ -25,7 +25,7 @@ const InstructorLayout: React.FC = () => {
       <Layout
         style={{
           marginLeft: isMobile ? 0 : 250, // MarginLeft cho desktop
-          padding: "24px 24px 0 24px",
+          padding: "0px 24px 0 24px",
           marginTop: "80px",
         }}
       >
@@ -34,7 +34,7 @@ const InstructorLayout: React.FC = () => {
           style={{
             borderRadius: "15px",
             padding: "8px",
-            backgroundColor: "#fff",
+            backgroundColor: "#e8ebee",
             minHeight: "80vh",
           }}
         >

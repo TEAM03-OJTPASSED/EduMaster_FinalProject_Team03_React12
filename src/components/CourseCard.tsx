@@ -63,7 +63,7 @@ const CourseCard: React.FC<{
                 alt={course.name}
                 src={"https://picsum.photos/400/192"}
                 className={`${
-                  viewMode === "list" ? "min-w-[250px] w-[250px]" : "w-full"
+                  viewMode === "list" ? "min-w-[200px]   transition-all w-[200px] md:min-w-[250px] md:w-[250px]" : "w-full"
                 } h-56 object-cover`}
               />
               <Tag className="absolute top-2 left-2 bg-black text-white">
@@ -71,7 +71,7 @@ const CourseCard: React.FC<{
               </Tag>
             </div>
           }
-          className={`h-full rounded-3xl overflow-hidden group font-jost  hover:-translate-y-2 transition-all duration-500 ${
+          className={`${viewMode==="list"&&" h-[200px] md:"}h-full rounded-3xl overflow-hidden group font-jost  hover:-translate-y-2 transition-all duration-500 ${
             viewMode === "list" ? "flex" : ""
           }`}
         >

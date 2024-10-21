@@ -58,7 +58,6 @@ const LessonList = () => {
       dataIndex: "full_time",
       key: "full_time",
     },
-  
   ];
 
   return (

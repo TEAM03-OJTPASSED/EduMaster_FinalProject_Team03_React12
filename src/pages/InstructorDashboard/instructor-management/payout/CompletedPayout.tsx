@@ -1,17 +1,35 @@
-import { Card, Input, Table, TableProps } from "antd";
+import { Card, Input, Table, TableProps, Tag } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import {
   Payout,
   payouts,
+  PayoutStatusEnum,
 } from "../../../AdminDashboard/monitors/course/courseList";
+import { useLocation } from "react-router-dom";
 
 
 const CompletedPayout = () => {
+  const location = useLocation();
+
+  const { status } = location.state || {};
+
+  const filterdPayouts = payouts.filter((payout) => payout.status === status);
+
   const columns: TableProps<Payout>["columns"] = [
     {
       title: "Payout No",
       dataIndex: "payout_no",
       key: "payout_no",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status: PayoutStatusEnum) => {
+        if (status === "Completed") {
+          return <Tag color="green">Completed</Tag>
+        }
+      },
     },
     {
       title: "Transaction ID",
@@ -25,14 +43,15 @@ const CompletedPayout = () => {
     },
     {
       title: "Balance Instructor Paid",
-      dataIndex: "balance_paid",
-      key: "balance_paid",
+      dataIndex: "balance_instructor_paid",
+      key: "balance_instructor_paid",
     },
     {
       title: "Balance Instructor Received",
-      dataIndex: "balance_received",
-      key: "balance_received",
+      dataIndex: "balance_instructor_received",
+      key: "balance_instructor_received",
     },
+    
   ];
 
   return (
@@ -46,7 +65,7 @@ const CompletedPayout = () => {
         style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
       />
       <Table
-        dataSource={payouts}
+        dataSource={filterdPayouts}
         columns={columns}
         pagination={{ pageSize: 5 }}
         rowKey="name"

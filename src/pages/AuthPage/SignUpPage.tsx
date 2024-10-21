@@ -15,6 +15,8 @@ const onFinish: FormProps<RegisterType>["onFinish"] = (values) => {
 
 const SignUppage = () => {
   return (
+    <div className="flex items-center min-h-screen">
+
     <div className="w-full lg:flex lg:h-[35rem] lg:flex-row lg:rounded-lg overflow-hidden shadow-xl">
       {/* BACKGROUND */}
       <div className="lg:w-1/2 bg-gray-100 flex items-center justify-center">
@@ -118,6 +120,7 @@ const SignUppage = () => {
           </Form.Item>
         </Form>
       </div>
+    </div>
     </div>
   );
 };

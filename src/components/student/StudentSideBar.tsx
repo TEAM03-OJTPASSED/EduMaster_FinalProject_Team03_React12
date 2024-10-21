@@ -8,7 +8,7 @@ import {
   StarOutlined,
 } from "@ant-design/icons";
 import { useCustomNavigate } from "../../hooks/customNavigate";
-import { GoListOrdered } from "react-icons/go";
+// import { GoListOrdered } from "react-icons/go";
 
 const { Sider } = Layout;
 
@@ -44,12 +44,12 @@ const StudentMenuItems: MenuItem[] = [
     title: "Profile",
     path: "/dashboard/student/profile",
   },
-  {
-    key: "orders",
-    icon: <GoListOrdered />,
-    title: "Orders",
-    path: "/dashboard/student/orders",
-  }, 
+  // {
+  //   key: "orders",
+  //   icon: <GoListOrdered />,
+  //   title: "Orders",
+  //   path: "/dashboard/student/orders",
+  // }, 
   {
     key: "subscriptions",
     icon: <StarOutlined />,

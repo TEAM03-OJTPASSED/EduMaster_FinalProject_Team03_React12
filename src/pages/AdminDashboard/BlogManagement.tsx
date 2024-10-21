@@ -104,7 +104,7 @@ const BlogManagement = () => {
         dataSource={listBlogs}
         columns={columns}
         pagination={{ pageSize: 5 }}
-        rowKey="name"
+        rowKey="id"
         bordered
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}

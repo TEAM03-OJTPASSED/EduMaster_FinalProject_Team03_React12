@@ -7,9 +7,10 @@ import {
 } from "@ant-design/icons";
 
 import useSearch from "../../hooks/useSearch";
+import { users } from "./monitors/course/courseList";
 
 const { Option } = Select;
-const { TabPane } = Tabs;
+// const { TabPane } = Tabs;
 
 /*
 GET /users - Lấy danh sách tất cả người dùng.
@@ -19,65 +20,19 @@ PUT /users/:id - Cập nhật thông tin người dùng.
 DELETE /users/:id - Xóa người dùng.
 */
 
-// interface User {
-//   key: string;
-//   name: string;
-//   email: string;
-//   phone: string;
-//   username: string;
-//   status: boolean;
-//   role: string;
-//   verified: boolean;
-//   blocked: boolean;
-//   createdAt: string;
-// }
-
 const UserManagement: React.FC = () => {
-  const [dataSource, setDataSource] = useState([
-    {
-      key: "1",
-      name: "Nguyễn Văn A",
-      email: "a@example.com",
-      phone: "0123456789",
-      username: "nguyenvana",
-      status: true, // Tài khoản được kích hoạt
-      role: "Admin",
-      verified: true, // Đã xác minh
-      blocked: false, // Không bị khóa
-      createdAt: "2023-01-15",
-    },
-    {
-      key: "2",
-      name: "Trần Thị B",
-      email: "b@example.com",
-      phone: "0987654321",
-      username: "tranthib",
-      status: false, // Tài khoản không kích hoạt
-      role: "Instructor",
-      verified: false, // Chưa xác minh
-      blocked: false, // Không bị khóa
-      createdAt: "2023-02-20",
-    },
-    {
-      key: "3",
-      name: "Lê Văn C",
-      email: "c@example.com",
-      phone: "0912345678",
-      username: "levanc",
-      status: true, // Tài khoản kích hoạt
-      role: "Student",
-      verified: true, // Đã xác minh
-      blocked: true, // Tài khoản bị khóa
-      createdAt: "2023-03-05",
-    },
-  ]);
-
   const [editVisible, setEditVisible] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-  const { searchText, filteredData, handleSearchChange } = useSearch(
-    dataSource,
-    ["name", "email"]
-  ); // useSearch hook
+  // Các bộ lọc cho các tab
+  // const allUsers = dataSource;
+  const unverifiedAccounts = users.filter((user: any) => !user.verified);
+  const blockedAccounts = users.filter((user: any) => user.blocked);
+
+  // Sử dụng useSearch với users
+  const { searchText, filteredData, handleSearchChange } = useSearch(users, [
+    "name",
+    "email",
+  ]);
 
   const handleEdit = (record: any) => {
     setCurrentUser(record);
@@ -94,21 +49,21 @@ const UserManagement: React.FC = () => {
   //   // Thực hiện logic lưu user
   // };
 
-  const handleStatusChange = (checked: any, key: any) => {
-    // Update trạng thái tài khoản
-    const updatedData = dataSource.map((user) =>
-      user.key === key ? { ...user, status: checked } : user
-    );
-    setDataSource(updatedData);
-  };
+  // const handleStatusChange = (checked: any, key: any) => {
+  //   // Update trạng thái tài khoản
+  //   const updatedData = dataSource.map((user) =>
+  //     user.key === key ? { ...user, status: checked } : user
+  //   );
+  //   setDataSource(updatedData);
+  // };
 
-  const handleRoleChange = (value: any, key: any) => {
-    // Update vai trò
-    const updatedData = dataSource.map((user) =>
-      user.key === key ? { ...user, role: value } : user
-    );
-    setDataSource(updatedData);
-  };
+  // const handleRoleChange = (value: any, key: any) => {
+  //   // Update vai trò
+  //   const updatedData = dataSource.map((user) =>
+  //     user.key === key ? { ...user, role: value } : user
+  //   );
+  //   setDataSource(updatedData);
+  // };
 
   const columns = [
     {
@@ -135,10 +90,11 @@ const UserManagement: React.FC = () => {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
-      render: (text: any, record: any) => (
+      // render: (text: any, record: any) => (
+      render: () => (
         <Switch
-          checked={text}
-          onChange={(checked) => handleStatusChange(checked, record.key)}
+        // checked={text}
+        // onChange={(checked) => handleStatusChange(checked, record.key)}
         />
       ),
     },
@@ -146,11 +102,11 @@ const UserManagement: React.FC = () => {
       title: "Loại người dùng",
       dataIndex: "role",
       key: "role",
-      render: (text: any, record: any) => (
+      render: (text: string) => (
         <Select
           defaultValue={text}
           style={{ width: 120 }}
-          onChange={(value) => handleRoleChange(value, record.key)}
+          // onChange={(value) => handleRoleChange(value, record.key)}
         >
           <Option value="Admin">Admin</Option>
           <Option value="Instructor">Instructor</Option>
@@ -161,27 +117,66 @@ const UserManagement: React.FC = () => {
     {
       title: "Hành động",
       key: "action",
-      render: (record: any) => (
+      render: (record: string) => (
         <Space size="middle">
-          <Button icon={<EditOutlined />} onClick={() => handleEdit(record)}>
-            Chỉnh sửa
-          </Button>
+          <Button
+            icon={<EditOutlined />}
+            onClick={() => handleEdit(record)}
+          ></Button>
           <Button
             danger
             icon={<DeleteOutlined />}
             onClick={() => handleDelete(record)}
-          >
-            Xóa
-          </Button>
+          ></Button>
         </Space>
       ),
     },
   ];
 
-  // Các bộ lọc cho các tab
-  // const allUsers = dataSource;
-  const unverifiedAccounts = dataSource.filter((user) => !user.verified);
-  const blockedAccounts = dataSource.filter((user) => user.blocked);
+  const items = [
+    {
+      key: "1",
+      label: "All Users",
+      children: (
+        <Table
+          dataSource={filteredData}
+          columns={columns}
+          pagination={{ pageSize: 5 }}
+          rowKey="key"
+          bordered
+          scroll={{ x: true }}
+        />
+      ),
+    },
+    {
+      key: "2",
+      label: "Unverified Accounts",
+      children: (
+        <Table
+          dataSource={unverifiedAccounts}
+          columns={columns}
+          pagination={{ pageSize: 5 }}
+          rowKey="key"
+          bordered
+          scroll={{ x: true }}
+        />
+      ),
+    },
+    {
+      key: "3",
+      label: "Blocked Accounts",
+      children: (
+        <Table
+          dataSource={blockedAccounts}
+          columns={columns}
+          pagination={{ pageSize: 5 }}
+          rowKey="key"
+          bordered
+          scroll={{ x: true }}
+        />
+      ),
+    },
+  ];
 
   return (
     <div>
@@ -194,42 +189,10 @@ const UserManagement: React.FC = () => {
           placeholder="Search by name or email"
           prefix={<SearchOutlined />}
           className="w-full md:w-1/3 mb-2 md:mb-0"
-          value={searchText} // Liên kết với searchText
-          onChange={handleSearchChange} // Gọi hàm khi người dùng nhập
+          value={searchText}
+          onChange={handleSearchChange}
         />
-        <Tabs defaultActiveKey="1">
-          <TabPane tab="All Users" key="1">
-            <Table
-              // dataSource={allUsers}
-              dataSource={filteredData} // Sử dụng filteredData cho bảng
-              columns={columns}
-              pagination={{ pageSize: 5 }}
-              rowKey="key"
-              bordered
-              scroll={{ x: true }} // Thêm scroll cho bảng
-            />
-          </TabPane>
-          <TabPane tab="Unverified Accounts" key="2">
-            <Table
-              dataSource={unverifiedAccounts}
-              columns={columns}
-              pagination={{ pageSize: 5 }}
-              rowKey="key"
-              bordered
-              scroll={{ x: true }}
-            />
-          </TabPane>
-          <TabPane tab="Blocked Accounts" key="3">
-            <Table
-              dataSource={blockedAccounts}
-              columns={columns}
-              pagination={{ pageSize: 5 }}
-              rowKey="key"
-              bordered
-              scroll={{ x: true }}
-            />
-          </TabPane>
-        </Tabs>
+        <Tabs defaultActiveKey="1" items={items} />
       </Card>
       {/* <EditUserModal
         visible={editVisible}

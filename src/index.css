@@ -245,3 +245,9 @@ h3 {
 .inline-block {
   display: inline-block;
 }
+
+.ant-card-body{
+  padding: 16px !important;
+  overflow: hidden !important
+}
+

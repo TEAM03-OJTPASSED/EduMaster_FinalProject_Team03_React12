@@ -5,7 +5,6 @@ import {
   BarChartOutlined,
   PieChartOutlined,
   LineChartOutlined,
-  SettingOutlined,
   UserOutlined,
   FormOutlined,
   FolderOutlined,
@@ -99,12 +98,6 @@ const menuItems: MenuItem[] = [
         path: "/dashboard/admin/purchase-log",
       },
     ],
-  },
-  {
-    key: "settings",
-    icon: <SettingOutlined />,
-    label: "Back to Home",
-    path: "/",
   },
 ];
 
