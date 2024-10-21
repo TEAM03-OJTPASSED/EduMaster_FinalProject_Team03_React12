@@ -7,7 +7,7 @@ import {
 } from "@ant-design/icons";
 
 import useSearch from "../../hooks/useSearch";
-import { users } from "./monitors/course/couseList";
+import { users } from "./monitors/course/courseList";
 
 const { Option } = Select;
 // const { TabPane } = Tabs;
@@ -25,8 +25,8 @@ const UserManagement: React.FC = () => {
   const [currentUser, setCurrentUser] = useState(null);
   // Các bộ lọc cho các tab
   // const allUsers = dataSource;
-  const unverifiedAccounts = users.filter((user) => !user.verified);
-  const blockedAccounts = users.filter((user) => user.blocked);
+  const unverifiedAccounts = users.filter((user: any) => !user.verified);
+  const blockedAccounts = users.filter((user: any) => user.blocked);
 
   // Sử dụng useSearch với users
   const { searchText, filteredData, handleSearchChange } = useSearch(users, [

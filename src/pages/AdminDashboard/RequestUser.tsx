@@ -1,7 +1,7 @@
 import { Table, Button, Input, Space, Card } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import useSearch from "../../hooks/useSearch";
-import { users } from "./monitors/course/couseList";
+import { users } from "./monitors/course/courseList";
 
 const RequestUser = () => {
   const { searchText, filteredData, handleSearchChange } = useSearch(users, [

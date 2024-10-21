@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Card, Input, Table, Tag } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import { purchaseLog } from "./monitors/course/couseList";
+import { purchaseLog } from "./monitors/course/courseList";
 
 // Cột cho bảng Purchase Log
 const columns = [

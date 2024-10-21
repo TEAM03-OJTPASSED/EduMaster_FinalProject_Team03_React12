@@ -56,6 +56,14 @@ import StudentOrders from "./pages/StudentDashboard/StudentOrders";
 import CourseLists from "./pages/AdminDashboard/monitors/course/CourseLists";
 import StudentSubscription from "./pages/StudentDashboard/StudentSubscriptions";
 import VerifySuccessToken from "./pages/AuthPage/VerifyToken";
+import InstructorChangePassword from "./pages/InstructorDashboard/instructor-setting/InstructorChangePassword";
+import InstructorProfile from "./pages/InstructorDashboard/instructor-setting/InstructorProfile";
+import InstructorSubscribed from "./pages/InstructorDashboard/subscription/InstructorSubscribed";
+import InstructorSubscription from "./pages/InstructorDashboard/subscription/InstructorSubscription";
+import InstructorSubscriber from "./pages/InstructorDashboard/subscription/InstructorSubscriber";
+import AdminChangePassword from "./pages/AdminDashboard/setting/AdminChangePassword";
+import AdminSetting from "./pages/AdminDashboard/setting/AdminSetting";
+import AdminProfile from "./pages/AdminDashboard/setting/AdminProfile";
 
 function App() {
   return (
@@ -145,10 +153,10 @@ function App() {
                   />
                 </Route>
                 <Route path="order" element={<InstructorOrder />} />
-                <Route
+                {/* <Route
                   path="sales-history"
                   element={<InstructorSalesHistory />}
-                />
+                /> */}
                 <Route path="my-courses" element={<InstructorCourses />}>
                   <Route index element={<InstructorCourseList />} />
                   <Route path="session" element={<IntructorSessionList />} />

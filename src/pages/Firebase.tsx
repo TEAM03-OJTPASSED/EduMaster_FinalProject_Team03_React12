@@ -41,15 +41,15 @@ const Firebase = () => {
     uploadBytes(imageRef, imageUpload)
       .then(() => {
         getDownloadURL(imageRef)
-          .then((url) => {
+          .then((url: any) => {
             setImageUrl(url); // Set the uploaded image URL
             message.success("Image uploaded successfully!");
           })
-          .catch((error) => {
+          .catch((error: any) => {
             message.error("Error getting image URL:", error);
           });
       })
-      .catch((error) => {
+      .catch((error: any) => {
         message.error("Upload failed", error);
       });
   };
@@ -63,10 +63,10 @@ const Firebase = () => {
 
     const imageRef = ref(storage, `images/${imageId}`);
     getDownloadURL(imageRef)
-      .then((url) => {
+      .then((url: any) => {
         setFetchedImageUrl(url); // Set the fetched image URL
       })
-      .catch((error) => {
+      .catch((error: any) => {
         message.error("Error fetching image:", error);
         alert("No image found for this ID.");
       });

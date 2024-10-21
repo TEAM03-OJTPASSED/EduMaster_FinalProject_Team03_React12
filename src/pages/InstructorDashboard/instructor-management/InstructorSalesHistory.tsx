@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Card, Input, Table, Tag } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import { salesHistory } from "../../AdminDashboard/monitors/course/couseList";
+import { salesHistory } from "../../AdminDashboard/monitors/course/courseList";
 
 // Cột cho bảng Purchase Log
 const columns = [
@@ -69,7 +69,7 @@ const instructorSaleHistory = () => {
   };
 
   // Lọc danh sách purchase log dựa trên tên khóa học
-  const filteredCourses = salesHistory.filter((course) =>
+  const filteredCourses = salesHistory.filter((course: any) =>
     course.courseName.toLowerCase().includes(searchText.toLowerCase())
   );
 

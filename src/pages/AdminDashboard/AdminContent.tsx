@@ -14,9 +14,8 @@ const cardStyle = {
   boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
   margin: "8px 0",
 };
+
 const AdminContent = () => {
-  const [dataSource] = useState([
-    {
   const [dataSource] = useState([
     {
       key: "1",
@@ -37,6 +36,7 @@ const AdminContent = () => {
       date: "2023-01-15",
     },
   ]);
+
   const columns = [
     {
       title: "Payout Number",
@@ -44,7 +44,7 @@ const AdminContent = () => {
       key: "number",
     },
     {
-      title: "	Amount",
+      title: "Amount",
       dataIndex: "amount",
       key: "amount",
       render: (amount: number) => (
@@ -101,7 +101,7 @@ const AdminContent = () => {
                   Total Balance
                 </h2>
                 <p style={{ fontWeight: "bold", fontSize: "24px", margin: 0 }}>
-                  3249{" "}
+                  3249
                 </p>
               </div>
             </div>
@@ -139,7 +139,7 @@ const AdminContent = () => {
                   Total Categories
                 </h2>
                 <p style={{ fontWeight: "bold", fontSize: "24px", margin: 0 }}>
-                  3{" "}
+                  3
                 </p>
               </div>
             </div>
@@ -179,7 +179,7 @@ const AdminContent = () => {
                   Total Courses
                 </h2>
                 <p style={{ fontWeight: "bold", fontSize: "24px", margin: 0 }}>
-                  249{" "}
+                  249
                 </p>
               </div>
             </div>
@@ -217,7 +217,7 @@ const AdminContent = () => {
                   Total Users
                 </h2>
                 <p style={{ fontWeight: "bold", fontSize: "24px", margin: 0 }}>
-                  249{" "}
+                  249
                 </p>
               </div>
             </div>
@@ -257,7 +257,7 @@ const AdminContent = () => {
                   Total Blogs
                 </h2>
                 <p style={{ fontWeight: "bold", fontSize: "24px", margin: 0 }}>
-                  249{" "}
+                  249
                 </p>
               </div>
             </div>
@@ -273,7 +273,7 @@ const AdminContent = () => {
         pagination={{ pageSize: 5 }}
         rowKey="key"
         style={{ borderRadius: "8px" }}
-        scroll={{ x: true }} // Thêm scroll cho bảng
+        scroll={{ x: true }}
       />
     </div>
   );

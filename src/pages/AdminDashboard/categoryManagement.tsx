@@ -9,7 +9,7 @@ import { useState } from "react";
 import CreateCategoryModal from "../../components/Admin/AdminModals/CreateCategoryModal";
 import UpdateCategoryModal from "../../components/Admin/AdminModals/UpdateCategoryModal";
 import useSearch from "../../hooks/useSearch";
-import { category } from "./monitors/course/couseList";
+import { category } from "./monitors/course/courseList";
 
 const { Option } = Select;
 

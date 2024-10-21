@@ -10,9 +10,8 @@ export enum CourseStatusEnum {
 export enum CoursePriceType {
   FREE = "Free",
   PAID = "Paid",
-  FREE = "Free",
-  PAID = "Paid",
 }
+
 export enum LessonTypeEnum {
   video = "video",
   image = "image",

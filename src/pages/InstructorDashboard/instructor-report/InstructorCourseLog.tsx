@@ -4,7 +4,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import {
   CourseStatusEnum,
   listCourses,
-} from "../../AdminDashboard/monitors/course/couseList";
+} from "../../AdminDashboard/monitors/course/courseList";
 
 // Cột cho bảng Course Log
 const columns = [
@@ -65,7 +65,7 @@ const InstructorCourseLog = () => {
   };
 
   // Lọc danh sách khóa học dựa trên tên
-  const filteredCourses = listCourses.filter((course) =>
+  const filteredCourses = listCourses.filter((course: any) =>
     course.name.toLowerCase().includes(searchText.toLowerCase())
   );
 
