@@ -3,7 +3,6 @@ import { Menu } from "antd";
 import {
   DashboardOutlined,
   BarChartOutlined,
-  PieChartOutlined,
   LineChartOutlined,
   UserOutlined,
   FormOutlined,
@@ -64,13 +63,6 @@ const menuItems: MenuItem[] = [
         label: "Blog",
         path: "/dashboard/admin/blog",
       },
-    ],
-  },
-  {
-    key: "monitor",
-    icon: <PieChartOutlined />,
-    label: "Monitor",
-    items: [
       {
         key: "all-courses",
         label: "All Courses",

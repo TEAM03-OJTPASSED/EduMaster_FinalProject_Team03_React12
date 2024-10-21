@@ -49,7 +49,7 @@ export const InstructorPayout = React.lazy(
 );
 export const InstructorOrder = React.lazy(
   () =>
-    import("../pages/InstructorDashboard/instructor-management/InstructorOrder")
+    import("../pages/InstructorDashboard/instructor-management/InstructorLearning")
 );
 export const InstructorCourses = React.lazy(
   () =>

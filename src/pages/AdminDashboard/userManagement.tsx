@@ -184,7 +184,7 @@ const UserManagement: React.FC = () => {
       <div className="hidden">{editVisible}</div>
       <div className="hidden">{currentUser}</div>
       <Card>
-        <h3 className="text-2xl mb-4">User Management</h3>
+        <h3 className="text-2xl my-5">User Management</h3>
         <Input
           placeholder="Search by name or email"
           prefix={<SearchOutlined />}
