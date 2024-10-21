@@ -26,24 +26,18 @@ export default function CoursesGrid({ viewMode, courses, onAddCartClick }: Cours
   return (
     <Row gutter={[20, 20]} className="mt-8">
       {!courses
-        ? Array.from({ length: 6 }).map((_, index) => (
-            <Col
-              xs={24}
-              sm={viewMode === "list" ? 24 : 12}
-              md={viewMode === "list" ? 24 : 12}
-              lg={viewMode === "list" ? 24 : 8}
-              key={index}
-            >
+        ? 
               <Skeleton active paragraph={{ rows: 4 }} />
-            </Col>
-          ))
         : courses.map((course, index) => (
             <Col
               xs={24}
               sm={viewMode === "list" ? 24 : 12}
               md={viewMode === "list" ? 24 : 12}
-              lg={viewMode === "list" ? 24 : 8}
+              lg={viewMode === "list" ? 24 : 12}
+              xl={viewMode === "list" ? 24 : 8}
+
               key={course.id}
+              // className="transition-all"
             >
               <CourseCard course={course} index={index} viewMode={viewMode} onAddCartClick={onAddCartClick} />
             </Col>
