@@ -115,7 +115,6 @@ function App() {
                 <Route path="request-management" element={<RequestUser />} />
                 <Route path="categories" element={<CategoryManagement />} />
                 <Route path="payout" element={<PayoutManagement />} />
-
                 <Route path="all-courses" element={<AllCourse />}>
                   <Route index element={<CourseLists />} />
                   <Route path="session" element={<SessionList />} />

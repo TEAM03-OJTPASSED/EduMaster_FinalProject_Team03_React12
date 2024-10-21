@@ -39,4 +39,4 @@ const AdminSetting = () => {
   );
 };
 
-export default AdminSetting
+export default AdminSetting;
