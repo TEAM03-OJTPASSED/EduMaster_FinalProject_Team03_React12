@@ -36,7 +36,6 @@ import IntructorSessionList from "./pages/InstructorDashboard/instructor-monitor
 import InstructorLessonList from "./pages/InstructorDashboard/instructor-monitor/InstructorLessonList";
 import InstructorCourseLog from "./pages/InstructorDashboard/instructor-report/InstructorCourseLog";
 import InstructorPurchaseLog from "./pages/InstructorDashboard/instructor-report/InstructorPurchaseLog";
-import InstructorEarning from "./pages/InstructorDashboard/instructor-report/InstructorEarning";
 import InstructorReview from "./pages/InstructorDashboard/InstructorReview";
 import InstructorSetting from "./pages/InstructorDashboard/instructor-setting/InstructorSetting";
 import ForgotPasswordPage from "./pages/AuthPage/ForgotPasswordPage";
@@ -158,7 +157,6 @@ function App() {
                   path="purchase-log"
                   element={<InstructorPurchaseLog />}
                 />
-                <Route path="earning" element={<InstructorEarning />} />
                 <Route path="subscription" element={<InstructorSubscription />}>
                   <Route index element={<InstructorSubscribed />} />
                   <Route path="subscriber" element={<InstructorSubscriber />} />

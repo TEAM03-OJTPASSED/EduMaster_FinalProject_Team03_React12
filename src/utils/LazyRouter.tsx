@@ -88,10 +88,7 @@ export const InstructorPurchaseLog = React.lazy(
       "../pages/InstructorDashboard/instructor-report/InstructorPurchaseLog"
     )
 );
-export const InstructorEarning = React.lazy(
-  () =>
-    import("../pages/InstructorDashboard/instructor-report/InstructorEarning")
-);
+
 // export const InstructorDiscount = React.lazy(
 //   () =>
 //     import(
