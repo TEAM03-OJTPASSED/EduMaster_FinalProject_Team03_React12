@@ -242,9 +242,12 @@ h3 {
   background-color: black !important;
 }
 
+.inline-block {
+  display: inline-block;
+}
+
 .ant-card-body{
   padding: 16px !important;
   overflow: hidden !important
 }
-
 
