@@ -51,7 +51,7 @@ const InstructorCourseList: React.FC = () => {
   };
   // send course request to Admin
   const handleSendToAdmin = () => {
-    // kiem tra xem nhung items da seleted coi co phai status la new hay khong
+    // kiem tra xem nhung items da seleted coi co phai status la new/reject hay khong
     // check xem lesson va session cua cua course do co ton tai hay chua
     // api send list courses to admin, dung message de gui
     console.log(selectedCourses);

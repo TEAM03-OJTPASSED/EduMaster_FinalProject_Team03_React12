@@ -1,9 +1,11 @@
 import {
   Button,
+  Col,
   Form,
   Input,
   Radio,
   RadioChangeEvent,
+  Row,
   Select,
   Upload,
   UploadFile,
@@ -33,7 +35,7 @@ export type RegisterType = {
 const SignUppage = () => {
   const [selectedRole, setSelectedRole] = useState<string>("student");
   // const [imageUrl, setImageUrl] = useState("");
-  // const [videoUrl, setVideoUrl] = useState("");
+  const [videoUrl, setVideoUrl] = useState("");
   const [fileListImage, setFileListImage] = useState<UploadFile[]>([]);
   const [fileListVideo, setFileListVideo] = useState<UploadFile[]>([]);
   const [form] = Form.useForm<RegisterType>();
@@ -66,8 +68,10 @@ const SignUppage = () => {
     if (newFileList.length > 0 && newFileList[0].status === "done") {
       const uploadedVideoUrl = newFileList[0].response.secure_url;
       form.setFieldsValue({ video_url: uploadedVideoUrl });
+      setVideoUrl(uploadedVideoUrl);
     } else {
       form.setFieldsValue({ video_url: "" });
+      setVideoUrl("");
     }
   };
 
@@ -188,54 +192,68 @@ const SignUppage = () => {
 
               {selectedRole === "instructor" && (
                 <>
-                  <div className="flex justify-around">
+                  <Row>
                     {/* avatar */}
-                    <Form.Item
-                      label="Avatar"
-                      name="avatar_url"
-                      rules={[
-                        { required: true, message: "Avatar is required" },
-                      ]}
-                    >
-                      <Upload
-                        accept="image/*"
-                        action={API_UPLOAD_FILE}
-                        fileList={fileListImage}
-                        listType="picture-card"
-                        maxCount={1}
-                        onChange={handleImageChange}
+                    <Col span={12}>
+                      <Form.Item
+                        label="Avatar"
+                        name="avatar_url"
+                        rules={[
+                          { required: true, message: "Avatar is required" },
+                        ]}
                       >
-                        {fileListImage.length >= 1 ? null : (
-                          <div>
-                            <PlusOutlined />
-                            <div>Upload</div>
-                          </div>
-                        )}
-                      </Upload>
-                    </Form.Item>
-                    {/* video */}
-                    <Form.Item
-                      label="Video"
-                      name="video_url"
-                      rules={[{ required: true, message: "Video is required" }]}
-                    >
-                      <Upload
-                        accept="video/*"
-                        action={API_UPLOAD_FILE}
-                        fileList={fileListVideo}
-                        listType="picture-card"
-                        maxCount={1}
-                        onChange={handleVideoChange}
+                        <Upload
+                          accept="image/*"
+                          action={API_UPLOAD_FILE}
+                          fileList={fileListImage}
+                          listType="picture-card"
+                          maxCount={1}
+                          onChange={handleImageChange}
+                        >
+                          {fileListImage.length >= 1 ? null : (
+                            <div>
+                              <PlusOutlined />
+                              <div>Upload</div>
+                            </div>
+                          )}
+                        </Upload>
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={12}>
+                      {/* video */}
+                      <Form.Item
+                        label="Video"
+                        name="video_url"
+                        rules={[
+                          { required: true, message: "Video is required" },
+                        ]}
                       >
-                        {fileListVideo.length >= 1 ? null : (
-                          <div>
-                            <PlusOutlined />
-                            <div>Upload</div>
-                          </div>
+                        <Upload
+                          accept="video/*"
+                          action={API_UPLOAD_FILE}
+                          fileList={fileListVideo}
+                          listType="picture-card"
+                          maxCount={1}
+                          onChange={handleVideoChange}
+                        >
+                          {fileListVideo.length >= 1 ? null : (
+                            <div>
+                              <PlusOutlined />
+                              <div>Upload</div>
+                            </div>
+                          )}
+                        </Upload>
+                        {videoUrl && (
+                          <video
+                            src={videoUrl}
+                            controls
+                            style={{ width: "100%", marginTop: "16px" }}
+                          />
                         )}
-                      </Upload>
-                    </Form.Item>
-                  </div>
+                      </Form.Item>
+                    </Col>
+                  </Row>
 
                   {/* phone */}
                   <Form.Item<RegisterType>
