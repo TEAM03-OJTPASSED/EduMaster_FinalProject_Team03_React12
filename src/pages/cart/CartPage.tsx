@@ -1,21 +1,24 @@
 import React, { useState } from "react";
-import { Button, Card, List, Typography, Space, Empty, Checkbox } from "antd";
-import {
-  DeleteOutlined,
-  ShoppingCartOutlined,
-  ArrowRightOutlined,
-} from "@ant-design/icons";
-import { useCustomNavigate } from "../../hooks/customNavigate";
+import { Tabs } from "antd";
 
-const { Text } = Typography;
+import { useCustomNavigate } from "../../hooks/customNavigate";
+import DynamicBreadcrumb from "../../components/Breadcrumb/Breadcrumb";
+import MyCart from "../../components/cartTabs/MyCart";
+import UnpaidOrders from "../../components/cartTabs/PendingCart";
+import PurchasedOrders from "../../components/cartTabs/PurchasedCart";
+import CancelledOrders from "../../components/cartTabs/CancelledCart";
+
 
 interface Course {
   id: number;
   name: string;
   price: number;
   image: string;
-  quantity: number;
+  author: string; 
+  discount: number;
 }
+
+//Gets all carts => then sorts each cart + item into their respective carts status
 
 const CartPage: React.FC = () => {
   const navigate = useCustomNavigate();
@@ -25,21 +28,26 @@ const CartPage: React.FC = () => {
       name: "Advanced Web Development",
       price: 2400000,
       image: "https://picsum.photos/400",
-      quantity: 1,
+      author: "Author Name",
+      discount: 0,
     },
     {
       id: 2,
       name: "Data Science Fundamentals",
       price: 2400000,
       image: "https://picsum.photos/400",
-      quantity: 1,
+      author: "Author Name",
+      discount: 20,
+
     },
     {
       id: 3,
       name: "Digital Marketing Mastery",
       price: 2400000,
       image: "https://picsum.photos/400",
-      quantity: 1,
+      author: "Author Name",
+      discount: 40,
+
     },
   ]);
 
@@ -60,111 +68,59 @@ const CartPage: React.FC = () => {
 
   const total = courses
     .filter((course) => selectedCourses.includes(course.id))
-    .reduce((sum, course) => sum + course.price * course.quantity, 0);
+    .reduce((sum, course) => sum + course.price * ( 1 - (course.discount / 100) ), 0);
 
-  return (
-    <div className="container mx-auto px-4 py-8 font-jost">
-      <h1 className="mb-8 text-4xl font-semibold">Your Cart</h1>
-      <div className="flex flex-col md:flex-row gap-8">
-        <div className="w-full md:w-2/3">
-          {courses.length > 0 ? (
-            <List
-              itemLayout="horizontal"
-              dataSource={courses}
-              renderItem={(course) => (
-                <List.Item
-                  key={course.id}
-                  actions={[
-                    <>
-                      <Text type="secondary" className="font-jost px-8">
-                        đ{course.price.toFixed(0)}
-                      </Text>
-                      <Button
-                        type="text"
-                        icon={<DeleteOutlined />}
-                        onClick={() => removeCourse(course.id)}
-                        aria-label={`Remove ${course.name} from cart`}
-                      />
-                    </>,
-                  ]}
-                  onClick={() => toggleSelectCourse(course.id)}
-                  className="cursor-pointer"
-                  
-                > 
-                  <Checkbox
-                    checked={selectedCourses.includes(course.id)}
-                    onChange={() => toggleSelectCourse(course.id)}
-                    className="mr-4 custom-checkbox"
-                  />
-                  <List.Item.Meta
-                    avatar={
-                      <img
-                        src={course.image}
-                        alt={course.name}
-                        className="w-24 h-16 object-cover rounded"
-                      />
-                    }
-                    title={
-                      <Text strong className=" font-jost">
-                        {course.name}
-                      </Text>
-                    }
-                    description={
-                      <Space className="flex flex-col items-start pt-0 mt-0 justify-end space-y-0">
-                        <Text>By Author Name</Text>
-                      </Space>
-                    }
-                  />
-                  
-                </List.Item>
-              )}
-            />
-          ) : (
-            <Empty
-              image={Empty.PRESENTED_IMAGE_SIMPLE}
-              description={
-                <Space direction="vertical" align="center">
-                  <Text>Your cart is empty</Text>
-                  <Button
-                    type="primary"
-                    icon={<ShoppingCartOutlined />}
-                    onClick={() => navigate("/course")}
-                    className="bg-orange-500 font-jost p-8 py-5 hover:bg-orange-600 view-button ant-btn-variant-solid"
-                  >
-                    Browse Courses
-                  </Button>
-                </Space>
-              }
-            />
-          )}
-        </div>
-        <div className="w-full md:w-1/3">
-          <Card title="Order Summary" className="sticky top-4">
-            <Space direction="vertical" className="w-full">
-              <div className="flex justify-between">
-                <Text>Subtotal</Text>
-                <Text>đ {total.toFixed(0)}</Text>
-              </div>
-              <div className="flex justify-between items-center">
-                <Text strong>Total</Text>
-                <Text strong className="text-4xl font-jost ">
-                  đ {total.toFixed(0)}
-                </Text>
-              </div>
-              <Button
-                type="primary"
-                size="large"
-                className="w-full mt-4 view-button ant-btn-variant-solid font-jost"
-                onClick={() => navigate("/checkout")}
-                disabled={selectedCourses.length === 0}
-              >
-                Proceed to Checkout <ArrowRightOutlined />
-              </Button>
-            </Space>
-          </Card>
-        </div>
+    return (
+      <div className="container mx-auto px-4 py-8 font-jost">
+        <DynamicBreadcrumb />
+        <Tabs 
+          defaultActiveKey="my-cart"
+          className="custom-tabs font-jost "
+          items={[
+            {
+              key: 'my-cart',
+              label: 'My Cart',
+              children: <MyCart 
+                courses={courses} 
+                navigate={navigate} 
+                removeCourse={removeCourse} 
+                selectedCourses={selectedCourses} 
+                toggleSelectCourse={toggleSelectCourse} 
+                total={total}
+              />
+            },
+            {
+              key: 'unpaid',
+              label: 'Unpaid',
+              children: <UnpaidOrders 
+                courses={courses} 
+                navigate={navigate} 
+                total={total} 
+                selectedCourses={selectedCourses} 
+                toggleSelectCourse={toggleSelectCourse} 
+              />
+            },
+            {
+              key: 'purchased',
+              label: 'Purchased',
+              children: <PurchasedOrders 
+                courses={courses} 
+                navigate={navigate} 
+                total={total} 
+              />
+            },
+            {
+              key: 'cancelled',
+              label: 'Cancelled',
+              children: <CancelledOrders 
+                courses={courses} 
+                navigate={navigate} 
+                total={total} 
+              />
+            }
+          ]}
+        />
       </div>
-    </div>
   );
 };
 

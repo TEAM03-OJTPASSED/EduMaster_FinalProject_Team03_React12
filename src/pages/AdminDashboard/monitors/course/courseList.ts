@@ -170,7 +170,7 @@ export const payouts: Payout[] = Array.from({ length: 10 }, () => ({
   id: randomString(),
   payout_no: `P-${randomString()}`,
   status: Object.values(PayoutStatusEnum)[
-    Math.floor(Math.random() * 3)
+    Math.floor(Math.random() * 4)
   ] as PayoutStatusEnum,
   instructor_id: randomString(),
   instructor_ratio: randomNumber(),
