@@ -272,4 +272,28 @@ h3 {
 
 }
 
+.custom-card {
+  border: none !important;
+  padding: none !important;
+  overflow: hidden !important;
+  margin: none !important;
+  width: 100% !important;
+}
+
+.custom-card .ant-card-body {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.ant-typography {
+  font-family: 'Jost', sans-serif !important;
+}
+
+h2.ant-typography {
+  font-family: 'Exo', sans-serif !important;
+}
+
+
+
+
 

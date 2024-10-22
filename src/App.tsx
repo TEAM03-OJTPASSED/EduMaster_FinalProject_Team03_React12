@@ -70,6 +70,7 @@ import TopUpPage from "./pages/topup/TopupPage";
 import AdminRequestPayout from "./pages/AdminDashboard/payout/RequestPayout";
 import AdminCompletedPayout from "./pages/AdminDashboard/payout/CompletedPayout";
 import AdminRejectedPayout from "./pages/AdminDashboard/payout/RejectedPayout";
+import ProfilePage from "./pages/profile/ProfilePage";
 
 
 function App() {
@@ -92,6 +93,8 @@ function App() {
               <Route path="/*" element={<ErrorPage />} />
               <Route path="cart" element={<CartPage />} />
               <Route path="/blog-detail/:id" element={<BlogDetailPage />} />
+              <Route path="/profile/:id" element={<ProfilePage />} />
+
               <Route path="/course-detail/:id" element={<CourseDetailPage />} />
               <Route path="/firebase" element={<Firebase />} />
 
