@@ -51,6 +51,7 @@ const Navbar = () => {
       setUserLoggedIn(false);
     }
   }, [storedUser]);
+  
 
   useEffect(() => {
     const pathToButtonKeyMap: { [key: string]: string } = {

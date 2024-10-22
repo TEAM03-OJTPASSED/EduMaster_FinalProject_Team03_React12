@@ -1,22 +1,23 @@
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
-import { Button, Checkbox, Divider, Form, Input, notification } from "antd";
+import { Button, Divider, Form, Input, notification } from "antd";
 import { FormProps } from "antd";
 import { Player } from "@lottiefiles/react-lottie-player";
 import { jwtDecode } from "jwt-decode";
 import { useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getCurrentUser, login } from "../../redux/slices/authSlices";
+import { AppDispatch, RootState } from "../../redux/store/store";
 
 export type LoginProps = {
-  username: string;
+  email: string;
   password: string;
-  remember: boolean;
-};
-
-const onFinish: FormProps<LoginProps>["onFinish"] = (values) => {
-  console.log("Success:", values);
 };
 
 const Loginpage = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { currentUser,token } = useSelector((state: RootState) => state.auth);
+  const navigate = useNavigate();
   useEffect(() => {
     const unauthorized = localStorage.getItem("unauthorized");
     if (unauthorized) {
@@ -27,6 +28,27 @@ const Loginpage = () => {
       localStorage.removeItem("unauthorized"); // Clear flag after showing notification
     }
   }, []);
+
+  const onFinish: FormProps<LoginProps>["onFinish"] = async (values) => {
+    try {
+      const { email, password } = values;
+      await dispatch(login({ email, password }));
+      await dispatch(getCurrentUser());
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(()=>{
+    // const token = localStorage.getItem("token")
+    if(token && currentUser){
+      if(currentUser?.role === "student"){
+        navigate("/")
+      }else if (currentUser?.role ===  "admin"){
+        navigate("/course")
+      }
+    }
+  },[currentUser, token, navigate])
+
   return (
     <div className="w-full lg:flex lg:h-[35rem] lg:flex-row lg:rounded-lg mt-12 overflow-hidden shadow-xl">
       {/* BACKGROUND */}
@@ -47,21 +69,18 @@ const Loginpage = () => {
           name="login"
           layout="vertical"
           wrapperCol={{ span: 24 }}
-          initialValues={{ remember: true }}
           onFinish={onFinish}
           autoComplete="off"
         >
           {/* username */}
           <Form.Item<LoginProps>
-            label="Username or Email"
-            name="username"
-            rules={[
-              { required: true, message: "Please input your username!" },
-            ]}
+            label="Email"
+            name="email"
+            rules={[{ required: true, message: "Please input your email!" }]}
             className="mb-6"
           >
             <Input
-              placeholder="Enter your email or username"
+              placeholder="Enter your email"
               className="p-3 text-lg border-gray-300 rounded-lg focus:border-[#FF782D]"
             />
           </Form.Item>
@@ -69,9 +88,7 @@ const Loginpage = () => {
           <Form.Item<LoginProps>
             label="Password"
             name="password"
-            rules={[
-              { required: true, message: "Please input your password!" },
-            ]}
+            rules={[{ required: true, message: "Please input your password!" }]}
             className="mb-6"
           >
             <Input.Password
@@ -81,9 +98,6 @@ const Loginpage = () => {
           </Form.Item>
           <div className="flex justify-between items-center mb-6">
             {/* remember */}
-            <Form.Item<LoginProps> name="remember" valuePropName="checked">
-              <Checkbox>Remember me</Checkbox>
-            </Form.Item>
             <div className="min-h-8 flex mt-1 underline px-1">
               <NavLink to={"/forgot-password"}>Forgot password</NavLink>
             </div>

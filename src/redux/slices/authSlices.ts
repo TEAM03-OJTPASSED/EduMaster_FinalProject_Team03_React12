@@ -1,40 +1,41 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { postRequest } from "../../services/httpsMethod";
+import { getRequest, postRequest } from "../../services/httpsMethod";
 import axios from "axios";
+import { User } from "../../models/UserModel";
 
-interface Data {
-  success: boolean;
-  data: { token: string };
-}
-
-// Khởi tạo state ban đầu
 interface AuthState {
-  data: Data | null; // Thay đổi kiểu để cho phép null
+  token: string | null;
+  currentUser: User;
   loading: boolean;
   error: string | null;
+  success: boolean;
 }
 
+const token = localStorage.getItem("token");
+
 const initialState: AuthState = {
-  data: null, // Khởi tạo data là null
   loading: false,
-  error: null, // Đặt lỗi ban đầu là null
+  currentUser: {} as User,
+  token,
+  error: null,
+  success: false, // for monitoring the registration process.
 };
 
-// Định nghĩa async thunk cho login
 export const login = createAsyncThunk<
-  Data, // Trả về kiểu Data
+  AuthState,
   { email: string; password: string },
   { rejectValue: string }
 >("auth/login", async ({ email, password }, { rejectWithValue }) => {
+  //
   try {
-    // Gọi hàm postRequest để thực hiện đăng nhập
     const res = await postRequest("/api/auth", {
       email,
       password,
     });
-    return res.data; // Giả định rằng response chứa dữ liệu người dùng
+    console.log("token", res.data.token);
+    localStorage.setItem("token", res.data.token);
+    return res.data;
   } catch (error: unknown) {
-    // Xác định kiểu cho error
     if (axios.isAxiosError(error) && error.response) {
       return rejectWithValue(
         error.response.data.message || "Invalid credentials"
@@ -44,14 +45,31 @@ export const login = createAsyncThunk<
   }
 });
 
+export const getCurrentUser = createAsyncThunk<{ rejectValue: string }>(
+  "auth/user",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await getRequest("/api/auth");
+      console.log("current user", res.data);
+      return res.data;
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error) && error.response) {
+        return rejectWithValue(
+          error.response.data.message || "Invalid credentials"
+        );
+      }
+      return rejectWithValue("Invalid credentials");
+    }
+  }
+);
 // Tạo slice cho auth
+
 export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
     logout: (state) => {
-      state.data = null; // Gán lại null cho data khi logout
-      state.error = null; // Gán lại null cho error
+      state.token = ""; // Gán lại null cho error
     },
   },
   extraReducers: (builder) => {
@@ -61,13 +79,27 @@ export const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false; // Đặt loading về false khi có phản hồi
-        state.error = null; // Đặt lỗi về null khi đăng nhập thành công
-        state.data = action.payload; // Gán payload vào state.data
+        state.token = action.payload as unknown as string;
+        state.success = true;
       })
-      .addCase(login.rejected, (state, action) => {
-        state.loading = false; // Đặt loading về false khi có lỗi
-        state.error = action.payload || "Login failed"; // Đặt thông điệp lỗi
-      });
+      .addCase(login.rejected, (state) => {
+        state.loading = false; 
+        state.error = "Login failed"; 
+        state.success = false;
+      })
+      .addCase(getCurrentUser.pending, (state) => {
+        state.loading = true; 
+      })
+      .addCase(getCurrentUser.fulfilled, (state, action ) => {
+        state.loading = false; 
+        state.currentUser = action.payload as unknown as User
+        state.success = true;
+      })
+      .addCase(getCurrentUser.rejected, (state, action) => {
+        state.loading = false; 
+        state.success = false;
+        state.error   = action.payload as string
+      })
   },
 });
 

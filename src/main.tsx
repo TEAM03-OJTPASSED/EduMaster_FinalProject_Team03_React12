@@ -4,7 +4,7 @@ import App from "./App.tsx";
 import "./index.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Provider } from "react-redux";
-import store from "./stores/store.ts";
+import { store } from "./redux/store/store.ts";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
