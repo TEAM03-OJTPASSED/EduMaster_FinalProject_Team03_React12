@@ -81,7 +81,7 @@ const InstructorSalesHistory = () => {
 
   return (
     <Card>
-      <h3 className="text-2xl my-5">Sales History</h3>
+      <h3 className="text-2xl my-5">Orders</h3>
       <Input
         placeholder="Search By Course Name"
         prefix={<SearchOutlined />}
