@@ -55,7 +55,7 @@ const RequestUser = () => {
     <div>
       <Card>
         <div className="flex">
-          <h3 className="text-2xl my-5">Request Management</h3>
+          <h3 className="text-2xl my-5">Request Instructor Management</h3>
         </div>
         <Input
           placeholder="Tìm kiếm..."

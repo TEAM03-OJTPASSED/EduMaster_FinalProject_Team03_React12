@@ -86,16 +86,28 @@ const PayoutManagement: React.FC = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      filters: [
+        { text: PayoutStatusEnum.new, value: PayoutStatusEnum.new },
+        {
+          text: PayoutStatusEnum.request_payout,
+          value: PayoutStatusEnum.request_payout,
+        },
+        { text: PayoutStatusEnum.completed, value: PayoutStatusEnum.completed },
+        { text: PayoutStatusEnum.rejected, value: PayoutStatusEnum.rejected },
+      ],
+      onFilter: (value: any, record: Payout) => record.status === value,
       render: (status: PayoutStatusEnum) => {
         switch (status) {
-          case "New":
+          case PayoutStatusEnum.new:
             return <Tag color="blue">New</Tag>;
-          case "Request Payout":
+          case PayoutStatusEnum.request_payout:
             return <Tag color="yellow">Request Payout</Tag>;
-          case "Completed":
+          case PayoutStatusEnum.completed:
             return <Tag color="green">Completed</Tag>;
-          case "Rejected":
+          case PayoutStatusEnum.rejected:
             return <Tag color="red">Rejected</Tag>;
+          default:
+            return null; // Hoặc một tag mặc định nếu cần
         }
       },
     },

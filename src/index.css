@@ -251,3 +251,49 @@ h3 {
   overflow: hidden !important
 }
 
+
+.custom-tabs .ant-tabs-nav .ant-tabs-tab:hover {
+  color: #f97316; 
+ 
+}
+
+.custom-tabs .ant-tabs-nav .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #f97316;
+}
+
+.custom-tabs .ant-tabs-ink-bar {
+  background: #f97316;  
+
+}
+
+.custom-tabs .ant-tabs-tab {
+  transition: color 0.3s;
+  font-size: 1rem;  
+
+}
+
+.custom-card {
+  border: none !important;
+  padding: none !important;
+  overflow: hidden !important;
+  margin: none !important;
+  width: 100% !important;
+}
+
+.custom-card .ant-card-body {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.ant-typography {
+  font-family: 'Jost', sans-serif !important;
+}
+
+h2.ant-typography {
+  font-family: 'Exo', sans-serif !important;
+}
+
+
+
+
+
