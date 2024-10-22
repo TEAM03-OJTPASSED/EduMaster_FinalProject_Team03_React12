@@ -14,7 +14,7 @@ const token =
 const fetchCourse = async (courseId: string) => {
   try {
     const response = await axios.get(
-      `http://localhost:3000/api/client/course/${courseId}`,
+      `/api/client/course/${courseId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -92,7 +92,7 @@ const LearnCoursePage = () => {
         ? `/api/users/remove-completed-lesson/`
         : `/api/users/completed-lesson/`;
       const response = await axios.post(
-        `http://localhost:3000${endpoint}`,
+        `${endpoint}`,
         { lessonId: lesson._id },
         {
           headers: {
