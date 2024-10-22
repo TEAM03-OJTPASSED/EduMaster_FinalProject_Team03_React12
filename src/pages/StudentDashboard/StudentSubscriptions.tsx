@@ -1,6 +1,8 @@
-import { useState } from "react";
-import { Card, Input } from "antd";
+import { useEffect, useState } from "react";
+import { Input, Button, Pagination, Card, Tabs } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
+import { useCustomNavigate } from "../../hooks/customNavigate";
+
 interface Student {
   id: number;
   name: string;
@@ -29,10 +31,40 @@ const studentsData: Student[] = [
   },
 ];
 
+const subscribersData: Student[] = [
+  {
+    id: 3,
+    name: "Subscriber1",
+    phone: "0123456789",
+    email: "sub1@gmail.com",
+    avatar:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4sUs8eRbiEt6b1Jil5C_nGFkkPrXumAt18akJUOV5O6CTs0yVm7y-bLk-li4KAaeFxD4&usqp=CAU",
+  },
+  {
+    id: 4,
+    name: "Subscriber2",
+    phone: "0987654321",
+    email: "sub2@gmail.com",
+    avatar:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4sUs8eRbiEt6b1Jil5C_nGFkkPrXumAt18akJUOV5O6CTs0yVm7y-bLk-li4KAaeFxD4&usqp=CAU",
+  },
+];
+
 const StudentSubscriptions = () => {
   const [following, setFollowing] = useState<number[]>([]);
-  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
-  const [searchTerm] = useState<string>("");
+  // const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [isInstructor, setIsInstructor] = useState<boolean>(false);
+
+  const navigate = useCustomNavigate();
+
+  useEffect(() => {
+    const user = localStorage.getItem("User");
+    if (user) {
+      const parsedUser = JSON.parse(user);
+      setIsInstructor(parsedUser.role === "instructor");
+    }
+  }, []);
 
   const handleFollow = (id: number) => {
     setFollowing((prev) => {
@@ -44,112 +76,116 @@ const StudentSubscriptions = () => {
     });
   };
 
-  const handleStudentClick = (student: Student) => {
-    setSelectedStudent(student);
-  };
-
   const filteredStudents = studentsData.filter((student) =>
     student.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const filteredSubscribers = subscribersData.filter((subscriber) =>
+    subscriber.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const studentList = (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {filteredStudents.map((student) => (
+        <div
+          key={student.id}
+          className="border p-4 rounded-lg text-center shadow-sm hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+          onClick={() => navigate(`/profile/${student.id}`)}
+        >
+          <img
+            src={student.avatar}
+            alt={student.name}
+            className="w-20 h-20 rounded-full mx-auto mb-4"
+          />
+          <h3 className="text-lg font-semibold">{student.name}</h3>
+          <p className="text-gray-600">
+            <i className="fas fa-phone-alt mr-2"></i>
+            {student.phone}
+          </p>
+          <p className="text-gray-600">
+            <i className="fas fa-envelope mr-2"></i>
+            {student.email}
+          </p>
+          <Button
+            type={following.includes(student.id) ? "default" : "primary"}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleFollow(student.id);
+            }}
+            className="mt-4 view-button"
+          >
+            {following.includes(student.id) ? "Unfollowed" : "Following"}
+          </Button>
+        </div>
+      ))}
+    </div>
+  );
+
+  const subscriberList = (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {filteredSubscribers.map((subscriber) => (
+        <div
+          key={subscriber.id}
+          className="border p-4 rounded-lg text-center shadow-sm hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+         
+        >
+          <img
+            src={subscriber.avatar}
+            alt={subscriber.name}
+            className="w-20 h-20 rounded-full mx-auto mb-4"
+          />
+          <h3 className="text-lg font-semibold">{subscriber.name}</h3>
+          <p className="text-gray-600">
+            <i className="fas fa-phone-alt mr-2"></i>
+            {subscriber.phone}
+          </p>
+          <p className="text-gray-600">
+            <i className="fas fa-envelope mr-2"></i>
+            {subscriber.email}
+          </p>
+        </div>
+      ))}
+    </div>
+  );
+
   return (
     <Card>
-      <div className="subscription-container">
-        <h3 className="text-2xl my-5">My Subscription</h3>
+      <h3 className="text-2xl my-5">My Subscriptions</h3>
+
+      {/* Search Bar */}
+      <div className="flex items-center mb-6">
         <Input
-          placeholder="Search By Subscriber Name"
+          placeholder="Search by name"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
           prefix={<SearchOutlined />}
-          style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
+          className="w-80 mr-4"
         />
-        <div className="students-list">
-          {filteredStudents.map((student) => (
-            <div
-              key={student.id}
-              className="student-card"
-              onClick={() => handleStudentClick(student)}
-            >
-              <img
-                src={student.avatar}
-                alt={student.name}
-                className="student-avatar"
-              />
-              <h3>{student.name}</h3>
-              <p>
-                <i className="fas fa-phone-alt"></i> {student.phone}
-              </p>
-              <p>
-                <i className="fas fa-envelope"></i> {student.email}
-              </p>
-              <button
-                className={
-                  following.includes(student.id) ? "unfollow-btn" : "follow-btn"
-                }
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleFollow(student.id);
-                }}
-              >
-                {following.includes(student.id) ? "Unfollow" : "Follow"}
-              </button>
-            </div>
-          ))}
-        </div>
+        <Button type="primary" icon={<SearchOutlined />} className="view-button">
+          Search
+        </Button>
+      </div>
+
+      {/* Tabs for Subscriptions and Subscribers */}
+      <Tabs defaultActiveKey="1">
+        <Tabs.TabPane tab="Subscriptions" key="1">
+          {studentList}
+        </Tabs.TabPane>
+
+        {isInstructor && (
+          <Tabs.TabPane tab="Subscribers" key="2">
+            {subscriberList}
+          </Tabs.TabPane>
+        )}
+      </Tabs>
+
+      {/* Pagination */}
+      <div className="flex justify-between items-center mt-6">
+        <Pagination defaultCurrent={1} total={filteredStudents.length} pageSize={10} />
+        
       </div>
     </Card>
   );
 };
 
 export default StudentSubscriptions;
-
-const styles = `
-.subscription-container {
-  padding: 20px;
-  font-family: Arial, sans-serif;
-}
-
-.students-list {
-  display: flex;
-  gap: 20px;
-  justify-content: flex-start;
-}
-
-.student-card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 16px;
-  text-align: center;
-  width: 200px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  cursor: pointer; /* Indicate clickable */
-}
-
-.student-avatar {
-  display: inline;
-  border-radius: 50%;
-  width: 80px;
-  height: 80px;
-}
-
-.follow-btn {
-  background-color: #ff782d;
-  color: white;
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.unfollow-btn {
-  background-color: red;
-  color: white;
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-`;
-
-const styleSheet = document.createElement("style");
-styleSheet.type = "text/css";
-styleSheet.innerText = styles;
-document.head.appendChild(styleSheet);

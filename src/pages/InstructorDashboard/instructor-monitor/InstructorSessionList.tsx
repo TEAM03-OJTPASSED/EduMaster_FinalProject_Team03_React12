@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Table, Input, Card, TableProps, Button, Modal } from "antd";
+import { useState, useEffect } from "react";
+import { Table, Input, Card, TableProps, Button, Modal, Select } from "antd";
 import {
   SearchOutlined,
   EditOutlined,
@@ -9,6 +9,7 @@ import {
 
 import dayjs from "dayjs";
 import {
+  listCourses,
   listSessions,
   Session,
 } from "../../AdminDashboard/monitors/course/courseList";
@@ -17,7 +18,10 @@ import SessionOptions from "./create-courses/SessionOptions";
 const InstructorSessionList = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
-  const [isModalCreateVisible, setIsModalCreateVisible] = useState(false)
+  const [isModalCreateVisible, setIsModalCreateVisible] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<string>();
+  const [searchText, setSearchText] = useState("");
+  const [filteredSessions, setFilteredSessions] = useState<Session[]>(listSessions);
 
   const showModal = (session: Session) => {
     setSelectedSession(session);
@@ -30,11 +34,31 @@ const InstructorSessionList = () => {
 
   const handleCancel = () => {
     setIsModalVisible(false);
-    setIsModalCreateVisible(false)
+    setIsModalCreateVisible(false);
   };
 
-  //get all course id
-  
+  const handleCourseChange = (courseId: string | undefined) => {
+    setSelectedCourse(courseId);
+  };
+
+  // filter sessions usefx
+  useEffect(() => {
+    let filtered = [...listSessions];
+
+    if (selectedCourse) {
+      filtered = filtered.filter(
+        session => String(session.course_id) === String(selectedCourse)
+      );
+    }
+
+    if (searchText) {
+      filtered = filtered.filter(session =>
+        session.name.toLowerCase().includes(searchText.toLowerCase())
+      );
+    }
+
+    setFilteredSessions(filtered);
+  }, [selectedCourse, searchText]);
 
   const columns: TableProps<Session>["columns"] = [
     {
@@ -55,7 +79,6 @@ const InstructorSessionList = () => {
         return <div>{dayjs(created_at).format("DD/MM/YYYY")}</div>;
       },
     },
-
     {
       title: "Action",
       key: "action",
@@ -84,18 +107,33 @@ const InstructorSessionList = () => {
     <Card>
       <h3 className="text-2xl my-5">Session Management</h3>
       <div className="flex justify-between">
+        <div className=" gap-4 flex">
         <Input
-          placeholder="Search By Course Name"
+          placeholder="Search By Session Name"
           prefix={<SearchOutlined />}
-          style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
+          style={{ width: "80%", marginBottom: "20px", borderRadius: "4px" }}
+          onChange={(e) => setSearchText(e.target.value)}
         />
+        <Select
+          allowClear
+          placeholder="Filter By Course"
+          className="w-48"
+          onChange={handleCourseChange}
+          value={selectedCourse}
+        >
+          {listCourses.map(course => (
+            <Select.Option key={course.id} value={String(course.id)}>
+              {course.name}
+            </Select.Option>
+          ))}
+        </Select>
+        </div>
         <div className="flex">
           <Button
             onClick={showModalCreate}
             icon={<PlusCircleOutlined />}
             shape="round"
-            variant="solid"
-            color="primary"
+            type="primary"
             className="items-center"
           >
             Create Session
@@ -103,7 +141,7 @@ const InstructorSessionList = () => {
         </div>
       </div>
       <Table
-        dataSource={listSessions}
+        dataSource={filteredSessions}
         columns={columns}
         pagination={{ pageSize: 5 }}
         rowKey="name"

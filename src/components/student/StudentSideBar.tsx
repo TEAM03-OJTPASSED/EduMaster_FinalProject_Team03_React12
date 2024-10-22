@@ -7,6 +7,7 @@ import {
   FolderOutlined,
   StarOutlined,
   WalletOutlined,
+  HistoryOutlined,
 } from "@ant-design/icons";
 import { useCustomNavigate } from "../../hooks/customNavigate";
 // import { GoListOrdered } from "react-icons/go";
@@ -38,6 +39,12 @@ const StudentMenuItems: MenuItem[] = [
     icon: <FolderOutlined />,
     title: "My Learning",
     path: "/dashboard/student/my-courses",
+  },
+  {
+    key: "orders",
+    icon: <HistoryOutlined />,
+    title: "Orders History",
+    path: "/dashboard/student/orders", 
   },
   {
     key: "profile",

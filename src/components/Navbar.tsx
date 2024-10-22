@@ -107,8 +107,8 @@ const Navbar = () => {
 
   const profileMenu: MenuProps = {
     items: [
-      { label: "Profile", key: "profile" },
-      { label: "Settings", key: "settings" },
+     
+      
       {
         label: "My Dashboard",
         key: "dashboard",
@@ -116,6 +116,7 @@ const Navbar = () => {
           navigate(`/dashboard/${JSON.parse(storedUser ?? "").role}`);
         },
       },
+      
       {
         label: "Balance",
         key: "balance",
@@ -135,8 +136,13 @@ const Navbar = () => {
           },
         ],
       },
+      { label: "Settings", key: "settings",
+        onClick: () => {
+          navigate(`/dashboard/${JSON.parse(storedUser ?? "").role}/settings`);
+        }
+       },
       {
-        label: "Logout",
+        label: <span className="text-red-500">Logout</span>,
         key: "logout",
         onClick: () => {
           localStorage.removeItem("User");

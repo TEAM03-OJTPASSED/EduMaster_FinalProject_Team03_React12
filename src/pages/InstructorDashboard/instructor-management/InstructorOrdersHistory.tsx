@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button, Card, Input, Table, Tag } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { salesHistory } from "../../AdminDashboard/monitors/course/courseList";
+import StatusFilter from "../../../components/StatusFilter";
 
 const columns = [
   {
@@ -68,27 +69,45 @@ const columns = [
 
 const InstructorSalesHistory = () => {
   const [searchText, setSearchText] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>();
 
-  // Hàm tìm kiếm
   const handleSearch = (event: any) => {
     setSearchText(event.target.value);
   };
 
-  // Lọc danh sách purchase log dựa trên tên khóa học
-  const filteredCourses = salesHistory.filter((course: any) =>
-    course.courseName.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const handleStatusChange = (value: string | undefined) => {
+    setStatusFilter(value);
+  };
+
+  const filteredCourses = salesHistory
+    .filter((course: any) =>
+      course.courseName.toLowerCase().includes(searchText.toLowerCase())
+    )
+    .filter((course: any) =>
+      statusFilter ? course.status === statusFilter : true
+    );
+
+  const statuses = ["Completed", "Pending", "Refunded"];
 
   return (
     <Card>
       <h3 className="text-2xl my-5">Orders</h3>
-      <Input
-        placeholder="Search By Course Name"
-        prefix={<SearchOutlined />}
-        style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
-        value={searchText}
-        onChange={handleSearch}
-      />
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
+        <div className="flex gap-4">
+          <Input
+            placeholder="Search By Course Name"
+            prefix={<SearchOutlined />}
+            style={{ width: "80%", borderRadius: "4px" }}
+            value={searchText}
+            onChange={handleSearch}
+          />
+          <StatusFilter
+            statuses={statuses}
+            selectedStatus={statusFilter}
+            onStatusChange={handleStatusChange}
+          />
+        </div>
+      </div>
       <Table
         dataSource={filteredCourses}
         columns={columns}

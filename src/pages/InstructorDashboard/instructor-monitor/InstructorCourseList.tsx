@@ -21,11 +21,13 @@ import {
   listCourses,
 } from "../../AdminDashboard/monitors/course/courseList";
 import CourseOption from "./create-courses/CourseOption";
+import StatusFilter from "../../../components/StatusFilter";
 
 const InstructorCourseList: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [isModalCreateVisible, setIsModalCreateVisible] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<string>();
 
   // select course to send to admin
   const [selectedCourses, setSelectedCourses] = useState<Course[]>([]);
@@ -170,15 +172,29 @@ const InstructorCourseList: React.FC = () => {
     console.log(name);
   };
 
+  const statuses = [CourseStatusEnum.ACTIVE, CourseStatusEnum.APPROVED, CourseStatusEnum.INACTIVE, CourseStatusEnum.NEW, CourseStatusEnum.REJECTED, CourseStatusEnum.WAITING_APPROVE];
+  const handleStatusChange = (value: string | undefined) => {
+    setStatusFilter(value);
+  };
+
+
   return (
     <Card>
       <h3 className="text-2xl my-5">Course Management</h3>
       <div className="flex justify-between">
-        <Input
-          placeholder="Search By Course Name"
-          prefix={<SearchOutlined />}
-          style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
-        />
+        <div className="flex gap-4 mb-5">
+            <Input
+              placeholder="Search By Course Name"
+              prefix={<SearchOutlined />}
+              style={{ width: "80%", borderRadius: "4px" }}
+              
+            />
+            <StatusFilter
+              statuses={statuses}
+              selectedStatus={statusFilter}
+              onStatusChange={handleStatusChange}
+            />
+          </div>
         <div className="flex gap-x-3">
           <Button
             onClick={showModalCreate}

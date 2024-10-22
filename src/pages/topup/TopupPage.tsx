@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Card,
-  Form,
   InputNumber,
   Radio,
   Button,
@@ -32,38 +31,41 @@ const paymentMethods = [
 ];
 
 const TopUpPage = () => {
-  const [form] = Form.useForm();
+  // State for controlled inputs
+  const [amount, setAmount] = useState<number | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<string>();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading] = useState(false); // Changed initial state to false
   const [error, setError] = useState<string>("");
 
-  const handleSubmit = (values) => {
-    // Ensure the amount is a valid number before proceeding
-    const numericAmount = Number(values.amount);
-    if (isNaN(numericAmount) || numericAmount < 10000) {
+  const handleSubmit = () => {
+    if (!amount || amount < 10000) {
       setError("Minimum amount is đ 10,000");
       return;
     }
-    setError("null");
+
+    if (!paymentMethod) {
+      setError("Please select a payment method");
+      return;
+    }
+
+    setError("");
     setIsModalOpen(true);
   };
 
-  const validateAmount = (_, value) => {
-    const numericValue = Number(value);
-    if (isNaN(numericValue)) {
-      setIsLoading(true);
-      return Promise.reject("Please enter a valid number");
-    }
-    if (numericValue < 10000) {
-      setIsLoading(true);
-      return Promise.reject("Minimum amount is đ 10,000");
-    }
-    setIsLoading(false);
-    return Promise.resolve();
+  const handleAmountChange = (value: number | null) => {
+    setAmount(value);
   };
 
+  const formatAmount = (value: number | undefined): string => {
+    if (!value) return "";
+    return `đ ${value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+  };
+
+
+
   return (
-    <Card className="">
+    <Card className="w-full">
       <Space direction="vertical" size="large" className="w-full">
         <Space direction="vertical" size="small">
           <h3 className="text-2xl mt-5">Top Up</h3>
@@ -75,52 +77,34 @@ const TopUpPage = () => {
         <Card className="bg-gray-50">
           <div className="flex items-center gap-2">
             <span className="text-gray-500">Current Balance</span>
-            <span className="text-xl font-bold">đ 1,234.56</span>
+            <span className="text-xl font-bold">đ 200,000</span>
           </div>
         </Card>
 
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={handleSubmit}
-          initialValues={{
-            amount: "",
-            paymentMethod: undefined,
-          }}
-        >
-          <Form.Item
-            label="Amount"
-            name="amount"
-            rules={[
-              { required: true, message: "Please enter an amount" },
-              { validator: validateAmount },
-            ]}
-            validateTrigger={["onChange", "onBlur"]}
-          >
+        <div className="form-section">
+          <div className="form-item">
+            <label className="block mb-2">Amount</label>
             <InputNumber
               className="w-full"
-              formatter={(value) =>
-                `đ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-              }
-              parser={(value) => value.replace(/đ\s?|(,*)/g, "")}
+              value={amount}
+              onChange={handleAmountChange}
+              formatter={formatAmount}
               placeholder="0"
               min={10000}
               step={1000}
             />
-          </Form.Item>
+            <Text className="block mb-6 text-gray-500">
+              Minimum top-up amount: đ 10,000
+            </Text>
+          </div>
 
-          <Text className="block mb-6 text-gray-500">
-            Minimum top-up amount: đ 10,000
-          </Text>
-
-          <Form.Item
-            label="Payment Method"
-            name="paymentMethod"
-            rules={[
-              { required: true, message: "Please select a payment method" },
-            ]}
-          >
-            <Radio.Group className="w-full">
+          <div className="form-item">
+            <label className="block mb-2">Payment Method</label>
+            <Radio.Group
+              className="w-full"
+              value={paymentMethod}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+            >
               <Space direction="vertical" className="w-full">
                 {paymentMethods.map((method) => (
                   <Radio key={method.id} value={method.id} className="w-full">
@@ -134,28 +118,25 @@ const TopUpPage = () => {
                 ))}
               </Space>
             </Radio.Group>
-          </Form.Item>
+          </div>
 
-          {error && (
-            <Alert variant="destructive" className="mb-4">
-              <span>{error}</span>
-            </Alert>
-          )}
+          {error && <Alert message={error} type="error" showIcon />}
 
           <Button
-            onClick={() => setIsModalOpen(true)}
-            className="w-full"
+            onClick={handleSubmit}
+            type="primary"
+            className="w-full mt-4"
             disabled={isLoading}
           >
             {isLoading ? "Processing..." : "Continue to Top Up"}
           </Button>
-        </Form>
+        </div>
 
         <Modal
           open={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          okText="Confirm Top Up"
           onCancel={() => setIsModalOpen(false)}
+          okText="Confirm Top Up"
+          onOk={() => setIsModalOpen(false)}
         >
           <div className="p-4">
             <h2 className="text-lg font-semibold mb-4">Confirm Top Up</h2>
@@ -171,17 +152,13 @@ const TopUpPage = () => {
                   <div className="flex justify-between mb-2">
                     <span>Amount:</span>
                     <span className="font-semibold">
-                      đ {Number(form.getFieldValue("amount")).toLocaleString()}
+                      {amount ? `đ ${amount.toLocaleString()}` : "-"}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Payment Method:</span>
                     <span className="font-semibold">
-                      {
-                        paymentMethods.find(
-                          (m) => m.id === form.getFieldValue("paymentMethod")
-                        )?.name
-                      }
+                      {paymentMethods.find((m) => m.id === paymentMethod)?.name ?? "-"}
                     </span>
                   </div>
                 </div>

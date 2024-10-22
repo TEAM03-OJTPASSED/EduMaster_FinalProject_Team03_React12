@@ -12,7 +12,7 @@ const { Text, Link } = Typography;
 
 export default function AppFooter() {
   return (
-    <Footer className="bg-zinc-800 text-white pt-12 pb-4">
+    <Footer className="bg-zinc-800 text-white pt-12 pb-4 mt-40">
       <div className="container mx-auto px-4">
         <Row gutter={[32, 32]}>
           <Col xs={24} sm={24} md={8} lg={8} xl={8}>

@@ -104,7 +104,7 @@ const PendingCourseList: React.FC = () => {
 
   return (
     <Card>
-      <h3 className="text-2xl my-5">Course Management</h3>
+      <h3 className="text-2xl my-5">Approve Courses</h3>
       <Input
         placeholder="Search By Course Name"
         prefix={<SearchOutlined />}
