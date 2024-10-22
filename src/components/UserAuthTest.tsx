@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
 interface User {
+  _id: string;
   email: string;
   name: string;
   google_id: string;
@@ -18,7 +19,6 @@ interface User {
   bank_account_no: string;
   bank_account_name: string;
   is_deleted: boolean;
-  _id: string;
   dob: string;
   created_at: string;
   updated_at: string;
