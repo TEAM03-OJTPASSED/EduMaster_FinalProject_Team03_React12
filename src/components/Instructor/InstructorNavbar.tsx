@@ -35,7 +35,7 @@ const InstructorNavbar = () => {
   const menuItems = [
     {
       key: "profile",
-      label: <span onClick={() => navigate("/instructor/settings")}>Profile</span>,
+      label: <span onClick={() => navigate("/dashboard/instructor/settings")}>Profile</span>,
       icon: <UserOutlined />, // Thêm icon UserOutlined cho Profile
     },
     {

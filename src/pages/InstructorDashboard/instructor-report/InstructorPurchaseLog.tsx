@@ -19,6 +19,13 @@ const columns = [
     title: "Status",
     dataIndex: "status",
     key: "status",
+    filters: [
+      { text: "Completed", value: "Completed" },
+      { text: "Pending", value: "Pending" },
+      { text: "Refunded", value: "Refunded" },
+    ],
+    onFilter: (value: any, record: any) =>
+      record.status.trim() === value.trim(),
     render: (status: string) => (
       <Tag
         color={

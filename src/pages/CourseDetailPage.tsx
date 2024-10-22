@@ -25,6 +25,7 @@ const fetchCourse = async (courseId: string) => {
     return null;
   }
 };
+
 const fetchCategory = async (categoryId: string) => {
   try {
     const response = await axios.get(`/api/category/${categoryId}`, {
@@ -39,6 +40,7 @@ const fetchCategory = async (categoryId: string) => {
     return null;
   }
 };
+
 const fetchInstructor = async (instructor_Id: string) => {
   try {
     const response = await axios.get(`/api/users/${instructor_Id}`, {
@@ -54,7 +56,7 @@ const fetchInstructor = async (instructor_Id: string) => {
 };
 
 const CourseDetailPage = () => {
-  const { id } = useParams();
+  useParams();
   const [course, setCourse] = useState<Course | null>(null);
   const [category, setCategory] = useState<Category | null>(null);
   const [instructor, setInstructor] = useState<Instructor | null>(null);
@@ -122,7 +124,30 @@ const CourseDetailPage = () => {
       </div>
     );
   } else {
-    return <div>CourseDetailPage: {id}</div>;
+    return (
+      <div>
+        <div className="relative animate-pulse">
+          <div className="font-exo flex gap-4 bg-orange-50 px-20 lg:-mx-40 -mx-24 pb-20 pt-10">
+            <div className="w-3/4">
+              <div className="h-12 bg-gray-300 rounded w-3/4 mb-4"></div>
+              <div className="h-4 bg-gray-300 rounded w-1/2 mb-4"></div>
+              <div className="h-4 bg-gray-300 rounded w-full mb-4"></div>
+              <div className="h-4 bg-gray-300 rounded w-5/6 mb-4"></div>
+            </div>
+            <div className="w-1/4">
+              <div className="h-full bg-gray-300 rounded-lg"></div>
+            </div>
+          </div>
+          <div className="-mt-8 absolute w-full text-xl bg-white flex gap-5 shadow-lg py-4 px-2 rounded-lg justify-center">
+            <div className="h-6 bg-gray-300 rounded w-1/6 mb-4"></div>
+            <div className="h-6 bg-gray-300 rounded w-1/6 mb-4"></div>
+            <div className="h-6 bg-gray-300 rounded w-1/6 mb-4"></div>
+            <div className="h-6 bg-gray-300 rounded w-1/6 mb-4"></div>
+            <div className="h-6 bg-gray-300 rounded w-1/6 mb-4"></div>
+          </div>
+        </div>
+      </div>
+    );
   }
 };
 

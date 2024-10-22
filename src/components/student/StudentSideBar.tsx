@@ -46,10 +46,10 @@ const StudentMenuItems: MenuItem[] = [
     path: "/dashboard/student/profile",
   },
   {
-    key: "topup",
+    key: "top-up",
     icon: <WalletOutlined />,
     title: "Top Up",
-    path: "/dashboard/student/topup",
+    path: "/dashboard/student/top-up",
   },
   // {
   //   key: "orders",
