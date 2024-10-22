@@ -73,7 +73,6 @@ import AdminCompletedPayout from "./pages/AdminDashboard/payout/CompletedPayout"
 import AdminRejectedPayout from "./pages/AdminDashboard/payout/RejectedPayout";
 import ProfilePage from "./pages/profile/ProfilePage";
 
-
 function App() {
   return (
     <BrowserRouter>
@@ -123,17 +122,18 @@ function App() {
                 <Route path="users" element={<UserManagement />} />
                 <Route path="request-management" element={<RequestUser />} />
                 <Route path="categories" element={<CategoryManagement />} />
-                <Route path="payout" element={<PayoutManagement />} />
                 <Route path="top-up" element={<TopUpPage />} />
-
+                <Route path="payout" element={<PayoutManagement />} />
                 <Route path="payout" element={<AdminPayout />}>
-
                   <Route index element={<AdminRequestPayout />} />
                   <Route
                     path="completed-payout"
                     element={<AdminCompletedPayout />}
                   />
-                  <Route path="rejected-payout" element={<AdminRejectedPayout />} />
+                  <Route
+                    path="rejected-payout"
+                    element={<AdminRejectedPayout />}
+                  />
                 </Route>
                 <Route path="all-courses" element={<AllCourse />}>
                   <Route index element={<CourseLists />} />
@@ -150,7 +150,10 @@ function App() {
                 <Route path="purchase-log" element={<PurchaseLog />} />
                 <Route path="settings" element={<AdminSetting />}>
                   <Route index element={<AdminProfile />} />
-                  <Route path="change-password"element={<AdminChangePassword />} />
+                  <Route
+                    path="change-password"
+                    element={<AdminChangePassword />}
+                  />
                 </Route>
               </Route>
             </Route>
@@ -199,7 +202,10 @@ function App() {
                 <Route path="review" element={<InstructorReview />} />
                 <Route path="settings" element={<InstructorSetting />}>
                   <Route index element={<InstructorProfile />} />
-                  <Route path="change-password" element={<InstructorChangePassword />} />
+                  <Route
+                    path="change-password"
+                    element={<InstructorChangePassword />}
+                  />
                 </Route>
               </Route>
             </Route>
