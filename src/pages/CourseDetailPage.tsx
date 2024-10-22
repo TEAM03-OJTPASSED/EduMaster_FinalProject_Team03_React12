@@ -28,7 +28,7 @@ const fetchCourse = async (courseId: string) => {
 const fetchCategory = async (categoryId: string) => {
   try {
     const response = await axios.get(
-      `http://localhost:3000/api/category/${categoryId}`,
+      `/api/category/${categoryId}`,
       {
         headers: {
           'Access-Control-Allow-Origin': '*',
@@ -45,7 +45,7 @@ const fetchCategory = async (categoryId: string) => {
 const fetchInstructor = async (instructor_Id: string) => {
   try {
     const response = await axios.get(
-      `http://localhost:3000/api/users/${instructor_Id}`,
+      `/api/users/${instructor_Id}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
