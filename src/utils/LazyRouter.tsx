@@ -100,7 +100,7 @@ export const InstructorPurchaseLog = React.lazy(
 export const InstructorSaleHistory = React.lazy(
   () =>
     import(
-      "../pages/InstructorDashboard/instructor-management/InstructorSalesHistory"
+      "../pages/InstructorDashboard/instructor-management/InstructorOrdersHistory"
     )
 );
 
