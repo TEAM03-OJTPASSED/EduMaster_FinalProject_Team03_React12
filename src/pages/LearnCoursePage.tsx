@@ -9,7 +9,7 @@ import { MdOutlinePlayCircle, MdOutlineTaskAlt } from "react-icons/md";
 import { FiBookOpen } from "react-icons/fi";
 
 const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MTBlMjI4YTMxZjEzYTZkMGE1ZTc2ZCIsInJvbGUiOiJzdHVkZW50IiwidmVyc2lvbiI6MCwiaWF0IjoxNzI5NjAwODk1LCJleHAiOjE3Mjk2Mjk2OTV9.pEtrWU8eJJukSdUNq8g3paO7Ld7bBU3wwWc3F_3ndLU";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MTBlMjI4YTMxZjEzYTZkMGE1ZTc2ZCIsInJvbGUiOiJzdHVkZW50IiwidmVyc2lvbiI6MCwiaWF0IjoxNzI5NjAyNTkwLCJleHAiOjE3Mjk2MzEzOTB9.y2SGqzGEN65rZFXdLHfSz25R-WkxjY2DCSSzQ2f2RTc";
 
 const fetchCourse = async (courseId: string) => {
   try {
@@ -41,7 +41,7 @@ const LearnCoursePage = () => {
   const [course, setCourse] = useState<Course | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
-  const [buttonText, setButtonText] = useState("Mark as Completed");
+  const [buttonText, setButtonText] = useState("");
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -58,6 +58,7 @@ const LearnCoursePage = () => {
             setSelectedLesson(firstSession.lesson_list[0]);
           }
           setExpandedSessions({ 0: true });
+          setButtonText(firstSession.lesson_list[0].is_completed ? "Mark as Incomplete" : "Mark as Completed");
         }
       }
       if (data === "Forbidden") {
@@ -83,6 +84,7 @@ const LearnCoursePage = () => {
 
   const selectLesson = (lesson: Lesson) => {
     setSelectedLesson(lesson);
+    setButtonText(lesson.is_completed ? "Mark as Incomplete" : "Mark as Completed");
   };
 
   const handleClick = async (lesson: Lesson) => {
