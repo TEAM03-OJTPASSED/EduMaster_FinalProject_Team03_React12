@@ -17,6 +17,7 @@ import {
 import { PlusOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import { Course } from "../../../AdminDashboard/monitors/course/courseList";
+import { API_UPLOAD_FILE } from "../../../../constants/upload";
 
 type CourseInformationProps = {
   initializeValue?: Course;
@@ -167,7 +168,7 @@ const CourseOption: React.FC<CourseInformationProps> = ({
         <Col span={12}>
           <Form.Item label="Course Image" name="image_url">
             <Upload
-              action="https://api.cloudinary.com/v1_1/dz2dv8lk4/upload?upload_preset=edumaster1"
+              action={API_UPLOAD_FILE}
               accept="image/*"
               listType="picture-card"
               fileList={imageFileList}
@@ -186,7 +187,7 @@ const CourseOption: React.FC<CourseInformationProps> = ({
         <Col span={12}>
           <Form.Item label="Course Video" name="video_url">
             <Upload
-              action="https://api.cloudinary.com/v1_1/dz2dv8lk4/upload?upload_preset=edumaster1"
+              action={API_UPLOAD_FILE}
               accept="video/*"
               listType="picture-card"
               fileList={videoFileList}
