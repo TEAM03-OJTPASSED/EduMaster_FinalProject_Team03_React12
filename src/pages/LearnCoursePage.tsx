@@ -5,17 +5,22 @@ import { Course } from "../models/Course.model";
 import { Session } from "../models/Session.model";
 import { Lesson } from "../models/Lesson.model";
 import ReactPlayer from "react-player";
+import { MdOutlinePlayCircle, MdOutlineTaskAlt } from "react-icons/md";
+import { FiBookOpen } from "react-icons/fi";
 
 const token =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MTBlMjI4YTMxZjEzYTZkMGE1ZTc2ZCIsInJvbGUiOiJzdHVkZW50IiwidmVyc2lvbiI6MCwiaWF0IjoxNzI5NjAwODk1LCJleHAiOjE3Mjk2Mjk2OTV9.pEtrWU8eJJukSdUNq8g3paO7Ld7bBU3wwWc3F_3ndLU";
 
 const fetchCourse = async (courseId: string) => {
   try {
-    const response = await axios.get(`/api/client/course/${courseId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.get(
+      `http://localhost:3000/api/client/course/${courseId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data.data;
   } catch (error) {
     if (
@@ -36,6 +41,8 @@ const LearnCoursePage = () => {
   const [course, setCourse] = useState<Course | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
+  const [buttonText, setButtonText] = useState("Mark as Completed");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const courseId = "6713859755b6534784014184";
@@ -76,6 +83,45 @@ const LearnCoursePage = () => {
 
   const selectLesson = (lesson: Lesson) => {
     setSelectedLesson(lesson);
+  };
+
+  const handleClick = async (lesson: Lesson) => {
+    setLoading(true);
+    try {
+      const endpoint = lesson.is_completed
+        ? `/api/users/remove-completed-lesson/`
+        : `/api/users/completed-lesson/`;
+      const response = await axios.post(
+        `http://localhost:3000${endpoint}`,
+        { lessonId: lesson._id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.data.success) {
+        setButtonText(
+          lesson.is_completed ? "Mark as Completed" : "Mark as Incomplete"
+        );
+        // Update the lesson's is_completed status in the state
+        setSession((prevSessions) => {
+          if (!prevSessions) return null;
+          return prevSessions?.map((sessionItem) => ({
+            ...sessionItem,
+            lesson_list: sessionItem.lesson_list.map((lessonItem) =>
+              lessonItem._id === lesson._id
+                ? { ...lessonItem, is_completed: !lesson.is_completed }
+                : lessonItem
+            ),
+          }));
+        });
+      }
+    } catch (error) {
+      console.error("Error marking lesson as completed:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   //http://localhost:5173/learn/6713859755b6534784014184\
@@ -130,13 +176,37 @@ const LearnCoursePage = () => {
                     <div
                       key={lessonItem._id}
                       onClick={() => selectLesson(lessonItem)}
-                      className={`pl-4 py-2 rounded cursor-pointer ${
+                      className={`pl-2 py-2 rounded cursor-pointer ${
                         selectedLesson && selectedLesson._id === lessonItem._id
                           ? "bg-orange-500 text-white"
                           : ""
                       }`}
                     >
-                      <p>{lessonItem.name}</p>
+                      <div>
+                        <div className="flex gap-2 items-center">
+                          <div className="w-1/10">
+                            {lessonItem.is_completed ? (
+                              <MdOutlineTaskAlt className="w-6 h-6 text-green-500" />
+                            ) : (
+                              <div>
+                                {lessonItem.lesson_type === "video" && (
+                                  <MdOutlinePlayCircle className="w-6 h-6" />
+                                )}
+                                {lessonItem.lesson_type === "text" && (
+                                  <FiBookOpen className="w-6 h-6" />
+                                )}
+                              </div>
+                            )}
+                          </div>
+                          <div className="font-semibold">{lessonItem.name}</div>
+                        </div>
+                        <span className="text-sm">
+                          {lessonItem.lesson_type.charAt(0).toUpperCase() +
+                            lessonItem.lesson_type.slice(1)}
+                          <span className="px-2">•</span>
+                          {lessonItem.full_time} min
+                        </span>
+                      </div>
                     </div>
                   ))}
               </div>
@@ -169,10 +239,14 @@ const LearnCoursePage = () => {
                 />
               )}
             </div>
-            <div className="flex">
-              <div className="mt-4 px-2 py-1 bg-orange-500 text-white font-bold rounded">
-                Mark as Completed
-              </div>
+            <div className="flex items-baseline gap-4">
+              <button
+                onClick={() => handleClick(selectedLesson)}
+                className="mt-4 px-4 py-2 font-bold bg-orange-500 text-white rounded"
+                disabled={loading}
+              >
+                {loading ? "Loading..." : buttonText}
+              </button>
             </div>
           </div>
         )}
