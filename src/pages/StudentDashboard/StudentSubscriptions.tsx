@@ -1,5 +1,6 @@
 import { useState } from 'react';
-
+import { Card, Input } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 interface Student {
   id: number;
   name: string;
@@ -29,7 +30,7 @@ const studentsData: Student[] = [
 const StudentSubscriptions = () => {
   const [following, setFollowing] = useState<number[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
-  const [searchTerm, setSearchTerm] = useState<string>(''); 
+  const [searchTerm] = useState<string>(''); 
 
   const handleFollow = (id: number) => {
     setFollowing((prev) => {
@@ -45,9 +46,7 @@ const StudentSubscriptions = () => {
     setSelectedStudent(student);
   };
 
-  const closeProfile = () => {
-    setSelectedStudent(null);
-  };
+
 
  
   const filteredStudents = studentsData.filter(student =>
@@ -55,19 +54,14 @@ const StudentSubscriptions = () => {
   );
 
   return (
+    <Card>
     <div className="subscription-container">
-      <h3 className="text-2xl my-5">My Subscriptions</h3>
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Search by instructor name"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <button>
-          <i className="fas fa-search"></i>
-        </button>
-      </div>
+      <h3 className="text-2xl my-5">My Subscription</h3>
+      <Input
+        placeholder="Search By Subscriber Name"
+        prefix={<SearchOutlined />}
+        style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
+      />
       <div className="students-list">
         {filteredStudents.map((student) => (
           <div key={student.id} className="student-card" onClick={() => handleStudentClick(student)}>
@@ -88,31 +82,8 @@ const StudentSubscriptions = () => {
         ))}
       </div>
 
-      {selectedStudent && (
-        <div className="profile-modal">
-          <div className="profile-content">
-            <span className="close-btn" onClick={closeProfile}>
-              <i className="fas fa-times"></i>
-            </span>
-            <h2>{selectedStudent.name}</h2>
-            <img src={selectedStudent.avatar} alt={selectedStudent.name} className="student-avatar-large" />
-            <p><i className="fas fa-phone-alt"></i> {selectedStudent.phone}</p>
-            <p><i className="fas fa-envelope"></i> {selectedStudent.email}</p>
-            <p>Member Since: {selectedStudent.memberSince || 'N/A'}</p>
-          </div>
-        </div>
-      )}
-
-      <div className="pagination">
-        <p>1-2 of 2 items</p>
-        <button>❮</button>
-        <span>1</span>
-        <button>❯</button>
-        <select>
-          <option>10 / page</option>
-        </select>
-      </div>
     </div>
+    </Card>
   );
 };
 
@@ -122,28 +93,6 @@ const styles = `
 .subscription-container {
   padding: 20px;
   font-family: Arial, sans-serif;
-}
-
-.search-bar {
-  display: flex-start;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.search-bar input {
-  padding: 10px;
-  width: 300px;
-  border: 1px solid #ddd;
-  border-radius: 4px 0 0 4px;
-}
-
-.search-bar button {
-  padding: 10px;
-  background-color: #ff782d;
-  color: white;
-  border: none;
-  border-radius: 0 4px 4px 0;
-  cursor: pointer;
 }
 
 .students-list {
@@ -185,59 +134,6 @@ const styles = `
   padding: 10px;
   border-radius: 5px;
   cursor: pointer;
-}
-
-.pagination {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.pagination p, .pagination span {
-  margin: 0;
-}
-
-.pagination button {
-  background-color: #ff782d;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.pagination select {
-  padding: 5px;
-}
-
-
-.profile-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.profile-content {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  text-align: center;
-  position: relative;
-}
-
-.close-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  cursor: pointer;
-  font-size: 20px;
 }
 `;
 

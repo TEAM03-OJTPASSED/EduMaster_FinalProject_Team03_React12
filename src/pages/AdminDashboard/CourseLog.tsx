@@ -14,6 +14,12 @@ const columns = [
     title: "Status",
     dataIndex: "status",
     key: "status",
+    filters: [
+      { text: "Active", value: CourseStatusEnum.ACTIVE },
+      { text: "Waiting Approve", value: CourseStatusEnum.WAITING_APPROVE },
+      { text: "Reject", value: CourseStatusEnum.REJECTED },
+    ],
+    onFilter: (value: any, record: any) => record.status === value,
     render: (status: any) => (
       <Tag
         color={

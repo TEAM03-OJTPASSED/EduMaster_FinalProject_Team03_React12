@@ -37,7 +37,7 @@ const AdminNavBar = () => {
   const menuItems = [
     {
       key: "profile",
-      label: <span onClick={() => navigate("/admin/settings")}>Profile</span>,
+      label: <span onClick={() => navigate("/dashboard/admin/settings")}>Profile</span>,
       icon: <UserOutlined />, // Thêm icon UserOutlined cho Profile
     },
     {

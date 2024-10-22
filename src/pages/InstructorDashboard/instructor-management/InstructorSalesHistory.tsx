@@ -3,6 +3,17 @@ import { Button, Card, Input, Table, Tag } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { salesHistory } from "../../AdminDashboard/monitors/course/courseList";
 
+interface SalesHistory {
+  courseName: string;
+  purchaseNumber: string;
+  status: "Completed" | "Pending" | "Refunded"; // Chỉ định các giá trị có thể có cho status
+  pricePaid: number;
+  discount: number;
+  studentName: string;
+  CartNo: string;
+  createdAt: string; // ISO date string (e.g., "2024-10-01")
+}
+
 // Cột cho bảng Purchase Log
 const columns = [
   {
@@ -24,6 +35,13 @@ const columns = [
     title: "Status",
     dataIndex: "status",
     key: "status",
+    filters: [
+      { text: "Completed", value: "Completed" },
+      { text: "Pending", value: "Pending" },
+      { text: "Refunded", value: "Refunded" },
+    ],
+    onFilter: (value: any, record: any) =>
+      record.status.trim() === value.trim(),
     render: (status: string) => (
       <Tag
         color={
@@ -75,7 +93,7 @@ const InstructorSalesHistory = () => {
 
   return (
     <Card>
-      <h3 className="text-2xl my-5">Purchase Log</h3>
+      <h3 className="text-2xl my-5">Sales History</h3>
       <Input
         placeholder="Search By Course Name"
         prefix={<SearchOutlined />}
