@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Course } from "../models/Course.model";
 import { Session } from "../models/Session.model";
 import { Lesson } from "../models/Lesson.model";
@@ -10,28 +11,35 @@ const token =
 
 const fetchCourse = async (courseId: string) => {
   try {
-    const response = await axios.get(
-      `http://localhost:3000/api/client/course/${courseId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await axios.get(`/api/client/course/${courseId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data.data;
   } catch (error) {
-    console.error("Error fetching course:", error);
+    if (
+      axios.isAxiosError(error) &&
+      error.response &&
+      error.response.status === 403
+    ) {
+      return "Forbidden";
+    } else {
+      console.error("Error fetching course:", error);
+    }
     return null;
   }
 };
 
 const LearnCoursePage = () => {
+  const [returnCode, setReturnCode] = useState<number | null>(0);
   const [course, setCourse] = useState<Course | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
+  const navigate = useNavigate();
+  const courseId = "6713859755b6534784014184";
 
   useEffect(() => {
-    const courseId = "6713859755b6534784014184";
     fetchCourse(courseId).then((data) => {
       if (data) {
         console.log("Data:", data);
@@ -39,6 +47,12 @@ const LearnCoursePage = () => {
         setCourse(data);
         console.log("Session List: ", data.session_list);
         setSession(data.session_list);
+      }
+      if (data === "Forbidden") {
+        setReturnCode(403);
+        setTimeout(() => {
+          navigate(`/course-detail/${courseId}`);
+        }, 5000);
       }
     });
     console.log("Course:", course);
@@ -58,6 +72,32 @@ const LearnCoursePage = () => {
   const selectLesson = (lesson: Lesson) => {
     setSelectedLesson(lesson);
   };
+
+  //http://localhost:5173/learn/6713859755b6534784014184\
+
+  if ((!course || !session) && returnCode !== 403) {
+    return <div className="pt-4 font-exo">Loading...</div>;
+  }
+
+  if (returnCode === 403) {
+    return (
+      <div>
+        <div className="font-exo text-2xl font-bold pt-8 text-center">
+          You don't own this course yet! Redirect to course purchase page in 5
+          seconds.
+        </div>
+        <div className="font-exo text-center pt-4">
+          If you are not redirected automatically,
+          <button
+            className="text-orange-500 underline px-2"
+            onClick={() => navigate(`/course-detail/${courseId}`)}
+          >
+            go to purchase
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex pt-10">
