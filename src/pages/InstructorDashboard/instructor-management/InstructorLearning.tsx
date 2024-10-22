@@ -83,7 +83,7 @@ const InstructorLearning = () => {
   // Filter courses based on the active tab
   const filteredCourses = listCourses.filter((course) => {
     if (activeTab === "in-progress") {
-      return course.status === CourseStatusEnum.ACTIVE;//just for mock purposes
+      return course.status === CourseStatusEnum.ACTIVE; //just for mock purposes
     }
     if (activeTab === "completed") {
       return course.status === CourseStatusEnum.WAITING_APPROVE; //just for mock purposes

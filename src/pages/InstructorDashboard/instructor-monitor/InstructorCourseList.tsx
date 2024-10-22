@@ -82,6 +82,15 @@ const InstructorCourseList: React.FC = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      filters: [
+        { text: "New", value: CourseStatusEnum.NEW },
+        { text: "Waiting Approve", value: CourseStatusEnum.WAITING_APPROVE },
+        { text: "Approved", value: CourseStatusEnum.APPROVED },
+        { text: "Rejected", value: CourseStatusEnum.REJECTED },
+        { text: "Active", value: CourseStatusEnum.ACTIVE },
+        { text: "Inactive", value: CourseStatusEnum.INACTIVE },
+      ],
+      onFilter: (value: CourseStatusEnum, record: any) => record.status === value,
       render: (status: CourseStatusEnum) => {
         const statusColors = {
           [CourseStatusEnum.NEW]: "green",

@@ -51,13 +51,6 @@ const menuItems = [
         title: "Sales History",
         path: "/dashboard/instructor/salesHistory",
       },
-    ],
-  },
-  {
-    key: "reports",
-    icon: <LineChartOutlined />,
-    label: "Reports",
-    children: [
       {
         key: "4-1",
         title: "Course log",
@@ -72,6 +65,12 @@ const menuItems = [
       },
     ],
   },
+  // {
+  //   key: "reports",
+  //   icon: <LineChartOutlined />,
+  //   label: "Reports",
+  //   children: [],
+  // },
   {
     key: "subscription",
     icon: <UserOutlined />,

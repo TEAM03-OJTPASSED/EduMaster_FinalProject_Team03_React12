@@ -49,13 +49,14 @@ const UserManagement: React.FC = () => {
   //   // Thực hiện logic lưu user
   // };
 
-  // const handleStatusChange = (checked: any, key: any) => {
-  //   // Update trạng thái tài khoản
-  //   const updatedData = dataSource.map((user) =>
-  //     user.key === key ? { ...user, status: checked } : user
-  //   );
-  //   setDataSource(updatedData);
-  // };
+  const handleStatusChange = (checked: any, key: any) => {
+    // // Update trạng thái tài khoản
+    // const updatedData = dataSource.map((user) =>
+    //   user.key === key ? { ...user, status: checked } : user
+    // );
+    // setDataSource(updatedData);
+    console.log(checked, key);
+  };
 
   // const handleRoleChange = (value: any, key: any) => {
   //   // Update vai trò
@@ -90,11 +91,15 @@ const UserManagement: React.FC = () => {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
-      // render: (text: any, record: any) => (
-      render: () => (
+      filters: [
+        { text: "Active", value: true },
+        { text: "Inactive", value: false },
+      ],
+      onFilter: (value: any, record: any) => record.status === value,
+      render: (text: any, record: any) => (
         <Switch
-        // checked={text}
-        // onChange={(checked) => handleStatusChange(checked, record.key)}
+          checked={text}
+          onChange={(checked) => handleStatusChange(checked, record.key)}
         />
       ),
     },

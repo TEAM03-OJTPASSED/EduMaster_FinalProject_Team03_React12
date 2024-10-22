@@ -1,12 +1,15 @@
 import { Card, Input, Table, Tag, TableProps, Button } from "antd";
-import { CheckOutlined, CloseOutlined, SearchOutlined } from "@ant-design/icons";
+import {
+  CheckOutlined,
+  CloseOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
 import {
   Payout,
   payouts,
   PayoutStatusEnum,
 } from "../../../AdminDashboard/monitors/course/courseList";
 
-import dayjs from "dayjs";
 import { useLocation } from "react-router-dom";
 
 const RequestPayout = () => {
@@ -15,7 +18,9 @@ const RequestPayout = () => {
   const { status } = location.state || {};
 
   const filterdPayouts = payouts.filter((payout) =>
-    Array.isArray(status) ? status.includes(payout.status) : payout.status === status
+    Array.isArray(status)
+      ? status.includes(payout.status)
+      : payout.status === status
   );
 
   const columns: TableProps<Payout>["columns"] = [
@@ -28,11 +33,26 @@ const RequestPayout = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      filters: [
+        { text: PayoutStatusEnum.new, value: PayoutStatusEnum.new },
+        {
+          text: PayoutStatusEnum.request_payout,
+          value: PayoutStatusEnum.request_payout,
+        },
+      ],
+      onFilter: (value: any, record: any) => record.status === value, // Đảm bảo value là string
       render: (status: PayoutStatusEnum) => {
-        if (status === "New") {
-          return <Tag color="blue">New</Tag>;
-        } else if (status === "Request Payout") {
-          return <Tag color="yellow">Request Payout</Tag>
+        switch (status) {
+          case PayoutStatusEnum.new:
+            return <Tag color="blue">{PayoutStatusEnum.new}</Tag>;
+          case PayoutStatusEnum.request_payout:
+            return <Tag color="yellow">{PayoutStatusEnum.request_payout}</Tag>;
+          case PayoutStatusEnum.completed:
+            return <Tag color="green">{PayoutStatusEnum.completed}</Tag>;
+          case PayoutStatusEnum.rejected:
+            return <Tag color="red">{PayoutStatusEnum.rejected}</Tag>;
+          default:
+            return <Tag color="gray">Unknown</Tag>; // Mặc định cho trạng thái khác
         }
       },
     },

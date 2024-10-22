@@ -19,6 +19,13 @@ const columns = [
     title: "Status",
     dataIndex: "status",
     key: "status",
+    filters: [
+      { text: "Completed", value: "Completed" },
+      { text: "Pending", value: "Pending" },
+      { text: "Refunded", value: "Refunded" },
+    ],
+    onFilter: (value: any, record: any) =>
+      record.status.trim() === value.trim(),
     render: (status: string) => (
       <Tag
         color={
@@ -98,7 +105,7 @@ const Purchaselog = () => {
       <Table
         dataSource={filteredCourses}
         columns={columns}
-        pagination={{ pageSize: 4 }}
+        pagination={{ pageSize: 5 }}
         rowKey="purchaseNumber"
         bordered
         style={{ borderRadius: "8px" }}

@@ -86,6 +86,13 @@ const PayoutManagement: React.FC = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      filters: [
+        { text: "New", value: "New" },
+        { text: "Request Payout", value: "Request Payout" },
+        { text: "Completed", value: "Completed" },
+        { text: "Rejected", value: "Rejected" },
+      ],
+      onFilter: (value: any, record: any) => record.status === value,
       render: (status: PayoutStatusEnum) => {
         switch (status) {
           case "New":
