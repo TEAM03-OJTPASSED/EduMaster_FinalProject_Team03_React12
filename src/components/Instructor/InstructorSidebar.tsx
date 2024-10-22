@@ -3,14 +3,13 @@ import { Menu } from "antd";
 import {
   DashboardOutlined,
   BarChartOutlined,
-  PieChartOutlined,
   LineChartOutlined,
   SettingOutlined,
   MoneyCollectOutlined,
   BookOutlined,
-  FileTextOutlined,
   ShoppingCartOutlined,
   StarOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
@@ -28,6 +27,12 @@ const menuItems = [
     label: "Management",
     children: [
       {
+        key: "3-1",
+        title: "My Courses",
+        icon: <BookOutlined />,
+        path: "/dashboard/instructor/my-courses",
+      },
+      {
         key: "management-payout",
         icon: <MoneyCollectOutlined />,
         title: "Payout",
@@ -36,8 +41,8 @@ const menuItems = [
       {
         key: "management-order",
         icon: <BookOutlined />,
-        title: "Order",
-        path: "/dashboard/instructor/order",
+        title: "My Learning",
+        path: "/dashboard/instructor/my-learning",
       },
       {
         key: "management-salesHistory",
@@ -45,19 +50,7 @@ const menuItems = [
         title: "Sales History",
         path: "/dashboard/instructor/salesHistory",
       },
-    ],
-  },
-  {
-    key: "monitor",
-    icon: <PieChartOutlined />,
-    label: "Monitor",
-    children: [
-      {
-        key: "3-1",
-        title: "My Courses",
-        icon: <BookOutlined />,
-        path: "/dashboard/instructor/my-courses",
-      },
+      
     ],
   },
   {
@@ -65,19 +58,15 @@ const menuItems = [
     icon: <LineChartOutlined />,
     label: "Reports",
     children: [
-      {
-        key: "4-1",
-        title: "Course log",
-        icon: <FileTextOutlined />,
-        path: "/dashboard/instructor/course-log",
-      },
-      {
-        key: "4-2",
-        title: "Purchase log",
-        icon: <FileTextOutlined />,
-        path: "/dashboard/instructor/purchase-log",
-      },
+     
     ],
+  },
+  {
+    key: "subscription",
+    icon: <UserOutlined />,
+    title: "Subscription",
+    label: "Subscription",
+    path: "/dashboard/instructor/subscription",
   },
   {
     key: "settings",

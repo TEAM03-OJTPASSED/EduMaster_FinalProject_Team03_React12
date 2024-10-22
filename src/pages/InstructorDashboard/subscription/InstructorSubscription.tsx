@@ -16,10 +16,10 @@ const InstructorSubscription = () => {
   const handleSelectMenu: MenuProps["onClick"] = (e) => {
     switch (e.key) {
       case "Subscribed":
-        naviagte("/instructor/subscription");
+        naviagte("/dashboard/instructor/subscription");
         break;
       case "Subscriber":
-        naviagte("/instructor/subscription/subscriber");
+        naviagte("/dashboard/instructor/subscription/subscriber");
         break;
       default:
         break;

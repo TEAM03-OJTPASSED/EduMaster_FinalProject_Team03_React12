@@ -1,17 +1,21 @@
-import { Card, Input, Table, Tag, TableProps } from "antd";
+import { Card, Input, Table, Tag, TableProps, Button } from "antd";
 import {
+  CheckOutlined,
+  CloseOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
+
+import dayjs from "dayjs";
+import { useLocation } from "react-router-dom";
 import {
   Payout,
   payouts,
   PayoutStatusEnum,
-} from "../../../AdminDashboard/monitors/course/courseList";
+} from "../monitors/course/courseList";
+import { useState } from "react";
+import RejectPayoutModal from "./RejectPayoutModal";
 
-import { useLocation } from "react-router-dom";
-import dayjs from "dayjs";
-
-const RequestPayout = () => {
+const AdminRequestPayout = () => {
   const location = useLocation();
 
   const { status } = location.state || {};
@@ -21,7 +25,19 @@ const RequestPayout = () => {
       ? status.includes(payout.status)
       : payout.status === status
   );
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
   const columns: TableProps<Payout>["columns"] = [
     {
       title: "Payout No",
@@ -39,19 +55,12 @@ const RequestPayout = () => {
           value: PayoutStatusEnum.request_payout,
         },
       ],
-      onFilter: (value: any, record: any) => record.status === value, // Đảm bảo value là string
+      onFilter: (value: any, record: Payout) => record.status === value,
       render: (status: PayoutStatusEnum) => {
-        switch (status) {
-          case PayoutStatusEnum.new:
-            return <Tag color="blue">{PayoutStatusEnum.new}</Tag>;
-          case PayoutStatusEnum.request_payout:
-            return <Tag color="yellow">{PayoutStatusEnum.request_payout}</Tag>;
-          case PayoutStatusEnum.completed:
-            return <Tag color="green">{PayoutStatusEnum.completed}</Tag>;
-          case PayoutStatusEnum.rejected:
-            return <Tag color="red">{PayoutStatusEnum.rejected}</Tag>;
-          default:
-            return <Tag color="gray">Unknown</Tag>; // Mặc định cho trạng thái khác
+        if (status === "New") {
+          return <Tag color="blue">New</Tag>;
+        } else if (status === "Request Payout") {
+          return <Tag color="yellow">Request Payout</Tag>;
         }
       },
     },
@@ -83,6 +92,42 @@ const RequestPayout = () => {
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
     },
+    {
+      title: "Action",
+      key: "action",
+      render: (_, record: Payout) => (
+        <>
+          <Button
+            type="text"
+            className="text-green-600"
+            icon={<CheckOutlined />}
+            disabled={
+              record.status !== PayoutStatusEnum.request_payout &&
+              record.status !== PayoutStatusEnum.new
+            }
+          >
+            Approve
+          </Button>
+          <Button
+            className="text-red-600"
+            type="text"
+            icon={<CloseOutlined />}
+            disabled={
+              record.status !== PayoutStatusEnum.request_payout &&
+              record.status !== PayoutStatusEnum.new
+            }
+            onClick={showModal}
+          >
+            Reject
+          </Button>
+          <RejectPayoutModal
+            isOpen={isModalOpen}
+            handleOk={handleOk}
+            handleCancel={handleCancel}
+          />
+        </>
+      ),
+    },
   ];
 
   return (
@@ -107,4 +152,4 @@ const RequestPayout = () => {
     </Card>
   );
 };
-export default RequestPayout;
+export default AdminRequestPayout;

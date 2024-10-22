@@ -3,13 +3,16 @@ import { Menu } from "antd";
 import {
   DashboardOutlined,
   BarChartOutlined,
-  PieChartOutlined,
-  LineChartOutlined,
   UserOutlined,
   FormOutlined,
   FolderOutlined,
   MoneyCollectOutlined,
   FileTextOutlined,
+  SettingOutlined,
+  BookOutlined,
+  HourglassOutlined,
+  SnippetsOutlined,
+  ShoppingCartOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
@@ -63,41 +66,37 @@ const menuItems: MenuItem[] = [
         label: "Blog",
         path: "/dashboard/admin/blog",
       },
-    ],
-  },
-  {
-    key: "monitor",
-    icon: <PieChartOutlined />,
-    label: "Monitor",
-    items: [
       {
         key: "all-courses",
+        icon: <BookOutlined />,
         label: "All Courses",
         path: "/dashboard/admin/all-courses",
       },
       {
         key: "pending-courses",
+        icon: <HourglassOutlined />,
         label: "Pending Course",
         path: "/dashboard/admin/pending-courses",
       },
-    ],
-  },
-  {
-    key: "reports",
-    icon: <LineChartOutlined />,
-    label: "Reports",
-    items: [
       {
         key: "course-log",
+        icon: <SnippetsOutlined />,
         label: "Course log",
         path: "/dashboard/admin/course-log",
       },
       {
         key: "purchase-log",
+        icon: <ShoppingCartOutlined />,
         label: "Purchase log",
         path: "/dashboard/admin/purchase-log",
       },
     ],
+  },
+  {
+    key: "settings",
+    icon: <SettingOutlined />,
+    label: "Settings",
+    path: "/dashboard/admin/settings",
   },
 ];
 
@@ -137,6 +136,7 @@ const AdminSidebar: React.FC<{ onMenuClick?: () => void }> = ({
           icon: item.icon,
           label: item.label,
           children: item.items.map((child) => ({
+            icon: child.icon,
             key: child.key,
             label: child.label,
             onClick: () => handleMenuClick(child.key),

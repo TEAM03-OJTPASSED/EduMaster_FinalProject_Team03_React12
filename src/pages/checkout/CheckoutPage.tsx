@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Form, Input, Button, Card, List, Typography, Space, Radio, Divider, message } from 'antd';
 import { CreditCardOutlined, BankOutlined, DollarOutlined } from '@ant-design/icons';
 import { useCustomNavigate } from '../../hooks/customNavigate';
+import DynamicBreadcrumb from '../../components/Breadcrumb/Breadcrumb';
 
 const { Title, Text } = Typography;
 
@@ -55,6 +56,8 @@ const CheckoutPage: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 font-jost">
+            <DynamicBreadcrumb/>
+
       <Title level={1} className="mb-8 font-exo">Checkout</Title>
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="w-full lg:w-2/3">

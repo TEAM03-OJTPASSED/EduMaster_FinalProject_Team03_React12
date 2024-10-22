@@ -40,11 +40,14 @@ const fetchCategory = async (categoryId: string) => {
 
 const fetchInstructor = async (instructor_Id: string) => {
   try {
-    const response = await axios.get(`/api/users/${instructor_Id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.get(
+      `/api/users/${instructor_Id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching instructor:", error);
