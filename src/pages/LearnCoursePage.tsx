@@ -7,7 +7,7 @@ import { Lesson } from "../models/Lesson.model";
 import ReactPlayer from "react-player";
 
 const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MTBlMjI4YTMxZjEzYTZkMGE1ZTc2ZCIsInJvbGUiOiJzdHVkZW50IiwidmVyc2lvbiI6MCwiaWF0IjoxNzI5NDk0MTc1LCJleHAiOjE3Mjk1MjI5NzV9.0Wi5CXRkT-7MlWuHbSvdqaIVDmpRzwpX9FjHlFWW88g";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MTBlMjI4YTMxZjEzYTZkMGE1ZTc2ZCIsInJvbGUiOiJzdHVkZW50IiwidmVyc2lvbiI6MCwiaWF0IjoxNzI5NjAwODk1LCJleHAiOjE3Mjk2Mjk2OTV9.pEtrWU8eJJukSdUNq8g3paO7Ld7bBU3wwWc3F_3ndLU";
 
 const fetchCourse = async (courseId: string) => {
   try {
@@ -47,6 +47,13 @@ const LearnCoursePage = () => {
         setCourse(data);
         console.log("Session List: ", data.session_list);
         setSession(data.session_list);
+        if (data.session_list && data.session_list.length > 0) {
+          const firstSession = data.session_list[0];
+          if (firstSession.lesson_list && firstSession.lesson_list.length > 0) {
+            setSelectedLesson(firstSession.lesson_list[0]);
+          }
+          setExpandedSessions({ 0: true });
+        }
       }
       if (data === "Forbidden") {
         setReturnCode(403);
