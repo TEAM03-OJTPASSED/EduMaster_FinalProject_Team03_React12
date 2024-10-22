@@ -7,7 +7,6 @@ import {
   SettingOutlined,
   MoneyCollectOutlined,
   BookOutlined,
-  FileTextOutlined,
   ShoppingCartOutlined,
   StarOutlined,
   UserOutlined,
@@ -51,26 +50,17 @@ const menuItems = [
         title: "Sales History",
         path: "/dashboard/instructor/salesHistory",
       },
-      {
-        key: "4-1",
-        title: "Course log",
-        icon: <FileTextOutlined />,
-        path: "/dashboard/instructor/course-log",
-      },
-      {
-        key: "4-2",
-        title: "Purchase log",
-        icon: <FileTextOutlined />,
-        path: "/dashboard/instructor/purchase-log",
-      },
+      
     ],
   },
-  // {
-  //   key: "reports",
-  //   icon: <LineChartOutlined />,
-  //   label: "Reports",
-  //   children: [],
-  // },
+  {
+    key: "reports",
+    icon: <LineChartOutlined />,
+    label: "Reports",
+    children: [
+     
+    ],
+  },
   {
     key: "subscription",
     icon: <UserOutlined />,

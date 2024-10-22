@@ -90,7 +90,8 @@ const InstructorCourseList: React.FC = () => {
         { text: "Active", value: CourseStatusEnum.ACTIVE },
         { text: "Inactive", value: CourseStatusEnum.INACTIVE },
       ],
-      onFilter: (value: CourseStatusEnum, record: any) => record.status === value,
+      onFilter: (value: any, record: any) =>
+        record.status.trim() === value.trim(),
       render: (status: CourseStatusEnum) => {
         const statusColors = {
           [CourseStatusEnum.NEW]: "green",

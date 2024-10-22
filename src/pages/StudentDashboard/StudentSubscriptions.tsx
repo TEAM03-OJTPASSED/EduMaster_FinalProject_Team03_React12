@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import { Card, Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 interface Student {
@@ -13,24 +13,26 @@ interface Student {
 const studentsData: Student[] = [
   {
     id: 1,
-    name: 'Edu',
-    phone: '0123456789',
-    email: 'edu123@gmail.com',
-    avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4sUs8eRbiEt6b1Jil5C_nGFkkPrXumAt18akJUOV5O6CTs0yVm7y-bLk-li4KAaeFxD4&usqp=CAU',
+    name: "Edu",
+    phone: "0123456789",
+    email: "edu123@gmail.com",
+    avatar:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4sUs8eRbiEt6b1Jil5C_nGFkkPrXumAt18akJUOV5O6CTs0yVm7y-bLk-li4KAaeFxD4&usqp=CAU",
   },
   {
     id: 2,
-    name: 'Master',
-    phone: '0987654321',
-    email: 'master32@gmail.com',
-    avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4sUs8eRbiEt6b1Jil5C_nGFkkPrXumAt18akJUOV5O6CTs0yVm7y-bLk-li4KAaeFxD4&usqp=CAU',
+    name: "Master",
+    phone: "0987654321",
+    email: "master32@gmail.com",
+    avatar:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4sUs8eRbiEt6b1Jil5C_nGFkkPrXumAt18akJUOV5O6CTs0yVm7y-bLk-li4KAaeFxD4&usqp=CAU",
   },
 ];
 
 const StudentSubscriptions = () => {
   const [following, setFollowing] = useState<number[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
-  const [searchTerm] = useState<string>(''); 
+  const [searchTerm] = useState<string>("");
 
   const handleFollow = (id: number) => {
     setFollowing((prev) => {
@@ -46,43 +48,53 @@ const StudentSubscriptions = () => {
     setSelectedStudent(student);
   };
 
-
-
- 
-  const filteredStudents = studentsData.filter(student =>
+  const filteredStudents = studentsData.filter((student) =>
     student.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <Card>
-    <div className="subscription-container">
-      <h3 className="text-2xl my-5">My Subscription</h3>
-      <Input
-        placeholder="Search By Subscriber Name"
-        prefix={<SearchOutlined />}
-        style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
-      />
-      <div className="students-list">
-        {filteredStudents.map((student) => (
-          <div key={student.id} className="student-card" onClick={() => handleStudentClick(student)}>
-            <img src={student.avatar} alt={student.name} className="student-avatar" />
-            <h3>{student.name}</h3>
-            <p><i className="fas fa-phone-alt"></i> {student.phone}</p>
-            <p><i className="fas fa-envelope"></i> {student.email}</p>
-            <button
-              className={following.includes(student.id) ? 'unfollow-btn' : 'follow-btn'}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleFollow(student.id);
-              }}
+      <div className="subscription-container">
+        <h3 className="text-2xl my-5">My Subscription</h3>
+        <Input
+          placeholder="Search By Subscriber Name"
+          prefix={<SearchOutlined />}
+          style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
+        />
+        <div className="students-list">
+          {filteredStudents.map((student) => (
+            <div
+              key={student.id}
+              className="student-card"
+              onClick={() => handleStudentClick(student)}
             >
-              {following.includes(student.id) ? 'Unfollow' : 'Follow'}
-            </button>
-          </div>
-        ))}
+              <img
+                src={student.avatar}
+                alt={student.name}
+                className="student-avatar"
+              />
+              <h3>{student.name}</h3>
+              <p>
+                <i className="fas fa-phone-alt"></i> {student.phone}
+              </p>
+              <p>
+                <i className="fas fa-envelope"></i> {student.email}
+              </p>
+              <button
+                className={
+                  following.includes(student.id) ? "unfollow-btn" : "follow-btn"
+                }
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleFollow(student.id);
+                }}
+              >
+                {following.includes(student.id) ? "Unfollow" : "Follow"}
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
-
-    </div>
     </Card>
   );
 };
