@@ -36,16 +36,14 @@ const LearnCoursePage = () => {
   const [course, setCourse] = useState<Course | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
+
   const navigate = useNavigate();
   const courseId = "6713859755b6534784014184";
 
   useEffect(() => {
     fetchCourse(courseId).then((data) => {
       if (data) {
-        console.log("Data:", data);
-        console.log("Course: ", data);
         setCourse(data);
-        console.log("Session List: ", data.session_list);
         setSession(data.session_list);
         if (data.session_list && data.session_list.length > 0) {
           const firstSession = data.session_list[0];

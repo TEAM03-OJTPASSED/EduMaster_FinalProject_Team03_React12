@@ -11,12 +11,16 @@ import { Instructor } from "../models/Instructor.model";
 import { Session } from "../models/Session.model";
 
 const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MTBlMjI4YTMxZjEzYTZkMGE1ZTc2ZCIsInJvbGUiOiJzdHVkZW50IiwidmVyc2lvbiI6MCwiaWF0IjoxNzI5NDIzNjU0LCJleHAiOjE3Mjk0NTI0NTR9.6xsCPiwMsxspukcDkuNZ60iQDLLmq9ICdVWD7EEwYc0";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MTBlMjI4YTMxZjEzYTZkMGE1ZTc2ZCIsInJvbGUiOiJzdHVkZW50IiwidmVyc2lvbiI6MCwiaWF0IjoxNzI5NjAyNTkwLCJleHAiOjE3Mjk2MzEzOTB9.y2SGqzGEN65rZFXdLHfSz25R-WkxjY2DCSSzQ2f2RTc";
 
 const fetchCourse = async (courseId: string) => {
   try {
-    const response = await axios.get(`/api/client/course/${courseId}`);
-    return response.data.data;
+    const response = await axios.get(`/api/client/course/${courseId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
   } catch (error) {
     console.error("Error fetching course:", error);
     return null;
@@ -40,14 +44,11 @@ const fetchCategory = async (categoryId: string) => {
 
 const fetchInstructor = async (instructor_Id: string) => {
   try {
-    const response = await axios.get(
-      `/api/users/${instructor_Id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await axios.get(`/api/users/${instructor_Id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error fetching instructor:", error);
@@ -61,16 +62,16 @@ const CourseDetailPage = () => {
   const [category, setCategory] = useState<Category | null>(null);
   const [instructor, setInstructor] = useState<Instructor | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-
+  const [isPurchased, setIsPurchased] = useState<boolean>(false);
+  const courseId = "6713859755b6534784014184";
   useEffect(() => {
-    const courseId = "6713859755b6534784014184";
     fetchCourse(courseId).then((data) => {
       if (data) {
-        console.log("Data:", data);
-        console.log("Course: ", data);
-        setCourse(data);
+        console.log("data", data);
+        if (data.data.is_purchased) setIsPurchased(true);
+        setCourse(data.data);
         console.log("Session List: ", data.session_list);
-        setSession(data.session_list);
+        setSession(data.data.session_list);
       }
     });
     console.log("Course:", course);
@@ -99,6 +100,7 @@ const CourseDetailPage = () => {
       <div>
         <div className="inset-x-0 flex flex-col">
           <Banner
+            courseId={courseId}
             category={category.name}
             instructor={instructor.name}
             title={course.name}
@@ -106,6 +108,7 @@ const CourseDetailPage = () => {
             imageUrl={course.image_url}
             price={course.price}
             discount={course.discount}
+            isPurchased={isPurchased}
           />
         </div>
         <div className="hidden lg:block">
