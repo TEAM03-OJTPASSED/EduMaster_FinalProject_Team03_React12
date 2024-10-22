@@ -24,16 +24,25 @@ const PendingCourseList: React.FC = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      filters: [
+        { text: "Active", value: CourseStatusEnum.ACTIVE },
+        { text: "New", value: CourseStatusEnum.NEW },
+        { text: "Approve", value: CourseStatusEnum.APPROVED },
+        { text: "Waiting Approve", value: CourseStatusEnum.WAITING_APPROVE },
+        { text: "Reject", value: CourseStatusEnum.REJECTED },
+        { text: "Inactive", value: CourseStatusEnum.INACTIVE },
+      ],
+      onFilter: (value: any, record: any) => record.status === value,
       render: (status: CourseStatusEnum) => {
         switch (status) {
           case CourseStatusEnum.NEW:
             return <Tag color="green">New</Tag>;
           case CourseStatusEnum.WAITING_APPROVE:
-            return <Tag color="red">Waiting Approve</Tag>;
+            return <Tag color="orange">Waiting Approve</Tag>;
           case CourseStatusEnum.APPROVED:
             return <Tag color="yellow">Approve</Tag>;
           case CourseStatusEnum.REJECTED:
-            return <Tag color="yellow">Reject</Tag>;
+            return <Tag color="red">Reject</Tag>;
           case CourseStatusEnum.ACTIVE:
             return <Tag color="yellow">Active</Tag>;
           case CourseStatusEnum.INACTIVE:

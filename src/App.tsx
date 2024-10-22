@@ -26,7 +26,7 @@ import AdminPayout from "./pages/AdminDashboard/payout/AdminPayout";
 import InstructorLayout from "./defaultLayout/InstructorLayout";
 import InstructorContent from "./pages/InstructorDashboard/InstructorContent";
 import InstructorPayout from "./pages/InstructorDashboard/instructor-management/payout/InstructorPayout";
-import InstructorOrder from "./pages/InstructorDashboard/instructor-management/InstructorOrder";
+import InstructorLearning from "./pages/InstructorDashboard/instructor-management/InstructorLearning";
 import InstructorCourses from "./pages/InstructorDashboard/instructor-monitor/InstructorCourses";
 import InstructorCourseList from "./pages/InstructorDashboard/instructor-monitor/InstructorCourseList";
 import IntructorSessionList from "./pages/InstructorDashboard/instructor-monitor/InstructorSessionList";
@@ -36,6 +36,7 @@ import InstructorPurchaseLog from "./pages/InstructorDashboard/instructor-report
 import InstructorReview from "./pages/InstructorDashboard/InstructorReview";
 import InstructorSetting from "./pages/InstructorDashboard/instructor-setting/InstructorSetting";
 import ForgotPasswordPage from "./pages/AuthPage/ForgotPasswordPage";
+import PayoutManagement from "./pages/AdminDashboard/payoutManagement";
 import RequestPayout from "./pages/InstructorDashboard/instructor-management/payout/RequestPayout";
 import CompletedPayout from "./pages/InstructorDashboard/instructor-management/payout/CompletedPayout";
 import RejectedPayout from "./pages/InstructorDashboard/instructor-management/payout/RejectedPayout";
@@ -70,6 +71,7 @@ import TopUpPage from "./pages/topup/TopupPage";
 import AdminRequestPayout from "./pages/AdminDashboard/payout/RequestPayout";
 import AdminCompletedPayout from "./pages/AdminDashboard/payout/CompletedPayout";
 import AdminRejectedPayout from "./pages/AdminDashboard/payout/RejectedPayout";
+import ProfilePage from "./pages/profile/ProfilePage";
 
 
 function App() {
@@ -92,6 +94,8 @@ function App() {
               <Route path="/*" element={<ErrorPage />} />
               <Route path="cart" element={<CartPage />} />
               <Route path="/blog-detail/:id" element={<BlogDetailPage />} />
+              <Route path="/profile/:id" element={<ProfilePage />} />
+
               <Route path="/course-detail/:id" element={<CourseDetailPage />} />
               <Route path="/firebase" element={<Firebase />} />
 
@@ -119,6 +123,7 @@ function App() {
                 <Route path="users" element={<UserManagement />} />
                 <Route path="request-management" element={<RequestUser />} />
                 <Route path="categories" element={<CategoryManagement />} />
+                <Route path="payout" element={<PayoutManagement />} />
                 <Route path="top-up" element={<TopUpPage />} />
 
                 <Route path="payout" element={<AdminPayout />}>
@@ -145,10 +150,7 @@ function App() {
                 <Route path="purchase-log" element={<PurchaseLog />} />
                 <Route path="settings" element={<AdminSetting />}>
                   <Route index element={<AdminProfile />} />
-                  <Route
-                    path="change-password"
-                    element={<AdminChangePassword />}
-                  />
+                  <Route path="change-password"element={<AdminChangePassword />} />
                 </Route>
               </Route>
             </Route>
@@ -178,11 +180,7 @@ function App() {
                   path="salesHistory"
                   element={<InstructorSalesHistory />}
                 />
-                <Route path="order" element={<InstructorOrder />} />
-                {/* <Route
-                  path="sales-history"
-                  element={<InstructorSalesHistory />}
-                /> */}
+                <Route path="my-learning" element={<InstructorLearning />} />
                 <Route path="my-courses" element={<InstructorCourses />}>
                   <Route index element={<InstructorCourseList />} />
                   <Route path="session" element={<IntructorSessionList />} />
@@ -201,10 +199,7 @@ function App() {
                 <Route path="review" element={<InstructorReview />} />
                 <Route path="settings" element={<InstructorSetting />}>
                   <Route index element={<InstructorProfile />} />
-                  <Route
-                    path="change-password"
-                    element={<InstructorChangePassword />}
-                  />
+                  <Route path="change-password" element={<InstructorChangePassword />} />
                 </Route>
               </Route>
             </Route>

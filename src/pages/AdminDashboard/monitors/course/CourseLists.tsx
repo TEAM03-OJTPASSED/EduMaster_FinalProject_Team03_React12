@@ -1,10 +1,28 @@
 import React, { ChangeEvent, useState } from "react";
 import { Table, Input, Card, Tag, TableProps } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import { FilterOutlined, SearchOutlined } from "@ant-design/icons";
 import { Course, CourseStatusEnum, listCourses } from "./courseList";
 import useDebounce from "../../../../hooks/useDebounce";
 
-// mot de o utils sau
+// utils function to filter courses by status
+const getStatusFilterText = (status: CourseStatusEnum) => {
+  switch (status) {
+    case CourseStatusEnum.NEW:
+      return "New";
+    case CourseStatusEnum.WAITING_APPROVE:
+      return "Waiting Approve";
+    case CourseStatusEnum.APPROVED:
+      return "Approved";
+    case CourseStatusEnum.REJECTED:
+      return "Rejected";
+    case CourseStatusEnum.ACTIVE:
+      return "Active";
+    case CourseStatusEnum.INACTIVE:
+      return "Inactive";
+    default:
+      return "Unknown";
+  }
+};
 
 const CourseLists: React.FC = () => {
   const [inputSearch, setInputSearch] = useState("");
@@ -35,6 +53,16 @@ const CourseLists: React.FC = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      filters: Object.values(CourseStatusEnum).map((status) => ({
+        text: getStatusFilterText(status),
+        value: status,
+      })),
+      onFilter: (value, record) => record.status === value,
+      filterIcon: (filtered) => (
+        <FilterOutlined
+          style={{ fontSize: "18px", color: filtered ? "#1890ff" : undefined }}
+        />
+      ), // Tăng kích thước và thay đổi màu của biểu tượng filter
       render: (status: CourseStatusEnum) => {
         switch (status) {
           case CourseStatusEnum.NEW:
@@ -42,13 +70,13 @@ const CourseLists: React.FC = () => {
           case CourseStatusEnum.WAITING_APPROVE:
             return <Tag color="red">Waiting Approve</Tag>;
           case CourseStatusEnum.APPROVED:
-            return <Tag color="yellow">Approve</Tag>;
+            return <Tag color="yellow">Approved</Tag>;
           case CourseStatusEnum.REJECTED:
-            return <Tag color="yellow">Reject</Tag>;
+            return <Tag color="orange">Rejected</Tag>;
           case CourseStatusEnum.ACTIVE:
-            return <Tag color="yellow">Active</Tag>;
+            return <Tag color="blue">Active</Tag>;
           case CourseStatusEnum.INACTIVE:
-            return <Tag color="yellow">Inactive</Tag>;
+            return <Tag color="gray">Inactive</Tag>;
           default:
             return <Tag color="gray">Unknown</Tag>;
         }

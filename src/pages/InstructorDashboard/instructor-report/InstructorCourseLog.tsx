@@ -17,6 +17,14 @@ const columns = [
     title: "Status",
     dataIndex: "status",
     key: "status",
+    filters: [
+      { text: CourseStatusEnum.ACTIVE, value: CourseStatusEnum.ACTIVE },
+      { text: CourseStatusEnum.APPROVED, value: CourseStatusEnum.APPROVED },
+      { text: CourseStatusEnum.REJECTED, value: CourseStatusEnum.REJECTED },
+      // Thêm các trạng thái khác nếu cần
+    ],
+    onFilter: (value: any, record: any) =>
+      record.status.trim() === value.trim(),
     render: (status: any) => (
       <Tag
         color={
