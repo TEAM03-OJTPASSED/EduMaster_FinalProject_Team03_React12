@@ -80,6 +80,11 @@ const Navbar = () => {
     }
   }, [location.pathname]);
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.reload();     
+  }
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -370,12 +375,8 @@ const Navbar = () => {
               ) : (
                 <Button
                   className="mt-4 h-12 w-full text-lg py-4 view-button ant-btn-variant-solid font-jost"
-                  onClick={() => {
-                    localStorage.removeItem("token");
-                    setUserLoggedIn(false);
-                    setIsDrawerOpen(false);
-                    navigate("/login");
-                  }}
+                  onClick={()=> handleLogout()}
+
                 >
                   Log Out
                 </Button>
