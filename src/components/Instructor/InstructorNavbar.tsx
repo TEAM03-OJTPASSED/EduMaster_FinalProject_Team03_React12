@@ -39,8 +39,12 @@ const InstructorNavbar = () => {
       icon: <UserOutlined />, // Thêm icon UserOutlined cho Profile
     },
     {
-      key: "logout",
-      label: <span onClick={() => navigate("/logout")}>Logout</span>,
+      key: "logout",onClick: () => {
+        localStorage.removeItem("token");
+        window.location.reload();         
+        navigate("/");
+      },
+      label: <span>Logout</span>,
       icon: <LogoutOutlined />, // Thêm icon LogoutOutlined cho Logout
     },
   ];
