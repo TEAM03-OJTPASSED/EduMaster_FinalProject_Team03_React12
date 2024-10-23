@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table, Button, Input, Space, Card, Select, Switch, Tabs } from "antd";
 import {
   SearchOutlined,
@@ -7,32 +7,54 @@ import {
 } from "@ant-design/icons";
 
 import useSearch from "../../hooks/useSearch";
-import { users } from "./monitors/course/courseList";
+import { getUsers } from "../../services/userService";
 
 const { Option } = Select;
-// const { TabPane } = Tabs;
-
-/*
-GET /users - Lấy danh sách tất cả người dùng.
-GET /users/unverified - Lấy danh sách tài khoản chưa xác minh.
-GET /users/blocked - Lấy danh sách tài khoản bị khóa.
-PUT /users/:id - Cập nhật thông tin người dùng.
-DELETE /users/:id - Xóa người dùng.
-*/
 
 const UserManagement: React.FC = () => {
   const [editVisible, setEditVisible] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-  // Các bộ lọc cho các tab
-  // const allUsers = dataSource;
-  const unverifiedAccounts = users.filter((user: any) => !user.verified);
-  const blockedAccounts = users.filter((user: any) => user.blocked);
-
-  // Sử dụng useSearch với users
+  const [users, setUsers] = useState([]);
+  const [pageNum, setPageNum] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
   const { searchText, filteredData, handleSearchChange } = useSearch(users, [
     "name",
     "email",
   ]);
+
+  const fetchUsers = async (
+    pageNum: number,
+    pageSize: number,
+    keyword: string
+  ) => {
+    const searchParams = {
+      searchCondition: {
+        keyword: keyword,
+        role: "",
+        status: true,
+        is_verified: "",
+        is_delete: false,
+      },
+      pageInfo: {
+        pageNum,
+        pageSize,
+      },
+    };
+
+    try {
+      const response = await getUsers(searchParams);
+      setUsers(response.pageData);
+      setTotal(response.pageInfo.totalItems);
+    } catch (err) {
+      console.log("Error fetching users:", err);
+    }
+  };
+
+  // Fetch users when component mounts or when pageNum/pageSize changes
+  useEffect(() => {
+    fetchUsers(pageNum, pageSize, searchText);
+  }, [pageNum, pageSize, searchText]);
 
   const handleEdit = (record: any) => {
     setCurrentUser(record);
@@ -41,34 +63,22 @@ const UserManagement: React.FC = () => {
 
   const handleDelete = (record: any) => {
     console.log("Deleting user:", record);
-    // Thực hiện logic xóa
+    // Implement delete logic
   };
 
-  // const handleSave = (values: any) => {
-  //   console.log("Saving user:", values);
-  //   // Thực hiện logic lưu user
-  // };
+  const handleTableChange = (pagination: any) => {
+    setPageNum(pagination.current);
+    setPageSize(pagination.pageSize);
+  };
 
   const handleStatusChange = (checked: any, key: any) => {
-    // // Update trạng thái tài khoản
-    // const updatedData = dataSource.map((user) =>
-    //   user.key === key ? { ...user, status: checked } : user
-    // );
-    // setDataSource(updatedData);
     console.log(checked, key);
+    // Update account status logic here
   };
-
-  // const handleRoleChange = (value: any, key: any) => {
-  //   // Update vai trò
-  //   const updatedData = dataSource.map((user) =>
-  //     user.key === key ? { ...user, role: value } : user
-  //   );
-  //   setDataSource(updatedData);
-  // };
 
   const columns = [
     {
-      title: "Họ và tên",
+      title: "Name",
       dataIndex: "name",
       key: "name",
     },
@@ -78,14 +88,9 @@ const UserManagement: React.FC = () => {
       key: "email",
     },
     {
-      title: "Số điện thoại",
-      dataIndex: "phone",
+      title: "Phone Number",
+      dataIndex: "phone_number",
       key: "phone",
-    },
-    {
-      title: "Tên đăng nhập",
-      dataIndex: "username",
-      key: "username",
     },
     {
       title: "Trạng thái",
@@ -108,11 +113,7 @@ const UserManagement: React.FC = () => {
       dataIndex: "role",
       key: "role",
       render: (text: string) => (
-        <Select
-          defaultValue={text}
-          style={{ width: 120 }}
-          // onChange={(value) => handleRoleChange(value, record.key)}
-        >
+        <Select defaultValue={text} style={{ width: 120 }}>
           <Option value="Admin">Admin</Option>
           <Option value="Instructor">Instructor</Option>
           <Option value="Student">Student</Option>
@@ -124,15 +125,12 @@ const UserManagement: React.FC = () => {
       key: "action",
       render: (record: string) => (
         <Space size="middle">
-          <Button
-            icon={<EditOutlined />}
-            onClick={() => handleEdit(record)}
-          ></Button>
+          <Button icon={<EditOutlined />} onClick={() => handleEdit(record)} />
           <Button
             danger
             icon={<DeleteOutlined />}
             onClick={() => handleDelete(record)}
-          ></Button>
+          />
         </Space>
       ),
     },
@@ -144,10 +142,16 @@ const UserManagement: React.FC = () => {
       label: "All Users",
       children: (
         <Table
-          dataSource={filteredData}
+          dataSource={filteredData} // Use filteredData directly
           columns={columns}
-          pagination={{ pageSize: 5 }}
-          rowKey="key"
+          pagination={{
+            current: pageNum,
+            pageSize: pageSize,
+            total: total,
+            showSizeChanger: true,
+          }}
+          onChange={handleTableChange}
+          rowKey="_id"
           bordered
           scroll={{ x: true }}
         />
@@ -158,7 +162,7 @@ const UserManagement: React.FC = () => {
       label: "Unverified Accounts",
       children: (
         <Table
-          dataSource={unverifiedAccounts}
+          // dataSource={unverifiedAccounts}
           columns={columns}
           pagination={{ pageSize: 5 }}
           rowKey="key"
@@ -172,7 +176,7 @@ const UserManagement: React.FC = () => {
       label: "Blocked Accounts",
       children: (
         <Table
-          dataSource={blockedAccounts}
+          // dataSource={blockedAccounts}
           columns={columns}
           pagination={{ pageSize: 5 }}
           rowKey="key"
@@ -185,7 +189,6 @@ const UserManagement: React.FC = () => {
 
   return (
     <div>
-      {/* nho sua cai nay lai */}
       <div className="hidden">{editVisible}</div>
       <div className="hidden">{currentUser}</div>
       <Card>
@@ -199,12 +202,6 @@ const UserManagement: React.FC = () => {
         />
         <Tabs defaultActiveKey="1" items={items} />
       </Card>
-      {/* <EditUserModal
-        visible={editVisible}
-        onClose={() => setEditVisible(false)}
-        user={currentUser}
-        onSave={handleSave}
-      /> */}
     </div>
   );
 };
