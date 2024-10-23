@@ -9,9 +9,9 @@ import { Course } from "../models/Course.model";
 import { Category } from "../models/Category.model";
 import { Instructor } from "../models/Instructor.model";
 import { Session } from "../models/Session.model";
+import { useCustomNavigate } from "../hooks/customNavigate";
 
 const token = localStorage.getItem("token");
-
 const fetchCourse = async (courseId: string) => {
   try {
     console.log("token: ", token);
@@ -90,6 +90,7 @@ const CourseDetailPage = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [isPurchased, setIsPurchased] = useState<boolean>(false);
   const [animateClass, setAnimateClass] = useState("");
+  const navigate = useCustomNavigate();
 
   const courseId = "6713859755b6534784014184";
   useEffect(() => {
