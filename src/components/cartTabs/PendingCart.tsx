@@ -38,6 +38,10 @@ const UnpaidOrders: React.FC<OrderProps> = ({
     },
     [toggleSelectCourse]
   );
+
+  const handleMultipleSelection = () => {
+    navigate("/cart/checkout");
+  }
   return (
     <>
       <h1 className="mb-2 pt-4 text-4xl font-semibold">Unpaid Orders</h1>
@@ -100,8 +104,10 @@ const UnpaidOrders: React.FC<OrderProps> = ({
                     }
                   />
                 </List.Item>
+                
               )}
             />
+            
           ) : (
             <Empty
               image={Empty.PRESENTED_IMAGE_SIMPLE}
@@ -109,7 +115,18 @@ const UnpaidOrders: React.FC<OrderProps> = ({
             />
           )}
         </div>
+        
       </div>
+      <div className={`w-full flex justify-center ${selectedCourses.length<2 && "hidden"}`}>
+          <Button
+                      type="primary"
+                      size="large"
+                      className="w-full mt-4 view-button ant-btn-variant-solid font-jost"
+                      onClick={() => handleMultipleSelection()}
+                    >
+                      Pay All <ArrowRightOutlined />
+          </Button>
+        </div>
     </>
   );
 };

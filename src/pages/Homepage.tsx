@@ -25,6 +25,9 @@ import { BiSolidArrowFromLeft } from "react-icons/bi";
 import { IoArrowUpOutline } from "react-icons/io5";
 import { useEffect } from "react";
 import { handleAddCart } from "../utils/handleAddCart";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store/store";
+import { postRequest } from "../services/httpsMethod";
 
 interface Category {
   icon: React.ReactNode;
@@ -182,6 +185,20 @@ const courses: Course[] = [
 
 const HomePage = () => {
   const navigate = useCustomNavigate();
+  const coursesList = postRequest("/api/client/course/search", {
+    "searchCondition": {
+        "keyword": "",
+        "category_id": "",
+        "status": "",
+        "is_deleted": false
+    },
+    "pageInfo": {
+        "pageNum": 1,
+        "pageSize": 6
+    }
+  })
+
+  console.log(coursesList);
   useEffect(() => {
     // Check if the user tried to access an unauthorized page
     const unauthorized = localStorage.getItem("unauthorized");
@@ -216,10 +233,13 @@ const HomePage = () => {
     document.documentElement.scrollTop = 0;
   };
 
+  const {currentUser} = useSelector((state : RootState) => state.auth)
+
+
   const onAddCart = (course: Course) => {
     // Add the course to the cart
     //...
-    handleAddCart(course,navigate)
+    handleAddCart(currentUser.role, course,navigate)
   }
 
   return (

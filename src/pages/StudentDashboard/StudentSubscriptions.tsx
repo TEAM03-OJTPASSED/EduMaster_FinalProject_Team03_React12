@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Input, Button, Pagination, Card, Tabs } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useCustomNavigate } from "../../hooks/customNavigate";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store/store";
 
 interface Student {
   id: number;
@@ -55,16 +57,16 @@ const StudentSubscriptions = () => {
   // const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isInstructor, setIsInstructor] = useState<boolean>(false);
+  const {currentUser} = useSelector((state:RootState) => state.auth)
 
   const navigate = useCustomNavigate();
 
   useEffect(() => {
-    const user = localStorage.getItem("User");
-    if (user) {
-      const parsedUser = JSON.parse(user);
-      setIsInstructor(parsedUser.role === "instructor");
+
+    if (currentUser) {
+      setIsInstructor(currentUser.role === "instructor");
     }
-  }, []);
+  }, [currentUser]);
 
   const handleFollow = (id: number) => {
     setFollowing((prev) => {

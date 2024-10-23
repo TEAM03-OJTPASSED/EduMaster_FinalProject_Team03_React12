@@ -46,7 +46,7 @@ const Loginpage = () => {
       if (currentUser?.role === "student" || currentUser?.role === "instructor") {
         navigate("/");
       } else if (currentUser?.role === "admin") {
-        navigate("/course");
+        navigate("/dashboard/admin");
       }
     }
   }, [currentUser, token, navigate]);

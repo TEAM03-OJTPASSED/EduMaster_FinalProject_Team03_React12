@@ -8,6 +8,8 @@ import CoursesGrid from "../home/CoursesGrid";
 import NoResult from "../../assets/no-result.jpg"
 import { handleAddCart } from "../../utils/handleAddCart";
 import { useCustomNavigate } from "../../hooks/customNavigate";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store/store";
 
 interface Course {
   id: number;
@@ -33,8 +35,11 @@ export const SearchResults: React.FC<{
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
   const navigate = useCustomNavigate()
 
+  const {currentUser} = useSelector((state : RootState) => state.auth)
+
+
   const onAddCart = (course: Course) => {
-    handleAddCart(course, navigate);
+    handleAddCart(currentUser.role, course, navigate);
   }
   
   return (
