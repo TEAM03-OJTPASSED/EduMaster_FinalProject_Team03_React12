@@ -25,6 +25,8 @@ import { BiSolidArrowFromLeft } from "react-icons/bi";
 import { IoArrowUpOutline } from "react-icons/io5";
 import { useEffect } from "react";
 import { handleAddCart } from "../utils/handleAddCart";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store/store";
 
 interface Category {
   icon: React.ReactNode;
@@ -216,10 +218,13 @@ const HomePage = () => {
     document.documentElement.scrollTop = 0;
   };
 
+  const {currentUser} = useSelector((state : RootState) => state.auth)
+
+
   const onAddCart = (course: Course) => {
     // Add the course to the cart
     //...
-    handleAddCart(course,navigate)
+    handleAddCart(currentUser.role, course,navigate)
   }
 
   return (

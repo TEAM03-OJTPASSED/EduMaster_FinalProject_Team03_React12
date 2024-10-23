@@ -9,6 +9,7 @@ import PurchasedOrders from "../../components/cartTabs/PurchasedCart";
 import CancelledOrders from "../../components/cartTabs/CancelledCart";
 
 
+
 interface Course {
   id: number;
   name: string;
@@ -65,6 +66,7 @@ const CartPage: React.FC = () => {
       setSelectedCourses([...selectedCourses, id]);
     }
   };
+
 
   const total = courses
     .filter((course) => selectedCourses.includes(course.id))

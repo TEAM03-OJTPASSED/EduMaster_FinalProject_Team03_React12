@@ -59,7 +59,7 @@ const StudentSubscriptions = () => {
   const navigate = useCustomNavigate();
 
   useEffect(() => {
-    const user = localStorage.getItem("User");
+    const user = localStorage.getItem("token");
     if (user) {
       const parsedUser = JSON.parse(user);
       setIsInstructor(parsedUser.role === "instructor");
