@@ -99,6 +99,18 @@ h3 {
   background-color: var(--color-primary-default) !important;
 }
 
+.ant-btn-variant-solid {
+  color: white !important;
+  border: var(--color-primary-default) !important;
+  background-color: var(--color-primary-default) !important;
+  font-family: 'Jost',sans-serif !important;
+}
+
+.ant-btn-variant-solid:hover {
+  background-color: var(--color-primary-pressed) !important;
+  font-family: 'Jost',sans-serif !important;
+}
+
 .view-button.ant-btn-variant-solid:hover {
   background-color: var(--color-primary-pressed) !important;
 }

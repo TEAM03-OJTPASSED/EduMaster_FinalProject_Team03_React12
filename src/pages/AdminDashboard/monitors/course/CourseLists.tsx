@@ -3,6 +3,7 @@ import { Table, Input, Card, Tag, TableProps } from "antd";
 import { FilterOutlined, SearchOutlined } from "@ant-design/icons";
 import { Course, CourseStatusEnum, listCourses } from "./courseList";
 import useDebounce from "../../../../hooks/useDebounce";
+import StatusFilter from "../../../../components/StatusFilter";
 
 // utils function to filter courses by status
 const getStatusFilterText = (status: CourseStatusEnum) => {
@@ -27,6 +28,8 @@ const getStatusFilterText = (status: CourseStatusEnum) => {
 const CourseLists: React.FC = () => {
   const [inputSearch, setInputSearch] = useState("");
   const inputSearchDebouce = useDebounce(inputSearch, 500);
+  const [statusFilter, setStatusFilter] = useState<string>();
+
 
   const handleInputSearch = (e: ChangeEvent<HTMLInputElement>) => {
     setInputSearch(e.target.value);
@@ -101,15 +104,29 @@ const CourseLists: React.FC = () => {
     },
   ];
 
+  const statuses = [CourseStatusEnum.ACTIVE, CourseStatusEnum.APPROVED, CourseStatusEnum.INACTIVE, CourseStatusEnum.NEW, CourseStatusEnum.REJECTED, CourseStatusEnum.WAITING_APPROVE];
+  const handleStatusChange = (value: string | undefined) => {
+    setStatusFilter(value);
+  };
+
   return (
     <Card>
       <h3 className="text-2xl my-5">Course Management</h3>
-      <Input
-        placeholder="Search By Course Name"
-        prefix={<SearchOutlined />}
-        style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
-        onChange={handleInputSearch}
-      />
+      
+      <div className="flex gap-4 mb-5">
+            <Input
+              placeholder="Search By Course Name"
+              prefix={<SearchOutlined />}
+              style={{ width: "80%", borderRadius: "4px" }}
+              onChange={(e) => handleInputSearch(e)}
+              
+            />
+            <StatusFilter
+              statuses={statuses}
+              selectedStatus={statusFilter}
+              onStatusChange={handleStatusChange}
+            />
+          </div>
       <Table
         dataSource={listCourses}
         columns={columns}

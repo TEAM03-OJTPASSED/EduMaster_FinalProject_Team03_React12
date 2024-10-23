@@ -13,6 +13,7 @@ import {
   HourglassOutlined,
   SnippetsOutlined,
   ShoppingCartOutlined,
+  WalletOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
@@ -51,7 +52,7 @@ const menuItems: MenuItem[] = [
       {
         key: "management-categories",
         icon: <FolderOutlined />,
-        label: "Category",
+        label: "Categories",
         path: "/dashboard/admin/categories",
       },
       {
@@ -91,6 +92,12 @@ const menuItems: MenuItem[] = [
         path: "/dashboard/admin/purchase-log",
       },
     ],
+  },
+  {
+    key: "top-up",
+    icon: <WalletOutlined />,
+    label: "Top Up",
+    path: "/dashboard/admin/top-up",
   },
   {
     key: "settings",

@@ -3,13 +3,14 @@ import { Menu } from "antd";
 import {
   DashboardOutlined,
   BarChartOutlined,
-  LineChartOutlined,
   SettingOutlined,
   MoneyCollectOutlined,
   BookOutlined,
   ShoppingCartOutlined,
   StarOutlined,
   UserOutlined,
+  WalletOutlined,
+  HistoryOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
@@ -21,6 +22,7 @@ const menuItems = [
     label: "Dashboard",
     path: "/dashboard/instructor/",
   },
+
   {
     key: "management",
     icon: <BarChartOutlined />,
@@ -33,33 +35,34 @@ const menuItems = [
         path: "/dashboard/instructor/my-courses",
       },
       {
+        key: "sales",
+        icon: <ShoppingCartOutlined />,
+        title: "Orders",
+        label: "Orders",
+        path: "/dashboard/instructor/salesHistory",
+      },
+      {
         key: "management-payout",
         icon: <MoneyCollectOutlined />,
         title: "Payout",
         path: "/dashboard/instructor/payout",
       },
-      {
-        key: "management-order",
-        icon: <BookOutlined />,
-        title: "My Learning",
-        path: "/dashboard/instructor/my-learning",
-      },
-      {
-        key: "management-salesHistory",
-        icon: <ShoppingCartOutlined />,
-        title: "Sales History",
-        path: "/dashboard/instructor/salesHistory",
-      },
       
     ],
   },
+
   {
-    key: "reports",
-    icon: <LineChartOutlined />,
-    label: "Reports",
-    children: [
-     
-    ],
+    key: "my-learning",
+    icon: <BookOutlined />,
+    title: "My Learning",
+    label: "My Learning",
+    path: "/dashboard/instructor/my-learning",
+  },
+  {
+    key: "orders",
+    icon: <HistoryOutlined />,
+    label: "Orders History",
+    path: "/dashboard/instructor/orders", 
   },
   {
     key: "subscription",
@@ -67,6 +70,13 @@ const menuItems = [
     title: "Subscription",
     label: "Subscription",
     path: "/dashboard/instructor/subscription",
+  },
+  {
+    key: "top-up",
+    icon: <WalletOutlined />,
+    title: "Top Up",
+    label: "Top Up",
+    path: "/dashboard/instructor/top-up",
   },
   {
     key: "settings",

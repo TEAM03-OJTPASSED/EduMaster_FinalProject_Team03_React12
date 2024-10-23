@@ -53,25 +53,23 @@ import CheckoutPage from "./pages/checkout/CheckoutPage";
 import Firebase from "./pages/Firebase";
 import BlogDetailPage from "./pages/BlogDetailPage";
 import StudentContent from "./pages/StudentDashboard/StudentContent";
-import StudentOrders from "./pages/StudentDashboard/StudentOrders";
 import CourseLists from "./pages/AdminDashboard/monitors/course/CourseLists";
 import StudentSubscription from "./pages/StudentDashboard/StudentSubscriptions";
 import VerifySuccessToken from "./pages/AuthPage/VerifyToken";
 import InstructorChangePassword from "./pages/InstructorDashboard/instructor-setting/InstructorChangePassword";
 import InstructorProfile from "./pages/InstructorDashboard/instructor-setting/InstructorProfile";
-import InstructorSubscribed from "./pages/InstructorDashboard/subscription/InstructorSubscribed";
-import InstructorSubscription from "./pages/InstructorDashboard/subscription/InstructorSubscription";
-import InstructorSubscriber from "./pages/InstructorDashboard/subscription/InstructorSubscriber";
 import AdminChangePassword from "./pages/AdminDashboard/setting/AdminChangePassword";
 import AdminSetting from "./pages/AdminDashboard/setting/AdminSetting";
 import AdminProfile from "./pages/AdminDashboard/setting/AdminProfile";
-import InstructorSalesHistory from "./pages/InstructorDashboard/instructor-management/InstructorSalesHistory";
+import InstructorSalesHistory from "./pages/InstructorDashboard/instructor-management/InstructorOrdersHistory";
 import LearnCoursePage from "./pages/LearnCoursePage";
 import TopUpPage from "./pages/topup/TopupPage";
 import AdminRequestPayout from "./pages/AdminDashboard/payout/RequestPayout";
 import AdminCompletedPayout from "./pages/AdminDashboard/payout/CompletedPayout";
 import AdminRejectedPayout from "./pages/AdminDashboard/payout/RejectedPayout";
 import ProfilePage from "./pages/profile/ProfilePage";
+import StudentSubscriptions from "./pages/StudentDashboard/StudentSubscriptions";
+import StudentOrderHistory from "./pages/StudentDashboard/StudentOrderHistory";
 
 function App() {
   return (
@@ -170,6 +168,8 @@ function App() {
                 <Route path="dashboard" element={<InstructorContent />} />
                 <Route path="my-learning" element={<StudentCourses />} />
                 <Route path="top-up" element={<TopUpPage />} />
+                <Route path="orders" element={<StudentOrderHistory />} />
+
 
                 <Route path="payout" element={<InstructorPayout />}>
                   <Route index element={<RequestPayout />} />
@@ -195,9 +195,8 @@ function App() {
                   path="purchase-log"
                   element={<InstructorPurchaseLog />}
                 />
-                <Route path="subscription" element={<InstructorSubscription />}>
-                  <Route index element={<InstructorSubscribed />} />
-                  <Route path="subscriber" element={<InstructorSubscriber />} />
+                <Route path="subscription" element={<StudentSubscriptions />}>
+                  
                 </Route>
                 <Route path="review" element={<InstructorReview />} />
                 <Route path="settings" element={<InstructorSetting />}>
@@ -223,7 +222,7 @@ function App() {
                 <Route path="profile" element={<StudentProfile />} />
                 <Route path="my-courses" element={<StudentCourses />} />
                 <Route path="top-up" element={<TopUpPage />} />
-                <Route path="orders" element={<StudentOrders />} />
+                <Route path="orders" element={<StudentOrderHistory />} />
                 <Route path="subscriptions" element={<StudentSubscription />} />
               </Route>
             </Route>
