@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 export const useCustomNavigate = () => {
   const navigate = useNavigate();
 
-  const navigateTo = (path: string, element?: JSX.Element) => {
-    if (element) {
-      navigate(path);
+  const navigateTo = (path: string, newTab?: boolean) => {
+    if (newTab) {
+      window.open(path, "_blank"); 
     } else {
-      navigate(path);
+      navigate(path); 
     }
   };
 

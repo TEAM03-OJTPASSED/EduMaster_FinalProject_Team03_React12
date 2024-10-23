@@ -90,7 +90,7 @@ const StudentSubscriptions = () => {
         <div
           key={student.id}
           className="border p-4 rounded-lg text-center shadow-sm hover:shadow-lg transition-shadow duration-300 cursor-pointer"
-          onClick={() => navigate(`/profile/${student.id}`)}
+          onClick={() => navigate(`/profile/${student.id}`, true)}
         >
           <img
             src={student.avatar}
@@ -127,7 +127,7 @@ const StudentSubscriptions = () => {
         <div
           key={subscriber.id}
           className="border p-4 rounded-lg text-center shadow-sm hover:shadow-lg transition-shadow duration-300 cursor-pointer"
-         
+
         >
           <img
             src={subscriber.avatar}

@@ -7,6 +7,7 @@ import { GrGrid } from "react-icons/gr";
 import CoursesGrid from "../home/CoursesGrid";
 import NoResult from "../../assets/no-result.jpg"
 import { handleAddCart } from "../../utils/handleAddCart";
+import { useCustomNavigate } from "../../hooks/customNavigate";
 
 interface Course {
   id: number;
@@ -30,7 +31,12 @@ export const SearchResults: React.FC<{
   // onCourseSelected: (course: Course) => void;
 }> = ({ courses, onSearch, searchQuery }) => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
+  const navigate = useCustomNavigate()
 
+  const onAddCart = (course: Course) => {
+    handleAddCart(course, navigate);
+  }
+  
   return (
     <Content className="py-8 px-4 bg-white">
       <div className="flex justify-between items-center mb-6">
@@ -68,7 +74,7 @@ export const SearchResults: React.FC<{
       {courses.length > 0 ? (<div>
             
               
-            <CoursesGrid viewMode={viewMode} courses={courses} onAddCartClick={handleAddCart}/>
+            <CoursesGrid viewMode={viewMode} courses={courses} onAddCartClick={onAddCart}/>
         
 
             <Pagination

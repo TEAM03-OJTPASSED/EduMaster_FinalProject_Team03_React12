@@ -24,6 +24,7 @@ import Search from "antd/es/input/Search";
 import { BiSolidArrowFromLeft } from "react-icons/bi";
 import { IoArrowUpOutline } from "react-icons/io5";
 import { useEffect } from "react";
+import { handleAddCart } from "../utils/handleAddCart";
 
 interface Category {
   icon: React.ReactNode;
@@ -215,14 +216,10 @@ const HomePage = () => {
     document.documentElement.scrollTop = 0;
   };
 
-  const handleAddCart = (course: Course) => {
+  const onAddCart = (course: Course) => {
     // Add the course to the cart
     //...
-    console.log(course)
-    notification.success({
-      message: "Course Added to Cart",
-      description: `You have added "${course.name}" to your cart.`,
-    });
+    handleAddCart(course,navigate)
   }
 
   return (
@@ -342,7 +339,7 @@ const HomePage = () => {
                   <BiSolidArrowFromLeft className="group-hover:scale-150 transition " />
                 </Button>
               </div>
-              <CoursesGrid courses={courses} viewMode="grid" onAddCartClick={handleAddCart} />
+              <CoursesGrid courses={courses} viewMode="grid" onAddCartClick={onAddCart} />
             </div>
           </div>
         </section>
