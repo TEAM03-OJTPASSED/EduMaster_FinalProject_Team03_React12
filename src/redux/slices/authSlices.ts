@@ -10,9 +10,7 @@ interface AuthState {
   error: string | null;
   success: boolean;
 }
-
 const token = localStorage.getItem("token");
-
 const initialState: AuthState = {
   loading: false,
   currentUser: {} as User,
