@@ -15,11 +15,14 @@ const token =
 
 const fetchCourse = async (courseId: string) => {
   try {
-    const response = await axios.get(`/api/client/course/${courseId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.get(
+      `https://edumaster-backend-dev.vercel.app/api/client/course/${courseId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching course:", error);
@@ -29,7 +32,9 @@ const fetchCourse = async (courseId: string) => {
 
 const fetchCategory = async (categoryId: string) => {
   try {
-    const response = await axios.get(`/api/category/${categoryId}`);
+    const response = await axios.get(
+      `https://edumaster-backend-dev.vercel.app/api/category/${categoryId}`
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching category:", error);
@@ -39,7 +44,9 @@ const fetchCategory = async (categoryId: string) => {
 
 const fetchInstructor = async (instructor_Id: string) => {
   try {
-    const response = await axios.get(`/api/users/${instructor_Id}`);
+    const response = await axios.get(
+      `https://edumaster-backend-dev.vercel.app/api/users/${instructor_Id}`
+    );
     return response.data;
   } catch (error) {
     console.error("Error fetching instructor:", error);

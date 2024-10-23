@@ -14,11 +14,14 @@ const token =
 
 const fetchCourse = async (courseId: string) => {
   try {
-    const response = await axios.get(`/api/client/course/${courseId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.get(
+      `https://edumaster-backend-dev.vercel.app/api/client/course/${courseId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data.data;
   } catch (error) {
     if (
@@ -95,8 +98,8 @@ const LearnCoursePage = () => {
     setLoading(true);
     try {
       const endpoint = lesson.is_completed
-        ? `/api/users/remove-completed-lesson/`
-        : `/api/users/completed-lesson/`;
+        ? `https://edumaster-backend-dev.vercel.app/api/users/remove-completed-lesson/`
+        : `https://edumaster-backend-dev.vercel.app/api/users/completed-lesson/`;
       const response = await axios.post(
         `${endpoint}`,
         { lessonId: lesson._id },
