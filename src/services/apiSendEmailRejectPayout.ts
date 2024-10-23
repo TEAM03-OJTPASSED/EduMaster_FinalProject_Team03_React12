@@ -8,17 +8,20 @@ export interface SendEmailRejectPayoutType {
 }
 export const sendEmailToRejectPayout = async (formValue: SendEmailRejectPayoutType) => {
     const serviceId = 'service_gvrxoew';
-    const templateId = 'template_efserq9';
+    const templateId = 'template_pkkccig';
     const publicKey = 'gA4Svf4h68cmJm2L1';
+    const payoutNumber = "P-v4o7uxha";
+    const username = "Huynh Thanh Vinh";
 
     const data = {
         service_id: serviceId,
         template_id: templateId,
         user_id: publicKey,
         template_params: {
-            from_name: formValue.name,
-            from_email: formValue.email,
-            to_name: 'EduMaster',
+            payout_no: payoutNumber,
+            from_name: 'EduMaster',
+            to_email: formValue.email,
+            to_name: username,
             message: formValue.message,
         }
     };
