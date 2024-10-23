@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getRequest, postRequest } from "../../services/httpsMethod";
-import axios from "axios";
 import { User } from "../../models/UserModel";
 
 interface AuthState {
@@ -11,37 +10,36 @@ interface AuthState {
   success: boolean;
 }
 const token = localStorage.getItem("token");
+const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+
 const initialState: AuthState = {
   loading: false,
-  currentUser: {} as User,
-  token,
+  currentUser: currentUser,
+  token: token,
   error: null,
   success: false, // for monitoring the registration process.
 };
 
+
+
 export const login = createAsyncThunk<
-  AuthState,
-  { email: string; password: string },
-  { rejectValue: string }
->("auth/login", async ({ email, password }, { rejectWithValue }) => {
-  //
-  try {
-    const res = await postRequest("/api/auth", {
-      email,
-      password,
-    });
-    console.log("token", res.data.token);
-    localStorage.setItem("token", res.data.token);
-    return res.data;
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error) && error.response) {
-      return rejectWithValue(
-        error.response.data.message || "Invalid credentials"
-      );
+  AuthState, // Return type (the resolved data)
+  { email: string; password: string }, // Parameters passed to the thunk
+  { rejectValue: string } // Configuration for rejected case
+>(
+  "auth/login",
+  async ({ email, password }, { rejectWithValue }) => {
+    try {
+      const response = await postRequest("api/auth", { email, password });
+      console.log(typeof(response.data))
+      localStorage.setItem("token", JSON.stringify(response.data.token) );
+      return response.data as AuthState; // Ensure response matches AuthState
+    } catch (error: any) {
+      return rejectWithValue("Login failed. Please check your credentials.");
     }
-    return rejectWithValue("Invalid credentials");
   }
-});
+);
+
 // export const logout = createAsyncThunk<{ rejectValue: string }>("auth/logout", async (_, { rejectWithValue }) => {
 //   //
 //   try {
@@ -58,19 +56,21 @@ export const login = createAsyncThunk<
 //   }
 // });
 
-export const getCurrentUser = createAsyncThunk<{ rejectValue: string }>(
+export const getCurrentUser = createAsyncThunk<
+  AuthState, // Resolved type (the returned user data)
+  void, // No arguments passed to the thunk
+  { rejectValue: string } // Rejected value type
+>(
   "auth/user",
   async (_, { rejectWithValue }) => {
-    try {
+    try{
       const res = await getRequest("/api/auth");
+      localStorage.setItem("user", JSON.stringify(res.data)  );
+
       console.log("current user", res.data);
-      return res.data;
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error) && error.response) {
-        return rejectWithValue(
-          error.response.data.message || "Invalid credentials"
-        );
-      }
+      return res.data as AuthState; // Ensure the data matches the expected type
+    } catch (error: any) {
+      
       return rejectWithValue("Invalid credentials");
     }
   }

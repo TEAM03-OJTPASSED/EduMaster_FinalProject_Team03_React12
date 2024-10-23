@@ -27,7 +27,6 @@ import { useEffect } from "react";
 import { handleAddCart } from "../utils/handleAddCart";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store/store";
-import { postRequest } from "../services/httpsMethod";
 
 interface Category {
   icon: React.ReactNode;
@@ -185,20 +184,7 @@ const courses: Course[] = [
 
 const HomePage = () => {
   const navigate = useCustomNavigate();
-  const coursesList = postRequest("/api/client/course/search", {
-    "searchCondition": {
-        "keyword": "",
-        "category_id": "",
-        "status": "",
-        "is_deleted": false
-    },
-    "pageInfo": {
-        "pageNum": 1,
-        "pageSize": 6
-    }
-  })
-
-  console.log(coursesList);
+  
   useEffect(() => {
     // Check if the user tried to access an unauthorized page
     const unauthorized = localStorage.getItem("unauthorized");
