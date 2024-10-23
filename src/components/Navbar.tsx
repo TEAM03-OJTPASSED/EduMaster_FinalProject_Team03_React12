@@ -18,9 +18,8 @@ import logoImage from "../assets/EduMaster.png";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useLocation } from "react-router-dom";
 import { useCustomNavigate } from "../hooks/customNavigate";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../redux/store/store.ts";
-import { logout } from "../redux/slices/authSlices.ts";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store/store.ts";
 
 // Define the type for menu items
 interface MenuItem {
@@ -50,7 +49,6 @@ const items: MenuItem[] = [
 
 const Navbar = () => {
   const { currentUser,token } = useSelector((state: RootState) => state.auth);
-  const dispatch = useDispatch<AppDispatch>();
   const navigate = useCustomNavigate();
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [activeButton, setActiveButton] = useState<string>("");
