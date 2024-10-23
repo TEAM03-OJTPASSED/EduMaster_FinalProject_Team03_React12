@@ -373,7 +373,7 @@ const Navbar = () => {
                 <Button
                   className="mt-4 h-12 w-full text-lg py-4 view-button ant-btn-variant-solid font-jost"
                   onClick={() => {
-                    localStorage.removeItem("userToken");
+                    localStorage.removeItem("token");
                     setUserLoggedIn(false);
                     setIsDrawerOpen(false);
                     navigate("/login");
