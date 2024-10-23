@@ -44,9 +44,25 @@ const LearnCoursePage = () => {
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [buttonText, setButtonText] = useState("");
   const [loading, setLoading] = useState(false);
+  const [countdown, setCountDown] = useState(5);
 
   const navigate = useNavigate();
   const courseId = "6713859755b6534784014184";
+  const colors = [
+    "text-red-500",
+    "text-yellow-500",
+    "text-green-500",
+    "text-blue-500",
+    "text-purple-500",
+  ];
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountDown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    } else {
+      navigate(`/course-detail/${courseId}`);
+    }
+  }, [countdown, navigate, courseId]);
 
   useEffect(() => {
     fetchCourse(courseId).then((data) => {
@@ -175,13 +191,18 @@ const LearnCoursePage = () => {
 
   if (returnCode === 403) {
     return (
-      <div>
+      <div className="my-40">
         <div className="font-exo text-2xl font-bold pt-8 text-center">
-          You don't own this course yet! Redirect to course purchase page in 5
+          You don't own this course yet! Redirect to course purchase page in{" "}
+          <span
+            className={`transition-all duration-500 ${colors[countdown - 1]}`} // Apply color to the countdown number only
+          >
+            {countdown}
+          </span>{" "}
           seconds.
         </div>
         <div className="font-exo text-center pt-4">
-          If you are not redirected automatically,
+          If you are not redirected automatically,{" "}
           <button
             className="text-orange-500 underline px-2"
             onClick={() => navigate(`/course-detail/${courseId}`)}

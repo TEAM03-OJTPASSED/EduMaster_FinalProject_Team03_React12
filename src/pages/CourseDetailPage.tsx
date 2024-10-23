@@ -14,16 +14,25 @@ const token = localStorage.getItem("token");
 
 const fetchCourse = async (courseId: string) => {
   try {
-    console.log(token);
-    const response = await axios.get(
-      `https://edumaster-backend-dev.vercel.app/api/client/course/${courseId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    return response.data;
+    console.log("token: ", token);
+    if (token === null) {
+      console.log("token null");
+      const response = await axios.get(
+        `https://edumaster-backend-dev.vercel.app/api/client/course/${courseId}`
+      );
+      return response.data;
+    } else {
+      console.log("not null");
+      const response = await axios.get(
+        `https://edumaster-backend-dev.vercel.app/api/client/course/${courseId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    }
   } catch (error) {
     console.error("Error fetching course:", error);
     return null;
