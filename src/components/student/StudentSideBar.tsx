@@ -47,10 +47,10 @@ const StudentMenuItems: MenuItem[] = [
     path: "/dashboard/student/orders", 
   },
   {
-    key: "profile",
+    key: "settings",
     icon: <UserOutlined />,
-    title: "Profile",
-    path: "/dashboard/student/profile",
+    title: "Settings",
+    path: "/dashboard/student/settings",
   },
   {
     key: "top-up",
@@ -58,12 +58,7 @@ const StudentMenuItems: MenuItem[] = [
     title: "Top Up",
     path: "/dashboard/student/top-up",
   },
-  // {
-  //   key: "orders",
-  //   icon: <GoListOrdered />,
-  //   title: "Orders",
-  //   path: "/dashboard/student/orders",
-  // }, 
+  
   {
     key: "subscriptions",
     icon: <StarOutlined />,

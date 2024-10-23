@@ -17,9 +17,7 @@ interface Course {
   }
 
 
-export const handleAddCart = (course: Course, navigate: any) => {
-
-    const userRole = localStorage.getItem('User')
+export const handleAddCart = (userRole : string, course: Course, navigate: any) => {
   
     if (!userRole) {
       message.destroy();

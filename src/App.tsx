@@ -56,6 +56,8 @@ import StudentContent from "./pages/StudentDashboard/StudentContent";
 import CourseLists from "./pages/AdminDashboard/monitors/course/CourseLists";
 import StudentSubscription from "./pages/StudentDashboard/StudentSubscriptions";
 import VerifySuccessToken from "./pages/AuthPage/VerifyToken";
+import StudentChangePassword from "./pages/StudentDashboard/StudentChangePassword";
+import StudentSetting from "./pages/StudentDashboard/StudentSetting";
 import InstructorChangePassword from "./pages/InstructorDashboard/instructor-setting/InstructorChangePassword";
 import InstructorProfile from "./pages/InstructorDashboard/instructor-setting/InstructorProfile";
 import AdminChangePassword from "./pages/AdminDashboard/setting/AdminChangePassword";
@@ -220,7 +222,13 @@ function App() {
             >
               <Route element={<DashboardLayout role="student" />}>
                 <Route index element={<StudentContent />} />
-                <Route path="profile" element={<StudentProfile />} />
+                <Route path="settings" element={<StudentSetting />}>
+                  <Route index element={<StudentProfile />} />
+                  <Route
+                    path="change-password"
+                    element={<StudentChangePassword />}
+                  />
+                </Route>
                 <Route path="my-courses" element={<StudentCourses />} />
                 <Route path="top-up" element={<TopUpPage />} />
                 <Route path="orders" element={<StudentOrderHistory />} />
