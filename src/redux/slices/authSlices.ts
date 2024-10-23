@@ -42,6 +42,21 @@ export const login = createAsyncThunk<
     return rejectWithValue("Invalid credentials");
   }
 });
+// export const logout = createAsyncThunk<{ rejectValue: string }>("auth/logout", async (_, { rejectWithValue }) => {
+//   //
+//   try {
+//     const res = await getRequest("/api/auth/log-out");
+//     localStorage.removeItem("token");
+//     return res.data;
+//   } catch (error: unknown) {
+//     if (axios.isAxiosError(error) && error.response) {
+//       return rejectWithValue(
+//         error.response.data.message || "Invalid credentials"
+//       );
+//     }
+//     return rejectWithValue("Invalid credentials");
+//   }
+// });
 
 export const getCurrentUser = createAsyncThunk<{ rejectValue: string }>(
   "auth/user",
@@ -66,9 +81,10 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    logout: (state) => {
-      state.token = ""; // Gán lại null cho error
-    },
+   logout : (state, action)=>{
+      state.currentUser = action.payload
+      localStorage.removeItem("token")
+   }
   },
   extraReducers: (builder) => {
     builder
@@ -98,9 +114,21 @@ export const authSlice = createSlice({
         state.success = false;
         state.error   = action.payload as string
       })
+      // .addCase(logout.pending, (state) => {
+      //   state.loading = true; 
+      // })
+      // .addCase(logout.fulfilled, (state) => {
+      //   state.loading = false; 
+      //   state.success = true;
+      // })
+      // .addCase(logout.rejected, (state, action) => {
+      //   state.loading = false; 
+      //   state.success = false;
+      //   state.error   = action.payload as string
+      // })
   },
 });
 
 // Xuất actions và reducer
-export const { logout } = authSlice.actions;
+export const {logout} = authSlice.actions
 export default authSlice.reducer; // Xuất reducer, không phải slice

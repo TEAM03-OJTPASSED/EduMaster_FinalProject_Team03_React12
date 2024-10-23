@@ -22,7 +22,14 @@ const fetchCourse = async (courseId: string) => {
         },
       }
     );
-    return response.data.data;
+    console.log(response.data.data);
+    if (response.data.data.is_purchased === false) {
+      console.log("Forbidden");
+      return "Forbidden";
+    } else {
+      console.log("OK");
+      return response.data.data;
+    }
   } catch (error) {
     if (
       axios.isAxiosError(error) &&
@@ -59,8 +66,6 @@ const LearnCoursePage = () => {
     if (countdown > 0) {
       const timer = setTimeout(() => setCountDown(countdown - 1), 1000);
       return () => clearTimeout(timer);
-    } else {
-      navigate(`/course-detail/${courseId}`);
     }
   }, [countdown, navigate, courseId]);
 

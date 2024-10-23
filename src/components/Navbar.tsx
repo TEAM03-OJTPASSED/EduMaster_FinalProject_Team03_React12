@@ -18,8 +18,9 @@ import logoImage from "../assets/EduMaster.png";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useLocation } from "react-router-dom";
 import { useCustomNavigate } from "../hooks/customNavigate";
-import { useSelector } from "react-redux";
-import { RootState } from "../redux/store/store.ts";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../redux/store/store.ts";
+import { logout } from "../redux/slices/authSlices.ts";
 
 // Define the type for menu items
 interface MenuItem {
@@ -48,12 +49,13 @@ const items: MenuItem[] = [
 ];
 
 const Navbar = () => {
-  const {currentUser} = useSelector((state: RootState) => state.auth);
+  const { currentUser,token } = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useCustomNavigate();
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [activeButton, setActiveButton] = useState<string>("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [userLoggedIn, setUserLoggedIn] = useState(false); 
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
   const searchInputRef = useRef<InputRef>(null);
   const location = useLocation();
   useEffect(() => {
@@ -62,7 +64,7 @@ const Navbar = () => {
     } else {
       setUserLoggedIn(false);
     }
-  }, [currentUser]);
+  }, [currentUser,token]);
 
   useEffect(() => {
     const pathToButtonKeyMap: { [key: string]: string } = {
@@ -139,9 +141,7 @@ const Navbar = () => {
             label: "Top Up",
             key: "top-up",
             onClick: () => {
-              navigate(
-                `/dashboard/${currentUser?.role}/top-up`
-              );
+              navigate(`/dashboard/${currentUser?.role}/top-up`);
             },
           },
         ],
@@ -225,14 +225,17 @@ const Navbar = () => {
 
           {/* Log In / Sign Up and Search Icons */}
           <div className="hidden md:flex items-center gap-4">
-          {userLoggedIn && (
-            <button className="p-0 w-10 h-10 text-2xl relative" onClick={() => navigate("/cart")}>
-              <ShoppingCartOutlined />
-              <span className="absolute top-0 right-0 w-4 h-4 bg-orange-500 rounded-full text-xs text-white font-semibold">
-                2
-              </span>
-            </button>
-          )}
+            {userLoggedIn && (
+              <button
+                className="p-0 w-10 h-10 text-2xl relative"
+                onClick={() => navigate("/cart")}
+              >
+                <ShoppingCartOutlined />
+                <span className="absolute top-0 right-0 w-4 h-4 bg-orange-500 rounded-full text-xs text-white font-semibold">
+                  2
+                </span>
+              </button>
+            )}
             {userLoggedIn ? (
               <Dropdown menu={profileMenu}>
                 <div className="w-10 h-10 text-xl rounded-full flex items-center justify-center cursor-pointer">
@@ -345,7 +348,7 @@ const Navbar = () => {
                 </Button>
               </Dropdown>
               {/* Log In and Sign Up */}
-              {!userLoggedIn ? (
+              {!userLoggedIn && !token? (
                 <>
                   <Button
                     className="mt-4 h-12 w-full text-lg py-4 view-button ant-btn-variant-solid font-jost"
