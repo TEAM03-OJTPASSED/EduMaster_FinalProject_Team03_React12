@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom"; // Import Outlet
 import Navbar from "../components/Navbar";
-import UserAuth from "../components/UserAuthTest";
+// import UserAuth from "../components/UserAuthTest";
 import Footer from "../components/Footer";
 import { FaComments } from "react-icons/fa"; // Import only the Chat icon
 
@@ -8,7 +8,7 @@ const GeneralLayout = () => {
   return (
     <div className="div">
       {/* Auth User */}
-      <UserAuth />
+      {/* <UserAuth /> */}
       {/* Navbar section */}
       <div className="w-full h-16 left-0 flex items-center bg-white shadow">
         <Navbar />

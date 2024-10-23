@@ -1,5 +1,5 @@
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
-import { Button, Divider, Form, Input, notification } from "antd";
+import { Button, Divider, Form, Input } from "antd";
 import { FormProps } from "antd";
 import { Player } from "@lottiefiles/react-lottie-player";
 import { jwtDecode } from "jwt-decode";
@@ -16,18 +16,18 @@ export type LoginProps = {
 
 const Loginpage = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { currentUser,token } = useSelector((state: RootState) => state.auth);
+  const { currentUser, token } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
-  useEffect(() => {
-    const unauthorized = localStorage.getItem("unauthorized");
-    if (unauthorized) {
-      notification.error({
-        message: "Unauthorized",
-        description: "You do not have permission to access that page.",
-      });
-      localStorage.removeItem("unauthorized"); // Clear flag after showing notification
-    }
-  }, []);
+  // useEffect(() => {
+  //   const unauthorized = localStorage.getItem("unauthorized");
+  //   if (unauthorized) {
+  //     notification.error({
+  //       message: "Unauthorized",
+  //       description: "You do not have permission to access that page.",
+  //     });
+  //     localStorage.removeItem("unauthorized"); // Clear flag after showing notification
+  //   }
+  // }, []);
 
   const onFinish: FormProps<LoginProps>["onFinish"] = async (values) => {
     try {
@@ -38,16 +38,16 @@ const Loginpage = () => {
       console.log(error);
     }
   };
-  useEffect(()=>{
+  useEffect(() => {
     // const token = localStorage.getItem("token")
-    if(token && currentUser){
-      if(currentUser?.role === "student"){
-        navigate("/")
-      }else if (currentUser?.role ===  "admin"){
-        navigate("/course")
+    if (token && currentUser) {
+      if (currentUser?.role === "student") {
+        navigate("/");
+      } else if (currentUser?.role === "admin") {
+        navigate("/course");
       }
     }
-  },[currentUser, token, navigate])
+  }, [currentUser, token, navigate]);
 
   return (
     <div className="w-full lg:flex lg:h-[35rem] lg:flex-row lg:rounded-lg mt-12 overflow-hidden shadow-xl">

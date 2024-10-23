@@ -1,6 +1,8 @@
 import { message } from "antd";
 import { ReactNode } from "react";
+import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
+import { RootState } from "../redux/store/store";
 
 type ProtectedRouteProps = {
   allowedRoles: string[];
@@ -8,13 +10,13 @@ type ProtectedRouteProps = {
 };
 
 const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) => {
-  const user = localStorage.getItem("User");
-  const userRole = user ? JSON.parse(user).role : null;
+  const {currentUser, token} = useSelector((state:RootState) => state.auth)
+  const userRole = currentUser ? currentUser.role : "";
 
   // If no user is found (not authenticated), redirect to login
-  if (!userRole) {
+  if (!userRole && !token) {
     message.destroy();
-    message.error("You must be logged in to do this action.")
+    message.error("You must be logged in to do this action.");
     return <Navigate to="/login" />;
   }
 
@@ -23,6 +25,8 @@ const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) => {
     localStorage.setItem("unauthorized", "true");
     return <Navigate to="/" />;
   }
+
+  
 
   // If the user is authenticated and has the correct role, render the children or Outlet
   return children ? <>{children}</> : <Outlet />;

@@ -1,10 +1,25 @@
 import { useState, useEffect, useRef } from "react";
-import { Button, Dropdown, Input, InputRef, MenuProps, Space, Drawer } from "antd"; // Import Drawer
-import { DownOutlined, MenuOutlined, ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  Button,
+  Dropdown,
+  Input,
+  InputRef,
+  MenuProps,
+  Space,
+  Drawer,
+} from "antd"; // Import Drawer
+import {
+  DownOutlined,
+  MenuOutlined,
+  ShoppingCartOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import logoImage from "../assets/EduMaster.png";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useLocation } from "react-router-dom";
 import { useCustomNavigate } from "../hooks/customNavigate";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store/store.ts";
 
 // Define the type for menu items
 interface MenuItem {
@@ -33,25 +48,21 @@ const items: MenuItem[] = [
 ];
 
 const Navbar = () => {
+  const {currentUser} = useSelector((state: RootState) => state.auth);
   const navigate = useCustomNavigate();
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [activeButton, setActiveButton] = useState<string>("");
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false); 
-  const [userLoggedIn, setUserLoggedIn] = useState(false); // Add state to track user login status
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [userLoggedIn, setUserLoggedIn] = useState(false); 
   const searchInputRef = useRef<InputRef>(null);
-
   const location = useLocation();
-  const storedUser = localStorage.getItem("User"); 
-
   useEffect(() => {
-    // Check for user data in local storage
-    if (storedUser) {
+    if (currentUser) {
       setUserLoggedIn(true);
     } else {
       setUserLoggedIn(false);
     }
-  }, [storedUser]);
-  
+  }, [currentUser]);
 
   useEffect(() => {
     const pathToButtonKeyMap: { [key: string]: string } = {
@@ -107,16 +118,14 @@ const Navbar = () => {
 
   const profileMenu: MenuProps = {
     items: [
-     
-      
       {
         label: "My Dashboard",
         key: "dashboard",
         onClick: () => {
-          navigate(`/dashboard/${JSON.parse(storedUser ?? "").role}`);
+          navigate(`/dashboard/${currentUser?.role}`);
         },
       },
-      
+
       {
         label: "Balance",
         key: "balance",
@@ -130,22 +139,25 @@ const Navbar = () => {
             label: "Top Up",
             key: "top-up",
             onClick: () => {
-              navigate(`/dashboard/${JSON.parse(storedUser ?? "").role}/top-up`);
-              ; 
+              navigate(
+                `/dashboard/${currentUser?.role}/top-up`
+              );
             },
           },
         ],
       },
-      { label: "Settings", key: "settings",
+      {
+        label: "Settings",
+        key: "settings",
         onClick: () => {
-          navigate(`/dashboard/${JSON.parse(storedUser ?? "").role}/settings`);
-        }
-       },
+          navigate(`/dashboard/${currentUser?.role}/settings`);
+        },
+      },
       {
         label: <span className="text-red-500">Logout</span>,
         key: "logout",
         onClick: () => {
-          localStorage.removeItem("User");
+          localStorage.removeItem("token");
           setUserLoggedIn(false);
           navigate("/login");
         },
@@ -166,7 +178,9 @@ const Navbar = () => {
           />
           <div className="hidden md:flex">
             <Button
-              className={`navbar-button px-3 lg:px-6 ${activeButton === "home" ? "active" : ""}`}
+              className={`navbar-button px-3 lg:px-6 ${
+                activeButton === "home" ? "active" : ""
+              }`}
               onClick={() => {
                 setActiveButton("home");
                 navigate("/");
@@ -175,7 +189,9 @@ const Navbar = () => {
               Home
             </Button>
             <Button
-              className={`navbar-button px-3 lg:px-6 ${activeButton === "courses" ? "active" : ""}`}
+              className={`navbar-button px-3 lg:px-6 ${
+                activeButton === "courses" ? "active" : ""
+              }`}
               onClick={() => {
                 setActiveButton("courses");
                 navigate("/course");
@@ -184,7 +200,9 @@ const Navbar = () => {
               Courses
             </Button>
             <Button
-              className={`navbar-button px-3 lg:px-6 ${activeButton === "blog" ? "active" : ""}`}
+              className={`navbar-button px-3 lg:px-6 ${
+                activeButton === "blog" ? "active" : ""
+              }`}
               onClick={() => {
                 setActiveButton("blog");
                 navigate("/blog");
@@ -193,7 +211,11 @@ const Navbar = () => {
               Blog
             </Button>
             <Dropdown menu={menuProps}>
-              <Button className={`navbar-button ${activeButton === "pages" ? "active" : ""}`}>
+              <Button
+                className={`navbar-button ${
+                  activeButton === "pages" ? "active" : ""
+                }`}
+              >
                 <Space>
                   Pages
                   <DownOutlined />
@@ -202,53 +224,84 @@ const Navbar = () => {
             </Dropdown>
           </div>
 
-
-
           {/* Log In / Sign Up and Search Icons */}
           <div className="hidden md:flex items-center gap-4">
-            <button className="p-0 w-10 h-10 text-2xl relative" onClick={() => navigate("/cart")}>
+            <button
+              className="p-0 w-10 h-10 text-2xl relative"
+              onClick={() => navigate("/cart")}
+            >
               <ShoppingCartOutlined />
-              <span className="absolute top-0 right-0 w-4 h-4 bg-orange-500 rounded-full text-xs text-white font-semibold">2</span>
+              <span className="absolute top-0 right-0 w-4 h-4 bg-orange-500 rounded-full text-xs text-white font-semibold">
+                2
+              </span>
             </button>
             {userLoggedIn ? (
               <Dropdown menu={profileMenu}>
                 <div className="w-10 h-10 text-xl rounded-full flex items-center justify-center cursor-pointer">
-                  <UserOutlined/>
+                  <UserOutlined />
                 </div>
               </Dropdown>
             ) : (
               <>
                 <div className="border-[1.5px] border-black rounded-3xl">
                   <div className="pt-1.5 pb-2 pl-3 pr-3">
-                    <a className="text-base font-medium cursor-pointer" onClick={() => navigate("/login")}>Login</a>
+                    <a
+                      className="text-base font-medium cursor-pointer"
+                      onClick={() => navigate("/login")}
+                    >
+                      Login
+                    </a>
                   </div>
                 </div>
                 <div className="border-[1.5px] border-black rounded-3xl">
                   <div className="pt-1.5 pb-2 pl-3 pr-3">
-                    <a className="text-base font-medium cursor-pointer" onClick={() => navigate("/signup")}>Sign up</a>
+                    <a
+                      className="text-base font-medium cursor-pointer"
+                      onClick={() => navigate("/signup")}
+                    >
+                      Sign up
+                    </a>
                   </div>
                 </div>
               </>
             )}
-            <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center cursor-pointer" onClick={() => setIsSearchActive(true)}>
+            <div
+              className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center cursor-pointer"
+              onClick={() => setIsSearchActive(true)}
+            >
               <AiOutlineSearch size={24} />
             </div>
           </div>
 
           {/* Burger Menu for mobile */}
           <div className="md:hidden flex items-center">
-            <button className="p-0 w-10 h-10 text-2xl relative mr-8" onClick={() => navigate("/cart")}>
+            <button
+              className="p-0 w-10 h-10 text-2xl relative mr-8"
+              onClick={() => navigate("/cart")}
+            >
               <ShoppingCartOutlined />
-              <span className="absolute top-0 right-0 w-4 h-4 bg-orange-500 rounded-full text-xs text-white font-semibold">2</span>
+              <span className="absolute top-0 right-0 w-4 h-4 bg-orange-500 rounded-full text-xs text-white font-semibold">
+                2
+              </span>
             </button>
-            <MenuOutlined className="text-xl cursor-pointer" onClick={() => setIsDrawerOpen(true)} />
+            <MenuOutlined
+              className="text-xl cursor-pointer"
+              onClick={() => setIsDrawerOpen(true)}
+            />
           </div>
 
           {/* Drawer for mobile menu */}
-          <Drawer title="EduMaster" placement="right" onClose={() => setIsDrawerOpen(false)} open={isDrawerOpen}>
+          <Drawer
+            title="EduMaster"
+            placement="right"
+            onClose={() => setIsDrawerOpen(false)}
+            open={isDrawerOpen}
+          >
             <div className="flex flex-col">
               <Button
-                className={`navbar-button ${activeButton === "home" ? "active" : ""}`}
+                className={`navbar-button ${
+                  activeButton === "home" ? "active" : ""
+                }`}
                 onClick={() => {
                   setActiveButton("home");
                   navigate("/");
@@ -258,7 +311,9 @@ const Navbar = () => {
                 Home
               </Button>
               <Button
-                className={`navbar-button ${activeButton === "courses" ? "active" : ""}`}
+                className={`navbar-button ${
+                  activeButton === "courses" ? "active" : ""
+                }`}
                 onClick={() => {
                   setActiveButton("courses");
                   navigate("/course");
@@ -268,7 +323,9 @@ const Navbar = () => {
                 Courses
               </Button>
               <Button
-                className={`navbar-button ${activeButton === "blog" ? "active" : ""}`}
+                className={`navbar-button ${
+                  activeButton === "blog" ? "active" : ""
+                }`}
                 onClick={() => {
                   setActiveButton("blog");
                   navigate("/blog");
@@ -278,7 +335,11 @@ const Navbar = () => {
                 Blog
               </Button>
               <Dropdown menu={menuProps}>
-                <Button className={`navbar-button ${activeButton === "pages" ? "active" : ""}`}>
+                <Button
+                  className={`navbar-button ${
+                    activeButton === "pages" ? "active" : ""
+                  }`}
+                >
                   <Space>
                     Pages
                     <DownOutlined />
@@ -288,11 +349,37 @@ const Navbar = () => {
               {/* Log In and Sign Up */}
               {!userLoggedIn ? (
                 <>
-                  <Button className="mt-4 h-12 w-full text-lg py-4 view-button ant-btn-variant-solid font-jost" onClick={() => { navigate("/login"); setIsDrawerOpen(false); }}>Log In</Button>
-                  <Button className="mt-2 h-12 w-full text-lg py-4 view-button ant-btn-variant-solid font-jost" onClick={() => { navigate("/signup"); setIsDrawerOpen(false); }}>Sign Up</Button>
+                  <Button
+                    className="mt-4 h-12 w-full text-lg py-4 view-button ant-btn-variant-solid font-jost"
+                    onClick={() => {
+                      navigate("/login");
+                      setIsDrawerOpen(false);
+                    }}
+                  >
+                    Log In
+                  </Button>
+                  <Button
+                    className="mt-2 h-12 w-full text-lg py-4 view-button ant-btn-variant-solid font-jost"
+                    onClick={() => {
+                      navigate("/signup");
+                      setIsDrawerOpen(false);
+                    }}
+                  >
+                    Sign Up
+                  </Button>
                 </>
               ) : (
-                <Button className="mt-4 h-12 w-full text-lg py-4 view-button ant-btn-variant-solid font-jost" onClick={() => { localStorage.removeItem("userToken"); setUserLoggedIn(false); setIsDrawerOpen(false); navigate("/login"); }}>Log Out</Button>
+                <Button
+                  className="mt-4 h-12 w-full text-lg py-4 view-button ant-btn-variant-solid font-jost"
+                  onClick={() => {
+                    localStorage.removeItem("userToken");
+                    setUserLoggedIn(false);
+                    setIsDrawerOpen(false);
+                    navigate("/login");
+                  }}
+                >
+                  Log Out
+                </Button>
               )}
             </div>
           </Drawer>
