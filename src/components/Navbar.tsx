@@ -279,6 +279,7 @@ const Navbar = () => {
 
           {/* Burger Menu for mobile */}
           <div className="md:hidden flex items-center">
+          { userLoggedIn && 
             <button
               className="p-0 w-10 h-10 text-2xl relative mr-8"
               onClick={() => navigate("/cart")}
@@ -288,6 +289,7 @@ const Navbar = () => {
                 2
               </span>
             </button>
+          }   
             <MenuOutlined
               className="text-xl cursor-pointer"
               onClick={() => setIsDrawerOpen(true)}
