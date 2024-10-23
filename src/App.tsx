@@ -99,6 +99,7 @@ function App() {
               <Route path="/firebase" element={<Firebase />} />
 
               <Route path="/learn/:id" element={<LearnCoursePage />} />
+
               <Route
                 path="cart/checkout"
                 element={
@@ -172,7 +173,6 @@ function App() {
                 <Route path="top-up" element={<TopUpPage />} />
                 <Route path="orders" element={<StudentOrderHistory />} />
 
-
                 <Route path="payout" element={<InstructorPayout />}>
                   <Route index element={<RequestPayout />} />
                   <Route
@@ -197,9 +197,10 @@ function App() {
                   path="purchase-log"
                   element={<InstructorPurchaseLog />}
                 />
-                <Route path="subscription" element={<StudentSubscriptions />}>
-                  
-                </Route>
+                <Route
+                  path="subscription"
+                  element={<StudentSubscriptions />}
+                ></Route>
                 <Route path="review" element={<InstructorReview />} />
                 <Route path="settings" element={<InstructorSetting />}>
                   <Route index element={<InstructorProfile />} />

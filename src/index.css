@@ -5,12 +5,15 @@
 @tailwind components;
 @tailwind utilities;
 
+
 .font-jost {
   font-family: "Jost", sans-serif;
 }
 .font-exo {
   font-family: "Exo", sans-serif;
 }
+
+
 
 :root {
   --primary-color: #c5c7c9; /* Màu chính */
@@ -265,9 +268,9 @@ h3 {
 
 
 .custom-tabs .ant-tabs-nav .ant-tabs-tab:hover {
-  color: #f97316; 
- 
+  color: #f97316;  
 }
+
 
 .custom-tabs .ant-tabs-nav .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
   color: #f97316;
@@ -305,7 +308,44 @@ h2.ant-typography {
   font-family: 'Exo', sans-serif !important;
 }
 
+@keyframes float-in {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+.animate-float-in {
+  animation: float-in 0.5s ease-out forwards;
+}
+
+.animate-float-out {
+  animation: float-out 0.5s ease-out backwards;
+}
 
 
+.text-gradient {
+  background: linear-gradient(to right, #ff7e5f, #feb47b);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 
-
+.bg-gradient {
+  background: linear-gradient(to right, #ff7e5f, #feb47b);
+  -webkit-text-fill-color: transparent;
+}

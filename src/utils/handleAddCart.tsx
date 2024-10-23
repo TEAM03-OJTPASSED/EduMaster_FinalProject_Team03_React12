@@ -1,4 +1,4 @@
-import { notification } from "antd";
+import { message, notification } from "antd";
 
 
 interface Course {
@@ -16,7 +16,16 @@ interface Course {
     updatedDate?: string;
   }
 
-export const handleAddCart = (course: Course) => {
+
+export const handleAddCart = (course: Course, navigate: any) => {
+
+    const userRole = localStorage.getItem('User')
+  
+    if (!userRole) {
+      message.destroy();
+      message.error(<span className="text-lg font-jost">You must be logged in to do this action. <a className="text-orange-500 underline" onClick={() => navigate("/login")}>Login</a></span>)
+      return;
+    }
     // Add the course to the cart
     //...
     console.log(course)

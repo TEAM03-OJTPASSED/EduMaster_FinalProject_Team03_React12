@@ -113,8 +113,8 @@ const admin: User = {
 
 const UserAuth = () => {
   const navigate = useNavigate();
-  const currentUser = localStorage.getItem("User");
-  const currentUserRole = currentUser ? JSON.parse(currentUser).role : "guest";
+  // const currentUser = localStorage.getItem("User");
+  // const currentUserRole = currentUser ? JSON.parse(currentUser).role : "guest";
   const setUser = (role: string) => {
     const userMap: { [key: string]: User } = {
       student,
@@ -188,7 +188,7 @@ const UserAuth = () => {
       <div className="w-1/2 flex items-center">
         <div className="w-60">
           <div>Sample Test Account</div>
-          <div>Current logged as: {currentUserRole}</div>
+          {/* <div>Current logged as: {currentUserRole}</div> */}
         </div>
         <div className="flex gap-2">
           <div
