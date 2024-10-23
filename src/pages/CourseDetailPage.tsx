@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom";
 import { Banner } from "../components/CourseDetailPage/Banner";
 import { Detail } from "../components/CourseDetailPage/Detail";
 import { LeaveAComment } from "../components/LeaveAComment";
-import { DetailResponsive } from "../components/CourseDetailPage/DetailResponsive";
 import { Course } from "../models/Course.model";
 import { Category } from "../models/Category.model";
 import { Instructor } from "../models/Instructor.model";
@@ -17,13 +16,13 @@ const fetchCourse = async (courseId: string) => {
     if (token === null) {
       console.log("token null");
       const response = await axios.get(
-        `https://edumaster-backend-dev.vercel.app/api/client/course/${courseId}`
+        `http://localhost:3000/api/client/course/${courseId}`
       );
       return response.data;
     } else {
       console.log("not null");
       const response = await axios.get(
-        `https://edumaster-backend-dev.vercel.app/api/client/course/${courseId}`,
+        `http://localhost:3000/api/client/course/${courseId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -33,15 +32,16 @@ const fetchCourse = async (courseId: string) => {
       return response.data;
     }
   } catch (error) {
-    console.error("Error fetching course:", error);
-    return null;
+    if (axios.isAxiosError(error) && error.response?.status === 500) {
+      window.location.href = "/error";
+    }
   }
 };
 
 const fetchCategory = async (categoryId: string) => {
   try {
     const response = await axios.get(
-      `https://edumaster-backend-dev.vercel.app/api/category/${categoryId}`
+      `http://localhost:3000/api/category/${categoryId}`
     );
     return response.data;
   } catch (error) {
@@ -53,7 +53,7 @@ const fetchCategory = async (categoryId: string) => {
 const fetchInstructor = async (instructor_Id: string) => {
   try {
     const response = await axios.get(
-      `https://edumaster-backend-dev.vercel.app/api/users/${instructor_Id}`
+      `http://localhost:3000/api/users/${instructor_Id}`
     );
     return response.data;
   } catch (error) {
@@ -63,6 +63,8 @@ const fetchInstructor = async (instructor_Id: string) => {
 };
 
 const CourseDetailPage = () => {
+  const { id } = useParams<{ id: string }>();
+  const courseId = id ? id.toString() : "";
   const [showCourseInfo, setShowCourseInfo] = useState(false);
 
   useEffect(() => {
@@ -82,7 +84,7 @@ const CourseDetailPage = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-  useParams();
+
   const [course, setCourse] = useState<Course | null>(null);
   const [category, setCategory] = useState<Category | null>(null);
   const [instructor, setInstructor] = useState<Instructor | null>(null);
@@ -90,7 +92,6 @@ const CourseDetailPage = () => {
   const [isPurchased, setIsPurchased] = useState<boolean>(false);
   const [animateClass, setAnimateClass] = useState("");
 
-  const courseId = "6713859755b6534784014184";
   useEffect(() => {
     fetchCourse(courseId).then((data) => {
       if (data) {
@@ -126,28 +127,13 @@ const CourseDetailPage = () => {
     return (
       <div className="relative">
         <div className="inset-x-0 flex flex-col">
-          <Banner
-            courseId={courseId}
-            category={category.name}
-            instructor={instructor.name}
-            title={course.name}
-            overview={course.description}
-            imageUrl={course.image_url}
-            price={course.price}
-            discount={course.discount}
-            isPurchased={isPurchased}
-          />
+          <Banner course={course} isPurchased={isPurchased} />
         </div>
-        <div className="hidden lg:block">
-          <Detail
-            isEnrolled={true}
-            course={course || undefined}
-            session={session || undefined}
-          />
-        </div>
-        <div className="lg:hidden">
-          <DetailResponsive />
-        </div>
+        <Detail
+          isEnrolled={true}
+          course={course || undefined}
+          session={session || undefined}
+        />
         <div className="lg:w-2/3">
           <LeaveAComment />
         </div>
@@ -174,7 +160,7 @@ const CourseDetailPage = () => {
               </p>
               <p className="flex flex-col">
                 <strong>Overview:</strong>{" "}
-                <span className="h-[30vh] overflow-y-scroll">
+                <span className="h-[25vh] overflow-y-scroll">
                   {course.description}
                 </span>
               </p>
@@ -190,11 +176,11 @@ const CourseDetailPage = () => {
               ) : (
                 <div>
                   {course.discount ? (
-                    <div>
+                    <div className="flex gap-2 items-baseline">
                       <div className="text-xl font-bold text-orange-500 pt-2">
-                        US${((course.price * course.discount) / 100).toFixed(2)}
+                        US${course.price_paid.toFixed(2)}
                       </div>
-                      <div className="text-lg font-bold line-through">
+                      <div className="text-sm line-through">
                         US${course.price.toFixed(2)}
                       </div>
                     </div>

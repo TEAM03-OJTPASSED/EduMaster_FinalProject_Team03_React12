@@ -15,7 +15,7 @@ const fetchCourse = async (courseId: string) => {
   try {
     console.log(token);
     const response = await axios.get(
-      `https://edumaster-backend-dev.vercel.app/api/client/course/${courseId}`,
+      `http://localhost:3000/api/client/course/${courseId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

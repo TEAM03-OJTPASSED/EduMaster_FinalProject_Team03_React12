@@ -8,5 +8,5 @@ export type Session = {
     position_order: number;
     lesson_list: Lesson[];
     full_time: number;
-}[];
+  };
 

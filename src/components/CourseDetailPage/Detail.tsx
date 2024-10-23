@@ -85,20 +85,29 @@ export const Detail = ({ isEnrolled, course, session }: Props) => {
             className=""
             dangerouslySetInnerHTML={{ __html: course.content }}
           />
+          <div className="text-xl font-bold pb-2 pt-4">Skill set</div>
+          <div className="flex gap-2">
+            {course.tag.map((tag, index) => (
+              <div
+                key={index}
+                className="bg-orange-200 px-2 rounded inline-block mr-2"
+              >
+                {tag}
+              </div>
+            ))}
+          </div>
         </div>
         <div>
           <div className="text-xl font-bold pb-2 pt-4">Curriculum</div>
-          <div className="border-2 rounded-lg px-10">
+          <div className="border-2 rounded-lg px-4">
             {session?.map((item, index) => (
               <div
-                className={`py-5 ${
-                  index === session.length - 1
-                    ? "border-none pb-5"
-                    : "border-b-2"
+                className={`py-4 ${
+                  index === session.length - 1 ? "border-none" : "border-b-2"
                 }`}
                 key={index}
               >
-                <div className="flex flex-col">
+                <div className="flex flex-col hover:bg-orange-100 px-4 py-2 rounded cursor-pointer">
                   {expandedSession === index ? (
                     <div
                       className="flex justify-between text-orange-500 text-lg cursor-pointer font-bold hover:text-orange-600"
@@ -109,7 +118,7 @@ export const Detail = ({ isEnrolled, course, session }: Props) => {
                     </div>
                   ) : (
                     <div
-                      className="flex justify-between text-lg cursor-pointer font-bold hover:text-orange-600"
+                      className="flex justify-between text-lg cursor-pointer font-bold"
                       onClick={() => toggleSession(index)}
                     >
                       {item.name}
@@ -119,7 +128,7 @@ export const Detail = ({ isEnrolled, course, session }: Props) => {
                       />
                     </div>
                   )}
-                  <div className="flex text-sm font-light pb-2">
+                  <div className="flex text-sm font-light">
                     <div className="">Session {item.position_order}</div>
                     <span className="px-2">•</span>
                     <div>{item.lesson_list.length} lessons</div>
@@ -132,7 +141,7 @@ export const Detail = ({ isEnrolled, course, session }: Props) => {
                     expandedSession === index ? "max-h-96" : "max-h-0"
                   }`}
                 >
-                  <div>
+                  <div className="px-4 pt-2">
                     <div className="font-semibold">What you'll learn</div>
                     <div
                       className="text-sm pt-2"
