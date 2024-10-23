@@ -28,15 +28,12 @@ export const login = createAsyncThunk<
   { rejectValue: string } // Configuration for rejected case
 >(
   "auth/login",
-  async ({ email, password }, { rejectWithValue }) => {
-    try {
+  async ({ email, password }) => {
       const response = await postRequest("api/auth", { email, password });
       console.log(typeof(response.data))
       localStorage.setItem("token", JSON.stringify(response.data.token) );
       return response.data as AuthState; // Ensure response matches AuthState
-    } catch (error: any) {
-      return rejectWithValue("Login failed. Please check your credentials.");
-    }
+
   }
 );
 
@@ -62,17 +59,13 @@ export const getCurrentUser = createAsyncThunk<
   { rejectValue: string } // Rejected value type
 >(
   "auth/user",
-  async (_, { rejectWithValue }) => {
-    try{
+  async () => {
       const res = await getRequest("/api/auth");
       localStorage.setItem("user", JSON.stringify(res.data)  );
 
       console.log("current user", res.data);
       return res.data as AuthState; // Ensure the data matches the expected type
-    } catch (error: any) {
-      
-      return rejectWithValue("Invalid credentials");
-    }
+  
   }
 );
 // Tạo slice cho auth
