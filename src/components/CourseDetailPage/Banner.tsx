@@ -30,7 +30,7 @@ export const Banner = ({
           <div className="bg-orange-500 text-white font-bold px-4 py-2 rounded-lg">
             {category}
           </div>
-          <div className="font-jost text-5xl font-bold">{title}</div>
+          <div className="font-jost text-5xl font-bold text-gradient">{title}</div>
           <div className="text-lg">{overview}</div>
           <div className="text-lg">
             Instructor:{" "}
@@ -42,11 +42,14 @@ export const Banner = ({
             </span>
           </div>
           {isPurchased ? (
-            <div
-              className="bg-orange-500 text-white text-2xl font-semibold px-8 py-4 rounded cursor-pointer"
-              onClick={() => (window.location.href = `/learn/${courseId}`)}
-            >
-              Learn Now
+            <div className="flex items-baseline gap-4">
+              <div
+                className="bg-orange-500 text-white text-2xl font-semibold px-8 py-4 rounded cursor-pointer"
+                onClick={() => (window.location.href = `/learn/${courseId}`)}
+              >
+                Learn Now
+              </div>
+              <div className="font-light">Already enrolled</div>
             </div>
           ) : (
             <div className="flex">

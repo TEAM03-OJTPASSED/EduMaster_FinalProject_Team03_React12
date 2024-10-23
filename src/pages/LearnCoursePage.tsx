@@ -7,20 +7,18 @@ import { Lesson } from "../models/Lesson.model";
 import ReactPlayer from "react-player";
 import { MdOutlinePlayCircle, MdOutlineTaskAlt } from "react-icons/md";
 import { FiBookOpen } from "react-icons/fi";
+import Navbar from "../components/Navbar";
 
 const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MTBlMjI4YTMxZjEzYTZkMGE1ZTc2ZCIsInJvbGUiOiJzdHVkZW50IiwidmVyc2lvbiI6MCwiaWF0IjoxNzI5NjAyNTkwLCJleHAiOjE3Mjk2MzEzOTB9.y2SGqzGEN65rZFXdLHfSz25R-WkxjY2DCSSzQ2f2RTc";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MTBlMjI4YTMxZjEzYTZkMGE1ZTc2ZCIsInJvbGUiOiJzdHVkZW50IiwidmVyc2lvbiI6MCwiaWF0IjoxNzI5NjQxNjM4LCJleHAiOjE3Mjk2NzA0Mzh9.ENdu1FBBiko_I-rMr1pjpOZHsFrCNfH8tdnDY-etpHc";
 
 const fetchCourse = async (courseId: string) => {
   try {
-    const response = await axios.get(
-      `/api/client/course/${courseId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await axios.get(`/api/client/course/${courseId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data.data;
   } catch (error) {
     if (
@@ -58,7 +56,11 @@ const LearnCoursePage = () => {
             setSelectedLesson(firstSession.lesson_list[0]);
           }
           setExpandedSessions({ 0: true });
-          setButtonText(firstSession.lesson_list[0].is_completed ? "Mark as Incomplete" : "Mark as Completed");
+          setButtonText(
+            firstSession.lesson_list[0].is_completed
+              ? "Mark as Incomplete"
+              : "Mark as Completed"
+          );
         }
       }
       if (data === "Forbidden") {
@@ -84,7 +86,9 @@ const LearnCoursePage = () => {
 
   const selectLesson = (lesson: Lesson) => {
     setSelectedLesson(lesson);
-    setButtonText(lesson.is_completed ? "Mark as Incomplete" : "Mark as Completed");
+    setButtonText(
+      lesson.is_completed ? "Mark as Incomplete" : "Mark as Completed"
+    );
   };
 
   const handleClick = async (lesson: Lesson) => {
@@ -153,105 +157,111 @@ const LearnCoursePage = () => {
   }
 
   return (
-    <div className="flex pt-10">
-      <div className="w-1/4 p-4">
-        {session?.map((sessionItem, sessionIndex) => (
-          <div key={sessionIndex} className="mb-4">
-            <div className="group cursor-pointer rounded border border-white hover:border-orange-500 ">
-              <h3
-                className={`hover:group text-lg font-semibold p-2 border-transition ${
-                  expandedSessions[sessionIndex]
-                    ? "border-b-orange-500 border-orange-500"
-                    : "border-b-orange-500 border-transparent"
-                }group-hover:border-orange-500 group-hover:bg-orange-200`}
-                onClick={() => toggleSession(sessionIndex)}
-              >
-                {sessionItem.name}
-              </h3>
-              <div
-                className={`lesson-list transition-max-height duration-500 ease-in-out overflow-hidden ${
-                  expandedSessions[sessionIndex] ? "max-h-96" : "max-h-0"
-                }`}
-              >
-                {sessionItem.lesson_list &&
-                  sessionItem.lesson_list.map((lessonItem) => (
-                    <div
-                      key={lessonItem._id}
-                      onClick={() => selectLesson(lessonItem)}
-                      className={`pl-2 py-2 rounded cursor-pointer ${
-                        selectedLesson && selectedLesson._id === lessonItem._id
-                          ? "bg-orange-500 text-white"
-                          : ""
-                      }`}
-                    >
-                      <div>
-                        <div className="flex gap-2 items-center">
-                          <div className="w-1/10">
-                            {lessonItem.is_completed ? (
-                              <MdOutlineTaskAlt className="w-6 h-6 text-green-500" />
-                            ) : (
-                              <div>
-                                {lessonItem.lesson_type === "video" && (
-                                  <MdOutlinePlayCircle className="w-6 h-6" />
-                                )}
-                                {lessonItem.lesson_type === "text" && (
-                                  <FiBookOpen className="w-6 h-6" />
-                                )}
-                              </div>
-                            )}
+    <div className="fixed top-0 left-0 z-50 bg-white w-full">
+      <Navbar />
+      <div className="flex">
+        <div className="w-1/3 p-4 h-[88vh] overflow-y-scroll">
+          {session?.map((sessionItem, sessionIndex) => (
+            <div key={sessionIndex} className="mb-4">
+              <div className="group cursor-pointer rounded border border-white hover:border-orange-500 ">
+                <h3
+                  className={`hover:group text-lg font-semibold p-2 border-transition ${
+                    expandedSessions[sessionIndex]
+                      ? "border-b-orange-500 border-orange-500"
+                      : "border-b-orange-500 border-transparent"
+                  }group-hover:border-orange-500 group-hover:bg-orange-200`}
+                  onClick={() => toggleSession(sessionIndex)}
+                >
+                  {sessionItem.name}
+                </h3>
+                <div
+                  className={`lesson-list transition-max-height duration-500 ease-in-out overflow-hidden ${
+                    expandedSessions[sessionIndex] ? "max-h-96" : "max-h-0"
+                  }`}
+                >
+                  {sessionItem.lesson_list &&
+                    sessionItem.lesson_list.map((lessonItem) => (
+                      <div
+                        key={lessonItem._id}
+                        onClick={() => selectLesson(lessonItem)}
+                        className={`pl-2 py-2 rounded cursor-pointer ${
+                          selectedLesson &&
+                          selectedLesson._id === lessonItem._id
+                            ? "bg-orange-500 text-white"
+                            : ""
+                        }`}
+                      >
+                        <div>
+                          <div className="flex gap-2 items-center">
+                            <div className="w-1/10">
+                              {lessonItem.is_completed ? (
+                                <MdOutlineTaskAlt className="w-6 h-6 text-green-500" />
+                              ) : (
+                                <div>
+                                  {lessonItem.lesson_type === "video" && (
+                                    <MdOutlinePlayCircle className="w-6 h-6" />
+                                  )}
+                                  {lessonItem.lesson_type === "text" && (
+                                    <FiBookOpen className="w-6 h-6" />
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                            <div className="font-semibold">
+                              {lessonItem.name}
+                            </div>
                           </div>
-                          <div className="font-semibold">{lessonItem.name}</div>
+                          <span className="text-sm">
+                            {lessonItem.lesson_type.charAt(0).toUpperCase() +
+                              lessonItem.lesson_type.slice(1)}
+                            <span className="px-2">•</span>
+                            {lessonItem.full_time} min
+                          </span>
                         </div>
-                        <span className="text-sm">
-                          {lessonItem.lesson_type.charAt(0).toUpperCase() +
-                            lessonItem.lesson_type.slice(1)}
-                          <span className="px-2">•</span>
-                          {lessonItem.full_time} min
-                        </span>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
-      <div className="w-3/4">
-        {selectedLesson && (
-          <div className="mt-4 p-4 rounded">
-            <h2 className="text-xl font-bold">{selectedLesson.name}</h2>
-            <div className="pt-2 rounded">
-              {selectedLesson.lesson_type === "video" ? (
-                (console.log("Selected Lesson: ", selectedLesson),
-                (
-                  <div className="w-full">
-                    <ReactPlayer
-                      width="100%"
-                      url={selectedLesson.video_url}
-                      controls
-                    />
-                  </div>
-                ))
-              ) : (
-                <div
-                  className="w-full"
-                  dangerouslySetInnerHTML={{
-                    __html: selectedLesson.description,
-                  }}
-                />
-              )}
+          ))}
+        </div>
+        <div className="w-2/3 h-[88vh] overflow-y-scroll">
+          {selectedLesson && (
+            <div className="mt-4 p-4 rounded">
+              <h2 className="text-xl font-bold">{selectedLesson.name}</h2>
+              <div className="pt-2 rounded">
+                {selectedLesson.lesson_type === "video" ? (
+                  (console.log("Selected Lesson: ", selectedLesson),
+                  (
+                    <div className="w-full">
+                      <ReactPlayer
+                        width="100%"
+                        url={selectedLesson.video_url}
+                        controls
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <div
+                    className="w-full"
+                    dangerouslySetInnerHTML={{
+                      __html: selectedLesson.description,
+                    }}
+                  />
+                )}
+              </div>
+              <div className="flex items-baseline gap-4">
+                <button
+                  onClick={() => handleClick(selectedLesson)}
+                  className="mt-4 px-4 py-2 font-bold bg-orange-500 text-white rounded"
+                  disabled={loading}
+                >
+                  {loading ? "Loading..." : buttonText}
+                </button>
+              </div>
             </div>
-            <div className="flex items-baseline gap-4">
-              <button
-                onClick={() => handleClick(selectedLesson)}
-                className="mt-4 px-4 py-2 font-bold bg-orange-500 text-white rounded"
-                disabled={loading}
-              >
-                {loading ? "Loading..." : buttonText}
-              </button>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
