@@ -5,12 +5,15 @@
 @tailwind components;
 @tailwind utilities;
 
+
 .font-jost {
   font-family: "Jost", sans-serif;
 }
 .font-exo {
   font-family: "Exo", sans-serif;
 }
+
+
 
 :root {
   --primary-color: #c5c7c9; /* Màu chính */
@@ -265,9 +268,9 @@ h3 {
 
 
 .custom-tabs .ant-tabs-nav .ant-tabs-tab:hover {
-  color: #f97316; 
- 
+  color: #f97316;  
 }
+
 
 .custom-tabs .ant-tabs-nav .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
   color: #f97316;
