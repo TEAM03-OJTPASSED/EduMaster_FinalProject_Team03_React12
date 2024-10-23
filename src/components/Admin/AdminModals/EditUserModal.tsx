@@ -1,26 +1,27 @@
-import { Modal, Form, Input, Select, Switch, Button } from "antd";
-
+import { Modal, Form, Input, Select, Switch, Button, DatePicker } from "antd";
 const { Option } = Select;
 
-// Assuming the User interface is available for import
 interface User {
+  _id: string; // Thêm trường _id
   key: string;
   name: string;
   email: string;
-  phone: string;
-  username: string;
+  phone_number: string; // Cập nhật tên trường
+  avatar_url?: string;
+  video_url?: string;
+  bank_name?: string;
+  bank_account_no?: string;
+  bank_account_name?: string;
+  dob: string;
   status: boolean;
   role: string;
-  verified: boolean;
-  blocked: boolean;
-  createdAt: string;
 }
 
 interface EditUserProps {
-  visible: boolean; // Update this to use boolean
-  onClose: () => void; // Function type for onClose
-  user: User | any; // User can be null when editing is not active
-  onSave: (values: User) => void; // Function to handle save action
+  visible: boolean;
+  onClose: () => void;
+  user: User | any;
+  onSave: (values: User) => void;
 }
 
 const EditUser: React.FC<EditUserProps> = ({
@@ -32,8 +33,9 @@ const EditUser: React.FC<EditUserProps> = ({
   const [form] = Form.useForm();
 
   const handleFinish = (values: any) => {
+    values.dob = values.dob ? values.dob.format("YYYY-MM-DD") : "";
     onSave(values);
-    onClose(); // Close modal after saving
+    onClose();
   };
 
   return (
@@ -45,10 +47,12 @@ const EditUser: React.FC<EditUserProps> = ({
     >
       <Form
         form={form}
-        initialValues={user}
+        initialValues={{
+          ...user,
+        }}
         onFinish={handleFinish}
-        labelCol={{ span: 6 }} // Aligns labels to 6 columns width
-        wrapperCol={{ span: 18 }} // Aligns input fields to 18 columns width
+        labelCol={{ span: 6 }}
+        wrapperCol={{ span: 18 }}
       >
         <Form.Item name="name" label="Họ và tên" rules={[{ required: true }]}>
           <Input />
@@ -57,19 +61,50 @@ const EditUser: React.FC<EditUserProps> = ({
           <Input disabled />
         </Form.Item>
         <Form.Item
-          name="phone"
+          name="phone_number"
           label="Số điện thoại"
           rules={[{ required: true }]}
         >
           <Input />
         </Form.Item>
         <Form.Item
-          name="username"
-          label="Tên đăng nhập"
-          rules={[{ required: true }]}
+          name="avatar_url"
+          label="URL Ảnh Đại Diện"
+          rules={[{ required: false }]} // Không bắt buộc
         >
-          <Input disabled />
+          <Input />
         </Form.Item>
+        <Form.Item
+          name="video_url"
+          label="URL Video"
+          rules={[{ required: false }]} // Không bắt buộc
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          name="bank_name"
+          label="Tên Ngân Hàng"
+          rules={[{ required: false }]} // Không bắt buộc
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          name="bank_account_no"
+          label="Số Tài Khoản"
+          rules={[{ required: false }]} // Không bắt buộc
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          name="bank_account_name"
+          label="Tên Chủ Tài Khoản"
+          rules={[{ required: false }]} // Không bắt buộc
+        >
+          <Input />
+        </Form.Item>
+        {/* <Form.Item name="dob" label="Ngày Sinh" rules={[{ required: true }]}>
+          <DatePicker format="YYYY-MM-DD" disabled />
+        </Form.Item> */}
         <Form.Item
           name="role"
           label="Loại người dùng"
