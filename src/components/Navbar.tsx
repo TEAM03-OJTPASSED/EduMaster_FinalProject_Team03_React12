@@ -226,15 +226,14 @@ const Navbar = () => {
 
           {/* Log In / Sign Up and Search Icons */}
           <div className="hidden md:flex items-center gap-4">
-            <button
-              className="p-0 w-10 h-10 text-2xl relative"
-              onClick={() => navigate("/cart")}
-            >
+          {userLoggedIn && (
+            <button className="p-0 w-10 h-10 text-2xl relative" onClick={() => navigate("/cart")}>
               <ShoppingCartOutlined />
               <span className="absolute top-0 right-0 w-4 h-4 bg-orange-500 rounded-full text-xs text-white font-semibold">
                 2
               </span>
             </button>
+          )}
             {userLoggedIn ? (
               <Dropdown menu={profileMenu}>
                 <div className="w-10 h-10 text-xl rounded-full flex items-center justify-center cursor-pointer">
