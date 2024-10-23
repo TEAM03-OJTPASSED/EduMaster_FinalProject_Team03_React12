@@ -9,11 +9,11 @@ import { MdOutlinePlayCircle, MdOutlineTaskAlt } from "react-icons/md";
 import { FiBookOpen } from "react-icons/fi";
 import Navbar from "../components/Navbar";
 
-const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MTBlMjI4YTMxZjEzYTZkMGE1ZTc2ZCIsInJvbGUiOiJzdHVkZW50IiwidmVyc2lvbiI6MCwiaWF0IjoxNzI5NjQxNjM4LCJleHAiOjE3Mjk2NzA0Mzh9.ENdu1FBBiko_I-rMr1pjpOZHsFrCNfH8tdnDY-etpHc";
+const token = localStorage.getItem("token");
 
 const fetchCourse = async (courseId: string) => {
   try {
+    console.log(token);
     const response = await axios.get(
       `https://edumaster-backend-dev.vercel.app/api/client/course/${courseId}`,
       {
