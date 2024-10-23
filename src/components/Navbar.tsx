@@ -59,7 +59,7 @@ const Navbar = () => {
   const searchInputRef = useRef<InputRef>(null);
   const location = useLocation();
   useEffect(() => {
-    if (currentUser && token) {
+    if (localStorage.getItem("token") != null) {
       setUserLoggedIn(true);
     } else {
       setUserLoggedIn(false);
@@ -157,9 +157,8 @@ const Navbar = () => {
         label: <span className="text-red-500">Logout</span>,
         key: "logout",
         onClick: () => {
-          dispatch(logout(null));
-          setUserLoggedIn(false);
-          navigate("/login");
+          localStorage.removeItem("token");
+          window.location.reload();         
         },
       },
     ],
