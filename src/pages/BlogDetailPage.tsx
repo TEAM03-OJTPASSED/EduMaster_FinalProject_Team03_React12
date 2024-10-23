@@ -88,7 +88,7 @@ const comments = [
 const BlogDetailPage = () => {
   const { id } = useParams();
   return (
-    <div className="font-exo flex">
+    <div className="font-exo flex mt-6">
       <div className="w-3/4">
         <BlogHeader
           title={blog.name}

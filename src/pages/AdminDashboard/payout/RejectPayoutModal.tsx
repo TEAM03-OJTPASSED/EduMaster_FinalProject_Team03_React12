@@ -1,5 +1,6 @@
 import React from "react";
 import { Modal, Button, Input, Form } from "antd";
+import { SendEmailRejectPayoutType, sendEmailToRejectPayout } from "../../../services/apiSendEmailRejectPayout";
 
 interface RejectPayoutModalProps {
     isOpen: boolean;
@@ -7,18 +8,16 @@ interface RejectPayoutModalProps {
     handleCancel: () => void;
 }
 
-type FieldType = {
-    reason?: string;
-    additionalInfo?: string;
-};
-
 const RejectPayoutModal: React.FC<RejectPayoutModalProps> = ({
     isOpen,
     handleOk,
     handleCancel,
 }) => {
-    const onFinish = (values: FieldType) => {
+    const [form] = Form.useForm<SendEmailRejectPayoutType>();
+    const onFinish = (values: SendEmailRejectPayoutType) => {
         console.log("Success:", values);
+        sendEmailToRejectPayout(values);
+        form.resetFields();
         handleOk();
     };
 
@@ -30,14 +29,18 @@ const RejectPayoutModal: React.FC<RejectPayoutModalProps> = ({
         <Modal
             title="Reject Payout"
             open={isOpen}
-            onCancel={handleCancel} // Đóng modal khi click nút Cancel
-            footer={null} // Footer null để sử dụng các nút từ Form
+            onCancel={handleCancel}
+            footer={null}
+            centered
+            width={500} 
+            bodyStyle={{
+                padding: '20px 30px', 
+            }}
         >
             <Form
                 name="rejectPayoutForm"
-                labelCol={{ span: 6 }}
-                wrapperCol={{ span: 18 }}
-                style={{ maxWidth: 600 }}
+                form={form}
+                layout="vertical" 
                 initialValues={{ remember: true }}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
@@ -51,21 +54,25 @@ const RejectPayoutModal: React.FC<RejectPayoutModalProps> = ({
                         { type: "email", message: "Please enter a valid email" },
                     ]}
                 >
-                    <Input />
+                    <Input placeholder="Enter your email" />
                 </Form.Item>
-                <Form.Item<FieldType>
+
+                <Form.Item
                     label="Reason"
-                    name="reason"
-                    rules={[{ required: false }]}
+                    name="message"
+                    rules={[
+                        { required: true, message: 'Please enter your message' },
+                        { min: 10, message: 'Message must be at least 10 characters long' },
+                    ]}
                 >
                     <Input.TextArea rows={4} placeholder="Describe the reason for rejecting the payout..." />
                 </Form.Item>
 
-                <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
-                    <Button type="default" onClick={handleCancel}>
+                <Form.Item style={{ textAlign: 'right', marginTop: '20px' }}>
+                    <Button onClick={handleCancel} style={{ marginRight: '10px' }}>
                         Cancel
                     </Button>
-                    <Button type="primary" htmlType="submit" style={{ marginLeft: "10px" }}>
+                    <Button type="primary" htmlType="submit">
                         Send Email
                     </Button>
                 </Form.Item>
