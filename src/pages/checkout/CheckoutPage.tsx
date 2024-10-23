@@ -3,6 +3,8 @@ import { Form, Input, Button, Card, List, Typography, Space, Radio, Divider, mes
 import { CreditCardOutlined, BankOutlined, DollarOutlined } from '@ant-design/icons';
 import { useCustomNavigate } from '../../hooks/customNavigate';
 import DynamicBreadcrumb from '../../components/Breadcrumb/Breadcrumb';
+import { RootState } from '../../redux/store/store';
+import { useSelector } from 'react-redux';
 
 const { Title, Text } = Typography;
 
@@ -23,6 +25,8 @@ const CheckoutPage: React.FC = () => {
   const navigate = useCustomNavigate();
   const [paymentMethod, setPaymentMethod] = useState('credit_card');
 
+  const {currentUser} = useSelector((state:RootState) => state.auth)
+
   
 
   const courses: Course[] = [
@@ -31,15 +35,7 @@ const CheckoutPage: React.FC = () => {
     { id: 3, name: "Digital Marketing Mastery", price: 24000000 },
   ];
 
-  const user: User | null = localStorage.getItem('User')
-  ? JSON.parse(localStorage.getItem('User') as string)
-  : null;
-
-  if (!user) {
-    navigate('/login');
-    return null;
-  }
-
+  
 
   const total = courses.reduce((sum, course) => sum + course.price, 0);
 
@@ -73,14 +69,14 @@ const CheckoutPage: React.FC = () => {
                 name="fullName"
                 label="Full Name"
                 rules={[{ required: true, message: 'Please input your full name!' }]}
-                initialValue={user?.name}
+                initialValue={currentUser?.name}
               >
                 <Input />
               </Form.Item>
               <Form.Item
                 name="email"
                 label="Email"
-                initialValue={user?.email}
+                initialValue={currentUser?.email}
                 rules={[
                   { required: true, message: 'Please input your email!' },
                   { type: 'email', message: 'Please enter a valid email!' }
@@ -91,7 +87,7 @@ const CheckoutPage: React.FC = () => {
               <Form.Item
                 name="address"
                 label="Address"
-                initialValue={user?.address}
+                
                 rules={[{ required: true, message: 'Please input your address!' }]}
               >
                 <Input.TextArea rows={3} />
