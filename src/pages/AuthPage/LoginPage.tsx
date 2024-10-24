@@ -2,11 +2,15 @@ import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { Button, Divider, Form, Input } from "antd";
 import { FormProps } from "antd";
 import { Player } from "@lottiefiles/react-lottie-player";
-import { jwtDecode } from "jwt-decode";
+
 import { useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getCurrentUser, login } from "../../redux/slices/authSlices";
+import {
+  getCurrentUser,
+  login,
+  loginWithGoogle,
+} from "../../redux/slices/authSlices";
 import { AppDispatch, RootState } from "../../redux/store/store";
 
 export type LoginProps = {
@@ -16,34 +20,37 @@ export type LoginProps = {
 
 const Loginpage = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { currentUser, token ,loading} = useSelector((state: RootState) => state.auth);
+  const { currentUser, token, loading } = useSelector(
+    (state: RootState) => state.auth
+  );
   const navigate = useNavigate();
-  // useEffect(() => {
-  //   const unauthorized = localStorage.getItem("unauthorized");
-  //   if (unauthorized) {
-  //     notification.error({
-  //       message: "Unauthorized",
-  //       description: "You do not have permission to access that page.",
-  //     });
-  //     localStorage.removeItem("unauthorized"); // Clear flag after showing notification
-  //   }
-  // }, []);
 
   const onFinish: FormProps<LoginProps>["onFinish"] = async (values) => {
-    // setLoading(true);
     try {
       const { email, password } = values;
-      await dispatch(login({ email, password }));
-      // if (response.payload === "Invalid credentials") setLoading(false);
-      await dispatch(getCurrentUser());
+       await dispatch(login({ email, password }));
+       await dispatch(getCurrentUser());
     } catch (error) {
       console.log(error);
     }
   };
+  const handleLoginGoogleSuccess = async (
+    credentialResponse: CredentialResponse
+  ) => {
+    console.log(credentialResponse);
+    await dispatch(
+      loginWithGoogle({ google_id: credentialResponse.credential as string })
+    );
+    await dispatch(getCurrentUser());
+  };
+
   useEffect(() => {
-    // const token = localStorage.getItem("token")
     if (token && currentUser) {
-      if (currentUser?.role === "student" || currentUser?.role === "instructor") {
+
+      if (
+        currentUser?.role === "student" ||
+        currentUser?.role === "instructor"
+      ) {
         navigate("/");
       } else if (currentUser?.role === "admin") {
         navigate("/dashboard/admin");
@@ -109,30 +116,26 @@ const Loginpage = () => {
             <Button
               htmlType="submit"
               shape="round"
-              className={`bg-[#FF782D] text-xl text-white py-5 font-exo w-full ${!loading && "hover:bg-[#e66e27]"}`}
+              className={`bg-[#FF782D] text-xl text-white py-5 font-exo w-full ${
+                !loading && "hover:bg-[#e66e27]"
+              }`}
               disabled={loading}
             >
-              {!loading?  "Login" : "Login you in..."}
+              {!loading ? "Login" : "Login you in..."}
             </Button>
           </Form.Item>
+        </Form>
           <Divider plain className="text-gray-500">
             Or sign in with
           </Divider>
           <div className="flex justify-center">
             <GoogleLogin
-              onSuccess={(credentialResponse: CredentialResponse) => {
-                console.log(credentialResponse);
-                const decode = jwtDecode(
-                  credentialResponse?.credential as string
-                );
-                console.log("decode", decode);
-              }}
+              onSuccess={handleLoginGoogleSuccess}
               onError={() => {
                 console.log("Login Failed");
               }}
             />
           </div>
-        </Form>
         <div className="text-center mt-6">
           <span className="text-gray-500">Don’t have an account? </span>
           <NavLink to={"/signup"} className="text-[#FF782D] hover:underline">

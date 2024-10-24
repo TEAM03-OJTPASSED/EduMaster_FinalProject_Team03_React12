@@ -82,6 +82,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     window.location.reload();     
   }
 
@@ -161,6 +162,7 @@ const Navbar = () => {
         key: "logout",
         onClick: () => {
           localStorage.removeItem("token");
+          localStorage.removeItem("user");
           window.location.reload();         
         },
       },
