@@ -24,12 +24,30 @@ const Loginpage = () => {
     (state: RootState) => state.auth
   );
   const navigate = useNavigate();
+  useEffect(() => {
+    console.log("Token:", token);
+    console.log("CurrentUser:", currentUser);
+    if (token && currentUser) {
+      if (
+        currentUser?.role === "student" ||
+        currentUser?.role === "instructor"
+      ) {
+        navigate("/");
+      } else if (currentUser?.role === "admin") {
+        navigate("/dashboard/admin");
+      } else {
+        navigate("/login");
+      }
+    }
+  }, [currentUser, token, navigate]);
+
+
 
   const onFinish: FormProps<LoginProps>["onFinish"] = async (values) => {
     try {
       const { email, password } = values;
-       await dispatch(login({ email, password }));
-       await dispatch(getCurrentUser());
+      await dispatch(login({ email, password }));
+      await dispatch(getCurrentUser());
     } catch (error) {
       console.log(error);
     }
@@ -43,20 +61,6 @@ const Loginpage = () => {
     );
     await dispatch(getCurrentUser());
   };
-
-  useEffect(() => {
-    if (token && currentUser) {
-
-      if (
-        currentUser?.role === "student" ||
-        currentUser?.role === "instructor"
-      ) {
-        navigate("/");
-      } else if (currentUser?.role === "admin") {
-        navigate("/dashboard/admin");
-      }
-    }
-  }, [currentUser, token, navigate]);
 
   return (
     <div className="w-full lg:flex lg:h-[35rem] lg:flex-row lg:rounded-lg mt-12 overflow-hidden shadow-xl">
@@ -125,17 +129,17 @@ const Loginpage = () => {
             </Button>
           </Form.Item>
         </Form>
-          <Divider plain className="text-gray-500">
-            Or sign in with
-          </Divider>
-          <div className="flex justify-center">
-            <GoogleLogin
-              onSuccess={handleLoginGoogleSuccess}
-              onError={() => {
-                console.log("Login Failed");
-              }}
-            />
-          </div>
+        <Divider plain className="text-gray-500">
+          Or sign in with
+        </Divider>
+        <div className="flex justify-center">
+          <GoogleLogin
+            onSuccess={handleLoginGoogleSuccess}
+            onError={() => {
+              console.log("Login Failed");
+            }}
+          />
+        </div>
         <div className="text-center mt-6">
           <span className="text-gray-500">Don’t have an account? </span>
           <NavLink to={"/signup"} className="text-[#FF782D] hover:underline">

@@ -69,7 +69,8 @@ const SignUppage = () => {
   };
 
   const onFinish: FormProps<RegisterType>["onFinish"] = (values) => {
-    register(values, dispatch);
+    const {confirmPassword, ...others} = values
+    register(others, dispatch);
   };
 
   const handleRegisterGoogleSuccess = async (

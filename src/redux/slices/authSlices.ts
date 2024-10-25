@@ -9,6 +9,12 @@ interface AuthState {
   loading: boolean;
   error: string | null;
   success: boolean;
+  // verify-token
+  verifyToken: {
+    loading: boolean;
+    error: string | null;
+    success: boolean;
+  };
 }
 const token = localStorage.getItem("token");
 const currentUser = JSON.parse(localStorage.getItem("user") ?? "{}");
@@ -19,19 +25,26 @@ const initialState: AuthState = {
   token: token,
   error: null,
   success: false, // for monitoring the registration process.
+  verifyToken: {
+    loading: false,
+    error: "",
+    success: false,
+  },
 };
 
+// login
 export const login = createAsyncThunk<
   AuthState,
   { email: string; password: string },
   { rejectValue: string }
 >("auth/login", async ({ email, password }) => {
   const response = await postRequest("/api/auth", { email, password });
-  message.success("Login successfully")
+  message.success("Login successfully");
   localStorage.setItem("token", response.data.token);
   return response.data as AuthState; // Ensure response matches AuthState
 });
 
+// login gg
 export const loginWithGoogle = createAsyncThunk<
   AuthState, // Return type (the resolved data)
   { google_id: string }, // Parameters passed to the thunk
@@ -58,12 +71,16 @@ export const loginWithGoogle = createAsyncThunk<
 //   }
 // });
 
+// getCurrent user
 export const getCurrentUser = createAsyncThunk("auth/user", async () => {
   const res = await getRequest("/api/auth");
   localStorage.setItem("user", JSON.stringify(res.data));
   console.log("current user", res.data);
   return res.data; // Ensure the data matches the expected type
 });
+
+// verify token when check mail
+
 // Tạo slice cho auth
 export const authSlice = createSlice({
   name: "auth",
@@ -72,6 +89,17 @@ export const authSlice = createSlice({
     logout: (state, action) => {
       state.currentUser = action.payload;
       localStorage.removeItem("token");
+    },
+    verifyTokenPending: (state) => {
+      state.verifyToken.loading = true;
+    },
+    verifyTokenFulFilled: (state) => {
+      state.verifyToken.loading = false;
+      state.verifyToken.success = true
+    },
+    verifyTokenRejected: (state) => {
+      state.verifyToken.loading = false;
+      state.verifyToken.success = false
     },
   },
   extraReducers: (builder) => {
@@ -92,10 +120,10 @@ export const authSlice = createSlice({
       .addCase(getCurrentUser.pending, (state) => {
         state.loading = true;
       })
-      .addCase(getCurrentUser.fulfilled, (state, action) => {
+      .addCase(getCurrentUser.fulfilled, (state,action) => {
         state.loading = false;
-        state.currentUser = action.payload as unknown as User;
         state.success = true;
+        state.currentUser = action.payload as User
       })
       .addCase(getCurrentUser.rejected, (state, action) => {
         state.loading = false;
@@ -129,5 +157,10 @@ export const authSlice = createSlice({
 });
 
 // Xuất actions và reducer
-export const { logout } = authSlice.actions;
+export const {
+  logout,
+  verifyTokenFulFilled,
+  verifyTokenPending,
+  verifyTokenRejected,
+} = authSlice.actions;
 export default authSlice.reducer; // Xuất reducer, không phải slice
