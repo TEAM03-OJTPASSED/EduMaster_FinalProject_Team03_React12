@@ -7,7 +7,12 @@ import {
 } from "@ant-design/icons";
 
 import useSearch from "../../hooks/useSearch";
-import { getUsers, updatedUser } from "../../services/userService"; // Đảm bảo có import hàm updateUserService
+import {
+  changeRole,
+  changeStatus,
+  getUsers,
+  updatedUser,
+} from "../../services/userService"; // Đảm bảo có import hàm updateUserService
 import EditUser from "../../components/Admin/AdminModals/EditUserModal";
 
 const { Option } = Select;
@@ -32,7 +37,7 @@ const UserManagement: React.FC = () => {
     "name",
     "email",
   ]);
-
+  const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const fetchUsers = async (
     pageNum: number,
     pageSize: number,
@@ -42,7 +47,8 @@ const UserManagement: React.FC = () => {
       searchCondition: {
         keyword: keyword,
         role: "",
-        status: true,
+        status: statusFilter !== null ? statusFilter : undefined,
+        // status: false, // Thay đổi ở đây
         is_verified: "",
         is_delete: false,
       },
@@ -61,39 +67,50 @@ const UserManagement: React.FC = () => {
     }
   };
 
-  const handleEdit = (record: any) => {
-    console.log(record._id);
+  const handleEdit = (record: User) => {
     setCurrentUser(record);
     setEditVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setEditVisible(false);
+    setCurrentUser(null);
   };
 
   const handleSave = async (updatedUserData: any) => {
     if (!currentUser) {
       console.error("No user selected for editing.");
-      return; // Nếu currentUser là null, không tiếp tục
+      return;
     }
-    const userId = currentUser._id; // Lấy userId từ currentUser
-    try {
-      console.log(
-        "Thông tin người dùng đang được lưu:",
-        userId,
-        updatedUserData
-      );
-      await updatedUser(userId, updatedUserData); // Gọi hàm cập nhật
-      setEditVisible(false); // Đóng modal
-      fetchUsers(pageNum, pageSize, searchText); // Tải lại danh sách người dùng
-    } catch (error) {
-      console.error("Error updating user:", error);
-    }
+    const userId = currentUser._id;
+    // Log thông tin người dùng hiện tại
+    console.log("Current User ID:", userId);
+    console.log("Updated User Data:", updatedUserData);
+
+    // Gọi hàm cập nhật vai trò
+    await changeRole(userId, updatedUserData.role);
+    console.log("Role updated to:", updatedUserData.role);
+
+    // Gọi hàm cập nhật trạng thái
+    await changeStatus(userId, updatedUserData.status);
+    console.log("Status updated to:", updatedUserData.status);
+
+    // Gọi hàm cập nhật người dùng
+    await updatedUser(userId, updatedUserData);
+    console.log("User updated with data:", updatedUserData);
+
+    setEditVisible(false); // Đóng modal
+    fetchUsers(pageNum, pageSize, searchText); // Tải lại danh sách người dùng
   };
 
   useEffect(() => {
     fetchUsers(pageNum, pageSize, searchText);
-  }, [pageNum, pageSize, searchText]);
+  }, [pageNum, pageSize, searchText, statusFilter]);
 
-  const handleTableChange = (pagination: any) => {
+  const handleTableChange = (pagination: any, filters: any) => {
     setPageNum(pagination.current);
     setPageSize(pagination.pageSize);
+    setStatusFilter(filters.status ? filters.status[0] : null);
   };
 
   const columns = [
@@ -113,10 +130,29 @@ const UserManagement: React.FC = () => {
       key: "phone",
     },
     {
-      title: "Trạng thái",
+      title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (text: any) => <Switch checked={text} />,
+      filters: [
+        { text: "Active", value: true },
+        { text: "Inactive", value: false },
+      ],
+      onFilter: (value: any, record: User) => record.status === value,
+      render: (status: boolean, record: User) => (
+        <Switch
+          checked={status}
+          onChange={async (checked) => {
+            console.log("Current User ID:", record._id); // Kiểm tra ID người dùng
+            console.log("New Status:", checked); // Kiểm tra trạng thái mới
+            try {
+              await changeStatus(record._id, checked);
+              fetchUsers(pageNum, pageSize, searchText); // Tải lại người dùng
+            } catch (error) {
+              console.error("Error updating status:", error);
+            }
+          }}
+        />
+      ),
     },
     {
       title: "Loại người dùng",
@@ -173,8 +209,9 @@ const UserManagement: React.FC = () => {
         />
       </Card>
       <EditUser
+        key={currentUser?._id}
+        onClose={handleCloseModal}
         visible={editVisible}
-        onClose={() => setEditVisible(false)}
         user={currentUser}
         onSave={handleSave}
       />

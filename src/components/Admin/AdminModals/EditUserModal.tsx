@@ -1,12 +1,12 @@
-import { Modal, Form, Input, Select, Switch, Button, DatePicker } from "antd";
+import { Modal, Form, Input, Select, Switch, Button } from "antd";
 const { Option } = Select;
 
 interface User {
-  _id: string; // Thêm trường _id
+  _id: string;
   key: string;
   name: string;
   email: string;
-  phone_number: string; // Cập nhật tên trường
+  phone_number?: string;
   avatar_url?: string;
   video_url?: string;
   bank_name?: string;
@@ -15,6 +15,7 @@ interface User {
   dob: string;
   status: boolean;
   role: string;
+  description?: string;
 }
 
 interface EditUserProps {
@@ -34,6 +35,11 @@ const EditUser: React.FC<EditUserProps> = ({
 
   const handleFinish = (values: any) => {
     values.dob = values.dob ? values.dob.format("YYYY-MM-DD") : "";
+    values.description = values.description || "";
+    values.video_url = values.video_url || "";
+    values.bank_name = values.bank_name || "";
+    values.bank_account_no = values.bank_account_no || "";
+    values.bank_account_name = values.bank_account_name || "";
     onSave(values);
     onClose();
   };
@@ -48,7 +54,18 @@ const EditUser: React.FC<EditUserProps> = ({
       <Form
         form={form}
         initialValues={{
-          ...user,
+          name: user?.name || "",
+          email: user?.email || "",
+          phone_number: user?.phone_number || "",
+          avatar_url: user?.avatar_url || "",
+          video_url: user?.video_url || "",
+          bank_name: user?.bank_name || "",
+          bank_account_no: user?.bank_account_no || "",
+          bank_account_name: user?.bank_account_name || "",
+          dob: user?.dob || "",
+          status: user?.status || false, // Lấy giá trị status từ user
+          role: user?.role,
+          description: user?.description || "",
         }}
         onFinish={handleFinish}
         labelCol={{ span: 6 }}
@@ -58,62 +75,20 @@ const EditUser: React.FC<EditUserProps> = ({
           <Input />
         </Form.Item>
         <Form.Item name="email" label="Email" rules={[{ required: true }]}>
-          <Input disabled />
-        </Form.Item>
-        <Form.Item
-          name="phone_number"
-          label="Số điện thoại"
-          rules={[{ required: true }]}
-        >
           <Input />
         </Form.Item>
-        <Form.Item
-          name="avatar_url"
-          label="URL Ảnh Đại Diện"
-          rules={[{ required: false }]} // Không bắt buộc
-        >
+        <Form.Item name="phone_number" label="Số điện thoại">
           <Input />
         </Form.Item>
-        <Form.Item
-          name="video_url"
-          label="URL Video"
-          rules={[{ required: false }]} // Không bắt buộc
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name="bank_name"
-          label="Tên Ngân Hàng"
-          rules={[{ required: false }]} // Không bắt buộc
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name="bank_account_no"
-          label="Số Tài Khoản"
-          rules={[{ required: false }]} // Không bắt buộc
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name="bank_account_name"
-          label="Tên Chủ Tài Khoản"
-          rules={[{ required: false }]} // Không bắt buộc
-        >
-          <Input />
-        </Form.Item>
-        {/* <Form.Item name="dob" label="Ngày Sinh" rules={[{ required: true }]}>
-          <DatePicker format="YYYY-MM-DD" disabled />
-        </Form.Item> */}
         <Form.Item
           name="role"
           label="Loại người dùng"
           rules={[{ required: true }]}
         >
           <Select>
-            <Option value="Admin">Admin</Option>
-            <Option value="Instructor">Instructor</Option>
-            <Option value="Student">Student</Option>
+            <Option value="admin">Admin</Option>
+            <Option value="instructor">Instructor</Option>
+            <Option value="student">Student</Option>
           </Select>
         </Form.Item>
         <Form.Item name="status" label="Trạng thái" valuePropName="checked">
