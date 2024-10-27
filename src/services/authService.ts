@@ -7,7 +7,14 @@ import {
   registerRejected,
 } from "../redux/slices/userSlice";
 import { postRequest } from "./httpsMethod";
-import { verifyTokenFulFilled, verifyTokenPending, verifyTokenRejected } from "../redux/slices/authSlices";
+import {
+  resendTokenFulFilled,
+  resendTokenPending,
+  resendTokenRejected,
+  verifyTokenFulFilled,
+  verifyTokenPending,
+  verifyTokenRejected,
+} from "../redux/slices/authSlices";
 
 export const register = async (
   formData: RegisterType,
@@ -16,7 +23,7 @@ export const register = async (
   dispatch(registerPending());
   try {
     const res = await postRequest("/api/users", formData);
-    console.log("res",res);
+    console.log("res", res.data);
     dispatch(registerFulfilled());
   } catch (error) {
     console.log(error);
@@ -24,14 +31,16 @@ export const register = async (
   }
 };
 
-export const verifyToken = async (
+export const verifyTokenEmail = async (
   verification_id: string,
   dispatch: AppDispatch
 ) => {
   dispatch(verifyTokenPending());
   try {
-    const res = await postRequest("/api/auth/verify-token", {token:verification_id});
-    console.log("res",res.data);
+    const res = await postRequest("/api/auth/verify-token", {
+      token: verification_id,
+    });
+    console.log("res", res.data);
     dispatch(verifyTokenFulFilled());
   } catch (error) {
     console.log(error);
@@ -39,3 +48,14 @@ export const verifyToken = async (
   }
 };
 
+export const resendTokenEmail = async (email: string, dispatch: AppDispatch) => {
+  dispatch(resendTokenPending());
+  try {
+    const res  = await postRequest("/api/auth/resend-token",{email:email})
+    console.log("resend res", res.data);
+    dispatch(resendTokenFulFilled());
+  } catch (error) {
+    console.log(error);
+    dispatch(resendTokenRejected());
+  }
+};

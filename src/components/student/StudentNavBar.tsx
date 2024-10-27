@@ -4,13 +4,14 @@ import { MenuOutlined } from "@ant-design/icons";
 import logoImage from "../../assets/EduMaster.png";
 import { useCustomNavigate } from "../../hooks/customNavigate";
 import DashboardSideBar from "./StudentSideBar";
-
-
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store/store";
 interface DashboardNavBarProps {
-    role: string;
-  }
-  
-  const DashboardNavBar: React.FC<DashboardNavBarProps> = ({role}) => {
+  role: string;
+}
+
+const DashboardNavBar: React.FC<DashboardNavBarProps> = ({ role }) => {
+  const { currentUser } = useSelector((state: RootState) => state.auth);
   const navigate = useCustomNavigate();
   const [isMobile, setIsMobile] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -40,7 +41,15 @@ interface DashboardNavBarProps {
       <Menu.Item key="settings" onClick={() => navigate("/settings")}>
         Settings
       </Menu.Item>
-      <Menu.Item key="logout" onClick={() => navigate("/logout")}>
+      <Menu.Item
+        key="logout"
+        onClick={() => {
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          window.location.reload();
+          window.location.href = "/";
+        }}
+      >
         Logout
       </Menu.Item>
     </Menu>
@@ -117,7 +126,7 @@ interface DashboardNavBarProps {
             <Avatar
               shape="square"
               size="large"
-              src="https://picsum.photos/id/237/200/300"
+              src={currentUser.avatar_url}
               alt="User Avatar"
               style={{ border: "2px solid white" }}
             />
@@ -129,7 +138,7 @@ interface DashboardNavBarProps {
                   transition: "color 0.3s",
                 }}
               >
-                Student
+                {currentUser.name}
               </span>
             )}
           </div>

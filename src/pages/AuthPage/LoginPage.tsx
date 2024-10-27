@@ -41,8 +41,6 @@ const Loginpage = () => {
     }
   }, [currentUser, token, navigate]);
 
-
-
   const onFinish: FormProps<LoginProps>["onFinish"] = async (values) => {
     try {
       const { email, password } = values;
@@ -55,11 +53,15 @@ const Loginpage = () => {
   const handleLoginGoogleSuccess = async (
     credentialResponse: CredentialResponse
   ) => {
-    console.log(credentialResponse);
-    await dispatch(
-      loginWithGoogle({ google_id: credentialResponse.credential as string })
-    );
-    await dispatch(getCurrentUser());
+    try {
+      console.log("credential",credentialResponse);
+      await dispatch(
+        loginWithGoogle(credentialResponse.credential as string)
+      );
+      await dispatch(getCurrentUser());
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

@@ -15,6 +15,12 @@ interface AuthState {
     error: string | null;
     success: boolean;
   };
+  resendToken: {
+    loading: boolean;
+    error: string | null;
+    success: boolean;
+  };
+  
 }
 const token = localStorage.getItem("token");
 const currentUser = JSON.parse(localStorage.getItem("user") ?? "{}");
@@ -26,6 +32,11 @@ const initialState: AuthState = {
   error: null,
   success: false, // for monitoring the registration process.
   verifyToken: {
+    loading: false,
+    error: "",
+    success: false,
+  },
+  resendToken: {
     loading: false,
     error: "",
     success: false,
@@ -47,29 +58,15 @@ export const login = createAsyncThunk<
 // login gg
 export const loginWithGoogle = createAsyncThunk<
   AuthState, // Return type (the resolved data)
-  { google_id: string }, // Parameters passed to the thunk
+  string,
   { rejectValue: string } // Configuration for rejected case
->("auth/loginGoogle", async ({ google_id }) => {
-  const response = await postRequest("/api/auth/google", { google_id });
+>("auth/loginGoogle", async (google_id) => {
+  const response = await postRequest("/api/auth/google", { google_id:google_id });
   localStorage.setItem("token", JSON.stringify(response.data.token));
   return response.data as AuthState; // Ensure response matches AuthState
 });
 
-// export const logout = createAsyncThunk<{ rejectValue: string }>("auth/logout", async (_, { rejectWithValue }) => {
-//   //
-//   try {
-//     const res = await getRequest("/api/auth/log-out");
-//     localStorage.removeItem("token");
-//     return res.data;
-//   } catch (error: unknown) {
-//     if (axios.isAxiosError(error) && error.response) {
-//       return rejectWithValue(
-//         error.response.data.message || "Invalid credentials"
-//       );
-//     }
-//     return rejectWithValue("Invalid credentials");
-//   }
-// });
+
 
 // getCurrent user
 export const getCurrentUser = createAsyncThunk("auth/user", async () => {
@@ -101,6 +98,17 @@ export const authSlice = createSlice({
       state.verifyToken.loading = false;
       state.verifyToken.success = false
     },
+    resendTokenPending: (state) => {
+      state.resendToken.loading = true;
+    },
+    resendTokenFulFilled: (state) => {
+      state.resendToken.loading = false;
+      state.resendToken.success = true
+    },
+    resendTokenRejected: (state) => {
+      state.resendToken.loading = false;
+      state.resendToken.success = false
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -130,18 +138,6 @@ export const authSlice = createSlice({
         state.success = false;
         state.error = action.payload as string;
       })
-      // .addCase(logout.pending, (state) => {
-      //   state.loading = true;
-      // })
-      // .addCase(logout.fulfilled, (state) => {
-      //   state.loading = false;
-      //   state.success = true;
-      // })
-      // .addCase(logout.rejected, (state, action) => {
-      //   state.loading = false;
-      //   state.success = false;
-      //   state.error   = action.payload as string
-      // })
       .addCase(loginWithGoogle.pending, (state) => {
         state.loading = true;
       })
@@ -156,11 +152,13 @@ export const authSlice = createSlice({
   },
 });
 
-// Xuất actions và reducer
 export const {
   logout,
   verifyTokenFulFilled,
   verifyTokenPending,
   verifyTokenRejected,
+  resendTokenFulFilled,
+  resendTokenPending,
+  resendTokenRejected
 } = authSlice.actions;
 export default authSlice.reducer; // Xuất reducer, không phải slice

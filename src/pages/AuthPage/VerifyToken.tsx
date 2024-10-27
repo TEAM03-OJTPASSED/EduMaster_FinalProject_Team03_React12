@@ -1,11 +1,11 @@
 import { Player } from "@lottiefiles/react-lottie-player";
 import { Button, Input, Spin } from "antd";
-import { useEffect } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { AppDispatch, RootState } from "../../redux/store/store";
-import { verifyToken } from "../../services/authService";
+import { resendTokenEmail, verifyTokenEmail } from "../../services/authService";
 // import { AuthRequest } from "../../services/apiAuthRequest";
 
 // khi click vao link thi no se load de kiem tra con token co ton tai ko
@@ -14,36 +14,46 @@ import { verifyToken } from "../../services/authService";
 const VerifySuccessToken = () => {
   // // token get tu tren link
   const { verification_id } = useParams();
+
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, success } = useSelector(
-    (state: RootState) => state.auth.verifyToken
+  const [emailResend, setEmailResend] = useState("");
+
+  const { verifyToken, resendToken } = useSelector(
+    (state: RootState) => state.auth
   );
   console.log(verification_id);
   useEffect(() => {
-    verifyToken(verification_id as string, dispatch);
+    verifyTokenEmail(verification_id as string, dispatch);
   }, [verification_id, dispatch]);
 
   // automatically navigate to login after 5s
   useEffect(() => {
-    if (success) {
+    if (verifyToken.success) {
       const timer = setTimeout(() => {
         window.location.href = "/login";
       }, 5000);
 
-      return () => clearTimeout(timer); 
+      return () => clearTimeout(timer);
     }
-  }, [success]);
+  }, [verifyToken.success]);
 
+  const handleResendToken = () => {
+    resendTokenEmail(emailResend, dispatch);
+  };
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setEmailResend(e.target.value);
+  };
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="shadow-lg rounded-lg w-full max-w-lg p-6 bg-white">
-        {loading ? (
+        {verifyToken.loading ? (
           <Spin />
         ) : (
           <div className="flex flex-col items-center">
             <Player
               src={
-                success
+                verifyToken.success
                   ? `https://lottie.host/c44385c4-2fe6-4f31-ad79-360aa6a07cf8/LBhRQt2hpO.json`
                   : `https://lottie.host/07813174-03b1-4bca-be3d-40a7d6c5ca14/houbQ26KG4.json`
               }
@@ -52,10 +62,10 @@ const VerifySuccessToken = () => {
               className="h-60 w-full mb-6"
             />
             <h2 className="text-4xl font-medium my-5 text-center">
-              Verify <span>{success ? "Successfully" : "Failed"}</span>
+              Verify <span>{verifyToken.success ? "Successfully" : "Failed"}</span>
             </h2>
             <div className="w-full px-6">
-              {success ? (
+              {verifyToken.success ? (
                 <div className="text-blue-500 text-lg text-center">
                   Your email has been verified. Please{" "}
                   <NavLink to={"/login"}>
@@ -73,7 +83,7 @@ const VerifySuccessToken = () => {
               )}
 
               <div className="mt-6">
-                {success ? (
+                {verifyToken.success ? (
                   <div>{/* Auto-redirect after 5 seconds to login */}</div>
                 ) : (
                   <div className="flex gap-4">
@@ -81,13 +91,16 @@ const VerifySuccessToken = () => {
                       placeholder="Enter your email"
                       className="w-full"
                       size="large"
+                      onChange={handleInputChange}
                     />
                     <Button
                       className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition duration-300"
                       color="primary"
                       size="large"
+                      onClick={handleResendToken}
                     >
-                      Re-verify
+                    
+                      {resendToken.loading ? <Spin /> : <span>  Re-verify</span> }
                     </Button>
                   </div>
                 )}
