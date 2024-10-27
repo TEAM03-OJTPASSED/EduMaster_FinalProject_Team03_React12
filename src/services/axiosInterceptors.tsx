@@ -3,7 +3,7 @@ import handleError from "./error"
 
 // Tạo instance của axios
 export const axiosClientVer2 = axios.create({
-  baseURL: "https://edumaster-api-dev.vercel.app", // Placeholder
+  baseURL: "https://edumaster-api-dev.vercel.app",
   timeout: 10000, // Request timeout
   headers: {
     "Content-Type": "application/json",
