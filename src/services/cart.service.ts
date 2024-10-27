@@ -17,7 +17,25 @@ const CartService = {
         return deleteRequest(CART_API.DELETE_CART(cartId))
     }   
 }
+
+// //exmaple for logging
      
+// const searchValues: SearchCartByStatus = {
+//     searchCondition: {
+//         keyword: 'example', // Optional
+//         category_id: '123', // Optional
+//         status: CartStatusEnum.CANCEL, // Set this based on your enum
+//         is_deleted: false // Required
+//     },
+//     pageInfo: {
+//         pageNum: 1, // Set to desired page number
+//         pageSize: 10 // Set to desired items per page
+//     }
+// };
+
+
+// const response = await CartService.getCartByStatus(searchValues);
+// console.log(response.data?.pageData)
 
 
 
