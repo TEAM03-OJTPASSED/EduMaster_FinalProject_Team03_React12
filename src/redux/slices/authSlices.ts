@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getRequest, postRequest } from "../../services/httpsMethod";
 import axios from "axios";
 import { User } from "../../models/UserModel";
+import { postRequest } from "../../services/httpsMethod";
 
 interface AuthState {
   token: string | null;
@@ -11,37 +11,20 @@ interface AuthState {
   success: boolean;
 }
 const token = localStorage.getItem("token");
+const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+
 const initialState: AuthState = {
   loading: false,
-  currentUser: {} as User,
+  currentUser,
   token,
   error: null,
   success: false, // for monitoring the registration process.
 };
 
-export const login = createAsyncThunk<
-  AuthState,
-  { email: string; password: string },
-  { rejectValue: string }
->("auth/login", async ({ email, password }, { rejectWithValue }) => {
-  //
-  try {
-    const res = await postRequest("/api/auth", {
-      email,
-      password,
-    });
-    console.log("token", res.data.token);
-    localStorage.setItem("token", res.data.token);
-    return res.data;
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error) && error.response) {
-      return rejectWithValue(
-        error.response.data.message || "Invalid credentials"
-      );
-    }
-    return rejectWithValue("Invalid credentials");
-  }
-});
+export const login = async ({ formData, dispatch, navigate }) => {
+  const res = await postRequest("/api/auth", formData);
+};
+
 // export const logout = createAsyncThunk<{ rejectValue: string }>("auth/logout", async (_, { rejectWithValue }) => {
 //   //
 //   try {
@@ -81,10 +64,22 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-   logout : (state, action)=>{
-      state.currentUser = action.payload
-      localStorage.removeItem("token")
-   }
+    logout: (state, action) => {
+      state.currentUser = action.payload;
+      localStorage.removeItem("token");
+    },
+    loginPending: (state) => {
+      state.loading = true;
+    },
+    loginFulfilled: (state) => {
+      state.loading = false;
+      state.success = true;
+    },
+    loginRejected: (state, action) => {
+      state.loading = false;
+      state.success = false;
+      state.error = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -97,38 +92,39 @@ export const authSlice = createSlice({
         state.success = true;
       })
       .addCase(login.rejected, (state) => {
-        state.loading = false; 
-        state.error = "Login failed"; 
+        state.loading = false;
+        state.error = "Login failed";
         state.success = false;
       })
       .addCase(getCurrentUser.pending, (state) => {
-        state.loading = true; 
+        state.loading = true;
       })
-      .addCase(getCurrentUser.fulfilled, (state, action ) => {
-        state.loading = false; 
-        state.currentUser = action.payload as unknown as User
+      .addCase(getCurrentUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentUser = action.payload as unknown as User;
         state.success = true;
       })
       .addCase(getCurrentUser.rejected, (state, action) => {
-        state.loading = false; 
+        state.loading = false;
         state.success = false;
-        state.error   = action.payload as string
-      })
-      // .addCase(logout.pending, (state) => {
-      //   state.loading = true; 
-      // })
-      // .addCase(logout.fulfilled, (state) => {
-      //   state.loading = false; 
-      //   state.success = true;
-      // })
-      // .addCase(logout.rejected, (state, action) => {
-      //   state.loading = false; 
-      //   state.success = false;
-      //   state.error   = action.payload as string
-      // })
+        state.error = action.payload as string;
+      });
+    // .addCase(logout.pending, (state) => {
+    //   state.loading = true;
+    // })
+    // .addCase(logout.fulfilled, (state) => {
+    //   state.loading = false;
+    //   state.success = true;
+    // })
+    // .addCase(logout.rejected, (state, action) => {
+    //   state.loading = false;
+    //   state.success = false;
+    //   state.error   = action.payload as string
+    // })
   },
 });
 
 // Xuất actions và reducer
-export const {logout} = authSlice.actions
+export const { logout, loginFulfilled, loginPending, loginRejected } =
+  authSlice.actions;
 export default authSlice.reducer; // Xuất reducer, không phải slice

@@ -16,7 +16,9 @@ export type LoginProps = {
 
 const Loginpage = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { currentUser, token ,loading} = useSelector((state: RootState) => state.auth);
+  const { currentUser, token, loading } = useSelector(
+    (state: RootState) => state.auth
+  );
   const navigate = useNavigate();
   // useEffect(() => {
   //   const unauthorized = localStorage.getItem("unauthorized");
@@ -43,7 +45,10 @@ const Loginpage = () => {
   useEffect(() => {
     // const token = localStorage.getItem("token")
     if (token && currentUser) {
-      if (currentUser?.role === "student" || currentUser?.role === "instructor") {
+      if (
+        currentUser?.role === "student" ||
+        currentUser?.role === "instructor"
+      ) {
         navigate("/");
       } else if (currentUser?.role === "admin") {
         navigate("/dashboard/admin");
@@ -109,10 +114,12 @@ const Loginpage = () => {
             <Button
               htmlType="submit"
               shape="round"
-              className={`bg-[#FF782D] text-xl text-white py-5 font-exo w-full ${!loading && "hover:bg-[#e66e27]"}`}
+              className={`bg-[#FF782D] text-xl text-white py-5 font-exo w-full ${
+                !loading && "hover:bg-[#e66e27]"
+              }`}
               disabled={loading}
             >
-              {!loading?  "Login" : "Login you in..."}
+              {!loading ? "Login" : "Login you in..."}
             </Button>
           </Form.Item>
           <Divider plain className="text-gray-500">

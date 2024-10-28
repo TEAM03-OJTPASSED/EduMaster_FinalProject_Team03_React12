@@ -1,4 +1,9 @@
-import axios, { AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import axios, {
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+  AxiosError,
+} from "axios";
+import handleError from "./error"; // Import the centralized error handling function
 
 // Tạo instance của axios
 export const axiosClientVer2 = axios.create({
@@ -19,7 +24,7 @@ axiosClientVer2.interceptors.request.use(
     }
     return config; // Trả về config đã được chỉnh sửa
   },
-  (error) => {
+  (error: AxiosError) => {
     // Xử lý lỗi request
     return Promise.reject(error);
   }
@@ -28,28 +33,14 @@ axiosClientVer2.interceptors.request.use(
 // Response Interceptor
 axiosClientVer2.interceptors.response.use(
   (response: AxiosResponse) => {
-    // Bạn có thể biến đổi phản hồi ở đây nếu cần
+    // Xử lý thành công response, nếu cần
     return response;
   },
-  (error) => {
-    // Xử lý lỗi phản hồi toàn cầu
-    if (error.response) {
-      const status = error.response.status;
+  (error: AxiosError) => {
+    // Gọi handleError để xử lý lỗi và thông báo từ server
+    handleError(error);
 
-      if (status === 401) {
-        // Unauthorized: Token có thể đã hết hạn hoặc không hợp lệ
-        console.log("Unauthorized! Redirecting to login...");
-        localStorage.removeItem("token"); // Xóa token nếu không hợp lệ
-        window.location.href = "/login"; // Chuyển hướng đến trang đăng nhập
-      } else if (status === 403) {
-        // Forbidden: Người dùng không có quyền
-        console.error("Access denied! You don't have the required permission.");
-      } else if (status === 500) {
-        // Lỗi máy chủ nội bộ
-        console.error("Server error! Please try again later.");
-      }
-    }
-    // Luôn trả về lỗi cho hàm gọi
+    // Trả về lỗi cho hàm gọi
     return Promise.reject(error);
   }
 );
