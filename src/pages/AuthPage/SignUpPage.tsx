@@ -22,7 +22,7 @@ import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // import { loginWithGoogle } from "../../redux/slices/authSlices";
-import { register } from "../../services/auth.service";
+import { register} from "../../services/auth.service";
 import { RootState } from "../../redux/store/store";
 
 export type RegisterType = {

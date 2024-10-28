@@ -11,6 +11,12 @@ const initialState = {
     success: false,
     message: "",
   },
+  forgotPassword: {
+    loading: false,
+    success: false,
+    error: false, 
+    message: "",
+  },
 };
 
 const usersSlice = createSlice({
@@ -30,6 +36,7 @@ const usersSlice = createSlice({
     registerRejected: (state) => {
       state.register.loading = false;
     },
+
     previewProfilePending: (state) => {
       state.previewProfile.loading = true;
       state.previewProfile.success = false;
@@ -38,10 +45,30 @@ const usersSlice = createSlice({
     previewProfileFulfilled: (state) => {
       state.previewProfile.loading = false;
       state.previewProfile.success = true;
-      state.previewProfile.message = "Preview Successfully";
+      state.previewProfile.message = "Preview successfully";
     },
     previewProfileRejected: (state) => {
       state.previewProfile.loading = false;
+    },
+
+    // Forgot password actions
+    forgotPasswordPending: (state) => {
+      state.forgotPassword.loading = true;
+      state.forgotPassword.success = false;
+      state.forgotPassword.error = false; 
+      state.forgotPassword.message = "";
+    },
+    forgotPasswordFulfilled: (state) => {
+      state.forgotPassword.loading = false;
+      state.forgotPassword.success = true;
+      state.forgotPassword.error = false;
+      state.forgotPassword.message = "Password reset email sent successfully";
+    },
+    forgotPasswordRejected: (state) => {
+      state.forgotPassword.loading = false;
+      state.forgotPassword.success = false;
+      state.forgotPassword.error = true; 
+      state.forgotPassword.message = "Email does not exist or something went wrong.";
     },
   },
 });
@@ -53,5 +80,9 @@ export const {
   previewProfileFulfilled,
   previewProfilePending,
   previewProfileRejected,
+  forgotPasswordPending,
+  forgotPasswordFulfilled,
+  forgotPasswordRejected, 
 } = usersSlice.actions;
+
 export default usersSlice.reducer;
