@@ -67,7 +67,6 @@ export const loginWithGoogle = createAsyncThunk<
 });
 
 
-
 // getCurrent user
 export const getCurrentUser = createAsyncThunk("auth/user", async () => {
   const res = await getRequest("/api/auth");

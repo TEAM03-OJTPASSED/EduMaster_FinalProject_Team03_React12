@@ -22,7 +22,7 @@ import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // import { loginWithGoogle } from "../../redux/slices/authSlices";
-import { register } from "../../services/authService";
+import { register } from "../../services/auth.service";
 import { RootState } from "../../redux/store/store";
 
 export type RegisterType = {
@@ -69,7 +69,8 @@ const SignUppage = () => {
   };
 
   const onFinish: FormProps<RegisterType>["onFinish"] = (values) => {
-    const {confirmPassword, ...others} = values
+    const { confirmPassword, ...others } = values;
+    console.log(confirmPassword);
     register(others, dispatch);
   };
 
@@ -114,7 +115,7 @@ const SignUppage = () => {
             <div className="my-4">
               <Alert
                 showIcon
-                description="Please verify your email account through a verification link we sent"
+                description="Please check email"
                 type="success"
                 message={`Register successfully`}
                 closable
@@ -286,7 +287,7 @@ const SignUppage = () => {
                       label="Phone"
                       name="phone_number"
                       rules={[
-                        { required: true, message: "Please input your phone!" },      
+                        { required: true, message: "Please input your phone!" },
                         {
                           max: 10,
                           min: 10,

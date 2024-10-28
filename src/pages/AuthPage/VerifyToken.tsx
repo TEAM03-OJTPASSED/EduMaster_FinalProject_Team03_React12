@@ -5,7 +5,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { AppDispatch, RootState } from "../../redux/store/store";
-import { resendTokenEmail, verifyTokenEmail } from "../../services/authService";
+import {
+  resendTokenEmail,
+  verifyTokenEmail,
+} from "../../services/auth.service";
 // import { AuthRequest } from "../../services/apiAuthRequest";
 
 // khi click vao link thi no se load de kiem tra con token co ton tai ko
@@ -62,7 +65,8 @@ const VerifySuccessToken = () => {
               className="h-60 w-full mb-6"
             />
             <h2 className="text-4xl font-medium my-5 text-center">
-              Verify <span>{verifyToken.success ? "Successfully" : "Failed"}</span>
+              Verify{" "}
+              <span>{verifyToken.success ? "Successfully" : "Failed"}</span>
             </h2>
             <div className="w-full px-6">
               {verifyToken.success ? (
@@ -99,8 +103,7 @@ const VerifySuccessToken = () => {
                       size="large"
                       onClick={handleResendToken}
                     >
-                    
-                      {resendToken.loading ? <Spin /> : <span>  Re-verify</span> }
+                      {resendToken.loading ? <Spin /> : <span> Re-verify</span>}
                     </Button>
                   </div>
                 )}

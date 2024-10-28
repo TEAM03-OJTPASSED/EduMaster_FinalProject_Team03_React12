@@ -7,12 +7,15 @@ import {
 } from "@ant-design/icons";
 
 import useSearch from "../../hooks/useSearch";
-import { getUsers } from "../../services/userService";
+import { getUsers } from "../../services/user.service";
 
 const { Option } = Select;
 
 const UserManagement: React.FC = () => {
-  const [editVisible, setEditVisible] = useState(false);
+  // dispatch
+
+  // const [editVisible, setEditVisible] = useState(false);
+  // const [deleteVisible, setDeleteVisible] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [pageNum, setPageNum] = useState(1);
@@ -30,43 +33,48 @@ const UserManagement: React.FC = () => {
   ) => {
     const searchParams = {
       searchCondition: {
-        keyword: keyword,
+        keyword,
         role: "",
         status: true,
         is_verified: "",
         is_delete: false,
       },
-      pageInfo: {
-        pageNum,
-        pageSize,
-      },
+      pageInfo: { pageNum, pageSize },
     };
 
     try {
       const response = await getUsers(searchParams);
-      setUsers(response.pageData);
-      setTotal(response.pageInfo.totalItems);
+      setUsers((response as any).pageData);
+      setTotal((response as any).pageInfo.totalItems);
     } catch (err) {
-      console.log("Error fetching users:", err);
+      console.error("Error fetching users:", err);
     }
   };
 
-  // Fetch users when component mounts or when pageNum/pageSize changes
   useEffect(() => {
     fetchUsers(pageNum, pageSize, searchText);
   }, [pageNum, pageSize, searchText]);
 
   const handleEdit = (record: any) => {
     setCurrentUser(record);
-    setEditVisible(true);
+    // // console.log("current user", record);
+    // // console.log("current user2", currentUser);
+    // setEditVisible(true);
   };
 
   const handleDelete = (record: any) => {
-    console.log("Deleting user:", record);
-    // Implement delete logic
+    setCurrentUser(record);
+    // setDeleteVisible(true);
   };
 
+  // const confirmDelete = () => {
+  //   console.log("Deleting user:", currentUser);
+  //   setDeleteVisible(false);
+  // };
+
   const handleTableChange = (pagination: any) => {
+    console.log(currentUser);
+
     setPageNum(pagination.current);
     setPageSize(pagination.pageSize);
   };
@@ -93,7 +101,7 @@ const UserManagement: React.FC = () => {
       key: "phone",
     },
     {
-      title: "Trạng thái",
+      title: "Status",
       dataIndex: "status",
       key: "status",
       filters: [
@@ -109,10 +117,10 @@ const UserManagement: React.FC = () => {
       ),
     },
     {
-      title: "Loại người dùng",
+      title: "User Role",
       dataIndex: "role",
       key: "role",
-      render: (text: string) => (
+      render: (text: any) => (
         <Select defaultValue={text} style={{ width: 120 }}>
           <Option value="Admin">Admin</Option>
           <Option value="Instructor">Instructor</Option>
@@ -121,9 +129,9 @@ const UserManagement: React.FC = () => {
       ),
     },
     {
-      title: "Hành động",
+      title: "Actions",
       key: "action",
-      render: (record: string) => (
+      render: (record: any) => (
         <Space size="middle">
           <Button icon={<EditOutlined />} onClick={() => handleEdit(record)} />
           <Button
@@ -142,18 +150,18 @@ const UserManagement: React.FC = () => {
       label: "All Users",
       children: (
         <Table
-          dataSource={filteredData} // Use filteredData directly
+          dataSource={filteredData}
           columns={columns}
           pagination={{
             current: pageNum,
-            pageSize: pageSize,
-            total: total,
+            pageSize,
+            total,
             showSizeChanger: true,
           }}
           onChange={handleTableChange}
           rowKey="_id"
           bordered
-          scroll={{ x: true }}
+          scroll={{ x: "max-content" }}
         />
       ),
     },
@@ -162,12 +170,12 @@ const UserManagement: React.FC = () => {
       label: "Unverified Accounts",
       children: (
         <Table
-          // dataSource={unverifiedAccounts}
+          dataSource={filteredData.filter((user: any) => !user.is_verified)}
           columns={columns}
           pagination={{ pageSize: 5 }}
           rowKey="key"
           bordered
-          scroll={{ x: true }}
+          scroll={{ x: "max-content" }}
         />
       ),
     },
@@ -176,12 +184,12 @@ const UserManagement: React.FC = () => {
       label: "Blocked Accounts",
       children: (
         <Table
-          // dataSource={blockedAccounts}
+          dataSource={filteredData.filter((user: any) => user.status === false)}
           columns={columns}
           pagination={{ pageSize: 5 }}
           rowKey="key"
           bordered
-          scroll={{ x: true }}
+          scroll={{ x: "max-content" }}
         />
       ),
     },
@@ -189,8 +197,6 @@ const UserManagement: React.FC = () => {
 
   return (
     <div>
-      <div className="hidden">{editVisible}</div>
-      <div className="hidden">{currentUser}</div>
       <Card>
         <h3 className="text-2xl my-5">User Management</h3>
         <Input

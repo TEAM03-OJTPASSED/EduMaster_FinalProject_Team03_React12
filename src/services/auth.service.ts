@@ -53,6 +53,7 @@ export const resendTokenEmail = async (email: string, dispatch: AppDispatch) => 
   try {
     const res  = await postRequest("/api/auth/resend-token",{email:email})
     console.log("resend res", res.data);
+    
     dispatch(resendTokenFulFilled());
   } catch (error) {
     console.log(error);
