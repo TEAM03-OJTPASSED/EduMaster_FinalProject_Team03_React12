@@ -10,6 +10,7 @@ import useSearch from "../../hooks/useSearch";
 import {
   changeRole,
   changeStatus,
+  deleteUser,
   getUsers,
   updatedUser,
 } from "../../services/userService"; // Đảm bảo có import hàm updateUserService
@@ -124,6 +125,21 @@ const UserManagement: React.FC = () => {
     // fetchUsers(pageNum, pageSize, searchText);
   };
 
+  const handleDelete = async (record: User) => {
+    try {
+      const userId = record._id;
+      const response = await deleteUser(userId);
+      if (response) {
+        console.log("User deleted successfully");
+        fetchUsers(pageNum, pageSize, searchText); // Refresh the user list
+      } else {
+        console.error("Failed to delete user");
+      }
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
+
   useEffect(() => {
     fetchUsers(pageNum, pageSize, searchText);
   }, [pageNum, pageSize, searchText, statusFilter]);
@@ -210,7 +226,7 @@ const UserManagement: React.FC = () => {
           <Button
             danger
             icon={<DeleteOutlined />}
-            onClick={() => console.log("Deleting user:", record)}
+            onClick={() => handleDelete(record)}
           />
         </Space>
       ),

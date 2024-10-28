@@ -42,5 +42,15 @@ const patchRequest = async (url: string, payload: any): Promise<any> => {
   }
 };
 
+// [DELETE]
+const deleteRequest = async (url: string): Promise<any> => {
+  try {
+    const res = await axiosClientVer2.delete(url);
+    return res.data; // Trả về dữ liệu từ response
+  } catch (error) {
+    return handleError(error as AxiosError); // Chuyển đổi kiểu về AxiosError
+  }
+};
+
 // Xuất các hàm để sử dụng ở nơi khác
-export { getRequest, postRequest, putRequest, patchRequest };
+export { getRequest, postRequest, putRequest, patchRequest, deleteRequest };
