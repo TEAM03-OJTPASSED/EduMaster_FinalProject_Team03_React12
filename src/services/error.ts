@@ -22,19 +22,16 @@ const handleError = (error: AxiosError) => {
           `${errorData.message || errorData.Message || "Bad Request"}`
         );
       }
-
       if (status === 401) {
         console.log("401 - Lỗi", error);
         message.destroy();
-        message.error(
-          `${errorData.message || errorData.Message || "Unauthorized"}`
-        );
+        message.error(`${errorData.message || errorData.Message}`);
       }
 
       if (status === 403) {
-        console.log("403 - Lỗi", error);
+        console.log("403 - Lỗi", errorData);
         message.destroy();
-        message.error(`No data`);
+        message.error(`${errorData.message}`);
       }
 
       if (status === 404) {

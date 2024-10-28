@@ -14,6 +14,13 @@ interface Course {
   price: number;
 }
 
+// interface User {
+//     name: string;
+//     email: string;
+//     phone: string;
+//     address: string;
+// }
+
 const CheckoutPage: React.FC = () => {
   const navigate = useCustomNavigate();
   const [paymentMethod, setPaymentMethod] = useState('credit_card');

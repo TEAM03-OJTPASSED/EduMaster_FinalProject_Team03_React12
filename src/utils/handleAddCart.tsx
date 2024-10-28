@@ -1,20 +1,7 @@
 import { message, notification } from "antd";
+import { Course } from "../models/Course.model";
 
 
-interface Course {
-    id: number;
-    image_url: string;
-    category: string;
-    name: string;
-    author: string;
-    duration: string;
-    students: number;
-    price: number | string;
-    discount: number;
-    lessons: number;
-    description?: string;
-    updatedDate?: string;
-  }
 
 
 export const handleAddCart = (userRole : string, course: Course, navigate: any) => {

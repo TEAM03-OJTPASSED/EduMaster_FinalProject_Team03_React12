@@ -48,7 +48,7 @@ const items: MenuItem[] = [
 ];
 
 const Navbar = () => {
-  const { currentUser,token } = useSelector((state: RootState) => state.auth);
+  const { currentUser, token } = useSelector((state: RootState) => state.auth);
   const navigate = useCustomNavigate();
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [activeButton, setActiveButton] = useState<string>("");
@@ -57,12 +57,12 @@ const Navbar = () => {
   const searchInputRef = useRef<InputRef>(null);
   const location = useLocation();
   useEffect(() => {
-    if (localStorage.getItem("token") != null) {
+    if (localStorage.getItem("user") != null) {
       setUserLoggedIn(true);
     } else {
       setUserLoggedIn(false);
     }
-  }, [currentUser,token]);
+  }, [currentUser, token]);
 
   useEffect(() => {
     const pathToButtonKeyMap: { [key: string]: string } = {
@@ -79,6 +79,13 @@ const Navbar = () => {
       setActiveButton(selectedKey);
     }
   }, [location.pathname]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    window.location.reload();
+    window.location.href = "/";
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -156,7 +163,8 @@ const Navbar = () => {
         key: "logout",
         onClick: () => {
           localStorage.removeItem("token");
-          window.location.reload();         
+          localStorage.removeItem("user");
+          window.location.reload();
         },
       },
     ],
@@ -274,15 +282,17 @@ const Navbar = () => {
 
           {/* Burger Menu for mobile */}
           <div className="md:hidden flex items-center">
-            <button
-              className="p-0 w-10 h-10 text-2xl relative mr-8"
-              onClick={() => navigate("/cart")}
-            >
-              <ShoppingCartOutlined />
-              <span className="absolute top-0 right-0 w-4 h-4 bg-orange-500 rounded-full text-xs text-white font-semibold">
-                2
-              </span>
-            </button>
+            {userLoggedIn && (
+              <button
+                className="p-0 w-10 h-10 text-2xl relative mr-8"
+                onClick={() => navigate("/cart")}
+              >
+                <ShoppingCartOutlined />
+                <span className="absolute top-0 right-0 w-4 h-4 bg-orange-500 rounded-full text-xs text-white font-semibold">
+                  2
+                </span>
+              </button>
+            )}
             <MenuOutlined
               className="text-xl cursor-pointer"
               onClick={() => setIsDrawerOpen(true)}
@@ -346,7 +356,7 @@ const Navbar = () => {
                 </Button>
               </Dropdown>
               {/* Log In and Sign Up */}
-              {!userLoggedIn && !token? (
+              {!userLoggedIn && !token ? (
                 <>
                   <Button
                     className="mt-4 h-12 w-full text-lg py-4 view-button ant-btn-variant-solid font-jost"
@@ -370,12 +380,7 @@ const Navbar = () => {
               ) : (
                 <Button
                   className="mt-4 h-12 w-full text-lg py-4 view-button ant-btn-variant-solid font-jost"
-                  onClick={() => {
-                    localStorage.removeItem("token");
-                    setUserLoggedIn(false);
-                    setIsDrawerOpen(false);
-                    navigate("/login");
-                  }}
+                  onClick={() => handleLogout()}
                 >
                   Log Out
                 </Button>

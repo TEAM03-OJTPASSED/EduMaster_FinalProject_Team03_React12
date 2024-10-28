@@ -55,7 +55,6 @@ import BlogDetailPage from "./pages/BlogDetailPage";
 import StudentContent from "./pages/StudentDashboard/StudentContent";
 import CourseLists from "./pages/AdminDashboard/monitors/course/CourseLists";
 import StudentSubscription from "./pages/StudentDashboard/StudentSubscriptions";
-import VerifySuccessToken from "./pages/AuthPage/VerifyToken";
 import StudentChangePassword from "./pages/StudentDashboard/StudentChangePassword";
 import StudentSetting from "./pages/StudentDashboard/StudentSetting";
 import InstructorChangePassword from "./pages/InstructorDashboard/instructor-setting/InstructorChangePassword";
@@ -72,6 +71,7 @@ import AdminRejectedPayout from "./pages/AdminDashboard/payout/RejectedPayout";
 import ProfilePage from "./pages/profile/ProfilePage";
 import StudentSubscriptions from "./pages/StudentDashboard/StudentSubscriptions";
 import StudentOrderHistory from "./pages/StudentDashboard/StudentOrderHistory";
+import VerifySuccessToken from "./pages/AuthPage/VerifyToken";
 
 function App() {
   return (
@@ -82,10 +82,28 @@ function App() {
             {/* General Layout */}
             <Route path="/" element={<GeneralLayout />}>
               <Route path="/" element={<HomePage />} />
-              <Route path="/login" element={<Loginpage />} />
-              <Route path="/signup" element={<SignUppage />} />
+              <Route
+                path="/login"
+                element={
+                  <ProtectedRoute>
+                    <Loginpage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/signup"
+                element={
+                  <ProtectedRoute>
+                    <SignUppage />
+                  </ProtectedRoute>
+                }
+              />
+
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-              <Route path="/verify-token" element={<VerifySuccessToken />} />
+              <Route
+                path="/verify-email/:verification_id"
+                element={<VerifySuccessToken />}
+              />
               <Route path="/course" element={<CoursesPage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/contact" element={<ContactPage />} />

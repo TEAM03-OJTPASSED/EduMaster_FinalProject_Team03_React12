@@ -1,13 +1,9 @@
-import axios, {
-  AxiosResponse,
-  InternalAxiosRequestConfig,
-  AxiosError,
-} from "axios";
-import handleError from "./error"; // Import the centralized error handling function
+import axios, { AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import handleError from "./error";
 
 // Tạo instance của axios
 export const axiosClientVer2 = axios.create({
-  baseURL: "https://edumaster-api-dev.vercel.app", // Placeholder
+  baseURL: "https://edumaster-api-dev.vercel.app",
   timeout: 10000, // Request timeout
   headers: {
     "Content-Type": "application/json",
@@ -19,6 +15,8 @@ axiosClientVer2.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     // Thêm Authorization header với token, nếu nó tồn tại
     const token = localStorage.getItem("token"); // Hoặc bất kỳ phương pháp nào bạn lưu trữ token
+    console.log("local token", token);
+
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
@@ -26,6 +24,7 @@ axiosClientVer2.interceptors.request.use(
   },
   (error: AxiosError) => {
     // Xử lý lỗi request
+    handleError(error);
     return Promise.reject(error);
   }
 );
@@ -36,11 +35,10 @@ axiosClientVer2.interceptors.response.use(
     // Xử lý thành công response, nếu cần
     return response;
   },
-  (error: AxiosError) => {
-    // Gọi handleError để xử lý lỗi và thông báo từ server
+  (error) => {
+    // Xử lý lỗi phản hồi toàn cầu
     handleError(error);
-
-    // Trả về lỗi cho hàm gọi
+    // Luôn trả về lỗi cho hàm gọi
     return Promise.reject(error);
   }
 );

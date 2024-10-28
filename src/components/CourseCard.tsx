@@ -4,31 +4,8 @@ import { AiOutlineClockCircle } from "react-icons/ai";
 import { BiBook } from "react-icons/bi";
 import { FaShoppingCart } from "react-icons/fa";
 import { TiUserOutline } from "react-icons/ti";
+import { Course } from "../models/Course.model";
 
-interface Course {
-  id: number;
-  image_url: string;
-  category: string;
-  name: string;
-  author: string;
-  duration: string;
-  students: number;
-  price: number | string;
-  discount: number;
-  lessons: number;
-  description?: string;
-  updatedDate?: string;
-}
-// interface Course {
-//     name: string;
-//     category_id: string;
-//     description: string;
-//     content: string;
-//     video_url: string;
-//     image_url: string;
-//     price: number;
-//     discount: number;
-// }
 const CourseCard: React.FC<{
   course: Course;
   viewMode: string;
@@ -48,7 +25,7 @@ const CourseCard: React.FC<{
 
   return (
     <div className="group relative">
-      <a href={`/course-detail/${course.id}`}>
+      <a href={`/course-detail/${course._id}`}>
         <Card
           hoverable
           styles={{
@@ -67,7 +44,7 @@ const CourseCard: React.FC<{
                 } h-56 object-cover`}
               />
               <Tag className="absolute top-2 left-2 bg-black text-white">
-                {course.category}
+                {course.category_name}
               </Tag>
             </div>
           }
@@ -76,7 +53,7 @@ const CourseCard: React.FC<{
           }`}
         >
           <div className="flex-grow">
-            <p className="text-gray-500 text-sm mb-2">by {course.author}</p>
+            <p className="text-gray-500 text-sm mb-2">by {course.instructor_name}</p>
             <h2 className="text-base font-semibold mb-4 overflow-ellipsis overflow-hidden whitespace-nowrap transition group-hover:text-[#FFAB2D]">
               {course.name}
             </h2>
@@ -88,16 +65,16 @@ const CourseCard: React.FC<{
                   className="mr-1 text-orange-500"
                   size={18}
                 />
-                {course.duration}
+                {course.full_time}
               </span>
-              <span className="flex items-center justify-end">
+              {/* <span className="flex items-center justify-end">
                 <TiUserOutline className="mr-1 text-orange-500" size={20} />
                 {course.students} Students
-              </span>
+              </span> */}
              
                 <span className="flex items-center">
                   <BiBook className="mr-1 text-orange-500" size={18} />
-                  {course.lessons} Lessons
+                  {course.lesson_count} Lessons
                 </span>
             
             </div>
@@ -125,7 +102,7 @@ const CourseCard: React.FC<{
           <div className="w-80 font-jost bg-white p-4 rounded-3xl shadow-lg ">
           <h3 className="text-xl font-semibold mb-2">{course.name}</h3>
           <p className="text-sm text-gray-600 mb-2">
-            Updated {course.updatedDate ?? "Recently"}
+            Updated {course.updated_at ?? "Recently"}
           </p>
           <p className="text-sm text-gray-700 mb-4">
             {course.description ??
@@ -134,7 +111,7 @@ const CourseCard: React.FC<{
           <ul className="text-sm text-gray-600 mb-4">
             <li className="flex items-center mb-1">
               <AiOutlineClockCircle className="mr-2 text-primary" size={16} />
-              {course.duration} total hours
+              {course.full_time} total hours
             </li>
             <li className="flex items-center mb-1">
               <BiBook className="mr-2 text-primary" size={16} />
