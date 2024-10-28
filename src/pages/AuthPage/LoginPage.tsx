@@ -27,7 +27,7 @@ const Loginpage = () => {
   useEffect(() => {
     console.log("Token:", token);
     console.log("CurrentUser:", currentUser);
-    if (token && currentUser) {
+    if (currentUser) {
       if (
         currentUser?.role === "student" ||
         currentUser?.role === "instructor"

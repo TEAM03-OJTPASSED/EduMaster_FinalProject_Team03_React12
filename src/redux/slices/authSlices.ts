@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getRequest, postRequest } from "../../services/httpsMethod";
 import { User } from "../../models/UserModel";
 import { message } from "antd";
-
 interface AuthState {
   token: string | null;
   currentUser: User;
@@ -20,11 +19,9 @@ interface AuthState {
     error: string | null;
     success: boolean;
   };
-  
 }
 const token = localStorage.getItem("token");
 const currentUser = JSON.parse(localStorage.getItem("user") ?? "{}");
-
 const initialState: AuthState = {
   loading: false,
   currentUser: currentUser,
