@@ -51,6 +51,7 @@ export const login = createAsyncThunk<
 >("auth/login", async ({ email, password }) => {
   const response = await postRequest("/api/auth", { email, password });
   message.success("Login successfully");
+  console.log("user token", (response as any).data.token);
   localStorage.setItem("token", (response as any).data.token);
   return response.data as AuthState; // Ensure response matches AuthState
 });
@@ -61,8 +62,11 @@ export const loginWithGoogle = createAsyncThunk<
   string,
   { rejectValue: string } // Configuration for rejected case
 >("auth/loginGoogle", async (google_id) => {
+  console.log("gg id", google_id);
   const response = await postRequest("/api/auth/google", { google_id:google_id });
-  localStorage.setItem("token", JSON.stringify((response as any).data.token));
+  console.log("gg token",(response as any).data.token);
+  console.log("gg res", response.data.token);
+  localStorage.setItem("token", (response as any).data.token);
   return response.data as AuthState; // Ensure response matches AuthState
 });
 

@@ -70,7 +70,6 @@ const SignUppage = () => {
 
   const onFinish: FormProps["onFinish"] = (values) => {
     const { confirmPassword, ...others } = values;
-   
     register(others, dispatch);
   };
 
