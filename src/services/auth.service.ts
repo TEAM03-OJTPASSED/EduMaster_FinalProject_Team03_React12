@@ -2,11 +2,14 @@ import { RegisterType } from "../pages/AuthPage/SignUpPage";
 import { AppDispatch } from "../redux/store/store";
 
 import {
+  forgotPasswordFulfilled,
+  forgotPasswordPending,
+  forgotPasswordRejected,
   registerFulfilled,
   registerPending,
   registerRejected,
 } from "../redux/slices/userSlice";
-import { postRequest } from "./httpsMethod";
+import { postRequest, putRequest } from "./httpsMethod";
 import {
   resendTokenFulFilled,
   resendTokenPending,
@@ -15,6 +18,7 @@ import {
   verifyTokenPending,
   verifyTokenRejected,
 } from "../redux/slices/authSlices";
+import { CredentialResponse } from "@react-oauth/google";
 
 export const register = async (
   formData: RegisterType,
@@ -58,5 +62,17 @@ export const resendTokenEmail = async (email: string, dispatch: AppDispatch) => 
   } catch (error) {
     console.log(error);
     dispatch(resendTokenRejected());
+  }
+};
+
+export const forgotPassword = async (email: string, dispatch: AppDispatch) => {
+  dispatch(forgotPasswordPending()); 
+  try {
+    const res = await putRequest("/api/auth/forgot-password", { email: email }); 
+    console.log("Response data:", res.data);
+    dispatch(forgotPasswordFulfilled()); 
+  } catch (error) {
+    console.error("Error:", error);
+    dispatch(forgotPasswordRejected());
   }
 };
