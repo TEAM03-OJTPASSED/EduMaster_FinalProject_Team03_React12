@@ -8,7 +8,7 @@ const CourseService = {
         return postRequest(COURSE_API.CREATE_COURSE, params);
     },
 
-    getCourses(params: GetCourses): Promise<ApiResponse<APIResponseData<Course[]>>> {
+    getCourses(params: GetCourses): Promise<ApiResponse<APIResponseData<Course>>> {
         return postRequest(COURSE_API.GET_COURSES, params);
     },
 
@@ -28,7 +28,7 @@ const CourseService = {
         return postRequest(COURSE_API.UPDATE_COURSE_STATUS, params);
     },
 
-    getCourseLogs(params: GetCourseLogs): Promise<ApiResponse<APIResponseData<CourseLog[]>>> {
+    getCourseLogs(params: GetCourseLogs): Promise<ApiResponse<APIResponseData<CourseLog>>> {
         return postRequest(COURSE_API.GET_COURSE_LOGS, params);
     },
 };

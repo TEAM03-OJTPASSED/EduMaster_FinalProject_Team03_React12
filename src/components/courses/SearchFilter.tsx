@@ -75,7 +75,7 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({ filters, onFilterCha
   // );
 
   const renderFilters = () => (
-    <>
+    <div className=' sticky-sider top-0'>
       {filters.map((section) => (
         <div key={section.type} className="mb-6">
           <h3 className="text-lg font-semibold mb-4">{section.title}</h3>
@@ -84,7 +84,7 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({ filters, onFilterCha
        
         </div>
       ))}
-    </>
+    </div>
   );
 
   return (
@@ -110,7 +110,7 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({ filters, onFilterCha
           </Drawer>
         </div>
       ) : ( 
-        <Sider width={250} theme="light" className="p-4">          {renderFilters()}
+        <Sider width={250} theme="light" className="p-4 overflow-clip">          {renderFilters()}
       </Sider>
 
       )}

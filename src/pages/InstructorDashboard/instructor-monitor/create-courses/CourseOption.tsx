@@ -16,8 +16,8 @@ import {
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
-import { Course } from "../../../AdminDashboard/monitors/course/courseList";
 import { API_UPLOAD_FILE } from "../../../../constants/upload";
+import { Course } from "../../../../models/Course.model";
 
 type CourseInformationProps = {
   initializeValue?: Course;
@@ -261,7 +261,8 @@ const CourseOption: React.FC<CourseInformationProps> = ({
           color="primary"
           htmlType="submit"
         >
-          Change
+          {mode === "create"? "Create" : "Update"  }
+          
         </Button>
       </Form.Item>
     </Form>

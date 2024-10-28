@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   Input,
@@ -15,20 +15,19 @@ import {
   EditOutlined,
   PlusCircleOutlined,
 } from "@ant-design/icons";
-import {
-  Course,
-  CourseStatusEnum,
-  listCourses,
-} from "../../AdminDashboard/monitors/course/courseList";
+
 import CourseOption from "./create-courses/CourseOption";
 import StatusFilter from "../../../components/StatusFilter";
+import CourseService from "../../../services/course.service";
+import { Course, GetCourses } from "../../../models/Course.model";
+import { CourseStatusEnum } from "../../AdminDashboard/monitors/course/courseList";
 
 const InstructorCourseList: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [isModalCreateVisible, setIsModalCreateVisible] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>();
-
+  const [listCourses, setListCourses] = useState<Course[]>([]);
   // select course to send to admin
   const [selectedCourses, setSelectedCourses] = useState<Course[]>([]);
 
@@ -51,6 +50,29 @@ const InstructorCourseList: React.FC = () => {
       setSelectedCourses(selectedRows);
     },
   };
+
+  useEffect(() => {
+    const initialCoursesParams: GetCourses = {
+      pageInfo: {
+        pageNum: 1,
+        pageSize: 6,
+      },
+      searchCondition: {
+        keyword: "",
+        is_deleted: false,
+        category_id: "",
+      }
+    }
+        const fetchCourses = async () => {
+          const response = await CourseService.getCourses(initialCoursesParams);
+          setListCourses(response?.data?.pageData ?? []);
+
+        };
+
+        fetchCourses(); // Call the async function
+    },[]);
+
+
   // send course request to Admin
   const handleSendToAdmin = () => {
     // kiem tra xem nhung items da seleted coi co phai status la new/reject hay khong
@@ -59,7 +81,7 @@ const InstructorCourseList: React.FC = () => {
     console.log(selectedCourses);
   };
 
-  const handleSwitchChange = (id: number, value: CourseStatusEnum) => {
+  const handleSwitchChange = (id: string, value: CourseStatusEnum) => {
     console.log("Selected ID:", id);
     console.log("Selected Value:", value);
     // Call the API to update the course status
@@ -133,7 +155,7 @@ const InstructorCourseList: React.FC = () => {
               record.status === CourseStatusEnum.REJECTED
             }
             style={{ width: 100 }}
-            onChange={(value) => handleSwitchChange(record.id, value)}
+            onChange={(value) => handleSwitchChange(record._id, value)}
             options={[
               {
                 label: CourseStatusEnum.ACTIVE,
@@ -244,7 +266,7 @@ const InstructorCourseList: React.FC = () => {
             initializeValue={selectedCourse}
             mode="update"
             onFinished={(values) => {
-              console.log("submitted session update", {
+              console.log("submitted course update", {
                 ...values,
                 created_at: new Date(),
               });

@@ -46,7 +46,6 @@ const filterSections: FilterSection[] = [
 
 export default function CoursesPage() {
   const [courses, setCourses] = useState<Course[]>([])
-  const [filteredCourses, setFilteredCourses] = useState<Course[]>([])
   const [searchParams, setSearchParams] = useSearchParams();
   const [noResult, setNoResult] = useState(false);
 
@@ -101,15 +100,15 @@ export default function CoursesPage() {
     })
   }
 
-  const handlePageChange = (page: number, pageSize?: number) => {
-    setCoursesParams((prevParams) => ({
-      ...prevParams,
-      pageInfo: {
-        pageNum: page,
-        pageSize: pageSize || prevParams.pageInfo.pageSize,
-      },
-    }))
-  }
+  // const handlePageChange = (page: number, pageSize?: number) => {
+  //   setCoursesParams((prevParams) => ({
+  //     ...prevParams,
+  //     pageInfo: {
+  //       pageNum: page,
+  //       pageSize: pageSize || prevParams.pageInfo.pageSize,
+  //     },
+  //   }))
+  // }
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -132,18 +131,18 @@ export default function CoursesPage() {
 
       // Apply other filters here...
 
-      setFilteredCourses(result)
+      setCourses(result)
     }
 
     applyFilters()
   }, [courses, filters])
 
   return (
-    <main className="mt-2 min-h-screen">
+    <main className="mt-2 min-h-screen relative">
       <div className="p-4 pb-0">
         <DynamicBreadcrumb />
       </div>
-      <Layout className="relative">
+      <Layout className="relative overflow-clip">
         <SearchResults
           noResult={noResult}
           courses={courses}
