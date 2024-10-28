@@ -8,4 +8,3 @@ export const CLIENT_API = {
   BLOG_DETAILS: (id: string) => `${API_BASE_URL}/blog/${id}`,
 };
 
-export default CLIENT_API;

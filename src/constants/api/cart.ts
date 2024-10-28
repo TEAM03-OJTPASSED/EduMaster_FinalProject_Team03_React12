@@ -7,4 +7,3 @@ export const CART_API = {
   DELETE_CART: (id: string) => `${API_BASE_URL}/${id}`,
 };
 
-export default CART_API;
