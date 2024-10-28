@@ -76,7 +76,7 @@ const EditUser: React.FC<EditUserProps> = ({
           <Input />
         </Form.Item>
         <Form.Item name="email" label="Email" rules={[{ required: true }]}>
-          <Input />
+          <Input disabled />
         </Form.Item>
         <Form.Item name="phone_number" label="Số điện thoại">
           <Input />
