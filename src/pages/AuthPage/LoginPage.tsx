@@ -20,11 +20,13 @@ export type LoginProps = {
 
 const Loginpage = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { loading } = useSelector((state: RootState) => state.auth);
+  const { currentUser, token, loading } = useSelector(
+    (state: RootState) => state.auth
+  );
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
-  const currentUser = JSON.parse(localStorage.getItem("user") ?? "{}");
   useEffect(() => {
+    console.log("Token:", token);
+    console.log("CurrentUser:", currentUser);
     if (token && currentUser) {
       if (
         currentUser?.role === "student" ||
@@ -52,8 +54,10 @@ const Loginpage = () => {
     credentialResponse: CredentialResponse
   ) => {
     try {
-      console.log("credential", credentialResponse);
-      await dispatch(loginWithGoogle(credentialResponse.credential as string));
+      console.log("credential",credentialResponse);
+      await dispatch(
+        loginWithGoogle(credentialResponse.credential as string)
+      );
       await dispatch(getCurrentUser());
     } catch (error) {
       console.log(error);
