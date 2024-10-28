@@ -68,9 +68,9 @@ const SignUppage = () => {
     }
   };
 
-  const onFinish: FormProps<RegisterType>["onFinish"] = (values) => {
+  const onFinish: FormProps["onFinish"] = (values) => {
     const { confirmPassword, ...others } = values;
-    console.log(confirmPassword);
+   
     register(others, dispatch);
   };
 
