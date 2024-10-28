@@ -64,7 +64,7 @@ const EditUser: React.FC<EditUserProps> = ({
           bank_account_no: user?.bank_account_no || "",
           bank_account_name: user?.bank_account_name || "",
           dob: user?.dob || "",
-          status: user?.status || false, // Lấy giá trị status từ user
+          status: user?.status || false,
           role: user?.role,
           description: user?.description || "",
         }}

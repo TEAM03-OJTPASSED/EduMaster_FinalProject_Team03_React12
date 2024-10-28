@@ -49,9 +49,9 @@ export const changeRole = async (userId: string, role: string) => {
       role,
     });
     if (response.success) {
-      return true; // Hoặc trả về một giá trị nào đó nếu cần thiết
+      message.success("User updated successfully");
     } else {
-      throw new Error("Failed to change role");
+      message.error("Failed to update user"); // Hiển thị thông báo lỗi
     }
   } catch (error) {
     console.error("Error changing user role:", error);

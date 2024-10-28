@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Input, Space, Card, Select, Switch, Tabs } from "antd";
+import { Table, Button, Input, Space, Card, Select, Switch } from "antd";
 import {
   SearchOutlined,
   EditOutlined,
@@ -12,7 +12,7 @@ import {
   changeStatus,
   getUsers,
   updatedUser,
-} from "../../services/userService"; // Đảm bảo có import hàm updateUserService
+} from "../../services/userService";
 import EditUser from "../../components/Admin/AdminModals/EditUserModal";
 
 const { Option } = Select;
@@ -29,7 +29,7 @@ interface User {
 const UserManagement: React.FC = () => {
   const [editVisible, setEditVisible] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<[]>([]);
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
@@ -38,6 +38,7 @@ const UserManagement: React.FC = () => {
     "email",
   ]);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
+
   const fetchUsers = async (
     pageNum: number,
     pageSize: number,
@@ -48,9 +49,9 @@ const UserManagement: React.FC = () => {
         keyword: keyword,
         role: "",
         status: statusFilter !== null ? statusFilter : undefined,
-        // status: false, // Thay đổi ở đây
-        is_verified: "",
         is_delete: false,
+        is_verified: true,
+        // is_verified: "",
       },
       pageInfo: {
         pageNum,
@@ -68,7 +69,6 @@ const UserManagement: React.FC = () => {
   };
 
   const handleEdit = (record: User) => {
-    console.log(record._id);
     setCurrentUser(record);
     setEditVisible(true);
   };
@@ -85,54 +85,51 @@ const UserManagement: React.FC = () => {
     }
 
     const userId = currentUser._id;
-    // console.log("Current User ID:", userId);
-    // console.log("Updated User Data:", updatedUserData);
+    const promises: Promise<any>[] = [];
 
-    const promises = []; // Mảng để chứa các promise
-
-    // Kiểm tra thay đổi vai trò
+    // Check role change
     if (updatedUserData.role !== currentUser.role) {
       promises.push(changeRole(userId, updatedUserData.role));
-      console.log("Role updated to:", updatedUserData.role);
     }
 
-    // Kiểm tra thay đổi trạng thái
+    // Check status change
     if (updatedUserData.status !== currentUser.status) {
       promises.push(changeStatus(userId, updatedUserData.status));
-      console.log("Status updated to:", updatedUserData.status);
     }
 
-    // Kiểm tra các thay đổi khác ngoài role và status
+    // Check for other updates
     const { role, status, ...otherUpdatedFields } = updatedUserData;
-    const hasOtherUpdates = (
-      Object.keys(otherUpdatedFields) as Array<keyof User>
-    ).some((key) => otherUpdatedFields[key] !== currentUser[key]);
+    const hasOtherUpdates = Object.keys(otherUpdatedFields).some(
+      (key) =>
+        otherUpdatedFields[key as keyof User] !== currentUser[key as keyof User]
+    );
 
     if (hasOtherUpdates) {
       promises.push(updatedUser(userId, otherUpdatedFields));
-    } else {
-      console.log("No other updates found for user.");
     }
-    // Chờ cho tất cả các promise hoàn thành
+
     try {
       await Promise.all(promises);
-      setEditVisible(false); // Đóng modal
-      fetchUsers(pageNum, pageSize, searchText);
+      setEditVisible(false);
+      const updatedUsers = users.map((user) =>
+        user._id === userId ? { ...user, ...updatedUserData } : user
+      );
+      setUsers(updatedUsers);
+      fetchUsers(pageNum, pageSize, searchText); // Fetch users after save
     } catch (error) {
       console.error("Error updating user:", error);
     }
-    // fetchUsers(pageNum, pageSize, searchText);
   };
-
-  useEffect(() => {
-    fetchUsers(pageNum, pageSize, searchText);
-  }, [pageNum, pageSize, searchText, statusFilter]);
 
   const handleTableChange = (pagination: any, filters: any) => {
     setPageNum(pagination.current);
     setPageSize(pagination.pageSize);
     setStatusFilter(filters.status ? filters.status[0] : null);
   };
+
+  useEffect(() => {
+    fetchUsers(pageNum, pageSize, searchText);
+  }, [pageNum, pageSize, searchText, statusFilter]);
 
   const columns = [
     {
@@ -163,12 +160,9 @@ const UserManagement: React.FC = () => {
         <Switch
           checked={status}
           onChange={async (checked) => {
-            console.log("Current User ID:", record._id); // Kiểm tra ID người dùng
-            console.log("New Status:", checked); // Kiểm tra trạng thái mới
             try {
               await changeStatus(record._id, checked);
-              console.log(changeStatus);
-              fetchUsers(pageNum, pageSize, searchText); // Tải lại người dùng
+              fetchUsers(pageNum, pageSize, searchText);
             } catch (error) {
               console.error("Error updating status:", error);
             }
@@ -182,14 +176,12 @@ const UserManagement: React.FC = () => {
       key: "role",
       render: (text: string, record: User) => (
         <Select
-          defaultValue={text}
+          value={text}
           style={{ width: 120 }}
           onChange={async (value) => {
-            console.log("Current User ID:", record._id); // Kiểm tra ID người dùng
-            console.log("New Role:", value); // Kiểm tra vai trò mới
             try {
-              await changeRole(record._id, value); // Gọi API để thay đổi vai trò
-              fetchUsers(pageNum, pageSize, searchText); // Tải lại người dùng
+              await changeRole(record._id, value);
+              fetchUsers(pageNum, pageSize, searchText);
             } catch (error) {
               console.error("Error updating role:", error);
             }
