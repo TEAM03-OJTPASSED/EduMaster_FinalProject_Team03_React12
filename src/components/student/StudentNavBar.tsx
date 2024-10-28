@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Drawer, Avatar, Dropdown, Menu } from "antd";
-import { MenuOutlined } from "@ant-design/icons";
+import { MenuOutlined, UserOutlined, LogoutOutlined } from "@ant-design/icons";
 import logoImage from "../../assets/EduMaster.png";
 import { useCustomNavigate } from "../../hooks/customNavigate";
 import DashboardSideBar from "./StudentSideBar";
@@ -35,11 +35,15 @@ const DashboardNavBar: React.FC<DashboardNavBarProps> = ({ role }) => {
 
   const menu = (
     <Menu>
-      <Menu.Item key="profile" onClick={() => navigate("/dashboard/student/settings")}>
+      <Menu.Item
+        key="profile"
+        icon={<UserOutlined />}
+        onClick={() => navigate("/dashboard/student/settings")}>
         Profile
       </Menu.Item>
       <Menu.Item
         key="logout"
+        icon={<LogoutOutlined />}
         onClick={() => {
           localStorage.removeItem("token");
           localStorage.removeItem("user");
