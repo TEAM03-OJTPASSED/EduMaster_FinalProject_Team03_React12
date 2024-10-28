@@ -10,28 +10,17 @@ import { handleAddCart } from "../../utils/handleAddCart";
 import { useCustomNavigate } from "../../hooks/customNavigate";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
+import { Course } from "../../models/Course.model";
 
-interface Course {
-  id: number;
-  image_url: string;
-  category: string;
-  name: string;
-  author: string;
-  duration: string;
-  students: number;
-  price: number | string;
-  discount: number;
-  lessons: number;
-  description?: string;
-  updatedDate?: string;
-}
+
 
 export const SearchResults: React.FC<{
   courses: Course[];
   onSearch: (searchValue: string) => void;
-  searchQuery: string;
+  searchQuery?: string;
+  noResult: boolean;
   // onCourseSelected: (course: Course) => void;
-}> = ({ courses, onSearch, searchQuery }) => {
+}> = ({ courses, onSearch, searchQuery, noResult }) => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
   const navigate = useCustomNavigate()
 
@@ -75,27 +64,27 @@ export const SearchResults: React.FC<{
             className=" md:inline-block hidden view-button"
           />
         </div>
-      </div>
-      {courses.length > 0 ? (<div>
-            
-              
-            <CoursesGrid viewMode={viewMode} courses={courses} onAddCartClick={onAddCart}/>
+      </div>           
+            {!noResult ? (<>
+  
+              <CoursesGrid viewMode={viewMode} courses={courses} onAddCartClick={onAddCart}/>
         
+              <Pagination
+                total={courses.length}
+                showSizeChanger
+                showQuickJumper
+                className="mt-8 text-center"
+              /></>)
+              : (
 
-            <Pagination
-              total={courses.length}
-              showSizeChanger
-              showQuickJumper
-              className="mt-8 text-center"
-            />
-            </div>)
-        : (
-          <div className="text-center mt-8 flex flex-col justify-center items-center">
+                <div className="text-center mt-8 flex flex-col justify-center items-center">
             <img src={NoResult} className="w-[250px] md:w-[400px]" alt="no search results"/>
             <h1 className="text-xl font-medium w-96 font-jost">We couldn't find what you were looking for. Try searching for something else</h1> 
 
           </div>
-        )}
+              )
+            }       
+        
     </Content>
   );
 };

@@ -93,19 +93,20 @@ const categories: Category[] = [
 
 const HomePage = () => {
   const [courses, setCourses] = useState<Course[]>([]);
-  const initialCoursesParams: GetCourseClient = {
-    pageInfo: {
-      pageNum: 1,
-      pageSize: 6,
-    },
-    searchCondition: {
-      keyword: "",
-      is_deleted: false,
-      category_id: "",
-    }
-  }
+  
 
   useEffect(() => {
+    const initialCoursesParams: GetCourseClient = {
+      pageInfo: {
+        pageNum: 1,
+        pageSize: 6,
+      },
+      searchCondition: {
+        keyword: "",
+        is_deleted: false,
+        category_id: "",
+      }
+    }
         const fetchCourses = async () => {
           const response = await ClientService.getCourses(initialCoursesParams);
           setCourses(response?.data?.pageData ?? []);
@@ -113,7 +114,7 @@ const HomePage = () => {
         };
 
         fetchCourses(); // Call the async function
-    });
+    },[]);
 
   
 
