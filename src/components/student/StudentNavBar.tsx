@@ -35,11 +35,8 @@ const DashboardNavBar: React.FC<DashboardNavBarProps> = ({ role }) => {
 
   const menu = (
     <Menu>
-      <Menu.Item key="profile" onClick={() => navigate("/profile")}>
+      <Menu.Item key="profile" onClick={() => navigate("/dashboard/student/settings")}>
         Profile
-      </Menu.Item>
-      <Menu.Item key="settings" onClick={() => navigate("/settings")}>
-        Settings
       </Menu.Item>
       <Menu.Item
         key="logout"
