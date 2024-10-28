@@ -18,7 +18,6 @@ import {
   verifyTokenPending,
   verifyTokenRejected,
 } from "../redux/slices/authSlices";
-import { CredentialResponse } from "@react-oauth/google";
 
 export const register = async (
   formData: RegisterType,
