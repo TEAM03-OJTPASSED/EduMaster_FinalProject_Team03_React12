@@ -1,5 +1,5 @@
 import { message } from "antd";
-import { postRequest, putRequest } from "./httpsMethod";
+import { deleteRequest, postRequest, putRequest } from "./httpsMethod";
 const BASE_URL = "/api/users"; // Đường dẫn API
 
 // Lấy danh sách người dùng
@@ -73,5 +73,21 @@ export const changeStatus = async (userId: string, status: boolean) => {
   } catch (error) {
     console.error("Error changing user status:", error);
     throw error; // Ném lỗi để xử lý ở nơi gọi
+  }
+};
+
+export const deleteUser = async (userId: string) => {
+  try {
+    const response = await deleteRequest(`${BASE_URL}/${userId}`);
+    if (response.success) {
+      console.log("User deleted successfully");
+      message.success("User deleted successfully");
+      return true;
+    } else {
+      throw new Error("Failed to delete user");
+    }
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    throw error;
   }
 };
