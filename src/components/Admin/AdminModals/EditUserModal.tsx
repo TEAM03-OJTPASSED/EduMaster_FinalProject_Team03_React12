@@ -36,6 +36,7 @@ const EditUser: React.FC<EditUserProps> = ({
   const handleFinish = (values: any) => {
     values.dob = values.dob ? values.dob.format("YYYY-MM-DD") : "";
     values.description = values.description || "";
+    values.avatar_url = values.avatar_url || "";
     values.video_url = values.video_url || "";
     values.bank_name = values.bank_name || "";
     values.bank_account_no = values.bank_account_no || "";

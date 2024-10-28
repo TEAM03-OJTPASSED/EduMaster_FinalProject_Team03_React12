@@ -1,3 +1,4 @@
+import { message } from "antd";
 import { postRequest, putRequest } from "./httpsMethod";
 const BASE_URL = "/api/users"; // Đường dẫn API
 
@@ -25,10 +26,19 @@ export const getUser = async (searchParams: any) => {
 export const updatedUser = async (userId: string, userData: any) => {
   try {
     const response = await putRequest(`${BASE_URL}/${userId}`, userData);
-    return response.data; // Trả về dữ liệu từ API
-  } catch (error) {
-    console.error("Error fetching users:", error);
-    throw error; // Ném lỗi để xử lý ở nơi gọi
+
+    // Kiểm tra xem response có tồn tại và có thuộc tính success không
+    if (response && response.success) {
+      message.success("User updated successfully");
+      return response.data; // Trả về dữ liệu người dùng đã được cập nhật
+    } else {
+      message.error("Failed to update user"); // Hiển thị thông báo lỗi
+      return null; // Trả về null khi không thành công
+    }
+  } catch (error: any) {
+    console.error("Error updating user:", error);
+    message.error("An error occurred while updating the user."); // Thông báo lỗi chung
+    return null; // Đảm bảo trả về null trong trường hợp có lỗi
   }
 };
 

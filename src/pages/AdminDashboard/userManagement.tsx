@@ -68,6 +68,7 @@ const UserManagement: React.FC = () => {
   };
 
   const handleEdit = (record: User) => {
+    console.log(record._id);
     setCurrentUser(record);
     setEditVisible(true);
   };
@@ -82,25 +83,45 @@ const UserManagement: React.FC = () => {
       console.error("No user selected for editing.");
       return;
     }
+
     const userId = currentUser._id;
-    // Log thông tin người dùng hiện tại
-    console.log("Current User ID:", userId);
-    console.log("Updated User Data:", updatedUserData);
+    // console.log("Current User ID:", userId);
+    // console.log("Updated User Data:", updatedUserData);
 
-    // Gọi hàm cập nhật vai trò
-    await changeRole(userId, updatedUserData.role);
-    console.log("Role updated to:", updatedUserData.role);
+    const promises = []; // Mảng để chứa các promise
 
-    // Gọi hàm cập nhật trạng thái
-    await changeStatus(userId, updatedUserData.status);
-    console.log("Status updated to:", updatedUserData.status);
+    // Kiểm tra thay đổi vai trò
+    if (updatedUserData.role !== currentUser.role) {
+      promises.push(changeRole(userId, updatedUserData.role));
+      console.log("Role updated to:", updatedUserData.role);
+    }
 
-    // Gọi hàm cập nhật người dùng
-    await updatedUser(userId, updatedUserData);
-    console.log("User updated with data:", updatedUserData);
+    // Kiểm tra thay đổi trạng thái
+    if (updatedUserData.status !== currentUser.status) {
+      promises.push(changeStatus(userId, updatedUserData.status));
+      console.log("Status updated to:", updatedUserData.status);
+    }
 
-    setEditVisible(false); // Đóng modal
-    fetchUsers(pageNum, pageSize, searchText); // Tải lại danh sách người dùng
+    // Kiểm tra các thay đổi khác ngoài role và status
+    const { role, status, ...otherUpdatedFields } = updatedUserData;
+    const hasOtherUpdates = (
+      Object.keys(otherUpdatedFields) as Array<keyof User>
+    ).some((key) => otherUpdatedFields[key] !== currentUser[key]);
+
+    if (hasOtherUpdates) {
+      promises.push(updatedUser(userId, otherUpdatedFields));
+    } else {
+      console.log("No other updates found for user.");
+    }
+    // Chờ cho tất cả các promise hoàn thành
+    try {
+      await Promise.all(promises);
+      setEditVisible(false); // Đóng modal
+      fetchUsers(pageNum, pageSize, searchText);
+    } catch (error) {
+      console.error("Error updating user:", error);
+    }
+    // fetchUsers(pageNum, pageSize, searchText);
   };
 
   useEffect(() => {
@@ -146,6 +167,7 @@ const UserManagement: React.FC = () => {
             console.log("New Status:", checked); // Kiểm tra trạng thái mới
             try {
               await changeStatus(record._id, checked);
+              console.log(changeStatus);
               fetchUsers(pageNum, pageSize, searchText); // Tải lại người dùng
             } catch (error) {
               console.error("Error updating status:", error);
@@ -158,11 +180,24 @@ const UserManagement: React.FC = () => {
       title: "Loại người dùng",
       dataIndex: "role",
       key: "role",
-      render: (text: string) => (
-        <Select defaultValue={text} style={{ width: 120 }}>
-          <Option value="Admin">Admin</Option>
-          <Option value="Instructor">Instructor</Option>
-          <Option value="Student">Student</Option>
+      render: (text: string, record: User) => (
+        <Select
+          defaultValue={text}
+          style={{ width: 120 }}
+          onChange={async (value) => {
+            console.log("Current User ID:", record._id); // Kiểm tra ID người dùng
+            console.log("New Role:", value); // Kiểm tra vai trò mới
+            try {
+              await changeRole(record._id, value); // Gọi API để thay đổi vai trò
+              fetchUsers(pageNum, pageSize, searchText); // Tải lại người dùng
+            } catch (error) {
+              console.error("Error updating role:", error);
+            }
+          }}
+        >
+          <Option value="admin">Admin</Option>
+          <Option value="instructor">Instructor</Option>
+          <Option value="student">Student</Option>
         </Select>
       ),
     },
