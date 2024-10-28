@@ -1,6 +1,6 @@
 import { Session } from "./Session.model";
 
-export type Course = {
+export interface Course  {
   average_rating: number;
   category_id: string;
   category_name: string;

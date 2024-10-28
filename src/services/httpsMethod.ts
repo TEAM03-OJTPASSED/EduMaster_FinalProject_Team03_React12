@@ -47,7 +47,7 @@ export { getRequest, postRequest, putRequest, patchRequest, deleteRequest };
 // 3. Create a service object using the base HTTP methods:
 //    
 //    const CartService = {
-//      createCart(cartId: string): Promise<ApiResponse> {
+//      createCart(cartId: string): Promise<ApiResponse<specify return structure if needed>> {
 //        return postRequest(CART_API.CREATE_CART, { cartId });
 //      },
 //      getCartByStatus(params: SearchCartByStatus): Promise<ApiResponse<APIResponseData<Cart>>> {

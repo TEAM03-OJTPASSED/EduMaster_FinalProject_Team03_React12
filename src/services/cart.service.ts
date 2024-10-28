@@ -1,4 +1,4 @@
-import CART_API from "../constants/api/cart"
+import { CART_API } from "../constants/api/cart"
 import { ApiResponse, APIResponseData } from "../models/ApiReponse.model"
 import { Cart, CartStatusUpdate, SearchCartByStatus } from "../models/Cart.model"
 import { deleteRequest, postRequest, putRequest } from "./httpsMethod"
