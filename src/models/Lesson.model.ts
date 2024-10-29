@@ -1,4 +1,5 @@
 export interface Lesson {
+  is_completed: boolean;
   _id: string;
   name: string;
   user_id: string;
