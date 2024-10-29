@@ -30,7 +30,7 @@ interface User {
 const UserManagement: React.FC = () => {
   const [editVisible, setEditVisible] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [users, setUsers] = useState<[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
@@ -199,12 +199,8 @@ const UserManagement: React.FC = () => {
           value={text}
           style={{ width: 120 }}
           onChange={async (value) => {
-            try {
-              await changeRole(record._id, value);
-              fetchUsers(pageNum, pageSize, searchText);
-            } catch (error) {
-              console.error("Error updating role:", error);
-            }
+            await changeRole(record._id, value);
+            fetchUsers(pageNum, pageSize, searchText);
           }}
         >
           <Option value="admin">Admin</Option>

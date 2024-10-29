@@ -26,8 +26,6 @@ export const getUser = async (searchParams: any) => {
 export const updatedUser = async (userId: string, userData: any) => {
   try {
     const response = await putRequest(`${BASE_URL}/${userId}`, userData);
-
-    // Kiểm tra xem response có tồn tại và có thuộc tính success không
     if (response && response.success) {
       message.success("User updated successfully");
       return response.data; // Trả về dữ liệu người dùng đã được cập nhật
