@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import {
@@ -42,6 +42,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
     initialValues?.video_url
   );
   const [filteredSessions, setFilteredSessions] = useState<Session[]>([]);
+  
 
   useEffect(() => {
     if (mode === "update") {
@@ -99,19 +100,29 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
     }
   };
 
-  const handleCourseChange = (courseId: string) => {
-    form.setFieldsValue({ session_id: undefined }); // Reset session selection
+
+  const handleCourseChange = useCallback((courseId: string) => {
+    form.setFieldsValue({ session_id: initialValues?.session_id || undefined }); // Reset session selection
     const filtered = listSessions.filter(session => session.course_id === courseId);
     setFilteredSessions(filtered);
-  };
+  }, [form, listSessions, setFilteredSessions, initialValues]);
+
+  useEffect(()=> {
+    if(initialValues?.course_id){
+      handleCourseChange(initialValues.course_id);
+    }
+
+  },[handleCourseChange, initialValues]);
 
   return (
+
     <Form
       form={form}
       layout="vertical"
       initialValues={initialValues}
       onFinish={onFinished}
     >
+
       {/* Lesson name */}
       <Form.Item
         label="Lesson Name"
@@ -159,6 +170,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
         rules={[{ required: true, message: "Please select a Session Name" }]}
       >
         <Select
+        
           placeholder="Select Session"
           options={filteredSessions.map((session) => ({
             label: session.name,

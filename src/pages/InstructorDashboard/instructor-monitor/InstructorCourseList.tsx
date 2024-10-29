@@ -38,8 +38,9 @@ const InstructorCourseList: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
 
-  const showModal = (course: Course) => {
-    setSelectedCourse(course);
+  const showModal = async (course: Course) => {
+    const response = await CourseService.getCourse(course._id);
+    if (response.data != undefined ) setSelectedCourse(response.data);
     setIsModalVisible(true);
   };
 
@@ -329,6 +330,8 @@ const InstructorCourseList: React.FC = () => {
         footer={null}
         width={1000}
         forceRender
+
+
       >
         {selectedCourse && (
           <CourseOption

@@ -42,6 +42,9 @@ const CourseOption: React.FC<CourseInformationProps> = ({
   const [imageFileList, setImageFileList] = useState<UploadFile[]>([]);
   const [videoFileList, setVideoFileList] = useState<UploadFile[]>([]);
 
+
+
+
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | undefined>(
     initializeValue?.video_url
   );
@@ -54,8 +57,13 @@ const CourseOption: React.FC<CourseInformationProps> = ({
 
   const [form] = Form.useForm<Course>();
 
+  
+
+
+
   useEffect(() => {
     if (initializeValue && mode === "update") {
+     
       setImageFileList(
         initializeValue?.image_url
           ? [
@@ -80,10 +88,6 @@ const CourseOption: React.FC<CourseInformationProps> = ({
             ]
           : []
       );
-      form.setFieldsValue({
-        ...initializeValue,
-        content: initializeValue.content,
-      });
     }
   }, [initializeValue, form, mode]);
 
