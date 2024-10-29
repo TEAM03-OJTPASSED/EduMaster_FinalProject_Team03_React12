@@ -23,7 +23,6 @@ import { Course, CourseRequest, GetCourses } from "../../../models/Course.model"
 import { CourseStatusEnum } from "../../AdminDashboard/monitors/course/courseList";
 import { Category, GetCategories } from "../../../models/Category.model";
 import CategoryService from "../../../services/category.service";
-import { SearchCondition } from "../../../models/SearchInfo.model";
 import { handleNotify } from "../../../utils/handleNotify";
 
 const InstructorCourseList: React.FC = () => {
@@ -117,6 +116,19 @@ const InstructorCourseList: React.FC = () => {
       setLoading(false); // Ensures loading is set to false regardless of success/failure
     }
   };
+
+  const handleDeleteCourse = async (courseId: string) => {
+    setLoading(true);
+    try {
+      const response = await CourseService.deleteCourse(courseId);
+      if (response.success) {
+        handleNotify("Course Deleted Successfully", "The course has been deleted successfully.");
+        await fetchCourses(); // Refresh the course list
+      }
+    } finally {
+      setLoading(false); // Ensures loading is set to false regardless of success/failure
+    }
+  }
 
   const rowSelection: TableProps<Course>["rowSelection"] = {
     onChange: (_selectedRowKeys: React.Key[], selectedRows: Course[]) => {
@@ -240,16 +252,13 @@ const InstructorCourseList: React.FC = () => {
           <Button
             type="text"
             icon={<DeleteOutlined style={{ color: "red" }} />}
-            onClick={() => handleDelete(record.name)}
+            onClick={() => handleDeleteCourse(record._id)}
           />
         </div>
       ),
     },
   ];
 
-  const handleDelete = (name: string) => {
-    console.log(name);
-  };
 
   const statuses = [CourseStatusEnum.ACTIVE, CourseStatusEnum.APPROVED, CourseStatusEnum.INACTIVE, CourseStatusEnum.NEW, CourseStatusEnum.REJECTED, CourseStatusEnum.WAITING_APPROVE];
   const handleStatusChange = (value: string | undefined) => {
