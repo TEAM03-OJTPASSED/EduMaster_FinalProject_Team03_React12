@@ -57,3 +57,8 @@ export interface PageInfo {
   totalItems?: number;
   totalPages?: number;
 }
+
+export interface BlogSearchCondition {
+  category_id?: string;
+  is_delete?: boolean
+}

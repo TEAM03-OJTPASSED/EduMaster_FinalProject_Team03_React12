@@ -1,146 +1,134 @@
-import { useState } from "react";
-import { Blog, listBlogs } from "./monitors/course/courseList";
-import { Button, Card, Input, Modal, Table, TableProps, Tag } from "antd";
-import {
-  SearchOutlined,
-  DeleteOutlined,
-  EditOutlined,
-  PlusCircleOutlined
-} from "@ant-design/icons";
-import dayjs from "dayjs";
-import CreateBlog from "./blog/CreateBlog";
+import { useEffect, useState } from "react";
+import { Button, Card, Input, Select, Spin, Table } from "antd";
+import { SearchOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { postRequest } from "../../services/httpsMethod";
+import { Blog, BlogResponse } from "../../models/Blog.model";
+
+const { Option } = Select;
+
+const categories = ["Technology", "Health", "Education", "Lifestyle", "Business"];
 
 const BlogManagement = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isModaCreatelVisible, setIsModalCreateVisible] = useState(false);
-  const [selectedBlog, setSelectedBlog] = useState<Blog | null>(null);
-  const showModal = (blog: Blog) => {
-    setSelectedBlog(blog);
-    setIsModalVisible(true);
-  };
-  const handleCancel = () => {
-    setIsModalVisible(false);
-    setIsModalCreateVisible(false);
-  };
-  const showModalCreate = () => {
-    setIsModalCreateVisible(true);
+  const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(categories);
+
+  const fetchBlogs = async () => {
+    setLoading(true);
+    try {
+      const res = await postRequest<BlogResponse>("/api/blog/search", {
+        searchCondition: { category_id: "", is_delete: false },
+        pageInfo: { pageNum: 1, pageSize: 10 },
+      });
+      if (res?.data?.pageData) {
+        setBlogs(res.data.pageData);
+      } else {
+        console.error("No data in response.");
+      }
+    } catch (error) {
+      console.error("Error fetching blogs:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const columns: TableProps<Blog>["columns"] = [
+  useEffect(() => {
+    fetchBlogs();
+  }, []);
+
+  const handleSearch = () => {
+    // Filter blogs based on search text and selected categories
+    const filteredBlogs = blogs.filter(
+      (blog) =>
+        blog.name.toLowerCase().includes(searchText.toLowerCase()) &&
+        selectedCategories.includes(blog.category_name)
+    );
+    setBlogs(filteredBlogs);
+  };
+
+  const columns = [
+    { title: "Name", dataIndex: "name", key: "name" },
+    { title: "Description", dataIndex: "description", key: "description" },
+    { title: "Category", dataIndex: "category_name", key: "category_name" },
+    { title: "User", dataIndex: "user_name", key: "user_name" },
     {
-      title: "Title",
-      dataIndex: "title",
-      key: "title",
+      title: "Image",
+      dataIndex: "image_url",
+      key: "image_url",
+      render: (url: string) => <img src={url} alt="Blog" style={{ width: "100px" }} />,
     },
     {
-      title: "Title Image",
-      dataIndex: "title_image",
-      key: "title_image",
+      title: "Created At",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (date: Date) => new Date(date).toLocaleDateString(),
     },
     {
-      title: "Type",
-      dataIndex: "type",
-      key: "type",
-      render: (type) => {
-        return <Tag color="gray">{type}</Tag>;
-      },
-    },
-    {
-      title: "Published Date",
-      dataIndex: "publishedDate",
-      key: "publishedDate",
-      render: (publishedDate) => {
-        return <div>{dayjs(publishedDate).format("DD/MM/YYYY")}</div>;
-      },
-    },
-    {
-      title: "Action",
-      key: "action",
-      render: (_, record: Blog) => (
-        <>
-          <Button
-            type="text"
-            icon={<DeleteOutlined style={{ color: "red" }} />}
-            onClick={() => handleDelete(record.id)}
-          />
-          <Button
-            type="text"
-            icon={<EditOutlined style={{ color: "blue" }} />}
-            onClick={() => showModal(record)}
-          />
-        </>
-      ),
+      title: "Updated At",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      render: (date: Date) => new Date(date).toLocaleDateString(),
     },
   ];
 
-  const handleDelete = (name: string) => {
-    console.log("Deleted course:", name);
-  };
   return (
     <Card>
       <h3 className="text-2xl my-5">Blog Management</h3>
       <div className="flex justify-between">
-
-      <Input
-        placeholder="Search By Course Name"
-        prefix={<SearchOutlined />}
-        style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
-      />
-      <div className="flex">
+        <Input
+          placeholder="Search By Blog Name"
+          prefix={<SearchOutlined />}
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          style={{
+            width: "45%",
+            height: "40px",
+            marginBottom: "20px",
+            marginRight: "10px",
+            borderRadius: "4px",
+          }}
+        />
+        <Select
+          mode="multiple"
+          allowClear
+          placeholder="Select categories"
+          value={selectedCategories}
+          onChange={(values) => setSelectedCategories(values)}
+          style={{ width: '200px', marginBottom: '16px' }}
+        >
+          {categories.map((category) => (
+            <Option key={category} value={category}>
+              {category}
+            </Option>
+          ))}
+        </Select>
         <Button
-          onClick={showModalCreate}
+          onClick={() => console.log("Open Create Blog Modal")}
           icon={<PlusCircleOutlined />}
           shape="round"
-          variant="solid"
-          color="primary"
-          className="items-center"
+          type="primary"
+          style={{ marginBottom: "20px" }}
         >
           Create Blog
         </Button>
       </div>
-      </div>
 
-      <Table
-        dataSource={listBlogs}
-        columns={columns}
-        pagination={{ pageSize: 5 }}
-        rowKey="id"
-        bordered
-        style={{ borderRadius: "8px" }}
-        scroll={{ x: true }}
-      />
-      <Modal
-        title="Course Update"
-        open={isModalVisible}
-        onCancel={handleCancel}
-      >
-        {selectedBlog && (
-          <CreateBlog
-            mode="update"
-            initialValues={{
-              title: selectedBlog.title,
-              title_image: selectedBlog.title_image,
-              type: selectedBlog.type,
-              content: `<div>${selectedBlog.content}</div>`,
-            }}
-            onFinished={(values) => {
-              console.log("Update values:", values);
-            }}
-          />
-        )}
-      </Modal>
-      <Modal
-        title="Create Course"
-        open={isModaCreatelVisible}
-        onCancel={handleCancel}
-      >
-        <CreateBlog
-          mode="create"
-          onFinished={(values) => {
-            console.log("Create values:", values);
-          }}
+      <Button type="primary" onClick={handleSearch} style={{ marginBottom: 20 }}>
+        Search
+      </Button>
+
+      {loading ? (
+        <Spin />
+      ) : (
+        <Table
+          dataSource={blogs}
+          columns={columns}
+          pagination={{ pageSize: 5 }}
+          rowKey="_id"
+          bordered
         />
-      </Modal>
+      )}
     </Card>
   );
 };
