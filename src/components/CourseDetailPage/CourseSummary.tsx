@@ -24,7 +24,7 @@ export const CourseSummary = ({
     <div className="absolute w-full mt-4 text-xl bg-white flex gap-5 shadow-lg py-4 px-8 rounded-lg justify-center">
       <div className="w-1/5 flex items-center justify-center font-jost font-light gap-2 border-r px-4">
         <MdOutlineAccessTimeFilled height={16} fill="#FF782D" />
-        {time} Weeks
+        {Math.ceil(time / (6 * 60))} Weeks
       </div>
       <div className="w-1/5 flex items-center justify-center font-jost font-light gap-2 border-r px-4">
         <MdAccountCircle height={16} fill="#FF782D" />

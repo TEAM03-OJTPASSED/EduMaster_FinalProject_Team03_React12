@@ -80,7 +80,7 @@ export const Banner = ({
         <CourseSummary
           time={course.full_time}
           student={course.enrolled}
-          level={course.level.toLocaleUpperCase()}
+          level={course.level}
           lessons={totalLessons}
           quizzes={0}   
         />

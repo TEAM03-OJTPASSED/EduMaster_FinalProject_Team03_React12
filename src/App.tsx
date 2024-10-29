@@ -92,10 +92,10 @@ function App() {
               <Route path="/faqs" element={<FAQsPage />} />
               <Route path="/*" element={<ErrorPage />} />
               <Route path="cart" element={<CartPage />} />
-              <Route path="/blog-detail/:id" element={<BlogDetailPage />} />
+              <Route path="/blog/:id" element={<BlogDetailPage />} />
               <Route path="/profile/:id" element={<ProfilePage />} />
 
-              <Route path="/course-detail/:id" element={<CourseDetailPage />} />
+              <Route path="/course/:id" element={<CourseDetailPage />} />
               <Route path="/firebase" element={<Firebase />} />
 
               <Route path="/learn/:id" element={<LearnCoursePage />} />
