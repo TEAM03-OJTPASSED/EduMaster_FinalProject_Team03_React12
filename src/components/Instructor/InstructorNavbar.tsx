@@ -1,17 +1,16 @@
 import { useState, useEffect } from "react";
 import { Layout, Button, Drawer, Avatar, Dropdown } from "antd";
-import {
-  MenuOutlined,
-  UserOutlined,
-  LogoutOutlined,
-} from "@ant-design/icons";
+import { MenuOutlined, UserOutlined, LogoutOutlined } from "@ant-design/icons";
 import logoImage from "../../assets/EduMaster.png"; // Đường dẫn đến logo
 import { useCustomNavigate } from "../../hooks/customNavigate"; // Hook tùy chỉnh cho điều hướng
 import InstructorSidebar from "./InstructorSidebar";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store/store";
 
 const { Sider } = Layout; // Chỉ destructure Sider
 
 const InstructorNavbar = () => {
+  const { currentUser } = useSelector((state: RootState) => state.auth);
   const navigate = useCustomNavigate();
   const [isMobile, setIsMobile] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -35,14 +34,20 @@ const InstructorNavbar = () => {
   const menuItems = [
     {
       key: "profile",
-      label: <span onClick={() => navigate("/dashboard/instructor/settings")}>Profile</span>,
+      label: (
+        <span onClick={() => navigate("/dashboard/instructor/settings")}>
+          Profile
+        </span>
+      ),
       icon: <UserOutlined />, // Thêm icon UserOutlined cho Profile
     },
     {
-      key: "logout",onClick: () => {
+      key: "logout",
+      onClick: () => {
         localStorage.removeItem("token");
-        window.location.reload();         
-        navigate("/");
+        localStorage.removeItem("user");
+        window.location.reload();
+        window.location.href = "/";
       },
       label: <span>Logout</span>,
       icon: <LogoutOutlined />, // Thêm icon LogoutOutlined cho Logout
@@ -129,7 +134,7 @@ const InstructorNavbar = () => {
             <Avatar
               shape="square"
               size="large"
-              src="https://picsum.photos/id/237/200/300"
+              src={currentUser.avatar_url}
               alt="User Avatar"
               style={{ border: "2px solid white" }}
             />
@@ -141,7 +146,7 @@ const InstructorNavbar = () => {
                   transition: "color 0.3s",
                 }}
               >
-                Admin
+                {currentUser.name}
               </span>
             )}
           </div>

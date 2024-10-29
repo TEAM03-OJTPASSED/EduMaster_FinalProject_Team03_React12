@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getRequest, postRequest } from "../../services/httpsMethod";
-import axios from "axios";
 import { User } from "../../models/UserModel";
+import { message } from "antd";
 
 interface AuthState {
   token: string | null;
@@ -9,82 +9,105 @@ interface AuthState {
   loading: boolean;
   error: string | null;
   success: boolean;
+  // verify-token
+  verifyToken: {
+    loading: boolean;
+    error: string | null;
+    success: boolean;
+  };
+  resendToken: {
+    loading: boolean;
+    error: string | null;
+    success: boolean;
+  };
+  
 }
 const token = localStorage.getItem("token");
+const currentUser = JSON.parse(localStorage.getItem("user") ?? "{}");
+
 const initialState: AuthState = {
   loading: false,
-  currentUser: {} as User,
-  token,
+  currentUser: currentUser,
+  token: token,
   error: null,
   success: false, // for monitoring the registration process.
+  verifyToken: {
+    loading: false,
+    error: "",
+    success: false,
+  },
+  resendToken: {
+    loading: false,
+    error: "",
+    success: false,
+  },
 };
 
+// login
 export const login = createAsyncThunk<
   AuthState,
   { email: string; password: string },
   { rejectValue: string }
->("auth/login", async ({ email, password }, { rejectWithValue }) => {
-  //
-  try {
-    const res = await postRequest("/api/auth", {
-      email,
-      password,
-    });
-    console.log("token", res.data.token);
-    localStorage.setItem("token", res.data.token);
-    return res.data;
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error) && error.response) {
-      return rejectWithValue(
-        error.response.data.message || "Invalid credentials"
-      );
-    }
-    return rejectWithValue("Invalid credentials");
-  }
+>("auth/login", async ({ email, password }) => {
+  const response = await postRequest("/api/auth", { email, password });
+  message.success("Login successfully");
+  localStorage.setItem("token", (response as any).data.token);
+  return response.data as AuthState; // Ensure response matches AuthState
 });
-// export const logout = createAsyncThunk<{ rejectValue: string }>("auth/logout", async (_, { rejectWithValue }) => {
-//   //
-//   try {
-//     const res = await getRequest("/api/auth/log-out");
-//     localStorage.removeItem("token");
-//     return res.data;
-//   } catch (error: unknown) {
-//     if (axios.isAxiosError(error) && error.response) {
-//       return rejectWithValue(
-//         error.response.data.message || "Invalid credentials"
-//       );
-//     }
-//     return rejectWithValue("Invalid credentials");
-//   }
-// });
 
-export const getCurrentUser = createAsyncThunk<{ rejectValue: string }>(
-  "auth/user",
-  async (_, { rejectWithValue }) => {
-    try {
-      const res = await getRequest("/api/auth");
-      console.log("current user", res.data);
-      return res.data;
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error) && error.response) {
-        return rejectWithValue(
-          error.response.data.message || "Invalid credentials"
-        );
-      }
-      return rejectWithValue("Invalid credentials");
-    }
-  }
-);
+// login gg
+export const loginWithGoogle = createAsyncThunk<
+  AuthState, // Return type (the resolved data)
+  string,
+  { rejectValue: string } // Configuration for rejected case
+>("auth/loginGoogle", async (google_id) => {
+  const response = await postRequest("/api/auth/google", { google_id:google_id });
+  localStorage.setItem("token", JSON.stringify((response as any).data.token));
+  return response.data as AuthState; // Ensure response matches AuthState
+});
+
+
+// getCurrent user
+export const getCurrentUser = createAsyncThunk("auth/user", async () => {
+  const res = await getRequest("/api/auth");
+  localStorage.setItem("user", JSON.stringify(res.data));
+  console.log("current user", res.data);
+  return res.data; // Ensure the data matches the expected type
+});
+
+// verify token when check mail
+
 // Tạo slice cho auth
-
 export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-   logout : (state, action)=>{
-      state.currentUser = action.payload
-      localStorage.removeItem("token")
-   }
+    logout: (state, action) => {
+      state.currentUser = action.payload;
+      localStorage.removeItem("token");
+    },
+    verifyTokenPending: (state) => {
+      state.verifyToken.loading = true;
+    },
+    verifyTokenFulFilled: (state) => {
+      state.verifyToken.loading = false;
+      state.verifyToken.success = true
+    },
+    verifyTokenRejected: (state) => {
+      state.verifyToken.loading = false;
+      state.verifyToken.success = false
+    },
+    resendTokenPending: (state) => {
+      state.resendToken.loading = true;
+    },
+    resendTokenFulFilled: (state) => {
+      state.resendToken.loading = false;
+      state.resendToken.success = true
+    },
+    resendTokenRejected: (state) => {
+      state.resendToken.loading = false;
+      state.resendToken.success = false
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -97,38 +120,44 @@ export const authSlice = createSlice({
         state.success = true;
       })
       .addCase(login.rejected, (state) => {
-        state.loading = false; 
-        state.error = "Login failed"; 
+        state.loading = false;
+        state.error = "Login failed";
         state.success = false;
       })
       .addCase(getCurrentUser.pending, (state) => {
-        state.loading = true; 
+        state.loading = true;
       })
-      .addCase(getCurrentUser.fulfilled, (state, action ) => {
-        state.loading = false; 
-        state.currentUser = action.payload as unknown as User
+      .addCase(getCurrentUser.fulfilled, (state,action) => {
+        state.loading = false;
         state.success = true;
+        state.currentUser = action.payload as User
       })
       .addCase(getCurrentUser.rejected, (state, action) => {
-        state.loading = false; 
+        state.loading = false;
         state.success = false;
-        state.error   = action.payload as string
+        state.error = action.payload as string;
       })
-      // .addCase(logout.pending, (state) => {
-      //   state.loading = true; 
-      // })
-      // .addCase(logout.fulfilled, (state) => {
-      //   state.loading = false; 
-      //   state.success = true;
-      // })
-      // .addCase(logout.rejected, (state, action) => {
-      //   state.loading = false; 
-      //   state.success = false;
-      //   state.error   = action.payload as string
-      // })
+      .addCase(loginWithGoogle.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(loginWithGoogle.fulfilled, (state) => {
+        state.loading = false;
+        state.success = true;
+      })
+      .addCase(loginWithGoogle.rejected, (state) => {
+        state.loading = false;
+        state.success = false;
+      });
   },
 });
 
-// Xuất actions và reducer
-export const {logout} = authSlice.actions
+export const {
+  logout,
+  verifyTokenFulFilled,
+  verifyTokenPending,
+  verifyTokenRejected,
+  resendTokenFulFilled,
+  resendTokenPending,
+  resendTokenRejected
+} = authSlice.actions;
 export default authSlice.reducer; // Xuất reducer, không phải slice
