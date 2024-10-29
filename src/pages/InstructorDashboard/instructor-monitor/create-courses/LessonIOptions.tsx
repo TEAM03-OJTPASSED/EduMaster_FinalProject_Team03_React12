@@ -1,5 +1,6 @@
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import React, { useEffect, useState } from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import {
   Button,
   Col,
@@ -13,24 +14,26 @@ import {
   UploadProps,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import React, { useEffect, useState } from "react";
-import {
-  Lesson,
-  LessonTypeEnum,
-  listCourses,
-  listSessions,
-} from "../../../AdminDashboard/monitors/course/courseList";
+import { Lesson, LessonTypeEnum } from "../../../../models/Lesson.model";
+import { Session } from "../../../../models/Session.model";
+import { Course } from "../../../../models/Course.model";
 
 type LessonOptionsProps = {
   initialValues?: Lesson;
   mode: "create" | "update";
   onFinished: FormProps["onFinish"];
+  listSessions: Session[];
+  listCourses: Course[];
+  isLoading: boolean;
 };
 
 const LessonIOptions: React.FC<LessonOptionsProps> = ({
   initialValues,
   mode,
   onFinished,
+  listCourses,
+  listSessions,
+  isLoading,
 }) => {
   const [imageFileList, setImageFileList] = useState<UploadFile[]>([]);
   const [videoFileList, setVideoFileList] = useState<UploadFile[]>([]);
@@ -38,6 +41,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | undefined>(
     initialValues?.video_url
   );
+  const [filteredSessions, setFilteredSessions] = useState<Session[]>([]);
 
   useEffect(() => {
     if (mode === "update") {
@@ -73,9 +77,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
     }
   }, [initialValues, form, mode]);
 
-  const handleImageChange: UploadProps["onChange"] = ({
-    fileList: newFileList,
-  }) => {
+  const handleImageChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
     setImageFileList(newFileList || []);
     if (newFileList.length > 0 && newFileList[0].status === "done") {
       const uploadedImageUrl = newFileList[0].response?.secure_url;
@@ -85,9 +87,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
     }
   };
 
-  const handleVideoChange: UploadProps["onChange"] = ({
-    fileList: newFileList,
-  }) => {
+  const handleVideoChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
     setVideoFileList(newFileList || []);
     if (newFileList.length > 0 && newFileList[0].status === "done") {
       const uploadVideoUrl = newFileList[0].response?.secure_url;
@@ -99,7 +99,12 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
     }
   };
 
-  // api get user when role === "instructor"
+  const handleCourseChange = (courseId: string) => {
+    form.setFieldsValue({ session_id: undefined }); // Reset session selection
+    const filtered = listSessions.filter(session => session.course_id === courseId);
+    setFilteredSessions(filtered);
+  };
+
   return (
     <Form
       form={form}
@@ -124,18 +129,9 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
         <Select
           placeholder="Lesson Type"
           options={[
-            {
-              label: "Video",
-              value: LessonTypeEnum.video,
-            },
-            {
-              label: "Image",
-              value: LessonTypeEnum.image,
-            },
-            {
-              label: "Text",
-              value: LessonTypeEnum.text,
-            },
+            { label: "Video", value: LessonTypeEnum.VIDEO },
+            { label: "Image", value: LessonTypeEnum.IMAGE },
+            { label: "Text", value: LessonTypeEnum.TEXT },
           ]}
         />
       </Form.Item>
@@ -147,12 +143,12 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
         rules={[{ required: true, message: "Please select a Course Name" }]}
       >
         <Select
-          placeholder="Select category"
-          options={listCourses.map((course, index) => ({
+          placeholder="Select Course"
+          options={listCourses.map((course) => ({
             label: course.name,
-            value: course.id,
-            key: index,
+            value: course._id,
           }))}
+          onChange={handleCourseChange}
         />
       </Form.Item>
 
@@ -164,11 +160,9 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
       >
         <Select
           placeholder="Select Session"
-          // get session by user id 
-          options={listSessions.map((session, index) => ({
+          options={filteredSessions.map((session) => ({
             label: session.name,
-            value: session.id,
-            key: index,
+            value: session._id,
           }))}
         />
       </Form.Item>
@@ -182,9 +176,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
         <CKEditor
           editor={ClassicEditor}
           data={form.getFieldValue("description") || ""}
-          onChange={(_, editor) =>
-            form.setFieldsValue({ description: editor.getData() })
-          }
+          onChange={(_, editor) => form.setFieldsValue({ description: editor.getData() })}
         />
       </Form.Item>
 
@@ -237,28 +229,6 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
         </Col>
       </Row>
 
-      {/* Instructor */}
-      <Form.Item
-        label="Instructor"
-        name="user_id"
-        rules={[{ required: true, message: "Please select instructor" }]}
-      >
-        <Select
-          placeholder="Select Instructor"
-          // get user where role = "instructor"
-          options={[
-            {
-              label: "Truong Anh",
-              value: "Anhsapper13",
-            },
-            {
-              label: "Ngoc Trinh",
-              value: "Baetrinhvipro",
-            },
-          ]}
-        />
-      </Form.Item>
-
       {/* Fulltime */}
       <Form.Item
         label="Time (minutes)"
@@ -267,6 +237,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
       >
         <Input type="number" placeholder="Input lesson time" />
       </Form.Item>
+
       {/* Position */}
       <Form.Item
         label="Position Order"
@@ -283,8 +254,9 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
           variant="solid"
           color="primary"
           htmlType="submit"
+          loading={isLoading}
         >
-          {mode === "create" ? "Create" : "Change"}
+          {mode === "create" ? "Create" : "Update"}
         </Button>
       </Form.Item>
     </Form>

@@ -96,12 +96,13 @@ const InstructorCourseList: React.FC = () => {
   };
 
   const handleCreateCourse = async (values: CourseRequest) => {
-    const { price, discount, video_url, ...otherValues } = values;
+    const { price, discount, video_url, image_url, ...otherValues } = values;
     const numericValues = {
       ...otherValues,
       price: price ? Number(price) : 0,
       discount: discount ? Number(discount) : 0,
       video_url: video_url || "",
+      image_url: image_url || "",
     };
   
     setLoading(true);
@@ -163,8 +164,8 @@ const InstructorCourseList: React.FC = () => {
     },
     {
       title: "Category Name",
-      dataIndex: "category_id",
-      key: "category_id",
+      dataIndex: "category_name",
+      key: "category_name",
     },
     {
       title: "Content",
@@ -183,7 +184,7 @@ const InstructorCourseList: React.FC = () => {
         { text: "Active", value: CourseStatusEnum.ACTIVE },
         { text: "Inactive", value: CourseStatusEnum.INACTIVE },
       ],
-      onFilter: (value: any, record: any) =>
+      onFilter: (value: any, record: Course) =>
         record.status.trim() === value.trim(),
       render: (status: CourseStatusEnum) => {
         const statusColors = {
