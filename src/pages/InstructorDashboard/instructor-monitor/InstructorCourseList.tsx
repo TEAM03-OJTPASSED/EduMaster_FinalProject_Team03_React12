@@ -19,8 +19,11 @@ import {
 import CourseOption from "./create-courses/CourseOption";
 import StatusFilter from "../../../components/StatusFilter";
 import CourseService from "../../../services/course.service";
-import { Course, GetCourses } from "../../../models/Course.model";
+import { Course, CourseRequest, GetCourses } from "../../../models/Course.model";
 import { CourseStatusEnum } from "../../AdminDashboard/monitors/course/courseList";
+import { Category, GetCategories } from "../../../models/Category.model";
+import CategoryService from "../../../services/category.service";
+import { handleNotify } from "../../../utils/handleNotify";
 
 const InstructorCourseList: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -28,8 +31,12 @@ const InstructorCourseList: React.FC = () => {
   const [isModalCreateVisible, setIsModalCreateVisible] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>();
   const [listCourses, setListCourses] = useState<Course[]>([]);
+  const [listCategories, setListCategories] = useState<Category[]>([]);
+
   // select course to send to admin
   const [selectedCourses, setSelectedCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(false);
+
 
   const showModal = (course: Course) => {
     setSelectedCourse(course);
@@ -45,6 +52,84 @@ const InstructorCourseList: React.FC = () => {
     setIsModalCreateVisible(false);
   };
 
+  const initialCoursesParams: GetCourses = {
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 6,
+    },
+    searchCondition: {
+      keyword: "",
+      is_deleted: false,
+      category_id: "",
+    }
+  }
+
+  const initialCategoriesParams: GetCategories = {
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 100,
+    },
+    searchCondition: {
+      keyword: "",
+      is_deleted: false,
+    }
+  }
+
+  const fetchCourses = async () => {
+    setLoading(true);
+    try {
+      const response = await CourseService.getCourses(initialCoursesParams);
+      setListCourses(response?.data?.pageData ?? []);
+    } finally {
+      setLoading(false); 
+    }
+  };
+
+  const fetchCategories = async () => {
+    setLoading(true); 
+    try {
+      const response = await CategoryService.getCategories(initialCategoriesParams);
+      setListCategories(response?.data?.pageData ?? []);
+    } finally {
+      setLoading(false); 
+    }
+  };
+
+  const handleCreateCourse = async (values: CourseRequest) => {
+    const { price, discount, video_url, ...otherValues } = values;
+    const numericValues = {
+      ...otherValues,
+      price: price ? Number(price) : 0,
+      discount: discount ? Number(discount) : 0,
+      video_url: video_url || "",
+    };
+  
+    setLoading(true);
+    try {
+      const response = await CourseService.createCourse(numericValues);
+      if (response.success) {
+        handleCancel(); // Close modal if successful
+        handleNotify("Course Created Successfully", "The course has been created successfully.");
+        await fetchCourses(); // Refresh the course list
+      }
+    } finally {
+      setLoading(false); // Ensures loading is set to false regardless of success/failure
+    }
+  };
+
+  const handleDeleteCourse = async (courseId: string) => {
+    setLoading(true);
+    try {
+      const response = await CourseService.deleteCourse(courseId);
+      if (response.success) {
+        handleNotify("Course Deleted Successfully", "The course has been deleted successfully.");
+        await fetchCourses(); // Refresh the course list
+      }
+    } finally {
+      setLoading(false); // Ensures loading is set to false regardless of success/failure
+    }
+  }
+
   const rowSelection: TableProps<Course>["rowSelection"] = {
     onChange: (_selectedRowKeys: React.Key[], selectedRows: Course[]) => {
       setSelectedCourses(selectedRows);
@@ -52,25 +137,9 @@ const InstructorCourseList: React.FC = () => {
   };
 
   useEffect(() => {
-    const initialCoursesParams: GetCourses = {
-      pageInfo: {
-        pageNum: 1,
-        pageSize: 6,
-      },
-      searchCondition: {
-        keyword: "",
-        is_deleted: false,
-        category_id: "",
-      }
-    }
-        const fetchCourses = async () => {
-          const response = await CourseService.getCourses(initialCoursesParams);
-          setListCourses(response?.data?.pageData ?? []);
-
-        };
-
         fetchCourses(); // Call the async function
-    },[]);
+        fetchCategories(); // Call the async function
+  },[]);
 
 
   // send course request to Admin
@@ -183,16 +252,13 @@ const InstructorCourseList: React.FC = () => {
           <Button
             type="text"
             icon={<DeleteOutlined style={{ color: "red" }} />}
-            onClick={() => handleDelete(record.name)}
+            onClick={() => handleDeleteCourse(record._id)}
           />
         </div>
       ),
     },
   ];
 
-  const handleDelete = (name: string) => {
-    console.log(name);
-  };
 
   const statuses = [CourseStatusEnum.ACTIVE, CourseStatusEnum.APPROVED, CourseStatusEnum.INACTIVE, CourseStatusEnum.NEW, CourseStatusEnum.REJECTED, CourseStatusEnum.WAITING_APPROVE];
   const handleStatusChange = (value: string | undefined) => {
@@ -250,6 +316,8 @@ const InstructorCourseList: React.FC = () => {
         bordered
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
+        loading={loading}
+        
       />
 
       {/* update */}
@@ -263,8 +331,10 @@ const InstructorCourseList: React.FC = () => {
       >
         {selectedCourse && (
           <CourseOption
+            categories={listCategories}
             initializeValue={selectedCourse}
             mode="update"
+            isLoading={loading}
             onFinished={(values) => {
               console.log("submitted course update", {
                 ...values,
@@ -286,12 +356,9 @@ const InstructorCourseList: React.FC = () => {
       >
         <CourseOption
           mode="create"
-          onFinished={(values) => {
-            console.log("submitted session create", {
-              ...values,
-              created_at: new Date(),
-            });
-          }}
+          onFinished={handleCreateCourse}
+          isLoading={loading}
+          categories = {listCategories}
         />
       </Modal>
     </Card>
