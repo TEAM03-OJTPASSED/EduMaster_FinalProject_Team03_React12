@@ -103,12 +103,28 @@ const InstructorSessionList = () => {
       if (response.success) {
         handleCancel(); // Close modal if successful
         handleNotify("Session Created Successfully", "The session has been created successfully.");
-        await fetchCourses(); // Refresh the course list
+        await fetchSessions(); // Refresh the course list
       }
     } finally {
       setLoading(false); // Ensures loading is set to false regardless of success/failure
     }
   };
+
+
+  const handleUpdateSession = async (updatedSession: SessionRequest) => {
+    setLoading(true);
+    try {
+      if (selectedSession) {
+        const response = await SessionService.updateSession(selectedSession._id, updatedSession);
+        if (response.success) {
+          handleNotify("Session Updated Successfully", "The session has been updated successfully.");
+          await fetchSessions(); // Refresh the course list
+        }
+      }
+    } finally {
+      setLoading(false); 
+    }
+  }
 
   const handleDeleteSession = async (sessionId: string) => {
     setLoading(true);
@@ -252,12 +268,7 @@ const InstructorSessionList = () => {
             listCourses={listCourses}
             initialState={selectedSession}
             mode="update"
-            onFinish={(values) => {
-              console.log("submitted session update", {
-                ...values,
-                created_at: new Date(),
-              });
-            }}
+            onFinish={handleUpdateSession}
           />
         )}
       </Modal>

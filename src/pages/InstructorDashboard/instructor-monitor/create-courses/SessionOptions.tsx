@@ -52,6 +52,7 @@ const SessionOptions: React.FC<SessionOptionsProps> = ({
               rules={[
                 { required: true, message: "Please input position order" },
               ]}
+              normalize={(value) => (value ? Number(value) : value)}
             >
               <Input type="number" placeholder=" Position Order" />
             </Form.Item>

@@ -110,7 +110,7 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({ filters, onFilterCha
           </Drawer>
         </div>
       ) : ( 
-        <Sider width={250} theme="light" className="p-4 overflow-clip">          {renderFilters()}
+        <Sider width={250} theme="light" className="p-4">          {renderFilters()}
       </Sider>
 
       )}

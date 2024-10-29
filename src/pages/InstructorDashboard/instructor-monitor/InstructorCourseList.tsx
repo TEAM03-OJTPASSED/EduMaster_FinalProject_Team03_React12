@@ -132,6 +132,22 @@ const InstructorCourseList: React.FC = () => {
     }
   }
 
+
+  const handleUpdateCourse = async (updatedCourse: CourseRequest) => {
+    setLoading(true);
+    try {
+      if (selectedCourse) {
+        const response = await CourseService.updateCourse(selectedCourse._id, updatedCourse);
+        if (response.success) {
+          handleNotify("Course Updated Successfully", "The course has been updated successfully.");
+          await fetchCourses(); // Refresh the course list
+        }
+      }
+    } finally {
+      setLoading(false); 
+    }
+  }
+
   const rowSelection: TableProps<Course>["rowSelection"] = {
     onChange: (_selectedRowKeys: React.Key[], selectedRows: Course[]) => {
       setSelectedCourses(selectedRows);
@@ -339,12 +355,7 @@ const InstructorCourseList: React.FC = () => {
             initializeValue={selectedCourse}
             mode="update"
             isLoading={loading}
-            onFinished={(values) => {
-              console.log("submitted course update", {
-                ...values,
-                created_at: new Date(),
-              });
-            }}
+            onFinished={handleUpdateCourse}
           />
         )}
       </Modal>

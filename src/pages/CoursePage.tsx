@@ -142,7 +142,7 @@ export default function CoursesPage() {
       <div className="p-4 pb-0">
         <DynamicBreadcrumb />
       </div>
-      <Layout className="relative overflow-clip">
+      <Layout className="relative">
         <SearchResults
           noResult={noResult}
           courses={courses}

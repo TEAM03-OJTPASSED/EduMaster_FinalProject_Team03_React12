@@ -246,6 +246,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
         label="Time (minutes)"
         name="full_time"
         rules={[{ required: true, message: "Please input full time" }]}
+        normalize={(value) => (value ? Number(value) : value)}
       >
         <Input type="number" placeholder="Input lesson time" />
       </Form.Item>
@@ -255,6 +256,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
         label="Position Order"
         name="position_order"
         rules={[{ required: true, message: "Please input position order" }]}
+        normalize={(value) => (value ? Number(value) : value)}
       >
         <Input type="number" placeholder="Input Position Order" />
       </Form.Item>

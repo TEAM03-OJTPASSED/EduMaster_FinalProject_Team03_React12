@@ -124,13 +124,28 @@ const InstructorLessonList = () => {
     }
   };
 
+  const handleUpdateLesson = async (updatedLesson: LessonRequest) => {
+    setLoading(true);
+    try {
+      if (selectedSession) {
+        const response = await LessonService.updateLesson(selectedLesson._id, updatedLesson);
+        if (response.success) {
+          handleNotify("Lesson Updated Successfully", "The lesson has been updated successfully.");
+          await fetchLessons(); // Refresh the course list
+        }
+      }
+    } finally {
+      setLoading(false); 
+    }
+  }
+
   const handleDeleteLesson = async (lessonId: string) => {
     setLoading(true);
     try {
       const response = await LessonService.deleteLesson(lessonId);
       if (response.success) {
-        handleNotify("Course Deleted Successfully", "The course has been deleted successfully.");
-        await fetchCourses(); // Refresh the course list
+        handleNotify("Lesson Deleted Successfully", "The lesson has been deleted successfully.");
+        await fetchLessons(); // Refresh the course list
       }
     } finally {
       setLoading(false); // Ensures loading is set to false regardless of success/failure
@@ -314,12 +329,7 @@ const InstructorLessonList = () => {
           listCourses={listCourses}
           listSessions={listSessions}
             isLoading={loading}
-            onFinished={(values) => {
-              console.log("Lesson update", {
-                ...values,
-                create_at: new Date(),
-              });
-            }}
+            onFinished={handleUpdateLesson}
             mode="update"
             initialValues={selectedLesson}
           />

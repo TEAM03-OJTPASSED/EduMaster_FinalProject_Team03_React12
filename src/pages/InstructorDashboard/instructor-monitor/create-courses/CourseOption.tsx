@@ -164,6 +164,7 @@ const CourseOption: React.FC<CourseInformationProps> = ({
             rules={[
               { required: true, message: "Please input estimated level" },
             ]}
+            normalize={(value) => (value ? Number(value) : value)}
           >
             <Input placeholder="Level" />
           </Form.Item>
@@ -250,10 +251,12 @@ const CourseOption: React.FC<CourseInformationProps> = ({
       {/* hidden when type free */}
       {selectTypePrice === "Free" && (
         <div>
-          <Form.Item name="price" hidden>
+          <Form.Item name="price" hidden
+          normalize={(value) => (value ? Number(value) : value)}>
             <Input type="number" value={0} />
           </Form.Item>
-          <Form.Item name="discount" hidden>
+          <Form.Item name="discount" hidden
+          normalize={(value) => (value ? Number(value) : value)}>
             <Input type="number" value={0} />
           </Form.Item>
         </div>
@@ -265,6 +268,7 @@ const CourseOption: React.FC<CourseInformationProps> = ({
             label="Price"
             name="price"
             rules={[{ required: true, message: "Please input price" }]}
+            normalize={(value) => (value ? Number(value) : value)}
           >
             <Input type="number" placeholder="Input price" />
           </Form.Item>
@@ -273,6 +277,7 @@ const CourseOption: React.FC<CourseInformationProps> = ({
             label="Discount"
             name="discount"
             rules={[{ required: true, message: "Please input discount" }]}
+            normalize={(value) => (value ? Number(value) : value)}
           >
             <Input type="number" placeholder="Input discount" />
           </Form.Item>
