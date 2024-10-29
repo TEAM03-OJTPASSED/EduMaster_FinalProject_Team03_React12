@@ -139,7 +139,7 @@ const HomePage = () => {
     document.documentElement.scrollTop = 0;
   };
 
-  const {currentUser} = useSelector((state : RootState) => state.auth)
+  const {currentUser} = useSelector((state : RootState) => state.auth.login)
 
 
   const onAddCart = (course: Course) => {

@@ -24,7 +24,7 @@ export const SearchResults: React.FC<{
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
   const navigate = useCustomNavigate()
 
-  const {currentUser} = useSelector((state : RootState) => state.auth)
+  const {currentUser} = useSelector((state : RootState) => state.auth.login)
 
 
   const onAddCart = (course: Course) => {

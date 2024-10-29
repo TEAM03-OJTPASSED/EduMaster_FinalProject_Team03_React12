@@ -14,7 +14,7 @@ const initialState = {
   forgotPassword: {
     loading: false,
     success: false,
-    error: false, 
+    error: false,
     message: "",
   },
 };
@@ -55,7 +55,7 @@ const usersSlice = createSlice({
     forgotPasswordPending: (state) => {
       state.forgotPassword.loading = true;
       state.forgotPassword.success = false;
-      state.forgotPassword.error = false; 
+      state.forgotPassword.error = false;
       state.forgotPassword.message = "";
     },
     forgotPasswordFulfilled: (state) => {
@@ -67,8 +67,9 @@ const usersSlice = createSlice({
     forgotPasswordRejected: (state) => {
       state.forgotPassword.loading = false;
       state.forgotPassword.success = false;
-      state.forgotPassword.error = true; 
-      state.forgotPassword.message = "Email does not exist or something went wrong.";
+      state.forgotPassword.error = true;
+      state.forgotPassword.message =
+        "Email does not exist or something went wrong.";
     },
   },
 });
@@ -82,7 +83,7 @@ export const {
   previewProfileRejected,
   forgotPasswordPending,
   forgotPasswordFulfilled,
-  forgotPasswordRejected, 
+  forgotPasswordRejected,
 } = usersSlice.actions;
 
 export default usersSlice.reducer;

@@ -25,7 +25,7 @@ const CheckoutPage: React.FC = () => {
   const navigate = useCustomNavigate();
   const [paymentMethod, setPaymentMethod] = useState('credit_card');
 
-  const {currentUser} = useSelector((state:RootState) => state.auth)
+  const {currentUser} = useSelector((state:RootState) => state.auth.login)
 
   
 

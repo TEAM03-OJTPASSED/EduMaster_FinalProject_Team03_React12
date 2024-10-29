@@ -11,10 +11,10 @@ import {
 } from "../redux/slices/userSlice";
 import { postRequest, putRequest } from "./httpsMethod";
 import {
-  resendTokenFulFilled,
+  resendTokenFulfilled,
   resendTokenPending,
   resendTokenRejected,
-  verifyTokenFulFilled,
+  verifyTokenFulfilled,
   verifyTokenPending,
   verifyTokenRejected,
 } from "../redux/slices/authSlices";
@@ -44,7 +44,7 @@ export const verifyTokenEmail = async (
       token: verification_id,
     });
     console.log("res", res.data);
-    dispatch(verifyTokenFulFilled());
+    dispatch(verifyTokenFulfilled());
   } catch (error) {
     console.log(error);
     dispatch(verifyTokenRejected());
@@ -57,7 +57,7 @@ export const resendTokenEmail = async (email: string, dispatch: AppDispatch) => 
     const res  = await postRequest("/api/auth/resend-token",{email:email})
     console.log("resend res", res.data);
     
-    dispatch(resendTokenFulFilled());
+    dispatch(resendTokenFulfilled());
   } catch (error) {
     console.log(error);
     dispatch(resendTokenRejected());

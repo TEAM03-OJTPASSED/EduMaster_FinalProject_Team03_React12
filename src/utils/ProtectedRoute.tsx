@@ -13,7 +13,7 @@ const ProtectedRoute = ({
   allowedRoles = [],
   children,
 }: ProtectedRouteProps) => {
-  const { currentUser, token } = useSelector((state: RootState) => state.auth);
+  const { currentUser, token } = useSelector((state: RootState) => state.auth.login);
   const userRole = currentUser ? currentUser.role : "";
 
   // If allowedRoles is empty, make it a public route.

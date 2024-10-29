@@ -11,7 +11,7 @@ interface DashboardNavBarProps {
 }
 
 const DashboardNavBar: React.FC<DashboardNavBarProps> = ({ role }) => {
-  const { currentUser } = useSelector((state: RootState) => state.auth);
+  const { currentUser } = useSelector((state: RootState) => state.auth.login);
   const navigate = useCustomNavigate();
   const [isMobile, setIsMobile] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
