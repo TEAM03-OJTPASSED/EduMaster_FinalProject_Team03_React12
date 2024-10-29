@@ -27,6 +27,7 @@ const Loginpage = () => {
     (state: RootState) => state.auth.login
   );
   const navigate = useNavigate();
+
   useEffect(() => {
     if (is_register_google) {
       setIsOpenModal(true);
@@ -34,8 +35,6 @@ const Loginpage = () => {
   }, [is_register_google]);
 
   useEffect(() => {
-    console.log("Token:", token);
-    console.log("CurrentUser:", currentUser);
     if (currentUser) {
       if (
         currentUser?.role === "student" ||
