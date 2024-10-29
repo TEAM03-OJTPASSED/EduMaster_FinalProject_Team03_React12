@@ -93,6 +93,7 @@ const categories: Category[] = [
 
 const HomePage = () => {
   const [courses, setCourses] = useState<Course[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   
 
   useEffect(() => {
@@ -107,13 +108,13 @@ const HomePage = () => {
         category_id: "",
       }
     }
-        const fetchCourses = async () => {
-          const response = await ClientService.getCourses(initialCoursesParams);
-          setCourses(response?.data?.pageData ?? []);
+    const fetchCourses = async () => {
+      const response = await ClientService.getCourses(initialCoursesParams);
+      setCourses(response?.data?.pageData ?? []);
 
-        };
+    };
 
-        fetchCourses(); // Call the async function
+    fetchCourses(); // Call the async function
     },[]);
 
   

@@ -54,6 +54,7 @@ export interface CourseRequest {
   image_url: string;
   price: number;
   discount: number;
+  level: number;
 }
 
 export interface CourseStatusUpdate {

@@ -18,11 +18,14 @@ import { PlusOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import { API_UPLOAD_FILE } from "../../../../constants/upload";
 import { Course } from "../../../../models/Course.model";
+import { Category } from "../../../../models/Category.model";
 
 type CourseInformationProps = {
   initializeValue?: Course;
   mode: "create" | "update";
+  isLoading: boolean;
   onFinished: FormProps["onFinish"];
+  categories: Category[];
 };
 
 type CoursePriceType = "Free" | "Paid";
@@ -33,6 +36,8 @@ const CourseOption: React.FC<CourseInformationProps> = ({
   initializeValue,
   mode,
   onFinished,
+  isLoading,
+  categories,
 }) => {
   const [imageFileList, setImageFileList] = useState<UploadFile[]>([]);
   const [videoFileList, setVideoFileList] = useState<UploadFile[]>([]);
@@ -40,6 +45,8 @@ const CourseOption: React.FC<CourseInformationProps> = ({
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | undefined>(
     initializeValue?.video_url
   );
+
+  const [toggleDisable, setToggleDisable] = useState(false);
 
   const [selectTypePrice, setSelectPriceType] = useState<CoursePriceType>(
     initializeValue?.price && initializeValue.price > 0 ? "Paid" : "Free"
@@ -80,17 +87,21 @@ const CourseOption: React.FC<CourseInformationProps> = ({
     }
   }, [initializeValue, form, mode]);
 
-  const handleImageChange: UploadProps["onChange"] = async ({
-    fileList: newFileList,
-  }) => {
+  const handleImageChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
     setImageFileList(newFileList || []);
+    
+    const isUploading = newFileList.some(file => file.status === "uploading");
+    setToggleDisable(isUploading);
+  
     if (newFileList.length > 0 && newFileList[0].status === "done") {
       const uploadedImageUrl = newFileList[0].response?.secure_url;
       form.setFieldsValue({ image_url: uploadedImageUrl });
-    } else {
+    } else if (newFileList.length === 0 || newFileList[0].status === "error") {
       form.setFieldsValue({ image_url: "" });
     }
   };
+  
+
   const handleVideoChange: UploadProps["onChange"] = ({
     fileList: newFileList,
   }) => {
@@ -135,12 +146,22 @@ const CourseOption: React.FC<CourseInformationProps> = ({
           >
             <Select
               placeholder="Select category"
-              options={[
-                { label: "Javascript", value: "category_id-1" },
-                { label: "TypeScript", value: "category_id-2" },
-                { label: "Machine Learning", value: "category_id-3" },
-              ]}
+              options={categories.map((category) => ({
+                value: category._id,
+                label: category.name,
+              }))}
             />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            label="Level"
+            name="level"
+            rules={[
+              { required: true, message: "Please input estimated level" },
+            ]}
+          >
+            <Input placeholder="Level" />
           </Form.Item>
         </Col>
       </Row>
@@ -256,13 +277,14 @@ const CourseOption: React.FC<CourseInformationProps> = ({
       {/* Button Submit */}
       <Form.Item>
         <Button
+          loading={isLoading}
           className="w-full"
           variant="solid"
           color="primary"
           htmlType="submit"
+          disabled={toggleDisable}
         >
-          {mode === "create"? "Create" : "Update"  }
-          
+          {mode === "create" ? "Create" : "Update"}
         </Button>
       </Form.Item>
     </Form>
