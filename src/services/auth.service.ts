@@ -75,3 +75,4 @@ export const forgotPassword = async (email: string, dispatch: AppDispatch) => {
     dispatch(forgotPasswordRejected());
   }
 };
+
