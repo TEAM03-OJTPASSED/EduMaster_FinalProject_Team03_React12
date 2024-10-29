@@ -4,31 +4,25 @@ import {
   SearchOutlined,
   EditOutlined,
   DeleteOutlined,
+  PlusOutlined,
 } from "@ant-design/icons";
 
 import useSearch from "../../hooks/useSearch";
-import {
+import UserService, {
   changeRole,
   changeStatus,
-  deleteUser,
-  getUsers,
   updatedUser,
-} from "../../services/userService";
+} from "../../services/user.service";
 import EditUser from "../../components/Admin/AdminModals/EditUserModal";
+import CreateUser from "../../components/Admin/AdminModals/CreateUserModal";
+import { UserSearchParams } from "../../models/SearchInfo.model";
+import { User } from "../../models/UserModel";
 
 const { Option } = Select;
 
-interface User {
-  _id: string;
-  name: string;
-  email: string;
-  phone_number: string;
-  status: boolean;
-  role: string;
-}
-
 const UserManagement: React.FC = () => {
   const [editVisible, setEditVisible] = useState(false);
+  const [createVisible, setCreateVisible] = useState(false); // State for CreateUser modal
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [pageNum, setPageNum] = useState(1);
@@ -45,36 +39,45 @@ const UserManagement: React.FC = () => {
     pageSize: number,
     keyword: string
   ) => {
-    const searchParams = {
+    const searchParams: UserSearchParams = {
       searchCondition: {
         keyword,
         role: "",
-        status: statusFilter !== null ? statusFilter : undefined,
+        status: statusFilter !== null ? Boolean(statusFilter) : undefined, // Chuyển đổi thành boolean
         is_delete: false,
-        is_verified: true,
-        // is_verified: "",
+        is_verified: true, // Nếu is_verified cũng là boolean
+        // is_verified: "", // Nếu is_verified cũng là boolean
       },
       pageInfo: { pageNum, pageSize },
     };
 
     try {
-      const response = await getUsers(searchParams);
-      setUsers((response as any).pageData);
-      setTotal((response as any).pageInfo.totalItems);
+      const response = await UserService.getUsers(searchParams);
+      const responseData = response.data?.pageData;
+      const flattenedUsers: User[] = Array.isArray(responseData)
+        ? responseData.flat()
+        : [];
+      const totalItems = response.data?.pageInfo?.totalItems ?? 0;
+      setUsers(flattenedUsers);
+      setTotal(totalItems);
     } catch (err) {
       console.error("Error fetching users:", err);
     }
   };
 
+  const handleAddUser = () => {
+    setCurrentUser(null);
+    setCreateVisible(true); // Open CreateUser modal
+  };
+
   const handleEdit = (record: User) => {
     setCurrentUser(record);
-    // // console.log("current user", record);
-    // // console.log("current user2", currentUser);
-    // setEditVisible(true);
+    setEditVisible(true);
   };
 
   const handleCloseModal = () => {
     setEditVisible(false);
+    setCreateVisible(false);
     setCurrentUser(null);
   };
 
@@ -227,14 +230,23 @@ const UserManagement: React.FC = () => {
   return (
     <div>
       <Card>
-        <h3 className="text-2xl my-5">User Management</h3>
-        <Input
-          placeholder="Search by name or email"
-          prefix={<SearchOutlined />}
-          className="w-full md:w-1/3 mb-2 md:mb-0"
-          value={searchText}
-          onChange={handleSearchChange}
-        />
+        <h1 className="text-2xl my-2">User Management</h1>
+        <div className="flex items-center justify-between mb-4">
+          <Input
+            placeholder="Search"
+            prefix={<SearchOutlined />}
+            className="w-full md:w-1/3"
+            value={searchText}
+            onChange={handleSearchChange}
+          />
+          <Button
+            type="primary"
+            onClick={handleAddUser}
+            icon={<PlusOutlined />}
+          >
+            Add user
+          </Button>
+        </div>
         <Table
           dataSource={filteredData}
           columns={columns}
@@ -255,6 +267,11 @@ const UserManagement: React.FC = () => {
         onClose={handleCloseModal}
         visible={editVisible}
         user={currentUser}
+        onSave={handleSave}
+      />
+      <CreateUser
+        visible={createVisible}
+        onClose={handleCloseModal}
         onSave={handleSave}
       />
     </div>

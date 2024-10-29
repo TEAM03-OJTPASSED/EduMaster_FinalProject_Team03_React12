@@ -7,8 +7,19 @@ import {
 } from "../redux/slices/userSlice";
 import { AppDispatch } from "../redux/store/store";
 import { deleteRequest, postRequest, putRequest } from "./httpsMethod";
-const BASE_URL = "/api/users"; // Đường dẫn API
+import { User } from "../models/UserModel";
+import { ApiResponse, APIResponseData } from "../models/ApiReponse.model";
+import { UserSearchParams } from "../models/SearchInfo.model";
+const BASE_URL = "/api/users";
 
+const UserService = {
+  // Get a list of users with optional search filters
+  getUsers(
+    params: UserSearchParams
+  ): Promise<ApiResponse<APIResponseData<User[]>>> {
+    return postRequest(USER_API.GET_USERS, params);
+  },
+};
 // Lấy danh sách người dùng
 export const getUsers = async (searchParams: any) => {
   try {
@@ -27,6 +38,16 @@ export const getUser = async (searchParams: any) => {
   } catch (error) {
     console.error("Error fetching users:", error);
     throw error; // Ném lỗi để xử lý ở nơi gọi
+  }
+};
+
+export const createUser = async (searchParams: any): Promise<User> => {
+  try {
+    const response = await postRequest(`${BASE_URL}/create`, searchParams);
+    return response.data; // Adjust if your response structure is different
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    throw error; // Rethrow to handle at the calling site
   }
 };
 
@@ -111,3 +132,5 @@ export const previewInstructor = async (
     dispatch(previewProfileRejected());
   }
 };
+
+export default UserService;
