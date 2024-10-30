@@ -32,9 +32,14 @@ const CreateUser: React.FC<CreateUserProps> = ({
   };
 
   return (
-    <Modal title="Add User" open={visible} onCancel={onClose} footer={null}>
-      <Form form={form} onFinish={handleFinish}>
-        <Form.Item name="name" label="Họ và tên" rules={[{ required: true }]}>
+    <Modal title="Add New User" open={visible} onCancel={onClose} footer={null}>
+      <Form
+        form={form}
+        onFinish={handleFinish}
+        labelCol={{ span: 6 }}
+        wrapperCol={{ span: 18 }}
+      >
+        <Form.Item name="name" label="Full name" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
         <Form.Item name="email" label="Email" rules={[{ required: true }]}>
@@ -47,9 +52,9 @@ const CreateUser: React.FC<CreateUserProps> = ({
         >
           <Input.Password />
         </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Lưu
+        <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
+          <Button type="primary" htmlType="submit" style={{ float: "right" }}>
+            Save
           </Button>
         </Form.Item>
       </Form>

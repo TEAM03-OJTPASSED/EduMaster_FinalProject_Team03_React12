@@ -46,12 +46,7 @@ const EditUser: React.FC<EditUserProps> = ({
   };
 
   return (
-    <Modal
-      title="Chỉnh sửa người dùng"
-      open={visible}
-      onCancel={onClose}
-      footer={null}
-    >
+    <Modal title="Update User" open={visible} onCancel={onClose} footer={null}>
       <Form
         form={form}
         initialValues={{
@@ -72,18 +67,18 @@ const EditUser: React.FC<EditUserProps> = ({
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 18 }}
       >
-        <Form.Item name="name" label="Họ và tên" rules={[{ required: true }]}>
+        <Form.Item name="name" label="Full name" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
         <Form.Item name="email" label="Email" rules={[{ required: true }]}>
           <Input disabled />
         </Form.Item>
-        <Form.Item name="phone_number" label="Số điện thoại">
+        <Form.Item name="phone_number" label="Phone number">
           <Input />
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
           <Button type="primary" htmlType="submit" style={{ float: "right" }}>
-            Lưu
+            Save
           </Button>
         </Form.Item>
       </Form>

@@ -13,6 +13,7 @@ import CreateUser from "../../components/Admin/AdminModals/CreateUserModal";
 import { UserSearchParams } from "../../models/SearchInfo.model";
 import { User } from "../../models/UserModel";
 import { UserService } from "../../services/user.service";
+import DeleteUserModal from "../../components/Admin/AdminModals/DeleteUserModal";
 
 const { Option } = Select;
 
@@ -20,6 +21,7 @@ const UserManagement: React.FC = () => {
   const [editVisible, setEditVisible] = useState(false);
   const [createVisible, setCreateVisible] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [deleteUserModalVisible, setDeleteUserModalVisible] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -96,9 +98,25 @@ const UserManagement: React.FC = () => {
     }
   };
 
-  const handleDelete = async (record: User) => {
-    const userId = record._id;
-    await UserService.deleteUser(userId);
+  const handleDeleteConfirm = async (userId: string) => {
+    try {
+      const response = await deleteUser(userId);
+      if (response) {
+        console.log("User deleted successfully");
+        fetchUsers(pageNum, pageSize, searchText); // Refresh the user list
+      } else {
+        console.error("Failed to delete user");
+      }
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    } finally {
+      setDeleteUserModalVisible(false); // Close the modal after deletion
+    }
+  };
+
+  const handleDelete = (record: User) => {
+    setCurrentUser(record); // Set the current user to be deleted
+    setDeleteUserModalVisible(true);
   };
 
   useEffect(() => {
@@ -187,10 +205,10 @@ const UserManagement: React.FC = () => {
   return (
     <div>
       <Card>
-        <h1 className="text-2xl my-2">User Management</h1>
+        <h1 className="text-2xl my-5">User Management</h1>
         <div className="flex items-center justify-between mb-4">
           <Input
-            placeholder="Search"
+            placeholder="Search By User Name"
             prefix={<SearchOutlined />}
             className="w-full md:w-1/3"
             value={searchText}
@@ -201,7 +219,7 @@ const UserManagement: React.FC = () => {
             onClick={handleAddUser}
             icon={<PlusOutlined />}
           >
-            Add user
+            Add new user
           </Button>
         </div>
         <Table
@@ -230,6 +248,12 @@ const UserManagement: React.FC = () => {
         visible={createVisible}
         onClose={handleCloseModal}
         onSave={handleSave}
+      />
+      <DeleteUserModal
+        visible={deleteUserModalVisible}
+        onCancel={() => setDeleteUserModalVisible(false)}
+        onDelete={() => handleDeleteConfirm(currentUser?._id!)} // Use the current user's id for deletion
+        userName={currentUser?.name}
       />
     </div>
   );
