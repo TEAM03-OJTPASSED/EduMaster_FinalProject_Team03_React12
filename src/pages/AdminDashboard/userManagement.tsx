@@ -4,7 +4,7 @@ import {
   SearchOutlined,
   EditOutlined,
   DeleteOutlined,
-  PlusOutlined,
+  PlusCircleOutlined,
 } from "@ant-design/icons";
 
 import useSearch from "../../hooks/useSearch";
@@ -251,9 +251,9 @@ const UserManagement: React.FC = () => {
           <Button
             type="primary"
             onClick={handleAddUser}
-            icon={<PlusOutlined />}
+            icon={<PlusCircleOutlined />}
           >
-            Add new user
+            Add New User
           </Button>
         </div>
         <Table

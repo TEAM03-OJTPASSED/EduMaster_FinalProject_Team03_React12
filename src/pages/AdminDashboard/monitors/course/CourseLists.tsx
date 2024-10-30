@@ -30,7 +30,6 @@ const CourseLists: React.FC = () => {
   const inputSearchDebouce = useDebounce(inputSearch, 500);
   const [statusFilter, setStatusFilter] = useState<string>();
 
-
   const handleInputSearch = (e: ChangeEvent<HTMLInputElement>) => {
     setInputSearch(e.target.value);
     console.log(inputSearchDebouce);
@@ -63,7 +62,7 @@ const CourseLists: React.FC = () => {
       onFilter: (value, record) => record.status === value,
       filterIcon: (filtered) => (
         <FilterOutlined
-          style={{ fontSize: "18px", color: filtered ? "#1890ff" : undefined }}
+          style={{ color: filtered ? "#1890ff" : undefined }}
         />
       ), // Tăng kích thước và thay đổi màu của biểu tượng filter
       render: (status: CourseStatusEnum) => {
@@ -104,7 +103,14 @@ const CourseLists: React.FC = () => {
     },
   ];
 
-  const statuses = [CourseStatusEnum.ACTIVE, CourseStatusEnum.APPROVED, CourseStatusEnum.INACTIVE, CourseStatusEnum.NEW, CourseStatusEnum.REJECTED, CourseStatusEnum.WAITING_APPROVE];
+  const statuses = [
+    CourseStatusEnum.ACTIVE,
+    CourseStatusEnum.APPROVED,
+    CourseStatusEnum.INACTIVE,
+    CourseStatusEnum.NEW,
+    CourseStatusEnum.REJECTED,
+    CourseStatusEnum.WAITING_APPROVE,
+  ];
   const handleStatusChange = (value: string | undefined) => {
     setStatusFilter(value);
   };
@@ -112,21 +118,20 @@ const CourseLists: React.FC = () => {
   return (
     <Card>
       <h3 className="text-2xl my-5">Course Management</h3>
-      
-      <div className="flex gap-4 mb-5">
-            <Input
-              placeholder="Search By Course Name"
-              prefix={<SearchOutlined />}
-              style={{ width: "80%", borderRadius: "4px" }}
-              onChange={(e) => handleInputSearch(e)}
-              
-            />
-            <StatusFilter
-              statuses={statuses}
-              selectedStatus={statusFilter}
-              onStatusChange={handleStatusChange}
-            />
-          </div>
+
+      <div className="flex flex-wrap items-center mb-4">
+        <Input
+          placeholder="Search By Course Name"
+          prefix={<SearchOutlined />}
+          className="w-full md:w-1/3 mb-2 md:mb-0"
+          onChange={(e) => handleInputSearch(e)}
+        />
+        <StatusFilter
+          statuses={statuses}
+          selectedStatus={statusFilter}
+          onStatusChange={handleStatusChange}
+        />
+      </div>
       <Table
         dataSource={listCourses}
         columns={columns}

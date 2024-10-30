@@ -112,9 +112,7 @@ const RequestUser = () => {
             className="text-green-600"
             icon={<CheckOutlined />}
             onClick={() => handleSubmitPreview("approve", record)}
-            
           >
-            Approve
           </Button>
           <Button
             className="text-red-600"
@@ -122,7 +120,6 @@ const RequestUser = () => {
             icon={<CloseOutlined />}
             onClick={() => handleShowReason(record)}
           >
-            Reject
           </Button>
         </Space>
       ),
