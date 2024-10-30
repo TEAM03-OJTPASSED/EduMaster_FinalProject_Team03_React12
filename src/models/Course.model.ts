@@ -29,6 +29,7 @@ export interface Course {
   is_purchased: boolean;
   average_rating: number;
   review_count: number;
+  updated_at: string;
 }
 
 export interface CourseLog {

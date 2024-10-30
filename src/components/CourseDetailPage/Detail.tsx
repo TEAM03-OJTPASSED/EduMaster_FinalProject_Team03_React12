@@ -85,71 +85,87 @@ export const Detail = ({ isEnrolled, course, session }: Props) => {
             className=""
             dangerouslySetInnerHTML={{ __html: course.content }}
           />
+          <div className="text-xl font-bold pb-2 pt-4">Skill set</div>
+          <div className="flex gap-2">
+            {course.tag &&
+              course.tag.map((tag, index) => (
+                <div
+                  key={index}
+                  className="bg-orange-200 px-2 rounded inline-block mr-2"
+                >
+                  {tag}
+                </div>
+              ))}
+          </div>
         </div>
         <div>
           <div className="text-xl font-bold pb-2 pt-4">Curriculum</div>
-          <div className="border-2 rounded-lg px-10">
-            {session?.map((item, index) => (
-              <div
-                className={`py-5 ${
-                  index === session.length - 1
-                    ? "border-none pb-5"
-                    : "border-b-2"
-                }`}
-                key={index}
-              >
-                <div className="flex flex-col">
-                  {expandedSession === index ? (
-                    <div
-                      className="flex justify-between text-orange-500 text-lg cursor-pointer font-bold hover:text-orange-600"
-                      onClick={() => toggleSession(index)}
-                    >
-                      {item.name}
-                      <MdOutlineKeyboardArrowUp size={24} />
-                    </div>
-                  ) : (
-                    <div
-                      className="flex justify-between text-lg cursor-pointer font-bold hover:text-orange-600"
-                      onClick={() => toggleSession(index)}
-                    >
-                      {item.name}
-                      <MdOutlineKeyboardArrowDown
-                        className="text-gray-600"
-                        size={24}
-                      />
-                    </div>
-                  )}
-                  <div className="flex text-sm font-light pb-2">
-                    <div className="">Session {item.position_order}</div>
-                    <span className="px-2">•</span>
-                    <div>{item.lesson_list.length} lessons</div>
-                    <span className="px-2">•</span>
-                    <div>{Math.round(item.full_time / 60)} hours</div>
-                  </div>
-                </div>
+          <div className="border-2 rounded-lg px-4">
+            {Array.isArray(session) &&
+              session.map((item, index) => (
                 <div
-                  className={`transition-all duration-300 ease-out overflow-hidden ${
-                    expandedSession === index ? "max-h-96" : "max-h-0"
+                  className={`py-4 ${
+                    index === session.length - 1 ? "border-none" : "border-b-2"
                   }`}
+                  key={index}
                 >
-                  <div>
-                    <div className="font-semibold">What you'll learn</div>
-                    <div
-                      className="text-sm pt-2"
-                      dangerouslySetInnerHTML={{ __html: item.description }}
-                    />
-                    <div className="font-semibold pt-2">Skill you'll gain</div>
-                    <div className="text-sm flex flex-wrap gap-2 pt-2">
-                      {item.tag.map((skill, index) => (
-                        <div className="bg-orange-200 px-2 rounded" key={index}>
-                          {skill}
-                        </div>
-                      ))}
+                  <div
+                    className="flex flex-col hover:bg-orange-100 px-4 py-2 rounded cursor-pointer"
+                    onClick={() => toggleSession(index)}
+                  >
+                    {expandedSession === index ? (
+                      <div className="flex justify-between text-orange-500 text-lg cursor-pointer font-bold hover:text-orange-600">
+                        {item.name}
+                        <MdOutlineKeyboardArrowUp size={24} />
+                      </div>
+                    ) : (
+                      <div
+                        className="flex justify-between text-lg cursor-pointer font-bold"
+                        onClick={() => toggleSession(index)}
+                      >
+                        {item.name}
+                        <MdOutlineKeyboardArrowDown
+                          className="text-gray-600"
+                          size={24}
+                        />
+                      </div>
+                    )}
+                    <div className="flex text-sm font-light">
+                      <div className="">Session {item.position_order}</div>
+                      <span className="px-2">•</span>
+                      <div>{item.lesson_list.length} lessons</div>
+                      <span className="px-2">•</span>
+                      <div>{Math.round(item.full_time / 60)} hours</div>
+                    </div>
+                  </div>
+                  <div
+                    className={`transition-all duration-300 ease-out overflow-hidden ${
+                      expandedSession === index ? "max-h-96" : "max-h-0"
+                    }`}
+                  >
+                    <div className="px-4 pt-2">
+                      <div className="font-semibold">What you'll learn</div>
+                      <div
+                        className="text-sm pt-2"
+                        dangerouslySetInnerHTML={{ __html: item.description }}
+                      />
+                      <div className="font-semibold pt-2">
+                        Skill you'll gain
+                      </div>
+                      <div className="text-sm flex flex-wrap gap-2 pt-2">
+                        {item.tag.map((skill: string, index: number) => (
+                          <div
+                            className="bg-orange-200 px-2 rounded"
+                            key={index}
+                          >
+                            {skill}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
           <div>
             <div className="text-xl font-bold pb-2 pt-4">Comment</div>
