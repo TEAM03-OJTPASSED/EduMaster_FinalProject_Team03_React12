@@ -11,6 +11,7 @@ import useSearch from "../../hooks/useSearch";
 import UserService, {
   changeRole,
   changeStatus,
+  deleteUser,
   updatedUser,
 } from "../../services/user.service";
 import EditUser from "../../components/Admin/AdminModals/EditUserModal";
@@ -45,8 +46,8 @@ const UserManagement: React.FC = () => {
         role: "",
         status: statusFilter !== null ? Boolean(statusFilter) : undefined, // Chuyển đổi thành boolean
         is_delete: false,
-        is_verified: true, // Nếu is_verified cũng là boolean
-        // is_verified: "", // Nếu is_verified cũng là boolean
+        // is_verified: true, // Nếu is_verified cũng là boolean
+        is_verified: "", // Nếu is_verified cũng là boolean
       },
       pageInfo: { pageNum, pageSize },
     };
