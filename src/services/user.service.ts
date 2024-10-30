@@ -106,7 +106,6 @@ export const deleteUser = async (userId: string) => {
   try {
     const response = await deleteRequest(`${BASE_URL}/${userId}`);
     if (response.success) {
-      console.log("User deleted successfully");
       message.success("User deleted successfully");
       return true;
     } else {

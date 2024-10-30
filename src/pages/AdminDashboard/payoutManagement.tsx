@@ -150,7 +150,7 @@ const PayoutManagement: React.FC = () => {
     },
     {
       // Can use action with Request payout & New status only
-      title: "Action",
+      title: "Actions",
       key: "action",
       render: (_, record: Payout) => (
         <>

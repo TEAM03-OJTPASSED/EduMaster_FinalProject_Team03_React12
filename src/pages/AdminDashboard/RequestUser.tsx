@@ -1,6 +1,10 @@
 import  { useEffect, useState } from "react";
 import { Table, Button, Input, Space, Card, Modal, message, Spin } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import { 
+  SearchOutlined,
+  CheckOutlined,
+  CloseOutlined, 
+} from "@ant-design/icons";
 import useSearch from "../../hooks/useSearch";
 import { getUsers, previewInstructor } from "../../services/user.service";
 import { useDispatch, useSelector } from "react-redux";
@@ -84,12 +88,12 @@ const RequestUser = () => {
       key: "email",
     },
     {
-      title: "Số điện thoại",
+      title: "Phone Number",
       dataIndex: "phone",
       key: "phone",
     },
     {
-      title: "Tên đăng nhập",
+      title: "Username",
       dataIndex: "username",
       key: "username",
     },
@@ -99,21 +103,24 @@ const RequestUser = () => {
       key: "createdAt",
     },
     {
-      title: "Hành động",
+      title: "Actions",
       key: "action",
       render: (record :any) => (
         <Space size="middle">
           <Button
-            color="primary"
+            type="text"
+            className="text-green-600"
+            icon={<CheckOutlined />}
             onClick={() => handleSubmitPreview("approve", record)}
-            variant="outlined"
+            
           >
             Approve
           </Button>
           <Button
-            color="danger"
+            className="text-red-600"
+            type="text"
+            icon={<CloseOutlined />}
             onClick={() => handleShowReason(record)}
-            variant="outlined"
           >
             Reject
           </Button>
@@ -128,13 +135,15 @@ const RequestUser = () => {
         <div className="flex">
           <h3 className="text-2xl my-5">Request Instructor Management</h3>
         </div>
+        <div className="flex flex-wrap items-center mb-4">
         <Input
-          placeholder="Tìm kiếm..."
-          prefix={<SearchOutlined />}
-          style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
-          value={searchText}
-          onChange={handleSearchChange}
-        />
+            placeholder="Search By User Name"
+            prefix={<SearchOutlined />}
+            className="w-full md:w-1/3 mb-2 md:mb-0"
+            value={searchText}
+            onChange={handleSearchChange}
+          />
+          </div>
         <Table
           dataSource={filteredData}
           pagination={{
