@@ -1,7 +1,6 @@
 import { SESSION_API } from "../constants/api/session";
 import { ApiResponse, APIResponseData } from "../models/ApiReponse.model";
-import { SessionSearchCondition } from "../models/SearchInfo.model";
-import { Session, SessionRequest } from "../models/Session.model";
+import { GetSessions, Session, SessionRequest } from "../models/Session.model";
 import { getRequest, postRequest, putRequest, deleteRequest } from "./httpsMethod";
 
 const SessionService = {
@@ -11,7 +10,7 @@ const SessionService = {
     },
 
     // Get a list of sessions with optional search filters
-    getSessions(params: SessionSearchCondition): Promise<ApiResponse<APIResponseData<Session[]>>> {
+    getSessions(params: GetSessions): Promise<ApiResponse<APIResponseData<Session>>> {
         return postRequest(SESSION_API.GET_SESSIONS, params);
     },
 

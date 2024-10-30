@@ -48,7 +48,7 @@ const items: MenuItem[] = [
 ];
 
 const Navbar = () => {
-  const { currentUser, token } = useSelector((state: RootState) => state.auth);
+  const { currentUser, token } = useSelector((state: RootState) => state.auth.login);
   const navigate = useCustomNavigate();
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [activeButton, setActiveButton] = useState<string>("");
@@ -242,7 +242,7 @@ const Navbar = () => {
                 </span>
               </button>
             )}
-            {userLoggedIn && token ? (
+            {userLoggedIn ? (
               <Dropdown menu={profileMenu}>
                 <div className="w-10 h-10 text-xl rounded-full flex items-center justify-center cursor-pointer">
                   <UserOutlined />

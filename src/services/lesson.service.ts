@@ -1,7 +1,6 @@
 import { LESSON_API } from "../constants/api/lesson";
 import { ApiResponse, APIResponseData } from "../models/ApiReponse.model";
-import { Lesson, LessonRequest } from "../models/Lesson.model";
-import { LessonSearchCondition } from "../models/SearchInfo.model";
+import { GetLessons, Lesson, LessonRequest } from "../models/Lesson.model";
 import { getRequest, postRequest, putRequest, deleteRequest } from "./httpsMethod";
 
 const LessonService = {
@@ -11,7 +10,7 @@ const LessonService = {
     },
 
     // Get a list of Lessons with optional search filters
-    getLessons(params: LessonSearchCondition): Promise<ApiResponse<APIResponseData<Lesson[]>>> {
+    getLessons(params: GetLessons): Promise<ApiResponse<APIResponseData<Lesson>>> {
         return postRequest(LESSON_API.GET_LESSONS, params);
     },
 

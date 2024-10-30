@@ -5,30 +5,39 @@ import { Navigate, Outlet } from "react-router-dom";
 import { RootState } from "../redux/store/store";
 
 type ProtectedRouteProps = {
-  allowedRoles: string[];
+  allowedRoles?: string[]; // Optional for public routes
   children?: ReactNode; // Optional if using Outlet for nested routes
 };
 
-const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) => {
-  const {currentUser, token} = useSelector((state:RootState) => state.auth)
+const ProtectedRoute = ({
+  allowedRoles = [],
+  children,
+}: ProtectedRouteProps) => {
+  const { currentUser, token } = useSelector((state: RootState) => state.auth.login);
   const userRole = currentUser ? currentUser.role : "";
+  // If allowedRoles is empty, make it a public route.
+  if (allowedRoles.length === 0) {
+    // If the user is already logged in, prevent them from accessing public routes (e.g., login/signup)
+    if (currentUser && token) {
+      return <Navigate to="/" />;
+    }
+    return children ? <>{children}</> : <Outlet />;
+  }
 
-  // If no user is found (not authenticated), redirect to login
-  if (!userRole && !token) {
+  // For protected routes with specific allowedRoles, check authentication and role
+  if (!currentUser && !token) {
     message.destroy();
     message.error("You must be logged in to do this action.");
     return <Navigate to="/login" />;
   }
 
-  // If user is authenticated but doesn't have the allowed role
+  // If user is authenticated but doesn't have the required role
   if (!allowedRoles.includes(userRole)) {
     localStorage.setItem("unauthorized", "true");
     return <Navigate to="/" />;
   }
 
-  
-
-  // If the user is authenticated and has the correct role, render the children or Outlet
+  // If authenticated and role matches, render children or Outlet
   return children ? <>{children}</> : <Outlet />;
 };
 

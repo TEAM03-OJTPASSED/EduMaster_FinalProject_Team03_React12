@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Table, Button, Input, Space, Card, Modal, message, Spin } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import useSearch from "../../hooks/useSearch";
@@ -23,7 +23,11 @@ const RequestUser = () => {
     "email",
   ]);
 
-  const fetchUsers = async (pageNum :number, pageSize :number, keyword:string) => {
+  const fetchUsers = async (
+    pageNum: number,
+    pageSize: number,
+    keyword: string
+  ) => {
     const searchParams = {
       searchCondition: {
         keyword,
@@ -37,7 +41,7 @@ const RequestUser = () => {
 
     try {
       const response = await getUsers(searchParams);
-      setUsers((response as any)?.pageData );
+      setUsers((response as any)?.pageData);
       setTotal((response as any)?.pageInfo.totalItems);
     } catch (err) {
       console.error("Error fetching users:", err);
@@ -48,17 +52,17 @@ const RequestUser = () => {
     fetchUsers(pageNum, pageSize, searchText);
   }, [pageNum, pageSize, searchText]);
 
-  const handleTableChange = (pagination :any ) => {
+  const handleTableChange = (pagination: any) => {
     setPageNum(pagination.current);
     setPageSize(pagination.pageSize);
   };
 
-  const handleShowReason = (record :any) => {
+  const handleShowReason = (record: any) => {
     setCurrentUser(record);
     setReasonVisible(true);
   };
 
-  const handleSubmitPreview = async (status: string, record:any) => {
+  const handleSubmitPreview = async (status: string, record: any) => {
     const formPreview = {
       user_id: record._id,
       status,
@@ -101,7 +105,7 @@ const RequestUser = () => {
     {
       title: "Hành động",
       key: "action",
-      render: (record :any) => (
+      render: (record: any) => (
         <Space size="middle">
           <Button
             color="primary"
@@ -163,7 +167,7 @@ const RequestUser = () => {
             htmlType="submit"
             onClick={() => handleSubmitPreview("reject", currentUser)}
           >
-            {loading ? <Spin/> : <span>Submit</span>}
+            {loading ? <Spin /> : <span>Submit</span>}
           </Button>,
         ]}
       >

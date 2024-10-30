@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Checkbox, Rate, Drawer, Button } from "antd";
+import { Checkbox, Drawer, Button } from "antd";
 import { FilterOutlined } from '@ant-design/icons';
 import Sider from 'antd/es/layout/Sider';
 
@@ -11,10 +11,6 @@ interface FilterOption {
 
 interface Filters {
   category: string[];
-  author: string[];
-  price: string[];
-  review: number[];
-  level: string[];
 }
 
 interface FilterSection {
@@ -25,7 +21,7 @@ interface FilterSection {
 
 interface SearchFilterProps {
   filters: FilterSection[];
-  onFilterChange: (filters: { [key: string]: string[] | number[] }) => void;
+  onFilterChange: (filterType: keyof Filters, value: string | number) => void;
   selectedFilters: Filters;
 }
 
@@ -46,47 +42,49 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({ filters, onFilterCha
     };
   }, []);
 
-  const handleFilterChange = (filterType: keyof Filters, checkedValues: string[] | number[]) => {
-    onFilterChange({ [filterType]: checkedValues });
+  const handleFilterChange = (filterType: keyof Filters, checkedValue: string | number) => {
+    onFilterChange(filterType, checkedValue);
   };
 
   const renderCheckboxGroup = (section: FilterSection) => (
     <Checkbox.Group
       className="flex flex-col space-y-2"
       value={selectedFilters[section.type] as string[]}
-      onChange={(checkedValues) => handleFilterChange(section.type, checkedValues)}
+      // onChange={(checkedValues) => handleFilterChange(section.type, checkedValues)}
     >
       {section.options.map((option) => (
-        <Checkbox key={option.value} value={option.value}>
+        <Checkbox key={option.value} value={option.value} onChange={(checkedValues) => handleFilterChange(section.type, checkedValues.target.value)}>
           {option.label} {option.count !== undefined && `(${option.count})`}
         </Checkbox>
       ))}
     </Checkbox.Group>
   );
 
-  const renderRatingGroup = (section: FilterSection) => (
-    <Checkbox.Group
-      className="flex flex-col space-y-2"
-      value={selectedFilters[section.type] as number[]}
-      onChange={(checkedValues) => handleFilterChange(section.type, checkedValues)}
-    >
-      {section.options.map((option) => (
-        <Checkbox key={option.value} value={option.value}>
-          <Rate disabled defaultValue={Number(option.value)} /> {option.count !== undefined && `(${option.count})`}
-        </Checkbox>
-      ))}
-    </Checkbox.Group>
-  );
+  // const renderRatingGroup = (section: FilterSection) => (
+  //   <Checkbox.Group
+  //     className="flex flex-col space-y-2"
+  //     value={selectedFilters[section.type] as number[]}
+  //     // onChange={(checkedValues) => handleFilterChange(section.type, checkedValues)}
+  //   >
+  //     {section.options.map((option) => (
+  //       <Checkbox key={option.value} value={option.value}>
+  //         <Rate disabled defaultValue={Number(option.value)} /> {option.count !== undefined && `(${option.count})`}
+  //       </Checkbox>
+  //     ))}
+  //   </Checkbox.Group>
+  // );
 
   const renderFilters = () => (
-    <>
+    <div className=' sticky-sider top-0'>
       {filters.map((section) => (
         <div key={section.type} className="mb-6">
           <h3 className="text-lg font-semibold mb-4">{section.title}</h3>
-          {section.type === 'review' ? renderRatingGroup(section) : renderCheckboxGroup(section)}
+          {/* {section.type === 'review' ? renderRatingGroup(section) :  */}
+          {renderCheckboxGroup(section)}
+       
         </div>
       ))}
-    </>
+    </div>
   );
 
   return (

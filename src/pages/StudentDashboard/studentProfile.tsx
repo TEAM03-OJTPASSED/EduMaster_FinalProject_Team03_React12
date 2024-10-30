@@ -1,10 +1,13 @@
 import { Button, Card, Form, Input, Upload } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store/store";
 
 const StudentProfile = () => {
+  const { currentUser } = useSelector((state: RootState) => state.auth.login);
   const [formData, setFormData] = useState({
     avatar: "",
     fullName: "",
@@ -12,6 +15,17 @@ const StudentProfile = () => {
     dateOfBirth: "",
     description: "",
   });
+
+  const [form] = Form.useForm();
+  useEffect(() => {
+    form.setFieldsValue({
+      name: currentUser.name,
+      avatar_url: currentUser.avatar_url,
+      phone_number: currentUser.phone_number,
+      description: currentUser.description,
+      bank_account_no: currentUser.bank_account_no,
+    });
+  }, []);
   return (
     <Card>
       <div>
@@ -19,11 +33,12 @@ const StudentProfile = () => {
         <h5 className="mb-4">Here is your information</h5>
       </div>
       <Form
+        // initialValues={{ image_url: currentUser.avatar_url,fullName:currentUser.name }}
         labelCol={{ span: 24 }}
         wrapperCol={{ span: 24 }}
         layout="horizontal"
       >
-        <Form.Item label="Avatar" name="image_url" valuePropName="fileList">
+        <Form.Item label="Avatar" name="avatar_url" valuePropName="fileList">
           <Upload accept="image/*" listType="picture-card">
             <button style={{ border: 0, background: "none" }} type="button">
               <PlusOutlined />
@@ -33,7 +48,7 @@ const StudentProfile = () => {
         </Form.Item>
         <Form.Item
           label="Full Name"
-          name="fullName"
+          name="name"
           rules={[{ required: true, message: " " }]}
         >
           <Input
@@ -45,7 +60,7 @@ const StudentProfile = () => {
         </Form.Item>
         <Form.Item
           label="Phone Number"
-          name="phoneNumber"
+          name="phone_number"
           rules={[{ required: true, message: " " }]}
         >
           <Input
@@ -56,12 +71,12 @@ const StudentProfile = () => {
           />
         </Form.Item>
         <Form.Item
-          label="Date Of Birth"
-          name="dateOfBirth"
+          label="Bank account"
+          name="bank_account_no"
           rules={[{ required: true, message: " " }]}
         >
           <Input
-            placeholder="Date Of Birth"
+            placeholder="Bank account"
             onChange={(e) =>
               setFormData({ ...formData, dateOfBirth: e.target.value })
             }

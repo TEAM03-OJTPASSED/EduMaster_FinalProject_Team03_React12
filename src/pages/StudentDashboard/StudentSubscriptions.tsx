@@ -57,7 +57,7 @@ const StudentSubscriptions = () => {
   // const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isInstructor, setIsInstructor] = useState<boolean>(false);
-  const {currentUser} = useSelector((state:RootState) => state.auth)
+  const {currentUser} = useSelector((state:RootState) => state.auth.login)
 
   const navigate = useCustomNavigate();
 

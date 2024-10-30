@@ -17,23 +17,21 @@ const handleError = (error: AxiosError) => {
       const errorData = data as ErrorResponse; // Ép kiểu data thành ErrorResponse
 
       if (status === 400) {
-        message.destroy()
+        message.destroy();
         message.error(
           `${errorData.message || errorData.Message || "Bad Request"}`
         );
       }
       if (status === 401) {
         console.log("401 - Lỗi", error);
-        message.destroy()
-        message.error(
-          `${errorData.message || errorData.Message}`
-        );
+        message.destroy();
+        message.error(`${errorData.message || errorData.Message}`);
       }
 
       if (status === 403) {
         console.log("403 - Lỗi", errorData);
-        message.destroy()
-        message.error( `${errorData.message }`);
+        message.destroy();
+        message.error(`${errorData.message}`);
       }
 
       if (status === 404) {
@@ -43,13 +41,15 @@ const handleError = (error: AxiosError) => {
       // Xử lý lỗi 409 (Tạo sổ đọc chỉ số).
       if (status === 409) {
         console.log("409 - Tạo sổ.", error);
-        message.destroy()
-        message.error(`${errorData.message || errorData.Message || "Conflict"}`);
+        message.destroy();
+        message.error(
+          `${errorData.message || errorData.Message || "Conflict"}`
+        );
       }
 
       if (status === 500) {
         console.log("500 - Internal Server Error", error);
-        message.destroy()
+        message.destroy();
         message.error(
           `${errorData.message || errorData.Message || "Internal Server Error"}`
         );
