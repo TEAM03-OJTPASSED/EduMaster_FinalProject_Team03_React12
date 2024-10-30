@@ -10,7 +10,7 @@ export type Blog = {
     content: string;
     created_at: Date;
     updated_at: Date;
-}
+}[]
 
 export interface BlogRequest {
     name: string;
@@ -19,8 +19,3 @@ export interface BlogRequest {
     description: string;
     content: string;
 }
-export interface BlogResponse {
-    pageData: Blog[];  // Assuming pageData is an array of Blog objects
-    // Add other properties if your API response contains them
-    totalCount?: number;  // Example additional property
-  }

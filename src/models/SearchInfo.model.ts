@@ -62,3 +62,8 @@ export interface BlogSearchCondition {
   category_id?: string;
   is_delete?: boolean
 }
+
+export interface BlogSearchParams {
+  searchCondition: BlogSearchCondition;
+  pageInfo: PageInfo;
+}

@@ -6,13 +6,16 @@ import type { FormProps, UploadFile, UploadProps } from "antd";
 import "./CreateBlog.css";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import CategoryService from "../../../services/category.service";
+import { Category, GetCategories } from "../../../models/Category.model";
 const { Option } = Select;
 
 type BlogFieldType = {
-  title: string;
-  title_image: string;
+  name: string;
+  image_url: string;
   type: string;
   content: string;
+  description: string
 };
 
 type BlogFormProps = {
@@ -29,22 +32,36 @@ const CreateBlog: React.FC<BlogFormProps> = ({
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [previewOpen, setPreviewOpen] = useState<boolean>(false);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-
+  const [listCategories, setListCategories] = useState<Category[]>([]);
   const [form] = Form.useForm<BlogFieldType>();
-
+  const initialCategoriesParams: GetCategories = {
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 100,
+    },
+    searchCondition: {
+      keyword: "",
+      is_deleted: false,
+    }
+  }
+  const fetchCategories = async () => {
+    const categoriesResponse = await CategoryService.getCategories(initialCategoriesParams);
+    setListCategories(categoriesResponse.data?.pageData ?? []);
+  }
   useEffect(() => {
+    fetchCategories();
     if (mode === "update" && initialValues) {
       form.setFieldsValue({
         ...initialValues,
         content: initialValues.content,
       });
-      setPreviewImage(initialValues.title_image);
+      setPreviewImage(initialValues.image_url);
       setFileList([
         {
           uid: "-1",
           name: "image.png",
           status: "done",
-          url: initialValues.title_image,
+          url: initialValues.image_url,
         },
       ]);
     }
@@ -89,15 +106,28 @@ const CreateBlog: React.FC<BlogFormProps> = ({
     >
       {/* Title */}
       <Form.Item<BlogFieldType>
-        label="Title"
-        name="title"
-        rules={[{ required: true, message: "Please enter the blog title!" }]}
+        label="Name"
+        name="name"
+        rules={[{ required: true, message: "Please enter the blog name!" }]}
       >
-        <Input placeholder="Enter blog title" />
+        <Input placeholder="Enter blog name" />
       </Form.Item>
-
+      {/* Description */}
+      <Form.Item<BlogFieldType>
+        label="Description"
+        name="description"
+        rules={[{ required: true, message: "Please enter the blog description!" }]}
+      >
+        <Input.TextArea
+          placeholder="Enter blog description"
+          maxLength={500} // Adjust the character limit as needed
+          showCount // Displays character count below TextArea
+          allowClear // Adds a clear button to the TextArea
+          rows={4} // Adjust the number of visible rows as needed
+        />
+      </Form.Item>
       {/* Title Image */}
-      <Form.Item<BlogFieldType> label="Title Image" name="title_image">
+      <Form.Item<BlogFieldType> label="Title Image" name="image_url">
         <Upload
           action="https://your-api-server.com/admin/upload"
           listType="picture-card"
@@ -124,18 +154,19 @@ const CreateBlog: React.FC<BlogFormProps> = ({
       </Form.Item>
       {/* Blog Type */}
       <Form.Item<BlogFieldType>
-        label="Blog Type"
+        label="Type"
         name="type"
         rules={[{ required: true, message: "Please select the blog type!" }]}
       >
         <Select placeholder="Select blog type">
-          <Option value="news">News</Option>
-          <Option value="tutorial">Tutorial</Option>
-          <Option value="opinion">Opinion</Option>
+          {listCategories.map((category) => (
+            <Option key={category._id} value={category._id}>
+              {category.name}
+            </Option>
+          ))}
         </Select>
       </Form.Item>
-
-      {/* Content */}
+      {/* content */}
       <Form.Item<BlogFieldType>
         label="Content"
         name="content"
@@ -152,7 +183,7 @@ const CreateBlog: React.FC<BlogFormProps> = ({
             placeholder: "Enter blog content...",
           }}
         />
-       
+
       </Form.Item>
 
       {/* Submit Button */}
