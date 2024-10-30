@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Course } from "../models/Course.model";
 import { Session } from "../models/Session.model";
 import { Lesson } from "../models/Lesson.model";
@@ -13,48 +13,31 @@ const token = localStorage.getItem("token");
 
 const fetchCourse = async (courseId: string) => {
   try {
-    console.log(token);
     const response = await axios.get(
-      `https://edumaster-backend-dev.vercel.app/api/client/course/${courseId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+      `https://edumaster-api-dev.vercel.app/api/client/course/${courseId}`,
+      token ? { headers: { Authorization: `Bearer ${token}` } } : {}
     );
-    console.log(response.data.data);
-    if (response.data.data.is_purchased === false) {
-      console.log("Forbidden");
-      return "Forbidden";
-    } else {
-      console.log("OK");
-      return response.data.data;
-    }
+    return response.data;
   } catch (error) {
-    if (
-      axios.isAxiosError(error) &&
-      error.response &&
-      error.response.status === 403
-    ) {
-      return "Forbidden";
-    } else {
-      console.error("Error fetching course:", error);
+    if (axios.isAxiosError(error) && error.response?.status === 500) {
+      window.location.href = "/error";
     }
-    return null;
   }
 };
 
 const LearnCoursePage = () => {
+  const { id } = useParams<{ id: string }>();
+  const courseId = id ? id.toString() : "";
+
   const [returnCode, setReturnCode] = useState<number | null>(0);
   const [course, setCourse] = useState<Course | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
+  const [session, setSession] = useState<Session[] | null>(null);
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [buttonText, setButtonText] = useState("");
   const [loading, setLoading] = useState(false);
   const [countdown, setCountDown] = useState(5);
 
   const navigate = useNavigate();
-  const courseId = "6713859755b6534784014184";
   const colors = [
     "text-red-500",
     "text-yellow-500",
@@ -72,8 +55,8 @@ const LearnCoursePage = () => {
   useEffect(() => {
     fetchCourse(courseId).then((data) => {
       if (data) {
-        setCourse(data);
-        setSession(data.session_list);
+        setCourse(data.data);
+        setSession(data.data.session_list || []);
         if (data.session_list && data.session_list.length > 0) {
           const firstSession = data.session_list[0];
           if (firstSession.lesson_list && firstSession.lesson_list.length > 0) {

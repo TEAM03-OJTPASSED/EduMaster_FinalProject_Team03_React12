@@ -2,13 +2,13 @@ import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_APIKEY_FIREBASE_URL,
-  authDomain: import.meta.env.VITE_AUTHDOMAIN_URL,
-  projectId: import.meta.env.VITE_PROJECTID_URL,
-  storageBucket: import.meta.env.VITE_STORAGEBUCKET_URL,
-  messagingSenderId: import.meta.env.VITE_MESSAGINGSENDERID_URL,
-  appId: import.meta.env.VITE_APPID_URL,
-  measurementId: import.meta.env.VITE_MEASUREMENTID_URL,
+  apiKey: "AIzaSyBfABck7Ffd9jSYoJVOFdGpztWmlfdDRWg",
+  authDomain: "edumaster-3e1b3.firebaseapp.com",
+  projectId: "edumaster-3e1b3",
+  storageBucket: "edumaster-3e1b3.appspot.com",
+  messagingSenderId: "952476368416",
+  appId: "1:952476368416:web:fdc94ade6d748673560645",
+  measurementId: "G-RCYFJ83MH4",
 };
 
 // Khởi tạo Firebase

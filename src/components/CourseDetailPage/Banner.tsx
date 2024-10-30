@@ -1,51 +1,44 @@
+import { Course } from "../../models/Course.model";
 import { CourseSummary } from "./CourseSummary";
 
 type Props = {
-  courseId: string;
-  title?: string;
-  category?: string;
-  overview?: string;
-  instructor?: string;
-  timeToComplete?: string;
-  imageUrl?: string;
-  price?: number;
-  discount?: number;
+  course: Course;
   isPurchased: boolean;
+  id: string;
 };
 export const Banner = ({
-  courseId,
-  title,
-  category,
-  overview,
-  instructor,
-  imageUrl,
-  price,
-  discount,
+  id,
+  course,
   isPurchased,
 }: Props) => {
+
+  const totalLessons = course.session_list.reduce((sum, session) => {
+    return sum + session.lesson_list.length;
+  }, 0);
+
   return (
     <div className="font-exo flex flex-col bg-orange-50 px-20 lg:-mx-40 -mx-24 pb-10">
       <div className="flex gap-8 pt-10">
         <div className="lg:w-2/3 flex flex-col gap-4 items-start">
           <div className="bg-orange-500 text-white font-bold px-4 py-2 rounded-lg">
-            {category}
+            {course.category_name}
           </div>
-          <div className="font-jost text-5xl font-bold text-gradient">{title}</div>
-          <div className="text-lg">{overview}</div>
+          <div className="font-jost text-5xl font-bold text-gradient">{course.name}</div>
+          <div className="text-lg">{course.description}</div>
           <div className="text-lg">
             Instructor:{" "}
             <span
               className="px-2 underline"
               onClick={() => alert("Instructor clicked")}
             >
-              {instructor}
+              {course.instructor_name}
             </span>
           </div>
           {isPurchased ? (
             <div className="flex items-baseline gap-4">
               <div
                 className="bg-orange-500 text-white text-2xl font-semibold px-8 py-4 rounded cursor-pointer"
-                onClick={() => (window.location.href = `/learn/${courseId}`)}
+                onClick={() => (window.location.href = `/learn/${id}`)}
               >
                 Learn Now
               </div>
@@ -57,18 +50,18 @@ export const Banner = ({
                 Start Now
               </div>
               <div className="flex flex-col items-start justify-center ml-4">
-                {discount && discount > 0 ? (
+                {course.discount && course.discount > 0 ? (
                   <>
                     <div className="text-xl line-through text-gray-500">
-                      US${price?.toFixed(2)}
+                      US${course.price.toFixed(2)}
                     </div>
                     <div className="text-2xl font-bold text-orange-500">
-                      US${(price! - (price! * discount) / 100).toFixed(2)}
+                      US${course.price_paid.toFixed(2)}
                     </div>
                   </>
                 ) : (
                   <div className="text-2xl font-bold text-orange-500">
-                    ${price?.toFixed(2)}
+                    ${course.price.toFixed(2)}
                   </div>
                 )}
               </div>
@@ -78,7 +71,7 @@ export const Banner = ({
         <div className="hidden lg:w-1/3 lg:block relative">
           <div className="absolute inset-0">
             <img
-              src={imageUrl}
+              src={course.image_url}
               alt="Course"
               className="rounded-lg w-full h-full object-cover"
             />
@@ -87,11 +80,11 @@ export const Banner = ({
       </div>
       <div className="relative flex justify-center">
         <CourseSummary
-          time={0}
-          student={0}
-          level={""}
-          lessons={0}
-          quizzes={0}
+          time={course.full_time}
+          student={course.enrolled}
+          level={course.level}
+          lessons={totalLessons}
+          quizzes={0}   
         />
       </div>
     </div>
