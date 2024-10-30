@@ -5,28 +5,30 @@ export interface Course  {
   name: string;
   category_id: string;
   description: string;
-  content: string;
+  content: string; // Assuming content is HTML string
   status: string;
-  video_url: string;
+  video_url?: string; // Optional video URL
   image_url: string;
   tag: string[];
   level: string;
+  enrolled: number;
   price: number;
   discount: number;
-  enrolled: number;
   created_at: string;
+  updated_at: string;
+  price_paid: number;
+  full_time: number; // Assuming full_time represents duration
   instructor_id: string;
   instructor_name: string;
   category_name: string;
-  price_paid: number;
-  full_time: number;
+  session_count: number;
+  lesson_count: number;
   session_list: Session[];
   is_in_cart: boolean;
   is_purchased: boolean;
   average_rating: number;
   review_count: number;
-  updated_at: string;
-};
+}
 
 export interface CourseLog {
   _id: string;

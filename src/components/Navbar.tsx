@@ -242,7 +242,7 @@ const Navbar = () => {
                 </span>
               </button>
             )}
-            {userLoggedIn && token ? (
+            {userLoggedIn ? (
               <Dropdown menu={profileMenu}>
                 <div className="w-10 h-10 text-xl rounded-full flex items-center justify-center cursor-pointer">
                   <UserOutlined />

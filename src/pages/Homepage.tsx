@@ -1,5 +1,5 @@
 import { useCustomNavigate } from "../hooks/customNavigate";
-import { Button, notification } from "antd";
+import { Button } from "antd";
 import heroImage from "../assets/pexels-kseniachernaya-7301126.jpg";
 // import { BiSearch } from "react-icons/bi";
 import CategoriesGrid from "../components/home/CategoriesGrid";
@@ -23,10 +23,13 @@ import { ProofOfProduct } from "../components/home/ProofOfProduct";
 import Search from "antd/es/input/Search";
 import { BiSolidArrowFromLeft } from "react-icons/bi";
 import { IoArrowUpOutline } from "react-icons/io5";
-import { useEffect } from "react";
 import { handleAddCart } from "../utils/handleAddCart";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store/store";
+import { Course } from "../models/Course.model";
+import ClientService from "../services/client.service";
+import { GetCourseClient } from "../models/Client.model";
+import { useEffect, useState } from "react";
 
 interface Category {
   icon: React.ReactNode;
@@ -87,119 +90,35 @@ const categories: Category[] = [
   },
 ];
 
-interface Course {
-  id: number;
-  image_url: string;
-  category: string;
-  name: string;
-  author: string;
-  duration: string;
-  students: number;
-  price: number | string;
-  discount: number;
-  lessons: number;
-  description?: string;
-  updatedDate?: string;
-}
-
-const courses: Course[] = [
-  {
-    id: 1,
-    image_url: "/placeholder.svg?height=200&width=300",
-    category: "Photography",
-    name: "Create An LMS Website With LearnPress",
-    author: "Determined-Poitras",
-    duration: "2 Weeks",
-    students: 156,
-    price: "Free",
-    lessons: 2,
-    discount: 0,
-  },
-  {
-    id: 2,
-    image_url: "/placeholder.svg?height=200&width=300",
-    category: "Photography",
-    name: "Design A Website With ThimPresscrececerrcerverger",
-    author: "Determined-Poitras",
-    duration: "2 Weeks",
-    students: 156,
-    price: 49.0,
-    lessons: 2,
-    discount: 0,
-
-  },
-  {
-    id: 3,
-    image_url: "/placeholder.svg?height=200&width=300",
-    category: "Photography",
-    name: "Create An LMS Website With LearnPress",
-    author: "Determined-Poitras",
-    duration: "2 Weeks",
-    students: 156,
-    price: "Free",
-    lessons: 2,
-    discount: 0,
-
-  },
-  {
-    id: 4,
-    image_url: "/placeholder.svg?height=200&width=300",
-    category: "Photography",
-    name: "Create An LMS Website With LearnPress",
-    author: "Determined-Poitras",
-    duration: "2 Weeks",
-    students: 156,
-    price: "Free",
-    lessons: 2,
-    discount: 0,
-
-  },
-  {
-    id: 5,
-    image_url: "/placeholder.svg?height=200&width=300",
-    category: "Photography",
-    name: "Create An LMS Website With LearnPress",
-    author: "Determined-Poitras",
-    duration: "2 Weeks",
-    students: 156,
-    price: "Free",
-    lessons: 2,
-    discount: 0,
-
-  },
-  {
-    id: 6,
-    image_url: "/placeholder.svg?height=200&width=300",
-    category: "Photography",
-    name: "Create An LMS Website With LearnPress",
-    author: "Determined-Poitras",
-    duration: "2 Weeks",
-    students: 156,
-    price: "Free",
-    lessons: 2,
-    discount: 0,
-
-  },
-];
 
 const HomePage = () => {
+  const [courses, setCourses] = useState<Course[]>([]);
+  const initialCoursesParams: GetCourseClient = {
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 6,
+    },
+    searchCondition: {
+      keyword: "",
+      is_deleted: false,
+      category_id: "",
+    }
+  }
+
+  useEffect(() => {
+        const fetchCourses = async () => {
+          const response = await ClientService.getCourses(initialCoursesParams);
+          setCourses(response?.data?.pageData ?? []);
+
+        };
+
+        fetchCourses(); // Call the async function
+    });
+
+  
+
   const navigate = useCustomNavigate();
   
-  useEffect(() => {
-    // Check if the user tried to access an unauthorized page
-    const unauthorized = localStorage.getItem("unauthorized");
-
-    if (unauthorized) {
-      notification.error({
-        message: "Unauthorized Access",
-        description:
-          "You are logged in, but you do not have permission to access this page.",
-      });
-
-      // Clear the unauthorized flag from localStorage after showing the notification
-      localStorage.removeItem("unauthorized");
-    }
-  }, []);
   window.addEventListener("scroll", function () {
     const floatElements = document.querySelectorAll(".float-animation");
 

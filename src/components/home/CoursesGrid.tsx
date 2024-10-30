@@ -1,20 +1,7 @@
 import { Row, Col, Skeleton } from "antd";
 import CourseCard from "../CourseCard";
+import { Course } from "../../models/Course.model";
 
-interface Course {
-  id: number;
-  image_url: string;
-  category: string;
-  name: string;
-  author: string;
-  duration: string;
-  students: number;
-  price: number | string;
-  discount: number;
-  lessons: number;
-  description?: string;
-  updatedDate?: string;
-}
 
 interface CoursesGridProps {
   viewMode: "grid" | "list";
@@ -36,7 +23,7 @@ export default function CoursesGrid({ viewMode, courses, onAddCartClick }: Cours
               lg={viewMode === "list" ? 24 : 12}
               xl={viewMode === "list" ? 24 : 8}
 
-              key={course.id}
+              key={course._id}
               // className="transition-all"
             >
               <CourseCard course={course} index={index} viewMode={viewMode} onAddCartClick={onAddCartClick} />

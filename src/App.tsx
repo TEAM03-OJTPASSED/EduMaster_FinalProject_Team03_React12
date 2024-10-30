@@ -82,10 +82,28 @@ function App() {
             {/* General Layout */}
             <Route path="/" element={<GeneralLayout />}>
               <Route path="/" element={<HomePage />} />
-              <Route path="/login" element={<Loginpage />} />
-              <Route path="/signup" element={<SignUppage />} />
+              <Route
+                path="/login"
+                element={
+                  <ProtectedRoute>
+                    <Loginpage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/signup"
+                element={
+                  <ProtectedRoute>
+                    <SignUppage />
+                  </ProtectedRoute>
+                }
+              />
+
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-              <Route path="/verify-email/:verification_id" element={<VerifySuccessToken />} />
+              <Route
+                path="/verify-email/:verification_id"
+                element={<VerifySuccessToken />}
+              />
               <Route path="/course" element={<CoursesPage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/contact" element={<ContactPage />} />
