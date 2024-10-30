@@ -1,3 +1,5 @@
+import { LessonSearchCondition, PageInfo } from "./SearchInfo.model";
+
 export interface Lesson {
   _id: string;
   name: string;
@@ -29,4 +31,15 @@ export interface LessonRequest {
   image_url: string;
   full_time: number;
   position_order: number;
+}
+
+export interface GetLessons { 
+  searchCondition: LessonSearchCondition;
+  pageInfo: PageInfo;
+}
+
+export enum LessonTypeEnum {
+    TEXT = "text",
+    VIDEO = "video",
+    IMAGE = "image",
 }

@@ -5,6 +5,8 @@ import { BiBook } from "react-icons/bi";
 import { FaShoppingCart } from "react-icons/fa";
 import { TiUserOutline } from "react-icons/ti";
 import { Course } from "../models/Course.model";
+import { FaStar } from "react-icons/fa6";
+
 
 const CourseCard: React.FC<{
   course: Course;
@@ -38,7 +40,7 @@ const CourseCard: React.FC<{
             <div className="relative">
               <img
                 alt={course.name}
-                src={"https://picsum.photos/400/192"}
+                src={course.image_url}
                 className={`${
                   viewMode === "list" ? "min-w-[200px]  w-[200px] md:min-w-[250px] md:w-[250px]" : "w-full"
                 } h-56 object-cover`}
@@ -65,12 +67,12 @@ const CourseCard: React.FC<{
                   className="mr-1 text-orange-500"
                   size={18}
                 />
-                {course.full_time}
+                {course.full_time} Hours
               </span>
-              {/* <span className="flex items-center justify-end">
-                <TiUserOutline className="mr-1 text-orange-500" size={20} />
-                {course.students} Students
-              </span> */}
+              <span className="flex items-center justify-end text-left">
+                <FaStar  className="mr-1 text-yellow-400" size={20} />
+                {course.average_rating}
+              </span>
              
                 <span className="flex items-center">
                   <BiBook className="mr-1 text-orange-500" size={18} />

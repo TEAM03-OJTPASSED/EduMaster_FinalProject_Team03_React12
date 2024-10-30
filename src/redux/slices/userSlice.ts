@@ -4,31 +4,30 @@ import { User } from "../../models/UserModel";
 import { DataInterface } from "../../type/data.type";
 import { SearchParamInterface } from "../../type/search.type";
 
-
 interface initialStateInterface {
   register: {
-    loading: boolean,
-    success: boolean,
-    message: string,
-  },
+    loading: boolean;
+    success: boolean;
+    message: string;
+  };
   previewProfile: {
-    loading: boolean,
-    success: boolean,
-    message: string,
-  },
+    loading: boolean;
+    success: boolean;
+    message: string;
+  };
   forgotPassword: {
-    loading: boolean,
-    success: boolean,
-    message: string,
-  },
-  users:{
-    loading: boolean,
-    success: boolean,
-    data : DataInterface<User>
-  }
-};
+    loading: boolean;
+    success: boolean;
+    message: string;
+  };
+  users: {
+    loading: boolean;
+    success: boolean;
+    data: DataInterface<User>;
+  };
+}
 
-const initialState :initialStateInterface = {
+const initialState: initialStateInterface = {
   register: {
     loading: false,
     success: false,
@@ -44,24 +43,27 @@ const initialState :initialStateInterface = {
     success: false,
     message: "",
   },
-  users:{
+  users: {
     loading: false,
     success: false,
-    data : {
+    data: {
       pageData: [],
-      pageInfo :{
-          pageNum: 1,
-          pageSize: 10,
-          totalItems: 0,
-          totalPages: 0
-        }
-    } ,
-  }
+      pageInfo: {
+        pageNum: 1,
+        pageSize: 10,
+        totalItems: 0,
+        totalPages: 0,
+      },
+    },
+  },
 };
-export const getUsersData = createAsyncThunk("user/getAllUser", async (searchParam : SearchParamInterface) => {
-  const res = await postRequest("admin/users",searchParam);
-  return res.data;
-});
+export const getUsersData = createAsyncThunk(
+  "user/getAllUser",
+  async (searchParam: SearchParamInterface) => {
+    const res = await postRequest("admin/users", searchParam);
+    return res.data;
+  }
+);
 
 const usersSlice = createSlice({
   name: "users",
@@ -102,7 +104,7 @@ const usersSlice = createSlice({
     },
     forgotPasswordFulfilled: (state) => {
       state.forgotPassword.loading = false;
-      state.forgotPassword.success = true; 
+      state.forgotPassword.success = true;
       state.forgotPassword.message = "Password reset email sent successfully";
     },
     forgotPasswordRejected: (state) => {
@@ -112,20 +114,20 @@ const usersSlice = createSlice({
         "Email does not exist or something went wrong.";
     },
   },
-  extraReducers:(builder) => {
-      builder
-      .addCase(getUsersData.pending,(state)=>{
-        state.users.loading = true
+  extraReducers: (builder) => {
+    builder
+      .addCase(getUsersData.pending, (state) => {
+        state.users.loading = true;
       })
-      .addCase(getUsersData.fulfilled,(state,action)=>{
-        state.users.loading = false
-        state.users.success = true
-        state.users.data = action.payload as DataInterface<User>
+      .addCase(getUsersData.fulfilled, (state, action) => {
+        state.users.loading = false;
+        state.users.success = true;
+        state.users.data = action.payload as DataInterface<User>;
       })
-      .addCase(getUsersData.rejected,(state)=>{
-        state.users.loading = false
-        state.users.success = false
-      })
+      .addCase(getUsersData.rejected, (state) => {
+        state.users.loading = false;
+        state.users.success = false;
+      });
   },
 });
 
@@ -142,5 +144,3 @@ export const {
 } = usersSlice.actions;
 
 export default usersSlice.reducer;
-
-

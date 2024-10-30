@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import LoadingWrapper from "./components/Loading/LoadingWrapper";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import CoursesPage from "./pages/CoursePage";
 import BlogPage from "./pages/BlogPage";
 import CourseDetailPage from "./pages/CourseDetailPage";
@@ -72,8 +72,18 @@ import ProfilePage from "./pages/profile/ProfilePage";
 import StudentSubscriptions from "./pages/StudentDashboard/StudentSubscriptions";
 import StudentOrderHistory from "./pages/StudentDashboard/StudentOrderHistory";
 import VerifySuccessToken from "./pages/AuthPage/VerifyToken";
+import { gapi } from "gapi-script";
 
 function App() {
+  useEffect(() => {
+    const init = () => {
+      gapi.client.init({
+        clientId:"67368420889-utrdru1873d1pudjah97ihj32vvfire8.apps.googleusercontent.com",
+        scope:"profile email"
+      });
+    };
+    gapi.load("client:auth2",init)
+  }, []);
   return (
     <BrowserRouter>
       <Suspense fallback={<LoadingWrapper />}>
