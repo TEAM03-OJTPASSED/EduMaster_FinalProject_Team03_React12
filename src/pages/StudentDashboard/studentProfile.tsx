@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 
 const StudentProfile = () => {
-  const { currentUser } = useSelector((state: RootState) => state.auth);
+  const { currentUser } = useSelector((state: RootState) => state.auth.login);
   const [formData, setFormData] = useState({
     avatar: "",
     fullName: "",

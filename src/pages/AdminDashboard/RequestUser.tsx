@@ -1,40 +1,60 @@
 import { useEffect, useState } from "react";
 import { Table, Button, Input, Space, Card, Modal, message, Spin } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import { previewInstructor } from "../../services/user.service";
+import useSearch from "../../hooks/useSearch";
+import { getUsers, previewInstructor } from "../../services/user.service";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store/store";
-import { getUsersData } from "../../redux/slices/userSlice";
-import { SearchParamInterface } from "../../type/search.type";
 
 const RequestUser = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, data } = useSelector((state: RootState) => state.users.users);
+  const { loading, success } = useSelector(
+    (state: RootState) => state.users.previewProfile
+  );
   const [reasonVisible, setReasonVisible] = useState(false);
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [users, setUsers] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
   const [reason, setReason] = useState("");
+  const [pageNum, setPageNum] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
+  const { searchText, filteredData, handleSearchChange } = useSearch(users, [
+    "name",
+    "email",
+  ]);
 
-  // Fetch users based on page number and page size
-  const fetchUsers = async (pageNum: number, pageSize: number) => {
-    const searchParams: SearchParamInterface = {
+  const fetchUsers = async (
+    pageNum: number,
+    pageSize: number,
+    keyword: string
+  ) => {
+    const searchParams = {
       searchCondition: {
-        keyword: "",
+        keyword,
         role: "instructor",
         status: true,
         is_verified: "",
-        is_deleted: false,
+        is_delete: false,
       },
       pageInfo: { pageNum, pageSize },
     };
-    await dispatch(getUsersData(searchParams));
-  };
-  useEffect(() => {
-    // Initialize data with current pagination
-    fetchUsers(data.pageInfo?.pageNum || 1, data.pageInfo?.pageSize || 10);
-  }, [data.pageInfo?.pageNum, data.pageInfo?.pageSize]);
 
-  const handleTableChange = async (pagination: any) => {
-    await fetchUsers(pagination.current, pagination.pageSize);
+    try {
+      const response = await getUsers(searchParams);
+      setUsers((response as any)?.pageData);
+      setTotal((response as any)?.pageInfo.totalItems);
+    } catch (err) {
+      console.error("Error fetching users:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers(pageNum, pageSize, searchText);
+  }, [pageNum, pageSize, searchText]);
+
+  const handleTableChange = (pagination: any) => {
+    setPageNum(pagination.current);
+    setPageSize(pagination.pageSize);
   };
 
   const handleShowReason = (record: any) => {
@@ -48,13 +68,12 @@ const RequestUser = () => {
       status,
       comment: reason,
     };
-    const response = await previewInstructor(formPreview, dispatch);
-    if (response.success) {
+    await previewInstructor(formPreview, dispatch);
+    if (success) {
       message.success("Submit preview successfully");
       setReasonVisible(false);
-    } else {
-      message.error("Failed to submit preview");
     }
+    console.log(formPreview);
   };
 
   const columns = [
@@ -117,13 +136,15 @@ const RequestUser = () => {
           placeholder="Tìm kiếm..."
           prefix={<SearchOutlined />}
           style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
+          value={searchText}
+          onChange={handleSearchChange}
         />
         <Table
-          dataSource={data.pageData}
+          dataSource={filteredData}
           pagination={{
-            current: data.pageInfo?.pageNum || 1,
-            pageSize: data.pageInfo?.pageSize || 10,
-            total: data.pageInfo?.totalItems || 0,
+            current: pageNum,
+            pageSize,
+            total,
             showSizeChanger: true,
           }}
           columns={columns}
