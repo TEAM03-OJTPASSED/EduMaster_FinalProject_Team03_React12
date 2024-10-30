@@ -1,4 +1,5 @@
 import { CourseStatusEnum } from "../pages/AdminDashboard/monitors/course/courseList";
+import { LessonTypeEnum } from "./Lesson.model";
 import { PurchaseStatusEnum } from "./Purchase.model";
 
 export interface SearchCondition {
@@ -24,9 +25,11 @@ export interface SessionSearchCondition {
 }
 
 export interface LessonSearchCondition {
-  course_id: string;
+  course_id?: string;
+  session_id?: string;
+  lesson_type?: LessonTypeEnum;
   keyword?: string;
-  is_position_order: boolean;
+  is_position_order: false;
   is_deleted: false;
 }
 
