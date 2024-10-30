@@ -81,20 +81,6 @@ const EditUser: React.FC<EditUserProps> = ({
         <Form.Item name="phone_number" label="Số điện thoại">
           <Input />
         </Form.Item>
-        <Form.Item
-          name="role"
-          label="Loại người dùng"
-          rules={[{ required: true }]}
-        >
-          <Select>
-            <Option value="admin">Admin</Option>
-            <Option value="instructor">Instructor</Option>
-            <Option value="student">Student</Option>
-          </Select>
-        </Form.Item>
-        <Form.Item name="status" label="Trạng thái" valuePropName="checked">
-          <Switch />
-        </Form.Item>
         <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
           <Button type="primary" htmlType="submit" style={{ float: "right" }}>
             Lưu

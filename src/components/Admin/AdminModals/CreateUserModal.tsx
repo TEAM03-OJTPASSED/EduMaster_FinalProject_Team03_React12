@@ -1,4 +1,5 @@
 import { Modal, Form, Input, Button } from "antd";
+import { UserService } from "../../../services/user.service";
 // import { createUser } from "../../../services/user.service";
 
 interface CreateUserProps {
@@ -17,19 +18,16 @@ const CreateUser: React.FC<CreateUserProps> = ({
   const handleFinish = async (values: any) => {
     try {
       // Call the API to create a new user
-      const response = await createUser(values);
+      const response = await UserService.createUser(values);
       if (response.success) {
-        // If the API response is successful, trigger onSave
         onSave(response.data);
       } else {
-        // Handle failure response accordingly (you might want to show an error message)
         console.error("Failed to create user:", response);
       }
       form.resetFields();
       onClose();
     } catch (error) {
       console.error("Error creating user:", error);
-      // Handle error accordingly (show a notification or message)
     }
   };
 

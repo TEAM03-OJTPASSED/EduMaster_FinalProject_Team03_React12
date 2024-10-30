@@ -8,22 +8,17 @@ import {
 } from "@ant-design/icons";
 
 import useSearch from "../../hooks/useSearch";
-import UserService, {
-  changeRole,
-  changeStatus,
-  deleteUser,
-  updatedUser,
-} from "../../services/user.service";
 import EditUser from "../../components/Admin/AdminModals/EditUserModal";
 import CreateUser from "../../components/Admin/AdminModals/CreateUserModal";
 import { UserSearchParams } from "../../models/SearchInfo.model";
 import { User } from "../../models/UserModel";
+import { UserService } from "../../services/user.service";
 
 const { Option } = Select;
 
 const UserManagement: React.FC = () => {
   const [editVisible, setEditVisible] = useState(false);
-  const [createVisible, setCreateVisible] = useState(false); // State for CreateUser modal
+  const [createVisible, setCreateVisible] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [pageNum, setPageNum] = useState(1);
@@ -44,10 +39,10 @@ const UserManagement: React.FC = () => {
       searchCondition: {
         keyword,
         role: "",
-        status: statusFilter !== null ? Boolean(statusFilter) : undefined, // Chuyển đổi thành boolean
+        status: statusFilter !== null ? Boolean(statusFilter) : undefined,
         is_delete: false,
-        // is_verified: true, // Nếu is_verified cũng là boolean
-        is_verified: "", // Nếu is_verified cũng là boolean
+        is_verified: true,
+        // is_verified: "", // Nếu is_verified cũng là boolean
       },
       pageInfo: { pageNum, pageSize },
     };
@@ -68,7 +63,7 @@ const UserManagement: React.FC = () => {
 
   const handleAddUser = () => {
     setCurrentUser(null);
-    setCreateVisible(true); // Open CreateUser modal
+    setCreateVisible(true);
   };
 
   const handleEdit = (record: User) => {
@@ -87,57 +82,23 @@ const UserManagement: React.FC = () => {
       console.error("No user selected for editing.");
       return;
     }
-
     const userId = currentUser._id;
-    const promises: Promise<any>[] = [];
-
-    // Check role change
-    if (updatedUserData.role !== currentUser.role) {
-      promises.push(changeRole(userId, updatedUserData.role));
-    }
-
-    // Check status change
-    if (updatedUserData.status !== currentUser.status) {
-      promises.push(changeStatus(userId, updatedUserData.status));
-    }
-
-    // Check for other updates
-    const { role, status, ...otherUpdatedFields } = updatedUserData;
-    const hasOtherUpdates = Object.keys(otherUpdatedFields).some(
-      (key) =>
-        otherUpdatedFields[key as keyof User] !== currentUser[key as keyof User]
-    );
-
-    if (hasOtherUpdates) {
-      promises.push(updatedUser(userId, otherUpdatedFields));
-    }
-
     try {
-      await Promise.all(promises);
+      await UserService.updateUser(userId, updatedUserData);
       setEditVisible(false);
       const updatedUsers = users.map((user) =>
         user._id === userId ? { ...user, ...updatedUserData } : user
       );
       setUsers(updatedUsers);
-      fetchUsers(pageNum, pageSize, searchText); // Fetch users after save
+      fetchUsers(pageNum, pageSize, searchText);
     } catch (error) {
       console.error("Error updating user:", error);
     }
   };
 
   const handleDelete = async (record: User) => {
-    try {
-      const userId = record._id;
-      const response = await deleteUser(userId);
-      if (response) {
-        console.log("User deleted successfully");
-        fetchUsers(pageNum, pageSize, searchText); // Refresh the user list
-      } else {
-        console.error("Failed to delete user");
-      }
-    } catch (error) {
-      console.error("Error deleting user:", error);
-    }
+    const userId = record._id;
+    await UserService.deleteUser(userId);
   };
 
   useEffect(() => {
@@ -149,10 +110,6 @@ const UserManagement: React.FC = () => {
     setPageSize(pagination.pageSize);
     setStatusFilter(filters.status ? filters.status[0] : null);
   };
-
-  useEffect(() => {
-    fetchUsers(pageNum, pageSize, searchText);
-  }, [pageNum, pageSize, searchText, statusFilter]);
 
   const columns = [
     {
@@ -183,12 +140,11 @@ const UserManagement: React.FC = () => {
         <Switch
           checked={status}
           onChange={async (checked) => {
-            try {
-              await changeStatus(record._id, checked);
-              fetchUsers(pageNum, pageSize, searchText);
-            } catch (error) {
-              console.error("Error updating status:", error);
-            }
+            await UserService.changeStatus({
+              user_id: record._id,
+              status: checked,
+            });
+            fetchUsers(pageNum, pageSize, searchText);
           }}
         />
       ),
@@ -202,7 +158,7 @@ const UserManagement: React.FC = () => {
           value={text}
           style={{ width: 120 }}
           onChange={async (value) => {
-            await changeRole(record._id, value);
+            await UserService.changeRole({ user_id: record._id, role: value });
             fetchUsers(pageNum, pageSize, searchText);
           }}
         >
