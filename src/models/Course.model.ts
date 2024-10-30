@@ -28,6 +28,7 @@ export interface Course  {
   is_purchased: boolean;
   average_rating: number;
   review_count: number;
+  updated_at: string;
 }
 
 export interface CourseLog {
@@ -53,6 +54,7 @@ export interface CourseRequest {
   image_url: string;
   price: number;
   discount: number;
+  level: number;
 }
 
 export interface CourseStatusUpdate {

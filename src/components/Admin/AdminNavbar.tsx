@@ -10,7 +10,7 @@ import { RootState } from "../../redux/store/store";
 const { Sider } = Layout;
 
 const AdminNavBar = () => {
-  const { currentUser } = useSelector((state: RootState) => state.auth);
+  const { currentUser } = useSelector((state: RootState) => state.auth.login);
 
   const navigate = useCustomNavigate();
   const [isMobile, setIsMobile] = useState(false);

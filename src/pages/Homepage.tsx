@@ -93,27 +93,29 @@ const categories: Category[] = [
 
 const HomePage = () => {
   const [courses, setCourses] = useState<Course[]>([]);
-  const initialCoursesParams: GetCourseClient = {
-    pageInfo: {
-      pageNum: 1,
-      pageSize: 6,
-    },
-    searchCondition: {
-      keyword: "",
-      is_deleted: false,
-      category_id: "",
-    }
-  }
+  const [categories, setCategories] = useState<Category[]>([]);
+  
 
   useEffect(() => {
-        const fetchCourses = async () => {
-          const response = await ClientService.getCourses(initialCoursesParams);
-          setCourses(response?.data?.pageData ?? []);
+    const initialCoursesParams: GetCourseClient = {
+      pageInfo: {
+        pageNum: 1,
+        pageSize: 6,
+      },
+      searchCondition: {
+        keyword: "",
+        is_deleted: false,
+        category_id: "",
+      }
+    }
+    const fetchCourses = async () => {
+      const response = await ClientService.getCourses(initialCoursesParams);
+      setCourses(response?.data?.pageData ?? []);
 
-        };
+    };
 
-        fetchCourses(); // Call the async function
-    });
+    fetchCourses(); // Call the async function
+    },[]);
 
   
 
@@ -138,7 +140,7 @@ const HomePage = () => {
     document.documentElement.scrollTop = 0;
   };
 
-  const {currentUser} = useSelector((state : RootState) => state.auth)
+  const {currentUser} = useSelector((state : RootState) => state.auth.login)
 
 
   const onAddCart = (course: Course) => {

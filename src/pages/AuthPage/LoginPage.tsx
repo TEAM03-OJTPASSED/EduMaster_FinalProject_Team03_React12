@@ -1,17 +1,19 @@
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
-import { Button, Divider, Form, Input } from "antd";
+import { Button, Divider, Form, Input, Modal } from "antd";
 import { FormProps } from "antd";
 import { Player } from "@lottiefiles/react-lottie-player";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getCurrentUser,
+ 
   login,
-  loginWithGoogle,
+  // loginWithGoogle,
+  setRegisterGoogle,
 } from "../../redux/slices/authSlices";
 import { AppDispatch, RootState } from "../../redux/store/store";
+import ModalRegisterGoogle from "../../components/ModalRegisterGoogle";
 
 export type LoginProps = {
   email: string;
@@ -20,13 +22,19 @@ export type LoginProps = {
 
 const Loginpage = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { currentUser, token, loading } = useSelector(
-    (state: RootState) => state.auth
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const { currentUser, token, loading, is_register_google } = useSelector(
+    (state: RootState) => state.auth.login
   );
   const navigate = useNavigate();
+
   useEffect(() => {
-    console.log("Token:", token);
-    console.log("CurrentUser:", currentUser);
+    if (is_register_google) {
+      setIsOpenModal(true);
+    }
+  }, [is_register_google]);
+
+  useEffect(() => {
     if (currentUser) {
       if (
         currentUser?.role === "student" ||
@@ -45,7 +53,7 @@ const Loginpage = () => {
     try {
       const { email, password } = values;
       await dispatch(login({ email, password }));
-      await dispatch(getCurrentUser());
+      // await dispatch(getCurrentUser());
     } catch (error) {
       console.log(error);
     }
@@ -53,15 +61,12 @@ const Loginpage = () => {
   const handleLoginGoogleSuccess = async (
     credentialResponse: CredentialResponse
   ) => {
-    try {
-      console.log("credential",credentialResponse);
-      await dispatch(
-        loginWithGoogle(credentialResponse.credential as string)
-      );
-      await dispatch(getCurrentUser());
-    } catch (error) {
-      console.log(error);
+    console.log("credential", credentialResponse);
+    if (credentialResponse.credential) {
+      dispatch(setRegisterGoogle({is_register : true, google_id:credentialResponse.credential}));
     }
+    // await dispatch(loginWithGoogle(credentialResponse.credential as string));
+    // await dispatch(getCurrentUser());
   };
 
   return (
@@ -142,13 +147,12 @@ const Loginpage = () => {
             }}
           />
         </div>
-        <div className="text-center mt-6">
-          <span className="text-gray-500">Don’t have an account? </span>
-          <NavLink to={"/signup"} className="text-[#FF782D] hover:underline">
-            Sign up
-          </NavLink>
-        </div>
       </div>
+      {is_register_google && (
+        <Modal open={isOpenModal}  width={800} footer={null} onCancel={() => setIsOpenModal(false)}>
+          <ModalRegisterGoogle />
+        </Modal>
+      )}
     </div>
   );
 };

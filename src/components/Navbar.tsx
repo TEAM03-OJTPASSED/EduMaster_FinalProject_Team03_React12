@@ -48,7 +48,7 @@ const items: MenuItem[] = [
 ];
 
 const Navbar = () => {
-  const { currentUser, token } = useSelector((state: RootState) => state.auth);
+  const { currentUser, token } = useSelector((state: RootState) => state.auth.login);
   const navigate = useCustomNavigate();
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [activeButton, setActiveButton] = useState<string>("");

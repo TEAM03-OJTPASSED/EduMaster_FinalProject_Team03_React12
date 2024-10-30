@@ -1,21 +1,22 @@
 import { Button, Col, Form, FormProps, Input, Row, Select } from "antd";
 import React, { useEffect } from "react";
-import {
-  listCourses,
-  Session,
-} from "../../../AdminDashboard/monitors/course/courseList";
-import { Course } from "../../../AdminDashboard/monitors/course/courseList";
+import { Session } from "../../../../models/Session.model";
+import { Course } from "../../../../models/Course.model";
 
 type SessionOptionsProps = {
   initialState?: Session;
   mode: "create" | "update";
   onFinish: FormProps["onFinish"];
+  listCourses: Course[];
+  isLoading: boolean;
 };
 
 const SessionOptions: React.FC<SessionOptionsProps> = ({
   initialState,
   mode,
   onFinish,
+  listCourses,
+  isLoading,
 }) => {
   const [form] = Form.useForm<Partial<Session>>();
 
@@ -41,7 +42,7 @@ const SessionOptions: React.FC<SessionOptionsProps> = ({
               name="name"
               rules={[{ required: true, message: "Please input session name" }]}
             >
-              <Input placeholder="Course Name" />
+              <Input placeholder="Session Name" />
             </Form.Item>
           </Col>
           <Col xs={{ span: 12 }}>
@@ -51,19 +52,20 @@ const SessionOptions: React.FC<SessionOptionsProps> = ({
               rules={[
                 { required: true, message: "Please input position order" },
               ]}
+              normalize={(value) => (value ? Number(value) : value)}
             >
               <Input type="number" placeholder=" Position Order" />
             </Form.Item>
           </Col>
         </Row>
   
-        <Form.Item label="Course Id" name="course_id">
+        <Form.Item label="Course Name" name="course_id">
           <Select
             placeholder="Select course name"
             options={listCourses.map((course: Course, index) => ({
               key: index,
               label: course.name,
-              value: course.id,
+              value: course._id,
             }))}
           />
         </Form.Item>
@@ -88,6 +90,7 @@ const SessionOptions: React.FC<SessionOptionsProps> = ({
             variant="solid"
             color="primary"
             htmlType="submit"
+            loading={isLoading}
           >
             {mode === "create" ? "Create" : "Change"}
           </Button>

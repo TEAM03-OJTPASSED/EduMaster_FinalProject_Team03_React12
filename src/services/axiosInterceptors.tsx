@@ -1,5 +1,5 @@
-import axios, { AxiosResponse, InternalAxiosRequestConfig } from "axios";
-import handleError from "./error"
+import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import handleError from "./error";
 
 // Tạo instance của axios
 export const axiosClientVer2 = axios.create({
@@ -7,7 +7,6 @@ export const axiosClientVer2 = axios.create({
   timeout: 10000, // Request timeout
   headers: {
     "Content-Type": "application/json",
-
   },
 });
 
@@ -16,16 +15,16 @@ axiosClientVer2.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     // Thêm Authorization header với token, nếu nó tồn tại
     const token = localStorage.getItem("token"); // Hoặc bất kỳ phương pháp nào bạn lưu trữ token
-    console.log("local token",token);
-    
+    console.log("local token", token);
+
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
     return config; // Trả về config đã được chỉnh sửa
   },
-  (error) => {
+  (error: AxiosError) => {
     // Xử lý lỗi request
-    handleError(error)
+    handleError(error);
     return Promise.reject(error);
   }
 );
@@ -33,12 +32,12 @@ axiosClientVer2.interceptors.request.use(
 // Response Interceptor
 axiosClientVer2.interceptors.response.use(
   (response: AxiosResponse) => {
-    // Bạn có thể biến đổi phản hồi ở đây nếu cần
+    // Xử lý thành công response, nếu cần
     return response;
   },
   (error) => {
     // Xử lý lỗi phản hồi toàn cầu
-    handleError(error)
+    handleError(error);
     // Luôn trả về lỗi cho hàm gọi
     return Promise.reject(error);
   }
