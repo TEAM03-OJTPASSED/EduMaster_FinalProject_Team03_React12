@@ -29,7 +29,7 @@ export type Cart = {
 
 
 export interface SearchCartByStatus {
-    searchCondition: SearchCondition;
+    searchCondition: SearchCondition<CartStatusEnum>;
     pageInfo: PageInfo;
 }
 

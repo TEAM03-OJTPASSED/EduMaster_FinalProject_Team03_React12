@@ -4,11 +4,14 @@ import { Cart, CartStatusUpdate, SearchCartByStatus } from "../models/Cart.model
 import { deleteRequest, postRequest, putRequest } from "./httpsMethod"
 
 const CartService = {
-    createCart(cartId: string):  Promise<ApiResponse>{
-        return postRequest(CART_API.CREATE_CART, cartId)
+    createCart(courseId: string):  Promise<ApiResponse>{
+        return postRequest(CART_API.CREATE_CART,{course_id: courseId})
     },
     getCartsByStatus(params: SearchCartByStatus):  Promise<ApiResponse<APIResponseData<Cart>>> {
         return postRequest(CART_API.SEARCH_CART, params)
+    },
+    getCartsAmount(params: SearchCartByStatus):  Promise<ApiResponse<APIResponseData<Cart>>> {
+        return postRequest(CART_API.SEARCH_CART, params, false)
     },
     updateStatusCart(params: CartStatusUpdate):  Promise<ApiResponse> {
         return putRequest(CART_API.UPDATE_CART_STATUS, params)

@@ -2,10 +2,10 @@ import { CourseStatusEnum } from "../pages/AdminDashboard/monitors/course/course
 import { LessonTypeEnum } from "./Lesson.model";
 import { PurchaseStatusEnum } from "./Purchase.model";
 
-export interface SearchCondition {
+export interface SearchCondition<T = unknown> {
   keyword?: string;
   category_id?: string;
-  status?: "active";
+  status?: T;
   is_deleted: false;
 }
 
