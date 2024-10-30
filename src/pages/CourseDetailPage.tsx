@@ -55,11 +55,11 @@ const CourseDetailPage = () => {
     return <DetailSkeleton />;
   }
 
-  if (course) {
+  if (course && id) {
     return (
       <div className="relative">
         <div className="inset-x-0 flex flex-col">
-          <Banner course={course} isPurchased={course.is_purchased} />
+          <Banner course={course} isPurchased={course.is_purchased} id={id} />
         </div>
         <Detail
           isEnrolled={true}

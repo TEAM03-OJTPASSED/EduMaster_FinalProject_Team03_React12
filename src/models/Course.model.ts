@@ -2,6 +2,7 @@ import { PageInfo, SearchCondition } from "./SearchInfo.model";
 import { Session } from "./Session.model";
 
 export interface Course  {
+  name: string;
   category_id: string;
   description: string;
   content: string;

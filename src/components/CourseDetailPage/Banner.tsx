@@ -4,8 +4,10 @@ import { CourseSummary } from "./CourseSummary";
 type Props = {
   course: Course;
   isPurchased: boolean;
+  id: string;
 };
 export const Banner = ({
+  id,
   course,
   isPurchased,
 }: Props) => {
@@ -36,7 +38,7 @@ export const Banner = ({
             <div className="flex items-baseline gap-4">
               <div
                 className="bg-orange-500 text-white text-2xl font-semibold px-8 py-4 rounded cursor-pointer"
-                onClick={() => (window.location.href = `/learn/${course._id}`)}
+                onClick={() => (window.location.href = `/learn/${id}`)}
               >
                 Learn Now
               </div>
