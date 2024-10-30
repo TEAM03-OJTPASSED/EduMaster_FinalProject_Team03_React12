@@ -1,96 +1,125 @@
+import { Layout, Row, Col, Typography, Space, Divider } from "antd";
+import {
+  FacebookFilled,
+  TwitterSquareFilled,
+  InstagramFilled,
+  LinkedinFilled,
+} from "@ant-design/icons";
 import mainImage from "../assets/EduMaster-mainBackground.png";
-import { FaFacebookSquare } from "react-icons/fa";
-import { FaSquarePinterest } from "react-icons/fa6";
-const Footer = () => {
+
+const { Footer } = Layout;
+const { Text, Link } = Typography;
+
+export default function AppFooter() {
   return (
-    <div className="w-full bg-gray-100 p-4">
-      {/* Center container for the footer content */}
-      <div
-        className="flex justify-between items-start mx-auto"
-        style={{ width: "90%" }}
-      >
-        {/* Column 1 */}
-        <div className="flex-1 mr-2">
-          <img
-            src={mainImage}
-            alt="main image"
-            style={{
-              objectFit: "cover",
-              width: "300px",
-              paddingBottom: "30px",
-            }} // Adjusted width for the image
-          />
-          <div style={{ paddingLeft: "25px", fontSize: "14px" }}>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque,
-            consectetur quos. Ab explicabo accusamus hic blanditiis voluptatibus
-            non suscipit ex?
-          </div>
-        </div>
-
-        {/* Column 2 */}
-        <div className="flex-1 mx-2 pt-5 ml-3">
-          <div className="flex flex-col">
-            <div className="text-2xl font-medium pb-5">GET HELP</div>
-            <a href="/contact" className="p-1 pb-2">
-              Contact Us
-            </a>
-            <a href="/" className="p-1 pb-2">
-              Latest Articles
-            </a>
-            <a href="/FAQs" className="p-1 pb-2">
-              FAQ
-            </a>
-          </div>
-        </div>
-
-        {/* Column 3 */}
-        <div className="flex-1 mx-2 pt-5 ml-3">
-          <div className="flex flex-col">
-            <div className="text-2xl font-medium pb-5">PROGRAMS</div>
-            <a href="/" className="p-1 pb-2">
-              Art & Design
-            </a>
-            <a href="/" className="p-1 pb-2">
-              Business
-            </a>
-            <a href="/" className="p-1 pb-2">
-              IT & Software
-            </a>
-            <a href="/" className="p-1 pb-2">
-              Languages
-            </a>
-            <a href="/" className="p-1 pb-2">
-              Programming
-            </a>
-          </div>
-        </div>
-
-        {/* Column 4 */}
-        <div className="flex-1 mx-2 pt-5 ml-3">
-          <div className="flex flex-col">
-            <div className="text-2xl font-medium pb-5">CONTACT US</div>
-            <span className="p-1 pb-5">
-              Address: 2321 New Design Str, Lorem Ipsum10 Hudson Yards, USA{" "}
-            </span>
-            <span className="p-1 pb-5">
-              Tel: + (123) 2500-567-8988 Mail: supportlms@gmail.com
-            </span>
-          </div>
-          <span className="flex items-center space-x-4 p-1 pb-5">
-            <FaFacebookSquare />
-            <FaSquarePinterest />
-          </span>
-        </div>
+    <Footer className="bg-zinc-800 text-white pt-12 pb-4">
+      <div className="container mx-auto px-4">
+        <Row gutter={[32, 32]}>
+          <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+            <div className="flex flex-col items-center">
+              <div className="w-[100px] h-[90px] max-h-[90px] flex justify-center rounded-lg items-center mb-4 bg-white relative overflow-hidden">
+                <img
+                  src={mainImage}
+                  alt="EduMaster Logo"
+                  width={200}
+                  className="max-w-80 mt-[20px]"
+                />
+              </div>
+              <p className="text-lg font-semibold italic mb-4 font-exo text-white">
+                "The right knowledge, a bright future."
+              </p>
+            </div>
+            <Text className="text-sm text-gray-300 font-jost">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
+              euismod bibendum laoreet. Proin gravida dolor sit amet lacus
+              accumsan et viverra justo commodo.
+            </Text>
+          </Col>
+          <Col xs={24} sm={12} md={5} lg={5} xl={5}>
+            <h2 className="text-xl font-bold mb-4 text-white">Get Help</h2>
+            <Space direction="vertical" className="font-jost">
+              <a href="/contact" className="text-gray-300 hover:text-white">
+                Contact Us
+              </a>
+              <a href="/" className="text-gray-300 hover:text-white">
+                Latest Articles
+              </a>
+              <a href="/FAQs" className="text-gray-300 hover:text-white">
+                FAQ
+              </a>
+            </Space>
+          </Col>
+          <Col xs={24} sm={12} md={5} lg={5} xl={5}>
+            <h2 className="text-xl font-bold mb-4 text-white">Programs</h2>
+            <Space direction="vertical" className="font-jost">
+              <a href="/" className="text-gray-300 hover:text-white">
+                Art & Design
+              </a>
+              <a href="/" className="text-gray-300 hover:text-white">
+                Business
+              </a>
+              <a href="/" className="text-gray-300 hover:text-white">
+                IT & Software
+              </a>
+              <a href="/" className="text-gray-300 hover:text-white">
+                Languages
+              </a>
+              <a href="/" className="text-gray-300 hover:text-white">
+                Programming
+              </a>
+            </Space>
+          </Col>
+          <Col xs={24} sm={24} md={6} lg={6} xl={6}>
+            <h2 className="text-xl font-bold mb-4 text-white">Contact Us</h2>
+            <Space direction="vertical" className="mb-4 font-jost">
+              <p className="text-gray-300">
+                Address: 2321 New Design Str, Lorem Ipsum 10 Hudson Yards, USA
+              </p>
+              <p className="text-gray-300">Tel: + (123) 2500-567-8988</p>
+              <p className="text-gray-300">Email: supportlms@gmail.com</p>
+            </Space>
+            <Space size="large">
+              <Link
+                href="https://facebook.com"
+                target="_blank"
+                aria-label="Facebook"
+              >
+                <FacebookFilled className="text-2xl text-gray-300 hover:text-white" />
+              </Link>
+              <Link
+                href="https://twitter.com"
+                target="_blank"
+                aria-label="Twitter"
+              >
+                <TwitterSquareFilled className="text-2xl text-gray-300 hover:text-white" />
+              </Link>
+              <Link
+                href="https://instagram.com"
+                target="_blank"
+                aria-label="Instagram"
+              >
+                <InstagramFilled className="text-2xl text-gray-300 hover:text-white" />
+              </Link>
+              <Link
+                href="https://linkedin.com"
+                target="_blank"
+                aria-label="LinkedIn"
+              >
+                <LinkedinFilled className="text-2xl text-gray-300 hover:text-white" />
+              </Link>
+            </Space>
+          </Col>
+        </Row>
+        <Divider className="my-8 border-gray-600" />
+        <Row justify="center">
+          <Col>
+            <Text className="text-sm text-gray-400">
+              Copyright © {new Date().getFullYear()} Learn At Edu Master for
+              your future | Powered by Team 3
+            </Text>
+          </Col>
+        </Row>
       </div>
-      <div
-        className="border-t border-primary mt-5 flex justify-center items-center"
-        style={{ padding: "30px" }}
-      >
-        Copyright © {new Date().getFullYear()} Let Learn At Edu Master for your
-        future | Powered by Team 3
-      </div>
-    </div>
+    </Footer>
   );
-};
-
-export default Footer;
+}

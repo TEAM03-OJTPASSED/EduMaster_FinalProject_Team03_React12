@@ -1,20 +1,8 @@
-import { useState } from "react";
-import { Table, Input, Card, Tag, TableProps, Button, Modal } from "antd";
-import { SearchOutlined, EyeOutlined } from "@ant-design/icons";
+import { Table, Input, Card, Tag, TableProps } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 import { Lesson, LessonTypeEnum, listLessons } from "../course/courseList";
 
 const PendingLessonList = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
-
-  const showModal = (lesson: Lesson) => {
-    setSelectedLesson(lesson);
-    setIsModalVisible(true);
-  };
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
   const columns: TableProps<Lesson>["columns"] = [
     {
       title: "Name",
@@ -32,6 +20,32 @@ const PendingLessonList = () => {
       key: "user_id",
     },
     {
+      title: "Image",
+      dataIndex: "image_url",
+      key: "image_url",
+      render: (image_url, record) => {
+        return (
+          <div>
+            <img src={image_url} alt={record.name} />
+          </div>
+        );
+      },
+    },
+    {
+      title: "Media",
+      dataIndex: "video_url",
+      key: "video_url",
+      render: (video_url) => {
+        return (
+          <div className="h-full">
+            <video className="h-[150px] w-[200px]" src={video_url} controls>
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        );
+      },
+    },
+    {
       title: "Type",
       dataIndex: "lesson_type",
       key: "lesson_type",
@@ -43,19 +57,6 @@ const PendingLessonList = () => {
       title: "Time",
       dataIndex: "full_time",
       key: "full_time",
-    },
-    {
-      title: "Action",
-      key: "action",
-      render: (_, record: Lesson) => (
-        <>
-          <Button
-            type="text"
-            icon={<EyeOutlined style={{ color: "red" }} />}
-            onClick={() => showModal(record)}
-          />
-        </>
-      ),
     },
   ];
 
@@ -76,23 +77,6 @@ const PendingLessonList = () => {
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
       />
-
-      <Modal
-        title="Lesson Details"
-        visible={isModalVisible}
-        onCancel={handleCancel}
-
-      >
-        {selectedLesson && (
-          <div>
-            <p><strong>Name:</strong> {selectedLesson.name}</p>
-            <p><strong>Session ID:</strong> {selectedLesson.session_id}</p>
-            <p><strong>Instructor:</strong> {selectedLesson.user_id}</p>
-            <p><strong>Type:</strong> {selectedLesson.lesson_type}</p>
-            <p><strong>Time:</strong> {selectedLesson.full_time} minutes</p>
-          </div>
-        )}
-      </Modal>
     </Card>
   );
 };

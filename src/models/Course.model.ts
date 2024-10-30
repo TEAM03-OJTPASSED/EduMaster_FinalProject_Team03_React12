@@ -1,0 +1,81 @@
+import { PageInfo, SearchCondition } from "./SearchInfo.model";
+import { Session } from "./Session.model";
+
+export interface Course  {
+  name: string;
+  category_id: string;
+  description: string;
+  content: string;
+  status: string;
+  video_url: string;
+  image_url: string;
+  tag: string[];
+  level: string;
+  price: number;
+  discount: number;
+  enrolled: number;
+  created_at: string;
+  instructor_id: string;
+  instructor_name: string;
+  category_name: string;
+  price_paid: number;
+  full_time: number;
+  session_list: Session[];
+  is_in_cart: boolean;
+  is_purchased: boolean;
+  average_rating: number;
+  review_count: number;
+  updated_at: string;
+};
+
+export interface CourseLog {
+  _id: string;
+  course_id: string;
+  user_id: string;
+  old_status: CourseStatusEnum; 
+  new_status: CourseStatusEnum;
+  comment: string;
+  created_at: string; 
+  is_deleted: boolean;
+  user_name: string;
+  course_name: string;
+}
+
+
+export interface CourseRequest {
+  name: string;
+  category_id: string;
+  description: string;
+  content: string;
+  video_url: string;
+  image_url: string;
+  price: number;
+  discount: number;
+}
+
+export interface CourseStatusUpdate {
+  course_id: string;
+  new_status: CourseStatusEnum;
+  comment: "string"
+}
+
+enum CourseStatusEnum {
+  NEW = "new",
+  COMPLETED = "completed",
+  WAITING_APPROVE = "waiting_approve",
+  APPROVE = "approve",
+  REJECT = "reject",
+  ACTIVE = "active",
+  INACTIVE = "inactive",
+}
+
+export interface GetCourses {
+  searchCondition: SearchCondition;
+  pageInfo: PageInfo;
+}
+
+export interface GetCourseLogs {
+  searchCondition: SearchCondition;
+  pageInfo: PageInfo;
+}
+

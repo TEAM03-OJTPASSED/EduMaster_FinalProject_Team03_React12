@@ -3,23 +3,34 @@ import { Menu } from "antd";
 import {
   DashboardOutlined,
   BarChartOutlined,
-  PieChartOutlined,
-  LineChartOutlined,
-  SettingOutlined,
   UserOutlined,
   FormOutlined,
   FolderOutlined,
   MoneyCollectOutlined,
   FileTextOutlined,
+  SettingOutlined,
+  BookOutlined,
+  HourglassOutlined,
+  SnippetsOutlined,
+  ShoppingCartOutlined,
+  WalletOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
-const menuItems = [
+interface MenuItem {
+  key: string;
+  icon?: React.ReactNode; // Icon là tùy chọn
+  label: string;
+  path?: string;
+  items?: MenuItem[]; // Các item con là một danh sách MenuItem
+}
+
+const menuItems: MenuItem[] = [
   {
     key: "dashboard",
     icon: <DashboardOutlined />,
     label: "Dashboard",
-    path: "/admin/dashboard",
+    path: "/dashboard/admin/",
   },
   {
     key: "management",
@@ -30,65 +41,69 @@ const menuItems = [
         key: "management-users",
         icon: <UserOutlined />,
         label: "Users",
-        path: "/admin/users",
+        path: "/dashboard/admin/users",
       },
       {
         key: "management-requests",
         icon: <FormOutlined />,
         label: "Request",
-        path: "/admin/request-management",
+        path: "/dashboard/admin/request-management",
       },
       {
         key: "management-categories",
         icon: <FolderOutlined />,
-        label: "Category",
-        path: "/admin/categories",
+        label: "Categories",
+        path: "/dashboard/admin/categories",
       },
       {
         key: "management-payout",
         icon: <MoneyCollectOutlined />,
         label: "Payout",
-        path: "/admin/payout",
+        path: "/dashboard/admin/payout",
       },
       {
         key: "management-blog",
         icon: <FileTextOutlined />,
         label: "Blog",
-        path: "/admin/blog",
+        path: "/dashboard/admin/blog",
       },
-    ],
-  },
-  {
-    key: "monitor",
-    icon: <PieChartOutlined />,
-    label: "Monitor",
-    items: [
-      { key: "all-courses", label: "All Courses", path: "/admin/all-courses" },
+      {
+        key: "all-courses",
+        icon: <BookOutlined />,
+        label: "All Courses",
+        path: "/dashboard/admin/all-courses",
+      },
       {
         key: "pending-courses",
+        icon: <HourglassOutlined />,
         label: "Pending Course",
-        path: "/admin/pending-courses",
+        path: "/dashboard/admin/pending-courses",
+      },
+      {
+        key: "course-log",
+        icon: <SnippetsOutlined />,
+        label: "Course log",
+        path: "/dashboard/admin/course-log",
+      },
+      {
+        key: "purchase-log",
+        icon: <ShoppingCartOutlined />,
+        label: "Purchase log",
+        path: "/dashboard/admin/purchase-log",
       },
     ],
   },
   {
-    key: "reports",
-    icon: <LineChartOutlined />,
-    label: "Reports",
-    items: [
-      { key: "course-log", label: "Course log", path: "/admin/course-log" },
-      {
-        key: "purchase-log",
-        label: "Purchase log",
-        path: "/admin/purchase-log",
-      },
-    ],
+    key: "top-up",
+    icon: <WalletOutlined />,
+    label: "Top Up",
+    path: "/dashboard/admin/top-up",
   },
   {
     key: "settings",
     icon: <SettingOutlined />,
     label: "Settings",
-    path: "/admin/settings",
+    path: "/dashboard/admin/settings",
   },
 ];
 
@@ -128,6 +143,7 @@ const AdminSidebar: React.FC<{ onMenuClick?: () => void }> = ({
           icon: item.icon,
           label: item.label,
           children: item.items.map((child) => ({
+            icon: child.icon,
             key: child.key,
             label: child.label,
             onClick: () => handleMenuClick(child.key),

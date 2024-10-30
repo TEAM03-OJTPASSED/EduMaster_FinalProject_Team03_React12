@@ -1,27 +1,9 @@
-import { useState } from "react";
-import { Table, Input, Card, TableProps, Tag, Button, Modal } from "antd";
-import { SearchOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
+import { Table, Input, Card, TableProps } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 import { listSessions, Session } from "./courseList";
 import dayjs from "dayjs";
 
-
 const SessionList = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedSession, setSelectedSession] = useState<Session | null>(null);
-
-  const showModal = (session: Session) => {
-    setSelectedSession(session);
-    setIsModalVisible(true);
-  };
-
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
   const columns: TableProps<Session>["columns"] = [
     {
       title: "Name",
@@ -41,45 +23,7 @@ const SessionList = () => {
         return <div>{dayjs(created_at).format("DD/MM/YYYY")}</div>;
       },
     },
-    {
-      title: "Status",
-      dataIndex: "is_deleted",
-      key: "is_deleted",
-      render: (is_deleted) => {
-        return (
-          <div className="text-center">
-            {is_deleted ? (
-              <Tag color="green">Enable</Tag>
-            ) : (
-              <Tag color="red">Disable</Tag>
-            )}
-          </div>
-        );
-      },
-    },
-    {
-      title: "Action",
-      key: "action",
-      render: (_, record: Session) => (
-        <>
-          <Button
-            type="text"
-            icon={<DeleteOutlined style={{ color: "red" }} />}
-            onClick={() => handleDelete(record.id)}
-          />
-          <Button
-            type="text"
-            icon={<EyeOutlined style={{ color: "blue" }} />}
-            onClick={() => showModal(record)}
-          />
-        </>
-      ),
-    },
   ];
-
-  const handleDelete = (id: string) => {
-    console.log("Delete session with id:", id);
-  };
 
   return (
     <Card>
@@ -98,22 +42,6 @@ const SessionList = () => {
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
       />
-
-      <Modal
-        title="Session Details"
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        {selectedSession && (
-          <div>
-            <p><strong>Name:</strong> {selectedSession.name}</p>
-            <p><strong>Course ID:</strong> {selectedSession.course_id}</p>
-            <p><strong>Created At:</strong> {dayjs(selectedSession.created_at).format("DD/MM/YYYY")}</p>
-            <p><strong>Status:</strong> {selectedSession.is_deleted ? "Enabled" : "Disabled"}</p>
-          </div>
-        )}
-      </Modal>
     </Card>
   );
 };

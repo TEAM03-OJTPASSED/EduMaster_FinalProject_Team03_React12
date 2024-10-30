@@ -1,5 +1,6 @@
 import React from "react";
 
+// Lazy-loaded components
 export const CategoryManagement = React.lazy(
   () => import("../pages/AdminDashboard/categoryManagement")
 );
@@ -15,9 +16,8 @@ export const LessonList = React.lazy(
 export const PendingCourse = React.lazy(
   () => import("../pages/AdminDashboard/monitors/pending_course/PendingCourse")
 );
-
 export const CourseList = React.lazy(
-  () => import("../pages/AdminDashboard/monitors/course/CourseList.tsx")
+  () => import("../pages/AdminDashboard/monitors/course/CourseLists")
 );
 
 export const PendingCourseList = React.lazy(
@@ -44,12 +44,12 @@ export const PurchaseLog = React.lazy(
 export const InstructorPayout = React.lazy(
   () =>
     import(
-      "../pages/InstructorDashboard/instructor-management/InstructorPayout"
+      "../pages/InstructorDashboard/instructor-management/payout/InstructorPayout"
     )
 );
 export const InstructorOrder = React.lazy(
   () =>
-    import("../pages/InstructorDashboard/instructor-management/InstructorOrder")
+    import("../pages/InstructorDashboard/instructor-management/InstructorLearning")
 );
 export const InstructorCourses = React.lazy(
   () =>
@@ -73,12 +73,12 @@ export const InstructorLessonList = React.lazy(
       "../pages/InstructorDashboard/instructor-monitor/InstructorLessonList"
     )
 );
-export const InstructorCreateCourse = React.lazy(
-  () =>
-    import(
-      "../pages/InstructorDashboard/instructor-monitor/InstructorCreateCourse"
-    )
-);
+// export const InstructorCreateCourse = React.lazy(
+//   () =>
+//     import(
+//       "../pages/InstructorDashboard/instructor-monitor/InstructorCreateCourse"
+//     )
+// );
 export const InstructorCourseLog = React.lazy(
   () =>
     import("../pages/InstructorDashboard/instructor-report/InstructorCourseLog")
@@ -89,23 +89,28 @@ export const InstructorPurchaseLog = React.lazy(
       "../pages/InstructorDashboard/instructor-report/InstructorPurchaseLog"
     )
 );
-export const InstructorEarning = React.lazy(
-  () =>
-    import("../pages/InstructorDashboard/instructor-report/InstructorEarning")
-);
-export const InstructorDiscount = React.lazy(
+
+// export const InstructorDiscount = React.lazy(
+//   () =>
+//     import(
+//       "../pages/InstructorDashboard/instructor-management/InstructorDiscount"
+//     )
+// );
+
+export const InstructorSaleHistory = React.lazy(
   () =>
     import(
-      "../pages/InstructorDashboard/instructor-management/InstructorDiscount"
+      "../pages/InstructorDashboard/instructor-management/InstructorOrdersHistory"
     )
 );
+
 export const InstructorReview = React.lazy(
   () => import("../pages/InstructorDashboard/InstructorReview")
 );
 export const InstructorSetting = React.lazy(
-  () => import("../pages/InstructorDashboard/InstructorSetting")
+  () =>
+    import("../pages/InstructorDashboard/instructor-setting/InstructorSetting")
 );
-
 export const AdminContent = React.lazy(
   () => import("../pages/AdminDashboard/AdminContent")
 );
@@ -114,10 +119,6 @@ export const UserManagement = React.lazy(
 );
 export const RequestUser = React.lazy(
   () => import("../pages/AdminDashboard/RequestUser")
-);
-
-export const StudentPage = React.lazy(
-  () => import("../pages/Dashboard/Studentpage")
 );
 export const GeneralLayout = React.lazy(
   () => import("../defaultLayout/Layout")
@@ -152,3 +153,4 @@ export const BlogDetailPage = React.lazy(
 export const PayoutManagement = React.lazy(
   () => import("../pages/AdminDashboard/payoutManagement")
 );
+export const LearnCourse = React.lazy(() => import("../pages/LearnCoursePage"));

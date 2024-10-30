@@ -1,31 +1,9 @@
-import React, { useState } from "react";
-import { Table, Input, Card, Tag, TableProps, Button, Modal } from "antd";
-import { SearchOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
+import React from "react";
+import { Table, Input, Card, Tag, TableProps, Button } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 import { Course, CourseStatusEnum, listCourses } from "../course/courseList";
 
 const PendingCourseList: React.FC = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-
-  const showModal = (course: Course) => {
-    setSelectedCourse(course);
-    setIsModalVisible(true);
-  };
-
-  const handleOk = () => {
-    console.log("Accepted course:", selectedCourse?.name);
-    setIsModalVisible(false);
-  };
-
-  const handleReject = () => {
-    console.log("Rejected course:", selectedCourse?.name);
-    setIsModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
   const columns: TableProps<Course>["columns"] = [
     {
       title: "Name",
@@ -46,19 +24,28 @@ const PendingCourseList: React.FC = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      filters: [
+        { text: "Active", value: CourseStatusEnum.ACTIVE },
+        { text: "New", value: CourseStatusEnum.NEW },
+        { text: "Approve", value: CourseStatusEnum.APPROVED },
+        { text: "Waiting Approve", value: CourseStatusEnum.WAITING_APPROVE },
+        { text: "Reject", value: CourseStatusEnum.REJECTED },
+        { text: "Inactive", value: CourseStatusEnum.INACTIVE },
+      ],
+      onFilter: (value: any, record: any) => record.status === value,
       render: (status: CourseStatusEnum) => {
         switch (status) {
-          case CourseStatusEnum.new:
+          case CourseStatusEnum.NEW:
             return <Tag color="green">New</Tag>;
-          case CourseStatusEnum.waiting_approve:
-            return <Tag color="red">Waiting Approve</Tag>;
-          case CourseStatusEnum.approve:
+          case CourseStatusEnum.WAITING_APPROVE:
+            return <Tag color="orange">Waiting Approve</Tag>;
+          case CourseStatusEnum.APPROVED:
             return <Tag color="yellow">Approve</Tag>;
-          case CourseStatusEnum.reject:
-            return <Tag color="yellow">Reject</Tag>;
-          case CourseStatusEnum.active:
+          case CourseStatusEnum.REJECTED:
+            return <Tag color="red">Reject</Tag>;
+          case CourseStatusEnum.ACTIVE:
             return <Tag color="yellow">Active</Tag>;
-          case CourseStatusEnum.inactive:
+          case CourseStatusEnum.INACTIVE:
             return <Tag color="yellow">Inactive</Tag>;
           default:
             return <Tag color="gray">Unknown</Tag>;
@@ -84,30 +71,40 @@ const PendingCourseList: React.FC = () => {
       title: "Action",
       key: "action",
       render: (_, record: Course) => (
-        <>
+        <div className="flex gap-2">
           <Button
             type="text"
-            icon={<DeleteOutlined style={{ color: "red" }} />}
-            onClick={() => handleDelete(record.name)}
-          />
-
+            color="primary"
+            variant="solid"
+            onClick={() =>
+              handleUpdateStatus(record.id, CourseStatusEnum.APPROVED)
+            }
+          >
+            Approve
+          </Button>
           <Button
             type="text"
-            icon={<EyeOutlined style={{ color: "red" }} />}
-            onClick={() => showModal(record)}
-          />
-        </>
+            color="danger"
+            variant="outlined"
+            onClick={() =>
+              handleUpdateStatus(record.id, CourseStatusEnum.REJECTED)
+            }
+          >
+            Reject
+          </Button>
+        </div>
       ),
     },
   ];
 
-  const handleDelete = (name: string) => {
-    console.log("Deleted course:", name);
+  const handleUpdateStatus = (id: number, status: string) => {
+    // tao 1 api update by id chung
+    console.log("update", { id, status });
   };
 
   return (
     <Card>
-      <h3 className="text-2xl my-5">Course Management</h3>
+      <h3 className="text-2xl my-5">Approve Courses</h3>
       <Input
         placeholder="Search By Course Name"
         prefix={<SearchOutlined />}
@@ -122,43 +119,6 @@ const PendingCourseList: React.FC = () => {
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
       />
-
-      <Modal
-        title="Course Details"
-        visible={isModalVisible}
-        onCancel={handleCancel}
-        footer={[
-          <Button key="reject" onClick={handleReject}>
-            Reject
-          </Button>,
-          <Button key="accept" type="primary" onClick={handleOk}>
-            Accept
-          </Button>,
-        ]}
-      >
-        {selectedCourse && (
-          <div>
-            <p>
-              <strong>Name:</strong> {selectedCourse.name}
-            </p>
-            <p>
-              <strong>Category ID:</strong> {selectedCourse.category_id}
-            </p>
-            <p>
-              <strong>Content:</strong> {selectedCourse.content}
-            </p>
-            <p>
-              <strong>Price:</strong> ${selectedCourse.price}
-            </p>
-            <p>
-              <strong>Status:</strong> {selectedCourse.status}
-            </p>
-            <p>
-              <strong>Discount:</strong> {selectedCourse.discount}%
-            </p>
-          </div>
-        )}
-      </Modal>
     </Card>
   );
 };

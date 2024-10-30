@@ -1,13 +1,17 @@
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Layout, Button, Drawer, Avatar, Dropdown } from "antd";
-import { MenuOutlined } from "@ant-design/icons";
+import { MenuOutlined, UserOutlined, LogoutOutlined } from "@ant-design/icons";
 import logoImage from "../../assets/EduMaster.png";
 import { useCustomNavigate } from "../../hooks/customNavigate";
 import AdminSidebar from "./AdminSidebar";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store/store";
 
 const { Sider } = Layout;
 
 const AdminNavBar = () => {
+  const { currentUser } = useSelector((state: RootState) => state.auth);
+
   const navigate = useCustomNavigate();
   const [isMobile, setIsMobile] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -29,19 +33,27 @@ const AdminNavBar = () => {
 
   const [isHovered, setIsHovered] = useState(false); // Thêm state cho hover
 
-  // Update the menu items to use items prop
+  // The menu items
   const menuItems = [
     {
       key: "profile",
-      label: <span onClick={() => navigate("/profile")}>Profile</span>,
-    },
-    {
-      key: "settings",
-      label: <span onClick={() => navigate("/settings")}>Settings</span>,
+      label: (
+        <span onClick={() => navigate("/dashboard/admin/settings")}>
+          Profile
+        </span>
+      ),
+      icon: <UserOutlined />, // Thêm icon UserOutlined cho Profile
     },
     {
       key: "logout",
-      label: <span onClick={() => navigate("/logout")}>Logout</span>,
+      onClick: () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.reload();
+        window.location.href = "/";
+      },
+      label: <span>Logout</span>,
+      icon: <LogoutOutlined />, // Thêm icon LogoutOutlined cho Logout
     },
   ];
 
@@ -116,7 +128,7 @@ const AdminNavBar = () => {
             <Avatar
               shape="square"
               size="large"
-              src="https://picsum.photos/id/237/200/300"
+              src={currentUser.avatar_url}
               alt="User Avatar"
               style={{ border: "2px solid white" }}
             />
@@ -128,7 +140,7 @@ const AdminNavBar = () => {
                   transition: "color 0.3s",
                 }}
               >
-                Admin
+                {currentUser.name}
               </span>
             )}
           </div>

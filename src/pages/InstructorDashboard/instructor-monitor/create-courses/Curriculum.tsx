@@ -1,8 +1,8 @@
 import { Button, Modal } from "antd";
-import  { useState } from "react";
+import { useState } from "react";
 import { PlusCircleFilled } from "@ant-design/icons";
-import { listSessions } from "../../../AdminDashboard/monitors/course/courseList";
-import SessionItem from "./SessionItem";
+// import { listSessions } from "../../../AdminDashboard/monitors/course/courseList";
+// import SessionItem from "./SessionItem";
 import CreateSession from "./CreateSession";
 
 const Curriculum = () => {
@@ -27,11 +27,11 @@ const Curriculum = () => {
         >
           Create Session
         </Button>
-        <div className="mt-5 max-h-[350px] overflow-y-scroll">
+        {/* <div className="mt-5 max-h-[350px] overflow-y-scroll">
           {listSessions.map((session) => {
             return <SessionItem items={session} />;
           })}
-        </div>
+        </div> */}
       </div>
       <Modal
         open={isVisibleModal}

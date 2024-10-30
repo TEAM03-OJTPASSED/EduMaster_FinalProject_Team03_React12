@@ -3,14 +3,14 @@ import { Menu } from "antd";
 import {
   DashboardOutlined,
   BarChartOutlined,
-  PieChartOutlined,
-  LineChartOutlined,
   SettingOutlined,
   MoneyCollectOutlined,
   BookOutlined,
-  FileTextOutlined,
-  PercentageOutlined,
+  ShoppingCartOutlined,
   StarOutlined,
+  UserOutlined,
+  WalletOutlined,
+  HistoryOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
@@ -20,90 +20,77 @@ const menuItems = [
     icon: <DashboardOutlined />,
     title: "Dashboard",
     label: "Dashboard",
-    path: "/instructor/dashboard",
+    path: "/dashboard/instructor/",
   },
+
   {
     key: "management",
     icon: <BarChartOutlined />,
     label: "Management",
     children: [
       {
-        key: "management-payout",
-        icon: <MoneyCollectOutlined />,
-        title: "Payout",
-        path: "/instructor/payout",
-      },
-      {
-        key: "management-order",
-        icon: <BookOutlined />,
-        title: "Order",
-        path: "/instructor/order",
-      },
-      {
-        key: "management-discount",
-        icon: <PercentageOutlined />,
-        title: "Discount",
-        path: "/instructor/discount",
-      },
-    ],
-  },
-  {
-    key: "monitor",
-    icon: <PieChartOutlined />,
-    label: "Monitor",
-    children: [
-      {
         key: "3-1",
         title: "My Courses",
         icon: <BookOutlined />,
-        path: "/instructor/my-courses",
+        path: "/dashboard/instructor/my-courses",
       },
       {
-        key: "3-2",
-        title: "Create Course",
-        icon: <FileTextOutlined />,
-        path: "/instructor/create-courses",
+        key: "sales",
+        icon: <ShoppingCartOutlined />,
+        title: "Orders",
+        label: "Orders",
+        path: "/dashboard/instructor/salesHistory",
       },
+      {
+        key: "management-payout",
+        icon: <MoneyCollectOutlined />,
+        title: "Payout",
+        path: "/dashboard/instructor/payout",
+      },
+      
     ],
   },
+
   {
-    key: "reports",
-    icon: <LineChartOutlined />,
-    label: "Reports",
-    children: [
-      {
-        key: "4-1",
-        title: "Course log",
-        icon: <FileTextOutlined />,
-        path: "/instructor/course-log",
-      },
-      {
-        key: "4-2",
-        title: "Purchase log",
-        icon: <FileTextOutlined />,
-        path: "/instructor/purchase-log",
-      },
-      {
-        key: "4-3",
-        title: "Earning",
-        icon: <MoneyCollectOutlined />,
-        path: "/instructor/earning",
-      },
-    ],
+    key: "my-learning",
+    icon: <BookOutlined />,
+    title: "My Learning",
+    label: "My Learning",
+    path: "/dashboard/instructor/my-learning",
+  },
+  {
+    key: "orders",
+    icon: <HistoryOutlined />,
+    label: "Orders History",
+    path: "/dashboard/instructor/orders", 
+  },
+  {
+    key: "subscription",
+    icon: <UserOutlined />,
+    title: "Subscription",
+    label: "Subscription",
+    path: "/dashboard/instructor/subscription",
+  },
+  {
+    key: "top-up",
+    icon: <WalletOutlined />,
+    title: "Top Up",
+    label: "Top Up",
+    path: "/dashboard/instructor/top-up",
   },
   {
     key: "settings",
     icon: <SettingOutlined />,
     title: "Settings",
     label: "Settings",
-    path: "/instructor/settings",
+    path: "/dashboard/instructor/settings",
   },
   {
     key: "6",
     icon: <StarOutlined />,
     title: "Review",
     label: "Review",
-    path: "/instructor/review",
+    path: "/dashboard/instructor/review",
   },
 ];
 

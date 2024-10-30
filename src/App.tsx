@@ -7,18 +7,12 @@ import BlogPage from "./pages/BlogPage";
 import CourseDetailPage from "./pages/CourseDetailPage";
 import GeneralLayout from "./defaultLayout/Layout";
 import HomePage from "./pages/Homepage";
-import LoginPage from "./pages/AuthPage/LoginPage";
-import SignUpPage from "./pages/AuthPage/SignUpPage";
-import ContactPage from "./pages/ContactPage";
-import FAQsPage from "./pages/FAQPage";
-import ErrorPage from "./pages/ErrorPage";
 import AdminLayout from "./defaultLayout/AdminLayout";
 import AdminContent from "./pages/AdminDashboard/AdminContent";
 import UserManagement from "./pages/AdminDashboard/userManagement";
 import RequestUser from "./pages/AdminDashboard/RequestUser";
 import CategoryManagement from "./pages/AdminDashboard/categoryManagement";
 import AllCourse from "./pages/AdminDashboard/monitors/course/AllCourse";
-import CourseList from "./pages/AdminDashboard/payoutManagement";
 import SessionList from "./pages/AdminDashboard/monitors/course/SessionList";
 import LessonList from "./pages/AdminDashboard/monitors/course/LessonList";
 import PendingCourse from "./pages/AdminDashboard/monitors/pending_course/PendingCourse";
@@ -28,26 +22,56 @@ import PendingLessonList from "./pages/AdminDashboard/monitors/pending_course/Pe
 import BlogManagement from "./pages/AdminDashboard/BlogManagement";
 import CourseLog from "./pages/AdminDashboard/CourseLog";
 import PurchaseLog from "./pages/AdminDashboard/PurchaseLog";
+import AdminPayout from "./pages/AdminDashboard/payout/AdminPayout";
 import InstructorLayout from "./defaultLayout/InstructorLayout";
 import InstructorContent from "./pages/InstructorDashboard/InstructorContent";
-import InstructorPayout from "./pages/InstructorDashboard/instructor-management/InstructorPayout";
-import InstructorOrder from "./pages/InstructorDashboard/instructor-management/InstructorOrder";
+import InstructorPayout from "./pages/InstructorDashboard/instructor-management/payout/InstructorPayout";
+import InstructorLearning from "./pages/InstructorDashboard/instructor-management/InstructorLearning";
 import InstructorCourses from "./pages/InstructorDashboard/instructor-monitor/InstructorCourses";
 import InstructorCourseList from "./pages/InstructorDashboard/instructor-monitor/InstructorCourseList";
 import IntructorSessionList from "./pages/InstructorDashboard/instructor-monitor/InstructorSessionList";
 import InstructorLessonList from "./pages/InstructorDashboard/instructor-monitor/InstructorLessonList";
-import InstructorCreateCourse from "./pages/InstructorDashboard/instructor-monitor/InstructorCreateCourse";
 import InstructorCourseLog from "./pages/InstructorDashboard/instructor-report/InstructorCourseLog";
 import InstructorPurchaseLog from "./pages/InstructorDashboard/instructor-report/InstructorPurchaseLog";
-import InstructorEarning from "./pages/InstructorDashboard/instructor-report/InstructorEarning";
-import InstructorDiscount from "./pages/InstructorDashboard/instructor-management/InstructorDiscount";
 import InstructorReview from "./pages/InstructorDashboard/InstructorReview";
-import InstructorSetting from "./pages/InstructorDashboard/InstructorSetting";
+import InstructorSetting from "./pages/InstructorDashboard/instructor-setting/InstructorSetting";
 import ForgotPasswordPage from "./pages/AuthPage/ForgotPasswordPage";
 import PayoutManagement from "./pages/AdminDashboard/payoutManagement";
-import BlogDetailPage from "./pages/BlogDetailPage";
+import RequestPayout from "./pages/InstructorDashboard/instructor-management/payout/RequestPayout";
+import CompletedPayout from "./pages/InstructorDashboard/instructor-management/payout/CompletedPayout";
+import RejectedPayout from "./pages/InstructorDashboard/instructor-management/payout/RejectedPayout";
 import DashboardLayout from "./defaultLayout/DashboardLayout";
 import StudentProfile from "./pages/StudentDashboard/studentProfile";
+import StudentCourses from "./pages/StudentDashboard/StudentCourses";
+import Loginpage from "./pages/AuthPage/LoginPage";
+import SignUppage from "./pages/AuthPage/SignUpPage";
+import FAQsPage from "./pages/FAQPage";
+import ErrorPage from "./pages/ErrorPage";
+import ContactPage from "./pages/ContactPage";
+import CartPage from "./pages/cart/CartPage";
+import CheckoutPage from "./pages/checkout/CheckoutPage";
+import Firebase from "./pages/Firebase";
+import BlogDetailPage from "./pages/BlogDetailPage";
+import StudentContent from "./pages/StudentDashboard/StudentContent";
+import CourseLists from "./pages/AdminDashboard/monitors/course/CourseLists";
+import StudentSubscription from "./pages/StudentDashboard/StudentSubscriptions";
+import StudentChangePassword from "./pages/StudentDashboard/StudentChangePassword";
+import StudentSetting from "./pages/StudentDashboard/StudentSetting";
+import InstructorChangePassword from "./pages/InstructorDashboard/instructor-setting/InstructorChangePassword";
+import InstructorProfile from "./pages/InstructorDashboard/instructor-setting/InstructorProfile";
+import AdminChangePassword from "./pages/AdminDashboard/setting/AdminChangePassword";
+import AdminSetting from "./pages/AdminDashboard/setting/AdminSetting";
+import AdminProfile from "./pages/AdminDashboard/setting/AdminProfile";
+import InstructorSalesHistory from "./pages/InstructorDashboard/instructor-management/InstructorOrdersHistory";
+import LearnCoursePage from "./pages/LearnCoursePage";
+import TopUpPage from "./pages/topup/TopupPage";
+import AdminRequestPayout from "./pages/AdminDashboard/payout/RequestPayout";
+import AdminCompletedPayout from "./pages/AdminDashboard/payout/CompletedPayout";
+import AdminRejectedPayout from "./pages/AdminDashboard/payout/RejectedPayout";
+import ProfilePage from "./pages/profile/ProfilePage";
+import StudentSubscriptions from "./pages/StudentDashboard/StudentSubscriptions";
+import StudentOrderHistory from "./pages/StudentDashboard/StudentOrderHistory";
+import VerifySuccessToken from "./pages/AuthPage/VerifyToken";
 
 function App() {
   return (
@@ -58,41 +82,39 @@ function App() {
             {/* General Layout */}
             <Route path="/" element={<GeneralLayout />}>
               <Route path="/" element={<HomePage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/signup" element={<SignUpPage />} />
+              <Route path="/login" element={<Loginpage />} />
+              <Route path="/signup" element={<SignUppage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/verify-email/:verification_id" element={<VerifySuccessToken />} />
               <Route path="/course" element={<CoursesPage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/faqs" element={<FAQsPage />} />
-              <Route path="/error" element={<ErrorPage />} />
-              <Route
-                path="/course-detail/:id"
-                element={
-                  <ProtectedRoute
-                    allowedRoles={["student", "instructor", "admin"]}
-                  />
-                }
-              >
-                <Route index element={<CourseDetailPage />} />
-              </Route>
-              <Route
-                path="/blog-detail/:id"
-                element={
-                  <ProtectedRoute
-                    allowedRoles={["student", "instructor", "admin"]}
-                  />
-                }
-              >
-                <Route index element={<BlogDetailPage />} />
-              </Route>
+              <Route path="/*" element={<ErrorPage />} />
+              <Route path="cart" element={<CartPage />} />
+              <Route path="/blog/:id" element={<BlogDetailPage />} />
+              <Route path="/profile/:id" element={<ProfilePage />} />
 
-  
+              <Route path="/course/:id" element={<CourseDetailPage />} />
+              <Route path="/firebase" element={<Firebase />} />
+
+              <Route path="/learn/:id" element={<LearnCoursePage />} />
+
+              <Route
+                path="cart/checkout"
+                element={
+                  <ProtectedRoute
+                    allowedRoles={["student", "instructor", "admin"]}
+                  >
+                    <CheckoutPage />
+                  </ProtectedRoute>
+                }
+              />
             </Route>
 
             {/* Admin Layout */}
             <Route
-              path="/admin"
+              path="dashboard/admin"
               element={<ProtectedRoute allowedRoles={["admin"]} />}
             >
               <Route element={<AdminLayout />}>
@@ -101,10 +123,21 @@ function App() {
                 <Route path="users" element={<UserManagement />} />
                 <Route path="request-management" element={<RequestUser />} />
                 <Route path="categories" element={<CategoryManagement />} />
+                <Route path="top-up" element={<TopUpPage />} />
                 <Route path="payout" element={<PayoutManagement />} />
-
+                <Route path="payout" element={<AdminPayout />}>
+                  <Route index element={<AdminRequestPayout />} />
+                  <Route
+                    path="completed-payout"
+                    element={<AdminCompletedPayout />}
+                  />
+                  <Route
+                    path="rejected-payout"
+                    element={<AdminRejectedPayout />}
+                  />
+                </Route>
                 <Route path="all-courses" element={<AllCourse />}>
-                  <Route index element={<CourseList />} />
+                  <Route index element={<CourseLists />} />
                   <Route path="session" element={<SessionList />} />
                   <Route path="lesson" element={<LessonList />} />
                 </Route>
@@ -116,12 +149,19 @@ function App() {
                 <Route path="blog" element={<BlogManagement />} />
                 <Route path="course-log" element={<CourseLog />} />
                 <Route path="purchase-log" element={<PurchaseLog />} />
+                <Route path="settings" element={<AdminSetting />}>
+                  <Route index element={<AdminProfile />} />
+                  <Route
+                    path="change-password"
+                    element={<AdminChangePassword />}
+                  />
+                </Route>
               </Route>
             </Route>
 
             {/* Instructor Layout */}
             <Route
-              path="/instructor"
+              path="dashboard/instructor"
               element={
                 <ProtectedRoute allowedRoles={["instructor"]}></ProtectedRoute>
               }
@@ -129,46 +169,72 @@ function App() {
               <Route element={<InstructorLayout />}>
                 <Route index element={<InstructorContent />} />
                 <Route path="dashboard" element={<InstructorContent />} />
-                <Route path="payout" element={<InstructorPayout />} />
-                <Route path="order" element={<InstructorOrder />} />
+                <Route path="my-learning" element={<StudentCourses />} />
+                <Route path="top-up" element={<TopUpPage />} />
+                <Route path="orders" element={<StudentOrderHistory />} />
+
+                <Route path="payout" element={<InstructorPayout />}>
+                  <Route index element={<RequestPayout />} />
+                  <Route
+                    path="completed-payout"
+                    element={<CompletedPayout />}
+                  />
+                  <Route path="rejected-payout" element={<RejectedPayout />} />
+                </Route>
+                <Route
+                  path="salesHistory"
+                  element={<InstructorSalesHistory />}
+                />
+                <Route path="my-learning" element={<InstructorLearning />} />
                 <Route path="my-courses" element={<InstructorCourses />}>
                   <Route index element={<InstructorCourseList />} />
                   <Route path="session" element={<IntructorSessionList />} />
                   <Route path="lesson" element={<InstructorLessonList />} />
                 </Route>
-                <Route
-                  path="create-courses"
-                  element={<InstructorCreateCourse />}
-                />
+
                 <Route path="course-log" element={<InstructorCourseLog />} />
                 <Route
                   path="purchase-log"
                   element={<InstructorPurchaseLog />}
                 />
-                <Route path="earning" element={<InstructorEarning />} />
-                <Route path="discount" element={<InstructorDiscount />} />
+                <Route
+                  path="subscription"
+                  element={<StudentSubscriptions />}
+                ></Route>
                 <Route path="review" element={<InstructorReview />} />
-                <Route path="settings" element={<InstructorSetting />} />
+                <Route path="settings" element={<InstructorSetting />}>
+                  <Route index element={<InstructorProfile />} />
+                  <Route
+                    path="change-password"
+                    element={<InstructorChangePassword />}
+                  />
+                </Route>
               </Route>
             </Route>
 
             {/* Student Layout */}
-            
 
             <Route
-                path="/student"
-                element={
-                  <ProtectedRoute allowedRoles={["student"]}></ProtectedRoute>
-                }
-              >
-                <Route element={<DashboardLayout role="student" />}>
-                <Route path="dashboard" element={<InstructorContent />} />
-                <Route path="profile" element={<StudentProfile />} />
-
-              
+              path="dashboard/student"
+              element={
+                <ProtectedRoute allowedRoles={["student"]}></ProtectedRoute>
+              }
+            >
+              <Route element={<DashboardLayout role="student" />}>
+                <Route index element={<StudentContent />} />
+                <Route path="settings" element={<StudentSetting />}>
+                  <Route index element={<StudentProfile />} />
+                  <Route
+                    path="change-password"
+                    element={<StudentChangePassword />}
+                  />
                 </Route>
+                <Route path="my-courses" element={<StudentCourses />} />
+                <Route path="top-up" element={<TopUpPage />} />
+                <Route path="orders" element={<StudentOrderHistory />} />
+                <Route path="subscriptions" element={<StudentSubscription />} />
               </Route>
-
+            </Route>
           </Routes>
         </LoadingWrapper>
       </Suspense>

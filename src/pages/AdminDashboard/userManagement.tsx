@@ -1,62 +1,92 @@
-import  { useState } from "react";
-import {
-  Table,
-  Input,
-  Card,
-} from "antd";
+import React, { useEffect, useState } from "react";
+import { Table, Button, Input, Space, Card, Select, Switch, Tabs } from "antd";
 import {
   SearchOutlined,
-  
+  EditOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
 
+import useSearch from "../../hooks/useSearch";
+import { getUsers } from "../../services/user.service";
 
-const UserManagement = () => {
-  const [dataSource] = useState([
-    {
-      key: "1",
-      name: "Nguyễn Văn A",
-      email: "a@example.com",
-      phone: "0123456789",
-      username: "nguyenvana",
-      status: true, // Use boolean for status
-      role: "Admin",
-      createdAt: "2023-01-15",
-    },
-    {
-      key: "2",
-      name: "Trần Thị B",
-      email: "b@example.com",
-      phone: "0987654321",
-      username: "tranthib",
-      status: false, // Use boolean for status
-      role: "Instructor",
-      createdAt: "2023-02-20",
-    },
-    {
-      key: "3",
-      name: "Lê Văn C",
-      email: "c@example.com",
-      phone: "0912345678",
-      username: "levanc",
-      status: true, // Use boolean for status
-      role: "Student",
-      createdAt: "2023-03-05",
-    },
-  ]);
+const { Option } = Select;
+
+const UserManagement: React.FC = () => {
+  // dispatch
 
   // const [editVisible, setEditVisible] = useState(false);
-  // const [currentUser] = useState(null);
+  // const [deleteVisible, setDeleteVisible] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [users, setUsers] = useState([]);
+  const [pageNum, setPageNum] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
+  const { searchText, filteredData, handleSearchChange } = useSearch(users, [
+    "name",
+    "email",
+  ]);
 
+  const fetchUsers = async (
+    pageNum: number,
+    pageSize: number,
+    keyword: string
+  ) => {
+    const searchParams = {
+      searchCondition: {
+        keyword,
+        role: "",
+        status: true,
+        is_verified: "",
+        is_delete: false,
+      },
+      pageInfo: { pageNum, pageSize },
+    };
 
-  // const handleSave = (values:any) => {
-  //   console.log("Saving user:", values);
-  //   // Update user logic here, possibly update dataSource state
-  //   // setDataSource(updatedData);
+    try {
+      const response = await getUsers(searchParams);
+      setUsers((response as any).pageData);
+      setTotal((response as any).pageInfo.totalItems);
+    } catch (err) {
+      console.error("Error fetching users:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers(pageNum, pageSize, searchText);
+  }, [pageNum, pageSize, searchText]);
+
+  const handleEdit = (record: any) => {
+    setCurrentUser(record);
+    // // console.log("current user", record);
+    // // console.log("current user2", currentUser);
+    // setEditVisible(true);
+  };
+
+  const handleDelete = (record: any) => {
+    setCurrentUser(record);
+    // setDeleteVisible(true);
+  };
+
+  // const confirmDelete = () => {
+  //   console.log("Deleting user:", currentUser);
+  //   setDeleteVisible(false);
   // };
+
+  const handleTableChange = (pagination: any) => {
+    console.log(currentUser);
+
+    setPageNum(pagination.current);
+    setPageSize(pagination.pageSize);
+  };
+
+  const handleStatusChange = (checked: any, key: any) => {
+    console.log(checked, key);
+    // Update account status logic here
+  };
 
   const columns = [
     {
-      title: "Họ và tên",
+      title: "Name",
       dataIndex: "name",
       key: "name",
     },
@@ -66,102 +96,118 @@ const UserManagement = () => {
       key: "email",
     },
     {
-      title: "Số điện thoại",
-      dataIndex: "phone",
+      title: "Phone Number",
+      dataIndex: "phone_number",
       key: "phone",
     },
     {
-      title: "Tên đăng nhập",
-      dataIndex: "username",
-      key: "username",
-    },
-    {
-      title: "Trạng thái",
+      title: "Status",
       dataIndex: "status",
       key: "status",
-      // render: () => (
-      //   // <Switch
-      //   //   checked={text}
-      //   //   // checkedChildren="Kích hoạt"
-      //   //   // unCheckedChildren="Không kích hoạt"
-      //   //   onChange={(checked) => handleStatusChange(checked, record.key)}
-      //   // />
-      // ),
+      filters: [
+        { text: "Active", value: true },
+        { text: "Inactive", value: false },
+      ],
+      onFilter: (value: any, record: any) => record.status === value,
+      render: (text: any, record: any) => (
+        <Switch
+          checked={text}
+          onChange={(checked) => handleStatusChange(checked, record.key)}
+        />
+      ),
     },
     {
-      title: "Loại người dùng",
+      title: "User Role",
       dataIndex: "role",
       key: "role",
-      // render: (text, record) => (
-      //   <Select
-      //     defaultValue={text}
-      //     style={{ width: 120 }}
-      //     onChange={(value) => handleRoleChange(value, record.key)}
-      //   >
-      //     <Option value="Admin">Admin</Option>
-      //     <Option value="Instructor">Instructor</Option>
-      //     <Option value="Student">Student</Option>
-      //   </Select>
-      // ),
+      render: (text: any) => (
+        <Select defaultValue={text} style={{ width: 120 }}>
+          <Option value="Admin">Admin</Option>
+          <Option value="Instructor">Instructor</Option>
+          <Option value="Student">Student</Option>
+        </Select>
+      ),
     },
-    // {
-    //   title: "Ngày tạo",
-    //   dataIndex: "createdAt",
-    //   key: "createdAt",
-    // },
     {
-      title: "Hành động",
+      title: "Actions",
       key: "action",
-      // render: (text, record) => (
-      //   <Space size="middle">
-      //     <Button
-      //       color="primary"
-      //       variant="outlined"
-      //       icon={<EditOutlined />}
-      //       onClick={() => handleEdit(record)}
-      //     >
-      //       Chỉnh sửa
-      //     </Button>
-      //     <Button
-      //       color="danger"
-      //       variant="outlined"
-      //       icon={<DeleteOutlined />}
-      //       onClick={() => handleDelete(record)}
-      //     >
-      //       Xóa
-      //     </Button>
-      //   </Space>
-      // ),
+      render: (record: any) => (
+        <Space size="middle">
+          <Button icon={<EditOutlined />} onClick={() => handleEdit(record)} />
+          <Button
+            danger
+            icon={<DeleteOutlined />}
+            onClick={() => handleDelete(record)}
+          />
+        </Space>
+      ),
+    },
+  ];
+
+  const items = [
+    {
+      key: "1",
+      label: "All Users",
+      children: (
+        <Table
+          dataSource={filteredData}
+          columns={columns}
+          pagination={{
+            current: pageNum,
+            pageSize,
+            total,
+            showSizeChanger: true,
+          }}
+          onChange={handleTableChange}
+          rowKey="_id"
+          bordered
+          scroll={{ x: "max-content" }}
+        />
+      ),
+    },
+    {
+      key: "2",
+      label: "Unverified Accounts",
+      children: (
+        <Table
+          dataSource={filteredData.filter((user: any) => !user.is_verified)}
+          columns={columns}
+          pagination={{ pageSize: 5 }}
+          rowKey="key"
+          bordered
+          scroll={{ x: "max-content" }}
+        />
+      ),
+    },
+    {
+      key: "3",
+      label: "Blocked Accounts",
+      children: (
+        <Table
+          dataSource={filteredData.filter((user: any) => user.status === false)}
+          columns={columns}
+          pagination={{ pageSize: 5 }}
+          rowKey="key"
+          bordered
+          scroll={{ x: "max-content" }}
+        />
+      ),
     },
   ];
 
   return (
     <div>
       <Card>
-        <div className="flex">
-          <h3 className="text-2xl my-5">User Management</h3>
-        </div>
+        <h3 className="text-2xl my-5">User Management</h3>
         <Input
-          placeholder="Tìm kiếm..."
+          placeholder="Search by name or email"
           prefix={<SearchOutlined />}
-          style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
+          className="w-full md:w-1/3 mb-2 md:mb-0"
+          value={searchText}
+          onChange={handleSearchChange}
         />
-        <Table
-          dataSource={dataSource}
-          columns={columns}
-          pagination={{ pageSize: 5 }}
-          rowKey="key"
-          bordered
-          style={{ borderRadius: "8px" }}
-          scroll={{ x: true }} // Thêm scroll cho bảng
-        />
+        <Tabs defaultActiveKey="1" items={items} />
       </Card>
-      {/* <EditUserModal
-        visible={editVisible}
-        onClose={() => setEditVisible(false)}
-        user={currentUser}
-        onSave={handleSave}
-      /> */}
     </div>
   );
 };

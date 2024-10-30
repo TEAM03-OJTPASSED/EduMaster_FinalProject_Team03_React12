@@ -16,21 +16,20 @@ const items: MenuProps["items"] = [
 ];
 
 const InstructorCourses = () => {
-  const naviagte = useNavigate()
+  const naviagte = useNavigate();
   const handleSelectMenu: MenuProps["onClick"] = (e) => {
     switch (e.key) {
       case "Course":
-        naviagte("/instructor/my-courses")
+        naviagte("/dashboard/instructor/my-courses");
         break;
       case "Session":
-      
-        naviagte("/instructor/my-courses/session")
+        naviagte("/dashboard/instructor/my-courses/session");
         break;
       case "Lesson":
-        naviagte("/instructor/my-courses/lesson")
+        naviagte("/dashboard/instructor/my-courses/lesson");
         break;
       default:
-        break
+        break;
     }
   };
   return (
@@ -41,7 +40,7 @@ const InstructorCourses = () => {
         defaultSelectedKeys={["Course"]}
         onClick={handleSelectMenu}
       />
-      <Outlet/>
+      <Outlet />
     </div>
   );
 };

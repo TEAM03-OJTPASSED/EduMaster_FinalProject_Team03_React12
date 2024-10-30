@@ -1,10 +1,11 @@
+
 import { Button, Form, Upload, Input, Select, Image } from "antd";
 import React, { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import type { FormProps, UploadFile, UploadProps } from "antd";
-// import { CKEditor } from "@ckeditor/ckeditor5-react";
-// import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import "./CreateBlog.css";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 const { Option } = Select;
 
 type BlogFieldType = {
@@ -69,6 +70,7 @@ const CreateBlog: React.FC<BlogFormProps> = ({
     </button>
   );
 
+  // submit data
   const onFinish = (values: BlogFieldType) => {
     console.log("Success:", values);
     if (onFinished) {
@@ -139,23 +141,18 @@ const CreateBlog: React.FC<BlogFormProps> = ({
         name="content"
         rules={[{ required: true, message: "Please enter the blog content!" }]}
       >
-        {/* <CKEditor
+        <CKEditor
           editor={ClassicEditor}
           data={form.getFieldValue("content") || ""}
-          onChange={(event, editor) => {
+          onChange={(_, editor) => {
             const data = editor.getData();
             form.setFieldsValue({ content: data }); // Set CKEditor content to form field
           }}
           config={{
             placeholder: "Enter blog content...",
           }}
-          onReady={(editor) => {
-            const editableElement = editor.ui.view.editable.element;
-            if (editableElement) {
-              editableElement.style.minHeight = "1000px";
-            }
-          }}
-        /> */}
+        />
+       
       </Form.Item>
 
       {/* Submit Button */}
@@ -169,3 +166,4 @@ const CreateBlog: React.FC<BlogFormProps> = ({
 };
 
 export default CreateBlog;
+

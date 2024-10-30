@@ -1,11 +1,17 @@
 export enum CourseStatusEnum {
-  new,
-  waiting_approve,
-  approve,
-  reject,
-  active,
-  inactive,
+  NEW = "New",
+  WAITING_APPROVE = "Waiting for Approval",
+  APPROVED = "Approved",
+  REJECTED = "Rejected",
+  ACTIVE = "Active",
+  INACTIVE = "Inactive",
 }
+
+export enum CoursePriceType {
+  FREE = "Free",
+  PAID = "Paid",
+}
+
 export enum LessonTypeEnum {
   video = "video",
   image = "image",
@@ -18,15 +24,16 @@ export enum PayoutStatusEnum {
   completed = "Completed",
   rejected = "Rejected",
 }
- export interface Blog {
-  id:string,
-  title:string,
-  title_image:string,
-  type:string,
-  publishedDate: Date
-  content:string
- }
+export interface Blog {
+  id: string;
+  title: string;
+  title_image: string;
+  type: string;
+  publishedDate: Date;
+  content: string;
+}
 export interface Course {
+  id: number;
   name: string;
   category_id: string;
   description: string;
@@ -92,28 +99,78 @@ interface AdminTransaction {
   timestamp: Date;
 }
 
+interface PurchaseLog {
+  courseName: string;
+  purchaseNumber: string;
+  status: "Completed" | "Pending" | "Refunded";
+  pricePaid: number;
+  discount: number;
+  studentName: string;
+  instructorName: string;
+  createdAt: string; // ISO date string (e.g., "2024-10-01")
+}
+interface SalesHistory {
+  courseName: string;
+  purchaseNumber: string;
+  status: "Completed" | "Pending" | "Refunded";
+  pricePaid: number;
+  discount: number;
+  studentName: string;
+  CartNo: string;
+  createdAt: string; // ISO date string (e.g., "2024-10-01")
+}
+
+interface User {
+  key: string; // Khóa định danh
+  name: string; // Tên người dùng
+  email: string; // Địa chỉ email
+  phone: string; // Số điện thoại
+  username: string; // Tên đăng nhập
+  status: boolean; // Trạng thái tài khoản (kích hoạt hay không)
+  role: string; // Vai trò người dùng (Admin, User, v.v.)
+  verified: boolean; // Trạng thái đã xác minh hay chưa
+  blocked: boolean; // Trạng thái bị khóa hay không
+  createdAt: string; // Ngày tạo tài khoản (có thể sử dụng Date nếu cần)
+}
+
+interface Category {
+  key: string; // Khóa định danh cho category
+  name: string; // Tên category
+  parentCat: string; // Danh mục cha (nếu có)
+}
+
 const randomString = () => Math.random().toString(36).substring(2, 10);
-const randomNumber = () => Math.floor(Math.random() * 10000) / 100; 
+const randomNumber = () => Math.floor(Math.random() * 10000) / 100;
 const randomBoolean = () => Math.random() < 0.5;
 
-const randomString1 = (length: number) => Math.random().toString(36).substring(2, length + 2);
-const randomDate = () => new Date(Date.now() - Math.floor(Math.random() * 10000000000)); 
-const randomTypes = ["Technology", "Health", "Education", "Lifestyle", "Business"];
-
+const randomString1 = (length: number) =>
+  Math.random()
+    .toString(36)
+    .substring(2, length + 2);
+const randomDate = () =>
+  new Date(Date.now() - Math.floor(Math.random() * 10000000000));
+const randomTypes = [
+  "Technology",
+  "Health",
+  "Education",
+  "Lifestyle",
+  "Business",
+];
 
 export const listBlogs: Blog[] = Array.from({ length: 10 }, () => ({
-  id:randomString(),
+  id: randomString(),
   title: `Blog ${randomString1(10)}`,
-  title_image: `https://placehold.jp/150x150.png`, 
-  type: randomTypes[Math.floor(Math.random() * randomTypes.length)], 
+  title_image: `https://placehold.jp/150x150.png`,
+  type: randomTypes[Math.floor(Math.random() * randomTypes.length)],
   publishedDate: randomDate(),
-  content: `Content for ${randomString1(20)}...`, 
+  content: `Content for ${randomString1(20)}...`,
 }));
+
 export const payouts: Payout[] = Array.from({ length: 10 }, () => ({
   id: randomString(),
   payout_no: `P-${randomString()}`,
   status: Object.values(PayoutStatusEnum)[
-    Math.floor(Math.random() * 3)
+    Math.floor(Math.random() * 4)
   ] as PayoutStatusEnum,
   instructor_id: randomString(),
   instructor_ratio: randomNumber(),
@@ -127,12 +184,11 @@ export const payouts: Payout[] = Array.from({ length: 10 }, () => ({
   timestamp: new Date(),
 }));
 
-
 export const adminTransactions: AdminTransaction[] = Array.from(
   { length: 10 },
   () => ({
     id: randomString(),
-    payout_id: payouts[Math.floor(Math.random() * payouts.length)].id, 
+    payout_id: payouts[Math.floor(Math.random() * payouts.length)].id,
     payout_amount: randomNumber(),
     created_at: new Date(),
     updated_at: new Date(),
@@ -151,8 +207,9 @@ export const listLessons: Lesson[] = [
     user_id: "user01",
     lesson_type: LessonTypeEnum.image,
     description: "Learn the fundamentals of HTML.",
-    video_url: "https://example.com/html-basics",
-    image_url: "https://example.com/images/html-basics.jpg",
+    video_url:
+      "https://res.cloudinary.com/dz2dv8lk4/video/upload/v1729096335/mgqdadsklpktnmur9nnl.mp4",
+    image_url: "https://placehold.co/200x150",
     full_time: 30,
     position_order: 1,
     created_at: new Date("2024-01-01T09:00:00Z"),
@@ -366,6 +423,7 @@ export const listSessions: Session[] = [
 
 export const listCourses: Course[] = [
   {
+    id: 1,
     name: "Introduction to Web Development",
     category_id: "cat01",
     description:
@@ -373,33 +431,36 @@ export const listCourses: Course[] = [
     content: "HTML, CSS, JavaScript basics",
     video_url: "https://example.com/intro-web-dev",
     image_url: "https://example.com/images/web-dev.jpg",
-    status: CourseStatusEnum.active,
+    status: CourseStatusEnum.ACTIVE,
     price: 100,
     discount: 10,
   },
   {
+    id: 2,
     name: "JavaScript Advanced Techniques",
     category_id: "cat02",
     description: "Master advanced JavaScript concepts and design patterns.",
     content: "Closures, Async Programming, Promises, Design Patterns",
     video_url: "https://example.com/js-advanced",
     image_url: "https://example.com/images/js-advanced.jpg",
-    status: CourseStatusEnum.active,
+    status: CourseStatusEnum.ACTIVE,
     price: 150,
     discount: 20,
   },
   {
+    id: 3,
     name: "React for Beginners",
     category_id: "cat03",
     description: "Get started with React.js and build dynamic user interfaces.",
     content: "JSX, Components, Props, State",
     video_url: "https://example.com/react-beginners",
     image_url: "https://example.com/images/react-beginners.jpg",
-    status: CourseStatusEnum.active,
+    status: CourseStatusEnum.REJECTED,
     price: 120,
     discount: 15,
   },
   {
+    id: 4,
     name: "Node.js and Express",
     category_id: "cat04",
     description:
@@ -407,11 +468,12 @@ export const listCourses: Course[] = [
     content: "Node.js basics, Express.js, Middleware, REST APIs",
     video_url: "https://example.com/node-express",
     image_url: "https://example.com/images/node-express.jpg",
-    status: CourseStatusEnum.active,
+    status: CourseStatusEnum.WAITING_APPROVE,
     price: 130,
     discount: 10,
   },
   {
+    id: 4,
     name: "Fullstack Development with MERN",
     category_id: "cat05",
     description:
@@ -419,22 +481,24 @@ export const listCourses: Course[] = [
     content: "MERN stack, MongoDB, React, Express, Node.js",
     video_url: "https://example.com/mern-fullstack",
     image_url: "https://example.com/images/mern-fullstack.jpg",
-    status: CourseStatusEnum.active,
+    status: CourseStatusEnum.ACTIVE,
     price: 200,
     discount: 25,
   },
   {
+    id: 5,
     name: "Introduction to Data Science",
     category_id: "cat06",
     description: "Explore the world of data science and machine learning.",
     content: "Data Analysis, Python, Pandas, Machine Learning",
     video_url: "https://example.com/data-science",
     image_url: "https://example.com/images/data-science.jpg",
-    status: CourseStatusEnum.active,
+    status: CourseStatusEnum.APPROVED,
     price: 180,
     discount: 15,
   },
   {
+    id: 6,
     name: "Python for Beginners",
     category_id: "cat07",
     description: "Learn Python programming from scratch.",
@@ -442,10 +506,11 @@ export const listCourses: Course[] = [
     video_url: "https://example.com/python-beginners",
     image_url: "https://example.com/images/python-beginners.jpg",
     price: 90,
-    status: CourseStatusEnum.active,
+    status: CourseStatusEnum.ACTIVE,
     discount: 5,
   },
   {
+    id: 7,
     name: "Cloud Computing with AWS",
     category_id: "cat08",
     description:
@@ -454,21 +519,23 @@ export const listCourses: Course[] = [
     video_url: "https://example.com/cloud-aws",
     image_url: "https://example.com/images/cloud-aws.jpg",
     price: 210,
-    status: CourseStatusEnum.inactive,
+    status: CourseStatusEnum.INACTIVE,
     discount: 20,
   },
   {
+    id: 8,
     name: "DevOps Fundamentals",
     category_id: "cat09",
     description: "Learn the fundamental practices and tools in DevOps.",
     content: "CI/CD, Docker, Kubernetes, Jenkins",
     video_url: "https://example.com/devops-fundamentals",
     image_url: "https://example.com/images/devops.jpg",
-    status: CourseStatusEnum.inactive,
+    status: CourseStatusEnum.INACTIVE,
     price: 160,
     discount: 10,
   },
   {
+    id: 9,
     name: "Cybersecurity Basics",
     category_id: "cat10",
     description:
@@ -477,8 +544,141 @@ export const listCourses: Course[] = [
       "Cybersecurity principles, Firewalls, Encryption, Threat Detection",
     video_url: "https://example.com/cybersecurity-basics",
     image_url: "https://example.com/images/cybersecurity.jpg",
-    status: CourseStatusEnum.inactive,
+    status: CourseStatusEnum.INACTIVE,
     price: 140,
     discount: 10,
+  },
+];
+
+export const purchaseLog: PurchaseLog[] = [
+  {
+    courseName: "Introduction to Web Development",
+    purchaseNumber: "PUR001",
+    status: "Completed",
+    pricePaid: 90,
+    discount: 10,
+    studentName: "John Doe",
+    instructorName: "Jane Smith",
+    createdAt: "2024-10-01",
+  },
+  {
+    courseName: "JavaScript Advanced Techniques",
+    purchaseNumber: "PUR002",
+    status: "Pending",
+    pricePaid: 120,
+    discount: 30,
+    studentName: "Alice Johnson",
+    instructorName: "Tom Brown",
+    createdAt: "2024-10-03",
+  },
+  {
+    courseName: "Introduction to Web Development",
+    purchaseNumber: "PUR003",
+    status: "Completed",
+    pricePaid: 90,
+    discount: 10,
+    studentName: "Michael Green",
+    instructorName: "Jane Smith",
+    createdAt: "2024-10-05",
+  },
+  {
+    courseName: "JavaScript Advanced Techniques",
+    purchaseNumber: "PUR004",
+    status: "Refunded",
+    pricePaid: 120,
+    discount: 30,
+    studentName: "Sarah White",
+    instructorName: "Tom Brown",
+    createdAt: "2024-10-07",
+  },
+];
+
+export const salesHistory: SalesHistory[] = [
+  {
+    courseName: "Introduction to Web Development",
+    purchaseNumber: "PUR001",
+    status: "Completed",
+    pricePaid: 90,
+    discount: 10,
+    studentName: "John Doe",
+    CartNo: "CART_JB97IV20241016",
+    createdAt: "2024-10-01",
+  },
+  {
+    courseName: "JavaScript Advanced Techniques",
+    purchaseNumber: "PUR002",
+    status: "Pending",
+    pricePaid: 120,
+    discount: 30,
+    studentName: "Alice Johnson",
+    CartNo: "CART_JB97IV20241016",
+    createdAt: "2024-10-03",
+  },
+  {
+    courseName: "Introduction to Web Development",
+    purchaseNumber: "PUR003",
+    status: "Completed",
+    pricePaid: 90,
+    discount: 10,
+    studentName: "Michael Green",
+    CartNo: "CART_JB97IV20241016",
+    createdAt: "2024-10-05",
+  },
+];
+
+export const users: User[] = [
+  {
+    key: "1",
+    name: "Nguyễn Văn A",
+    email: "a@example.com",
+    phone: "0123456789",
+    username: "nguyenvana",
+    status: true, // Tài khoản được kích hoạt
+    role: "Admin",
+    verified: true, // Đã xác minh
+    blocked: false, // Không bị khóa
+    createdAt: "2023-01-15",
+  },
+  {
+    key: "2",
+    name: "Trần Thị B",
+    email: "b@example.com",
+    phone: "0987654321",
+    username: "tranthib",
+    status: false, // Tài khoản không kích hoạt
+    role: "Instructor",
+    verified: false, // Chưa xác minh
+    blocked: false, // Không bị khóa
+    createdAt: "2023-02-20",
+  },
+  {
+    key: "3",
+    name: "Lê Văn C",
+    email: "c@example.com",
+    phone: "0912345678",
+    username: "levanc",
+    status: true, // Tài khoản kích hoạt
+    role: "Student",
+    verified: true, // Đã xác minh
+    blocked: true, // Tài khoản bị khóa
+    createdAt: "2023-03-05",
+  },
+];
+
+export const category: Category[] = [
+  {
+    key: "1",
+    name: "Photography & Video",
+    parentCat: "	N/A",
+  },
+  {
+    key: "2",
+    name: "Education",
+    parentCat: "N/A",
+  },
+  {
+    key: "3",
+    name: "Music Production",
+    parentCat: "Music",
   },
 ];

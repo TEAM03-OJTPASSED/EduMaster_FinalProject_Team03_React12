@@ -1,37 +1,78 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Banner } from "../components/CourseDetailPage/Banner";
 import { Detail } from "../components/CourseDetailPage/Detail";
 import { LeaveAComment } from "../components/LeaveAComment";
-import { DetailResponsive } from "../components/CourseDetailPage/DetailResponsive";
+import { Course } from "../models/Course.model";
+import { Session } from "../models/Session.model";
+import { DetailModal } from "../components/CourseDetailPage/Modal";
+import DetailSkeleton from "../components/CourseDetailPage/DetailSkeleton";
+
+const token = localStorage.getItem("token");
+
+const fetchCourse = async (courseId: string) => {
+  try {
+    const response = await axios.get(
+      `https://edumaster-api-dev.vercel.app/api/client/course/${courseId}`,
+      token ? { headers: { Authorization: `Bearer ${token}` } } : {}
+    );
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 500) {
+      window.location.href = "/error";
+    }
+  }
+};
 
 const CourseDetailPage = () => {
-  const { id } = useParams();
+  // Get the course ID from the URL
+  const { id } = useParams<{ id: string }>();
+  const courseId = id ? id.toString() : "";
 
-  return (
-    <div>
-      <div className="inset-x-0 flex flex-col">
-        <Banner
-          category="Photography"
-          instructor="Determined-Poitras"
-          title="The Ultimate Guide To The Best WordPress LMS Plugin"
-          imageUrl="https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0/"
-          price={59.0}
-          discount={50}
+  const [course, setCourse] = useState<Course | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchCourse(courseId);
+        if (data) {
+          setCourse(data.data);
+          setSession(data.data.session_list);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error("Error fetching course data:", error);
+      }
+    };
+    fetchData();
+  }, [courseId]);
+
+  if (loading) {
+    return <DetailSkeleton />;
+  }
+
+  if (course && id) {
+    return (
+      <div className="relative">
+        <div className="inset-x-0 flex flex-col">
+          <Banner course={course} isPurchased={course.is_purchased} id={id} />
+        </div>
+        <Detail
+          isEnrolled={true}
+          course={course || undefined}
+          session={session || undefined}
         />
+        <div className="lg:w-2/3">
+          <LeaveAComment />
+        </div>
+        <DetailModal course={course} isPurchased={course.is_purchased} />
       </div>
-      <div className="hidden lg:block">
-        <Detail />
-      </div>
-      <div className="lg:hidden">
-        <DetailResponsive />
-      </div>
-      <div className="lg:w-2/3">
-        <LeaveAComment />
-      </div>
-    </div>
-  );
-
-  return <div>CourseDetailPage: {id}</div>;
+    );
+  }
 };
 
 export default CourseDetailPage;

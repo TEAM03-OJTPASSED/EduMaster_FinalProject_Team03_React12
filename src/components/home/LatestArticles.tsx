@@ -2,6 +2,7 @@ import React from "react";
 import { Row, Col, Card, Button } from "antd";
 import { LiaCalendarDaySolid } from "react-icons/lia";
 import { useCustomNavigate } from "../../hooks/customNavigate";
+import { BiSolidArrowFromLeft } from "react-icons/bi";
 
 interface Article {
   id: number;
@@ -68,12 +69,21 @@ export default function LatestArticles() {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h2 className="text-4xl font-bold mb-2">Latest Articles</h2>
+            <h2 className="text-2xl lg:text-4xl font-bold mb-2">Latest Articles</h2>
             <p className="text-gray-600">Explore our Free Articles</p>
           </div>
-          <Button type="default" onClick={() => navigate("/blog")}>
-            All Articles
-          </Button>
+          <Button
+                  onClick={() => navigate("/blog")}
+                  type="default"
+                  className="group hover:bg-orange-500 hover:text-white text-base transition-colors py-6 px-6 rounded-3xl font-jost"
+                  style={{
+                    backgroundColor: "#0f0f0f",
+                    color: "white",
+                  }}
+                >
+                  All Blogs{" "}
+                  <BiSolidArrowFromLeft className="group-hover:scale-150 transition " />
+                </Button>
         </div>
         <Row gutter={[16, 16]}>
           {articles.map((article) => (

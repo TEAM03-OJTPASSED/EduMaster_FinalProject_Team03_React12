@@ -1,27 +1,64 @@
-import { useState } from "react";
-import { Table, Input, Card, TableProps, Tag, Button, Modal } from "antd";
-import { SearchOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
+import { useState, useEffect } from "react";
+import { Table, Input, Card, TableProps, Button, Modal, Select } from "antd";
+import {
+  SearchOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  PlusCircleOutlined,
+} from "@ant-design/icons";
 
 import dayjs from "dayjs";
-import { listSessions, Session } from "../../AdminDashboard/monitors/course/courseList";
-
+import {
+  listCourses,
+  listSessions,
+  Session,
+} from "../../AdminDashboard/monitors/course/courseList";
+import SessionOptions from "./create-courses/SessionOptions";
 
 const InstructorSessionList = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
+  const [isModalCreateVisible, setIsModalCreateVisible] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<string>();
+  const [searchText, setSearchText] = useState("");
+  const [filteredSessions, setFilteredSessions] = useState<Session[]>(listSessions);
 
   const showModal = (session: Session) => {
     setSelectedSession(session);
     setIsModalVisible(true);
   };
 
-  const handleOk = () => {
-    setIsModalVisible(false);
+  const showModalCreate = () => {
+    setIsModalCreateVisible(true);
   };
 
   const handleCancel = () => {
     setIsModalVisible(false);
+    setIsModalCreateVisible(false);
   };
+
+  const handleCourseChange = (courseId: string | undefined) => {
+    setSelectedCourse(courseId);
+  };
+
+  // filter sessions usefx
+  useEffect(() => {
+    let filtered = [...listSessions];
+
+    if (selectedCourse) {
+      filtered = filtered.filter(
+        session => String(session.course_id) === String(selectedCourse)
+      );
+    }
+
+    if (searchText) {
+      filtered = filtered.filter(session =>
+        session.name.toLowerCase().includes(searchText.toLowerCase())
+      );
+    }
+
+    setFilteredSessions(filtered);
+  }, [selectedCourse, searchText]);
 
   const columns: TableProps<Session>["columns"] = [
     {
@@ -43,22 +80,6 @@ const InstructorSessionList = () => {
       },
     },
     {
-      title: "Status",
-      dataIndex: "is_deleted",
-      key: "is_deleted",
-      render: (is_deleted) => {
-        return (
-          <div className="text-center">
-            {is_deleted ? (
-              <Tag color="green">Enable</Tag>
-            ) : (
-              <Tag color="red">Disable</Tag>
-            )}
-          </div>
-        );
-      },
-    },
-    {
       title: "Action",
       key: "action",
       render: (_, record: Session) => (
@@ -70,7 +91,7 @@ const InstructorSessionList = () => {
           />
           <Button
             type="text"
-            icon={<EyeOutlined style={{ color: "blue" }} />}
+            icon={<EditOutlined style={{ color: "blue" }} />}
             onClick={() => showModal(record)}
           />
         </>
@@ -85,13 +106,42 @@ const InstructorSessionList = () => {
   return (
     <Card>
       <h3 className="text-2xl my-5">Session Management</h3>
-      <Input
-        placeholder="Search By Course Name"
-        prefix={<SearchOutlined />}
-        style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
-      />
+      <div className="flex justify-between">
+        <div className=" gap-4 flex">
+        <Input
+          placeholder="Search By Session Name"
+          prefix={<SearchOutlined />}
+          style={{ width: "80%", marginBottom: "20px", borderRadius: "4px" }}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
+        <Select
+          allowClear
+          placeholder="Filter By Course"
+          className="w-48"
+          onChange={handleCourseChange}
+          value={selectedCourse}
+        >
+          {listCourses.map(course => (
+            <Select.Option key={course.id} value={String(course.id)}>
+              {course.name}
+            </Select.Option>
+          ))}
+        </Select>
+        </div>
+        <div className="flex">
+          <Button
+            onClick={showModalCreate}
+            icon={<PlusCircleOutlined />}
+            shape="round"
+            type="primary"
+            className="items-center"
+          >
+            Create Session
+          </Button>
+        </div>
+      </div>
       <Table
-        dataSource={listSessions}
+        dataSource={filteredSessions}
         columns={columns}
         pagination={{ pageSize: 5 }}
         rowKey="name"
@@ -100,20 +150,47 @@ const InstructorSessionList = () => {
         scroll={{ x: true }}
       />
 
+      {/* update */}
       <Modal
-        title="Session Details"
-        visible={isModalVisible}
-        onOk={handleOk}
+        title="Change Session"
         onCancel={handleCancel}
+        open={isModalVisible}
+        footer={null}
+        forceRender
+        width={1000}
       >
         {selectedSession && (
-          <div>
-            <p><strong>Name:</strong> {selectedSession.name}</p>
-            <p><strong>Course ID:</strong> {selectedSession.course_id}</p>
-            <p><strong>Created At:</strong> {dayjs(selectedSession.created_at).format("DD/MM/YYYY")}</p>
-            <p><strong>Status:</strong> {selectedSession.is_deleted ? "Enabled" : "Disabled"}</p>
-          </div>
+          <SessionOptions
+            initialState={selectedSession}
+            mode="update"
+            onFinish={(values) => {
+              console.log("submitted session update", {
+                ...values,
+                created_at: new Date(),
+              });
+            }}
+          />
         )}
+      </Modal>
+
+      {/* Create */}
+      <Modal
+        title="Create Session"
+        onCancel={handleCancel}
+        open={isModalCreateVisible}
+        footer={null}
+        forceRender
+        width={1000}
+      >
+        <SessionOptions
+          mode="create"
+          onFinish={(values) => {
+            console.log("submitted session create", {
+              ...values,
+              created_at: new Date(),
+            });
+          }}
+        />
       </Modal>
     </Card>
   );

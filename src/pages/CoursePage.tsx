@@ -3,6 +3,7 @@ import { SearchFilter } from "../components/courses/SearchFilter";
 import { SearchResults } from "../components/courses/SearchResult";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import DynamicBreadcrumb from "../components/Breadcrumb/Breadcrumb";
 
 interface Course {
   id: number;
@@ -13,7 +14,10 @@ interface Course {
   duration: string;
   students: number;
   price: number | string;
+  discount: number;
   lessons: number;
+  description?: string;
+  updatedDate?: string;
 }
 
 const courses: Course[] = [
@@ -27,6 +31,7 @@ const courses: Course[] = [
     students: 156,
     price: "Free",
     lessons: 2,
+    discount: 0,
   },
   {
     id: 2,
@@ -38,6 +43,8 @@ const courses: Course[] = [
     students: 156,
     price: 49.0,
     lessons: 2,
+    discount: 0,
+
   },
   {
     id: 3,
@@ -49,6 +56,8 @@ const courses: Course[] = [
     students: 156,
     price: "Free",
     lessons: 2,
+    discount: 0,
+
   },
   {
     id: 4,
@@ -60,6 +69,8 @@ const courses: Course[] = [
     students: 156,
     price: "Free",
     lessons: 2,
+    discount: 0,
+
   },
   {
     id: 5,
@@ -71,6 +82,8 @@ const courses: Course[] = [
     students: 156,
     price: "Free",
     lessons: 2,
+    discount: 0,
+
   },
   {
     id: 6,
@@ -82,6 +95,8 @@ const courses: Course[] = [
     students: 156,
     price: "Free",
     lessons: 2,
+    discount: 0,
+
   },
 ];
 
@@ -249,7 +264,10 @@ const CoursesPage: React.FC = () => {
   };
 
   return (
-    <main>
+    <main className="mt-2">
+      <div className="p-4 pb-0">
+      <DynamicBreadcrumb/> 
+      </div>
       <Layout className="relative">
         <SearchResults courses={filteredCourses} onSearch={handleSearch} searchQuery={searchQuery} />
         <SearchFilter

@@ -1,24 +1,43 @@
-import { useState } from "react";
-import { Table, Input, Card, Tag, TableProps, Button, Modal } from "antd";
-import { SearchOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
-import { Lesson, LessonTypeEnum, listLessons } from "../../AdminDashboard/monitors/course/courseList";
+import { useEffect, useState } from "react";
+import { Table, Input, Card, Tag, TableProps, Button, Modal, Select } from "antd";
+import {
+  SearchOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  PlusCircleOutlined,
+} from "@ant-design/icons";
 
+import dayjs from "dayjs";
+import LessonIOptions from "./create-courses/LessonIOptions";
+import {
+  Lesson,
+  LessonTypeEnum,
+  listCourses,
+  listLessons,
+  listSessions,
+} from "../../AdminDashboard/monitors/course/courseList";
 
 const InstructorLessonList = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
+  const [isModalCreateVisible, setIsModalCreateVisible] = useState(false);
+  const [selectedLesson, setSelectedLesson] = useState<Lesson>({} as Lesson);
+  const [selectedCourse, setSelectedCourse] = useState<string>();
+  const [selectedSession, setSelectedSession] = useState<string>();
+  const [filteredLessons, setFilteredLessons] = useState<Lesson[]>([]);
+  const [searchText, setSearchText] = useState("");
 
   const showModal = (lesson: Lesson) => {
     setSelectedLesson(lesson);
     setIsModalVisible(true);
   };
 
-  const handleOk = () => {
-    setIsModalVisible(false);
+  const showCreateModal = () => {
+    setIsModalCreateVisible(true);
   };
 
   const handleCancel = () => {
     setIsModalVisible(false);
+    setIsModalCreateVisible(false);
   };
 
   const columns: TableProps<Lesson>["columns"] = [
@@ -38,7 +57,7 @@ const InstructorLessonList = () => {
       key: "user_id",
     },
     {
-      title: "Type",
+      title: "Media",
       dataIndex: "lesson_type",
       key: "lesson_type",
       render: (lesson_type: LessonTypeEnum) => {
@@ -49,6 +68,14 @@ const InstructorLessonList = () => {
       title: "Time",
       dataIndex: "full_time",
       key: "full_time",
+    },
+    {
+      title: "Created At",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (created_at) => {
+        return <div>{dayjs(created_at).format("DD/MM/YYYY")}</div>;
+      },
     },
     {
       title: "Action",
@@ -62,7 +89,7 @@ const InstructorLessonList = () => {
           />
           <Button
             type="text"
-            icon={<EyeOutlined style={{ color: "blue" }} />}
+            icon={<EditOutlined style={{ color: "blue" }} />}
             onClick={() => showModal(record)}
           />
         </>
@@ -74,16 +101,92 @@ const InstructorLessonList = () => {
     console.log("Delete lesson with id:", id);
   };
 
+  useEffect(() => {
+    let filtered = [...listLessons];
+
+    if (selectedCourse) {
+      filtered = filtered.filter(lesson => String(lesson.course_id) === String(selectedCourse));
+    }
+
+    if (selectedSession) {
+      filtered = filtered.filter(lesson => String(lesson.session_id) === String(selectedSession));
+    }
+
+    if (searchText) {
+      filtered = filtered.filter(lesson => 
+        lesson.name.toLowerCase().includes(searchText.toLowerCase())
+      );
+    }
+
+    setFilteredLessons(filtered);
+  }, [selectedCourse, selectedSession, searchText]);
+
+  const handleCourseChange = (courseId: string) => {
+    setSelectedCourse(courseId);
+    setSelectedSession(undefined); // Reset session when course changes
+  };
+
+  const handleSessionChange = (sessionId: string) => {
+    setSelectedSession(sessionId);
+  };
+
   return (
     <Card>
       <h3 className="text-2xl my-5">Lesson Management</h3>
-      <Input
-        placeholder="Search By Lesson Name"
-        prefix={<SearchOutlined />}
-        style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
-      />
+      <div className="flex justify-between">
+        <div className="flex flex-wrap gap-4 mb-5">
+          <Input
+            placeholder="Search By Lesson Name"
+            prefix={<SearchOutlined className="w-4 h-4" />}
+            className="w-64"
+            onChange={(e) => setSearchText(e.target.value)}
+          />
+          <Select
+          allowClear
+            placeholder="Filter By Course"
+            className="w-48"
+            onChange={handleCourseChange}
+            value={selectedCourse}
+          >
+            {listCourses.map(course => (
+              <Select.Option key={course.id} value={String(course.id)}>
+                {course.name}
+              </Select.Option>
+            ))}
+          </Select>
+
+          <Select
+          allowClear
+            placeholder="Filter By Session"
+            className="w-48"
+            onChange={handleSessionChange}
+            value={selectedSession}
+            disabled={!selectedCourse}
+          >
+            {selectedCourse && listSessions
+              .filter(session => String(session.course_id) === String(selectedCourse))
+              .map(session => (
+                <Select.Option key={session.id} value={String(session.id)}>
+                  {session.name}
+                </Select.Option>
+              ))}
+          </Select>
+        </div>
+
+        <div className="flex">
+          <Button
+            onClick={showCreateModal}
+            icon={<PlusCircleOutlined />}
+            shape="round"
+            type="primary"
+            className="items-center"
+          >
+            Create Lesson
+          </Button>
+        </div>
+      </div>
       <Table
-        dataSource={listLessons}
+        dataSource={filteredLessons}
         columns={columns}
         pagination={{ pageSize: 5 }}
         rowKey="id"
@@ -94,19 +197,43 @@ const InstructorLessonList = () => {
 
       <Modal
         title="Lesson Details"
-        visible={isModalVisible}
-        onOk={handleOk}
+        open={isModalVisible}
         onCancel={handleCancel}
+        footer={null}
+        forceRender
+        width={1000}
       >
         {selectedLesson && (
-          <div>
-            <p><strong>Name:</strong> {selectedLesson.name}</p>
-            <p><strong>Session ID:</strong> {selectedLesson.session_id}</p>
-            <p><strong>Instructor ID:</strong> {selectedLesson.user_id}</p>
-            <p><strong>Type:</strong> {selectedLesson.lesson_type}</p>
-            <p><strong>Time:</strong> {selectedLesson.full_time} minutes</p>
-          </div>
+          <LessonIOptions
+            onFinished={(values) => {
+              console.log("Lesson update", {
+                ...values,
+                create_at: new Date(),
+              });
+            }}
+            mode="update"
+            initialValues={selectedLesson}
+          />
         )}
+      </Modal>
+
+      <Modal
+        title="Lesson Details"
+        open={isModalCreateVisible}
+        onCancel={handleCancel}
+        footer={null}
+        forceRender
+        width={1000}
+      >
+        <LessonIOptions
+          onFinished={(values) => {
+            console.log("Lesson create", {
+              ...values,
+              create_at: new Date(),
+            });
+          }}
+          mode="create"
+        />
       </Modal>
     </Card>
   );

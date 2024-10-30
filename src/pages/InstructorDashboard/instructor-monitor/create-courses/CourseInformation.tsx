@@ -1,69 +1,54 @@
-
-import { Col, Form, Input, Row, Select, Upload } from "antd";
-import { PlusOutlined, } from "@ant-design/icons";
-/**
- * {
-  "course": {
-    "name": "Course Name",
-    "category_id": "category_id-1",
-    "description": "Course description",
-    "content": "Detailed content",
-    "video_url": "video_url_here",
-    "image_url": "image_url_here",
-    "status": "PUBLISHED",
-    "price": 100,
-    "discount": 10,
-    "sessions": [
-      {
-     
-        "name": "Session 1",
-        "user_id": "user_id_1",
-        "description": "Session 1 description",
-        "position_order": 1,
-        "created_at": "2024-10-11T00:00:00Z",
-        "updated_at": "2024-10-11T00:00:00Z",
-        "is_deleted": false,
-        "lessons": [
-          {
-           
-            "name": "Lesson 1",
-            "course_id": "course_id_1",
-            "session_id": "session_id_1",
-            "user_id": "user_id_1",
-            "lesson_type": "VIDEO",
-            "description": "Lesson 1 description",
-            "video_url": "lesson_video_url",
-            "image_url": "lesson_image_url",
-            "full_time": 1200,
-            "position_order": 1,
-            "created_at": "2024-10-11T00:00:00Z",
-            "updated_at": "2024-10-11T00:00:00Z",
-            "is_deleted": false
-          }
-        ]
-      }
-    ]
-  }
-}
- */
-
-// type CourseInfoFiled = {
-//   name: string;
-//   category_id: string;
-//   description: string;
-//   content: string;
-//   video_url: string;
-//   image_url: string;
-// };
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import { Col, Form, Input, Row, Select, Upload, } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import { useState } from "react";
+// import { CoursePriceType } from "../../../AdminDashboard/monitors/course/couseList";
+// import { Course } from "../../../../components/UserAuthTest";
 
 const CourseInformation = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    category_id: "",
+    description: "",
+    content: "",
+    video_url: "",
+    image_url: "",
+  });
+  
 
-  const normFile = (e: any) => {
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e?.fileList;
-  };
+  // const [imageFileList, setImageFileList] = useState<UploadFile[]>([]);
+
+  // const [videoFileList, setVideoFileList] = useState<UploadFile[]>([]);
+
+  // const [selectTypePrice, setSelectPriceType] = useState<CoursePriceType>(
+  //   initializeValue.price > 0 ? "Paid" : "Free"
+  // );
+
+  // const [form] = Form.useForm<Course>();
+
+  // const handleImageChange: UploadProps["onChange"] = ({
+  //   fileList: newFileList,
+  // }) => {
+  //   setImageFileList(newFileList || []);
+  //   console.log("image", newFileList);
+  // };
+
+  // const handleVideoChange: UploadProps["onChange"] = ({
+  //   fileList: newFileList,
+  // }) => {
+  //   setVideoFileList(newFileList || []);
+  // };
+
+  // const handleSelectPrice = (e: RadioChangeEvent) => {
+  //   const value = e.target.value;
+  //   setSelectPriceType(value);
+  // };
+
+  // const handleFinished: FormProps["onFinish"] = (values) => {
+  //   console.log("Submitted:", values);
+  // };
+
   return (
     <div>
       <Form
@@ -71,46 +56,43 @@ const CourseInformation = () => {
         wrapperCol={{ span: 24 }}
         layout="horizontal"
       >
-        <Row justify={`space-around`} gutter={[16, 16]}>
+        <Row justify="space-around" gutter={[16, 16]}>
           <Col xs={{ span: 12 }}>
             <Form.Item
               label="Course Name"
               name="name"
               rules={[{ required: true, message: "Please input course name" }]}
             >
-              <Input placeholder="Course Name" />
+              <Input
+                placeholder="Course Name"
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
+              />
             </Form.Item>
           </Col>
           <Col xs={{ span: 12 }}>
             <Form.Item
               label="Category"
               name="category_id"
-              rules={[
-                { required: true, message: "Please input Category name" },
-              ]}
+              rules={[{ required: true, message: "Please select a category" }]}
             >
               <Select
-              
                 placeholder="select category"
                 options={[
-                  {
-                    label: "Javascript",
-                    value: "category_id-1",
-                  },
-                  {
-                    label: "TypeScript",
-                    value: "category_id-2",
-                  },
-                  {
-                    label: "Machine learning",
-                    value: "category_id-3",
-                  },
+                  { label: "Javascript", value: "category_id-1" },
+                  { label: "TypeScript", value: "category_id-2" },
+                  { label: "Machine Learning", value: "category_id-3" },
                 ]}
+                onChange={(value) =>
+                  setFormData({ ...formData, category_id: value })
+                }
               />
             </Form.Item>
           </Col>
         </Row>
-        {/* description */}
+
+        {/* Description */}
         <Form.Item
           label="Description"
           name="description"
@@ -119,31 +101,33 @@ const CourseInformation = () => {
           <Input.TextArea
             showCount
             maxLength={100}
-            // onChange={onChange}
             placeholder="Course description"
             style={{ height: 120, resize: "none" }}
+            onChange={(e) =>
+              setFormData({ ...formData, description: e.target.value })
+            }
           />
         </Form.Item>
+
         {/* Content */}
         <Form.Item label="Content" name="content">
-          {/* <CKEditor
+          /* <CKEditor
             editor={ClassicEditor}
-            onChange={(event, editor) => {
-              const data = editor.getData();
-              // setForm(content:data)
+            onChange={(_, editor) => {
+              const data = editor.getData(); 
+              setFormData({ ...formData, content: data });
             }}
-            config={{
-              placeholder: "Enter blog content...",
-            }}
-          /> */}
+            config={{ placeholder: "Enter course content..." }}
+          />
         </Form.Item>
+
         <Row>
           <Col>
             <Form.Item
               label="Course Image"
               name="image_url"
               valuePropName="fileList"
-              getValueFromEvent={normFile}
+              // getValueFromEvent={normFile}
             >
               <Upload accept="image/*" listType="picture-card">
                 <button style={{ border: 0, background: "none" }} type="button">
@@ -158,7 +142,7 @@ const CourseInformation = () => {
               label="Course Video"
               name="video_url"
               valuePropName="fileList"
-              getValueFromEvent={normFile}
+              // getValueFromEvent={normFile}
             >
               <Upload accept="video/*" listType="picture-card">
                 <button style={{ border: 0, background: "none" }} type="button">

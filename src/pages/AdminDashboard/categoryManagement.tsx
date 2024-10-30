@@ -8,15 +8,25 @@ import {
 import { useState } from "react";
 import CreateCategoryModal from "../../components/Admin/AdminModals/CreateCategoryModal";
 import UpdateCategoryModal from "../../components/Admin/AdminModals/UpdateCategoryModal";
+import useSearch from "../../hooks/useSearch";
+import { category } from "./monitors/course/courseList";
 
 const { Option } = Select;
 
 const CategoryManagement = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string | undefined>(undefined);
+  const [selectedCategory, setSelectedCategory] = useState<string | undefined>(
+    undefined
+  );
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [form] = Form.useForm();
-  const [ setEditingRecord] = useState<any>(null);
+  const [editingRecord, setEditingRecord] = useState<any>(null);
+
+  // Sử dụng useSearch với users
+  const { searchText, filteredData, handleSearchChange } = useSearch(category, [
+    "name",
+    "parentCat",
+  ]);
 
   const handleCategoryChange = (value: string) => {
     setSelectedCategory(value);
@@ -25,7 +35,6 @@ const CategoryManagement = () => {
   const handleDelete = (id: string) => {
     // Xử lý xóa ở đây
     console.log("Deleted record ID: ", id);
-    setDataSource((prevData) => prevData.filter((item) => item.key !== id));
   };
 
   // Show Create Modal
@@ -75,23 +84,6 @@ const CategoryManagement = () => {
     form.resetFields();
   };
 
-  const [dataSource, setDataSource] = useState([
-    {
-      key: "1",
-      name: "Photography & Video",
-      parentCat: "	N/A",
-    },
-    {
-      key: "2",
-      name: "Education",
-      parentCat: "N/A",
-    },
-    {
-      key: "3",
-      name: "Music Production",
-      parentCat: "Music",
-    },
-  ]);
   const columns = [
     {
       title: "Category Name",
@@ -127,35 +119,39 @@ const CategoryManagement = () => {
     <Card>
       <div className="flex">
         <h3 className="text-2xl my-5">Category Management</h3>
-        <div className="flex items-center mx-3">
-          <Button
-            onClick={showModalCreate}
-            icon={<PlusCircleOutlined />}
-            shape="round"
-            variant="solid"
-            color="primary"
-            className="items-center"
-          >
-            Create Category
-          </Button>
-        </div>
       </div>
-      <Input
-        placeholder="Search By Category Name"
-        prefix={<SearchOutlined />}
-        style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
-      />
-      <Select
-        style={{ width: "10rem" }}
-        value={selectedCategory}
-        onChange={handleCategoryChange}
-        placeholder="Select a category"
-      >
-        <Option value="parent">Parent Category</Option>
-        <Option value="sub">Sub Category</Option>
-      </Select>
+
+      <div className="flex flex-wrap items-center mb-4">
+        <Input
+          placeholder="Search By Category Name"
+          prefix={<SearchOutlined />}
+          className="w-full md:w-1/3 mb-2 md:mb-0"
+          value={searchText}
+          onChange={handleSearchChange}
+        />
+        <Select
+          value={selectedCategory}
+          onChange={handleCategoryChange}
+          placeholder="Select a category"
+          className="w-full md:w-1/4 ml-0 md:ml-3 mb-2 md:mb-0"
+        >
+          <Option value="parent">Parent Category</Option>
+          <Option value="sub">Sub Category</Option>
+        </Select>
+        <Button
+          onClick={showModalCreate}
+          icon={<PlusCircleOutlined />}
+          shape="round"
+          variant="solid"
+          color="primary"
+          className="w-full md:w-auto ml-0 md:ml-auto"
+        >
+          New Category
+        </Button>
+      </div>
+
       <Table
-        dataSource={dataSource}
+        dataSource={filteredData}
         columns={columns}
         pagination={{ pageSize: 5 }}
         rowKey="key"
@@ -166,7 +162,7 @@ const CategoryManagement = () => {
 
       {/* Modal for Create */}
       <CreateCategoryModal
-        visible={isCreateModalVisible}
+        open={isCreateModalVisible}
         onCreate={handleOkCreate}
         onCancel={handleCancel}
         form={form}
@@ -174,10 +170,11 @@ const CategoryManagement = () => {
 
       {/* Modal for Edit */}
       <UpdateCategoryModal
-        visible={isEditModalVisible}
+        open={isEditModalVisible}
         onUpdate={handleOkEdit}
         onCancel={handleCancel}
         form={form}
+        editingRecord={editingRecord}
       />
     </Card>
   );

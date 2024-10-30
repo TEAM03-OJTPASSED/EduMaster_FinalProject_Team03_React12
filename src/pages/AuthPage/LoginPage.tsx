@@ -1,93 +1,153 @@
 import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
-import { Button, Checkbox, Form, Input } from "antd";
+import { Button, Divider, Form, Input } from "antd";
 import { FormProps } from "antd";
-import { Divider } from "antd";
-import { jwtDecode } from "jwt-decode";
-import { NavLink } from "react-router-dom";
+import { Player } from "@lottiefiles/react-lottie-player";
+
+import { useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getCurrentUser,
+  login,
+  loginWithGoogle,
+} from "../../redux/slices/authSlices";
+import { AppDispatch, RootState } from "../../redux/store/store";
 
 export type LoginProps = {
-  username: string;
+  email: string;
   password: string;
-  remember: boolean;
-};
-
-const onFinish: FormProps<LoginProps>["onFinish"] = (values) => {
-  console.log("Success:", values);
 };
 
 const Loginpage = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { currentUser, token, loading } = useSelector(
+    (state: RootState) => state.auth
+  );
+  const navigate = useNavigate();
+  useEffect(() => {
+    console.log("Token:", token);
+    console.log("CurrentUser:", currentUser);
+    if (token && currentUser) {
+      if (
+        currentUser?.role === "student" ||
+        currentUser?.role === "instructor"
+      ) {
+        navigate("/");
+      } else if (currentUser?.role === "admin") {
+        navigate("/dashboard/admin");
+      } else {
+        navigate("/login");
+      }
+    }
+  }, [currentUser, token, navigate]);
+
+  const onFinish: FormProps<LoginProps>["onFinish"] = async (values) => {
+    try {
+      const { email, password } = values;
+      await dispatch(login({ email, password }));
+      await dispatch(getCurrentUser());
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleLoginGoogleSuccess = async (
+    credentialResponse: CredentialResponse
+  ) => {
+    try {
+      console.log("credential",credentialResponse);
+      await dispatch(
+        loginWithGoogle(credentialResponse.credential as string)
+      );
+      await dispatch(getCurrentUser());
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
-    <div className="w-full  lg:flex lg:h-[35rem] lg:flex-row">
+    <div className="w-full lg:flex lg:h-[35rem] lg:flex-row lg:rounded-lg mt-12 overflow-hidden shadow-xl">
       {/* BACKGROUND */}
-      <div className="lg:w-1/2">
-        <img
-          src="../src/assets/EduAuth.jpeg"
-          alt=""
-          className="h-44 w-full md:h-60 lg:h-full lg:w-full"
+      <div className="lg:w-1/2 bg-gray-100 flex items-center justify-center">
+        <Player
+          src={`https://lottie.host/d08bd2de-f201-41ed-9ee3-cf8484903ca6/G0I0mLw1Np.json`}
+          loop
+          autoplay
+          className="h-44 w-full md:h-60 lg:h-full"
         />
       </div>
       {/* FORM */}
-      <div className=" bg-white p-8 rounded-lg shadow-md w-full lg:w-1/2 ">
-        <h1 className="text-3xl font-medium mb-5 text-center">Login</h1>
+      <div className="w-full bg-white p-10 lg:w-1/2 lg:p-16 flex flex-col justify-center">
+        <h1 className="text-4xl font-semibold mb-6 text-center text-gray-800">
+          Welcome Back
+        </h1>
         <Form
-          name="basic"
+          name="login"
+          layout="vertical"
           wrapperCol={{ span: 24 }}
-          initialValues={{ remember: true }}
           onFinish={onFinish}
           autoComplete="off"
         >
           {/* username */}
           <Form.Item<LoginProps>
-            name="username"
-            rules={[{ required: true, message: "Please input your username!" }]}
-            className="mb-8"
+            label="Email"
+            name="email"
+            rules={[{ required: true, message: "Please input your email!" }]}
+            className="mb-6"
           >
-            <Input placeholder="Email or username*" className="p-2" />
+            <Input
+              placeholder="Enter your email"
+              className="p-3 text-lg border-gray-300 rounded-lg focus:border-[#FF782D]"
+            />
           </Form.Item>
           {/* password */}
           <Form.Item<LoginProps>
+            label="Password"
             name="password"
             rules={[{ required: true, message: "Please input your password!" }]}
-            className="mb-8"
+            className="mb-6"
           >
-            <Input.Password placeholder="Password" className="p-2" />
+            <Input.Password
+              placeholder="Enter your password"
+              className="p-3 text-lg border-gray-300 rounded-lg focus:border-[#FF782D]"
+            />
           </Form.Item>
-          <div className="flex justify-between">
+          <div className="flex justify-between items-center mb-6">
             {/* remember */}
-            <Form.Item<LoginProps> name="remember" valuePropName="checked">
-              <Checkbox>Remember password</Checkbox>
-            </Form.Item>
             <div className="min-h-8 flex mt-1 underline px-1">
-
-            <NavLink to={"/forgot-password"}>Forgot password</NavLink>
+              <NavLink to={"/forgot-password"}>Forgot password</NavLink>
             </div>
           </div>
           {/* login */}
-          <Form.Item wrapperCol={{ span: 24 }}>
+          <Form.Item>
             <Button
               htmlType="submit"
               shape="round"
-              className="bg-[#FF782D] text-xl text-white py-5 w-full"
+              className={`bg-[#FF782D] text-xl text-white py-5 font-exo w-full ${
+                !loading && "hover:bg-[#e66e27]"
+              }`}
+              disabled={loading}
             >
-              Login
+              {!loading ? "Login" : "Login you in..."}
             </Button>
           </Form.Item>
-          <Divider plain>Or sign up with</Divider>
-          <div className="flex justify-center">
-            <GoogleLogin
-              onSuccess={(credentialResponse: CredentialResponse) => {
-                console.log(credentialResponse);
-                const decode = jwtDecode(
-                  credentialResponse?.credential as string
-                );
-                console.log("decode", decode);
-              }}
-              onError={() => {
-                console.log("Login Failed");
-              }}
-            />
-          </div>
         </Form>
+        <Divider plain className="text-gray-500">
+          Or sign in with
+        </Divider>
+        <div className="flex justify-center">
+          <GoogleLogin
+            onSuccess={handleLoginGoogleSuccess}
+            onError={() => {
+              console.log("Login Failed");
+            }}
+          />
+        </div>
+        <div className="text-center mt-6">
+          <span className="text-gray-500">Don’t have an account? </span>
+          <NavLink to={"/signup"} className="text-[#FF782D] hover:underline">
+            Sign up
+          </NavLink>
+        </div>
       </div>
     </div>
   );

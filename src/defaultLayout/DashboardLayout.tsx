@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { Layout } from "antd";
-import DynamicBreadcrumb from "../components/Breadcrumb/Breadcrumb";
-import DashboardNavBar from "../components/student/DashboardNavBar";
+import DashboardNavBar from "../components/student/StudentNavBar";
 
 const { Content } = Layout;
 
@@ -31,7 +30,7 @@ const DashboardLayout: React.FC<{role: string}> = ({role}) => {
           marginTop: "80px",
         }}
       >
-        <DynamicBreadcrumb />
+        {/* <DynamicBreadcrumb /> */}
         <Content
           style={{
             borderRadius: "15px",

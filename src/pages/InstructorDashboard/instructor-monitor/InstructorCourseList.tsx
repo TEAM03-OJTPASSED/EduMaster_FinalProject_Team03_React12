@@ -1,22 +1,70 @@
 import React, { useState } from "react";
-import { Table, Input, Card, Tag, TableProps, Button, Modal } from "antd";
-import { SearchOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
-import { Course, CourseStatusEnum, listCourses } from "../../AdminDashboard/monitors/course/courseList";
+import {
+  Table,
+  Input,
+  Card,
+  Tag,
+  Button,
+  Modal,
+  TableProps,
+  Select,
+} from "antd";
+import {
+  SearchOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  PlusCircleOutlined,
+} from "@ant-design/icons";
+import {
+  Course,
+  CourseStatusEnum,
+  listCourses,
+} from "../../AdminDashboard/monitors/course/courseList";
+import CourseOption from "./create-courses/CourseOption";
+import StatusFilter from "../../../components/StatusFilter";
+
 const InstructorCourseList: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [isModalCreateVisible, setIsModalCreateVisible] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<string>();
+
+  // select course to send to admin
+  const [selectedCourses, setSelectedCourses] = useState<Course[]>([]);
+
   const showModal = (course: Course) => {
     setSelectedCourse(course);
     setIsModalVisible(true);
   };
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
-  const handleCancel = () => {
-    setIsModalVisible(false);
+
+  const showModalCreate = () => {
+    setIsModalCreateVisible(true);
   };
 
-  const columns: TableProps<Course>["columns"] = [
+  const handleCancel = () => {
+    setIsModalVisible(false);
+    setIsModalCreateVisible(false);
+  };
+
+  const rowSelection: TableProps<Course>["rowSelection"] = {
+    onChange: (_selectedRowKeys: React.Key[], selectedRows: Course[]) => {
+      setSelectedCourses(selectedRows);
+    },
+  };
+  // send course request to Admin
+  const handleSendToAdmin = () => {
+    // kiem tra xem nhung items da seleted coi co phai status la new/reject hay khong
+    // check xem lesson va session cua cua course do co ton tai hay chua
+    // api send list courses to admin, dung message de gui
+    console.log(selectedCourses);
+  };
+
+  const handleSwitchChange = (id: number, value: CourseStatusEnum) => {
+    console.log("Selected ID:", id);
+    console.log("Selected Value:", value);
+    // Call the API to update the course status
+  };
+  const columns = [
     {
       title: "Name",
       dataIndex: "name",
@@ -36,23 +84,26 @@ const InstructorCourseList: React.FC = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      filters: [
+        { text: "New", value: CourseStatusEnum.NEW },
+        { text: "Waiting Approve", value: CourseStatusEnum.WAITING_APPROVE },
+        { text: "Approved", value: CourseStatusEnum.APPROVED },
+        { text: "Rejected", value: CourseStatusEnum.REJECTED },
+        { text: "Active", value: CourseStatusEnum.ACTIVE },
+        { text: "Inactive", value: CourseStatusEnum.INACTIVE },
+      ],
+      onFilter: (value: any, record: any) =>
+        record.status.trim() === value.trim(),
       render: (status: CourseStatusEnum) => {
-        switch (status) {
-          case CourseStatusEnum.new:
-            return <Tag color="green">New</Tag>;
-          case CourseStatusEnum.waiting_approve:
-            return <Tag color="red">Waiting Approve</Tag>;
-          case CourseStatusEnum.approve:
-            return <Tag color="yellow">Approve</Tag>;
-          case CourseStatusEnum.reject:
-            return <Tag color="yellow">Reject</Tag>;
-          case CourseStatusEnum.active:
-            return <Tag color="yellow">Active</Tag>;
-          case CourseStatusEnum.inactive:
-            return <Tag color="yellow">Inactive</Tag>;
-          default:
-            return <Tag color="gray">Unknown</Tag>;
-        }
+        const statusColors = {
+          [CourseStatusEnum.NEW]: "green",
+          [CourseStatusEnum.WAITING_APPROVE]: "red",
+          [CourseStatusEnum.APPROVED]: "yellow",
+          [CourseStatusEnum.REJECTED]: "yellow",
+          [CourseStatusEnum.ACTIVE]: "yellow",
+          [CourseStatusEnum.INACTIVE]: "yellow",
+        };
+        return <Tag color={statusColors[status] || "gray"}>{status}</Tag>;
       },
     },
     {
@@ -64,30 +115,55 @@ const InstructorCourseList: React.FC = () => {
       title: "Discount",
       dataIndex: "discount",
       key: "discount",
-      render: (discount: number) => {
-        return (
-          <div>
-            <span className="text-red-500"> {discount}%</span>
-          </div>
-        );
-      },
+      render: (discount: number) => (
+        <div>
+          <span className="text-red-500">{discount}%</span>
+        </div>
+      ),
+    },
+    {
+      title: "Change Status",
+      key: "change status",
+      render: (record: Course) => (
+        <div className="flex">
+          <Select
+            disabled={
+              record.status === CourseStatusEnum.NEW ||
+              record.status === CourseStatusEnum.WAITING_APPROVE ||
+              record.status === CourseStatusEnum.REJECTED
+            }
+            style={{ width: 100 }}
+            onChange={(value) => handleSwitchChange(record.id, value)}
+            options={[
+              {
+                label: CourseStatusEnum.ACTIVE,
+                value: CourseStatusEnum.ACTIVE,
+              },
+              {
+                label: CourseStatusEnum.INACTIVE,
+                value: CourseStatusEnum.INACTIVE,
+              },
+            ]}
+          />
+        </div>
+      ),
     },
     {
       title: "Action",
       key: "action",
-      render: (_, record: Course) => (
-        <>
+      render: (record: Course) => (
+        <div className="flex">
+          <Button
+            type="text"
+            icon={<EditOutlined />}
+            onClick={() => showModal(record)}
+          />
           <Button
             type="text"
             icon={<DeleteOutlined style={{ color: "red" }} />}
             onClick={() => handleDelete(record.name)}
           />
-          <Button
-            type="text"
-            icon={<EyeOutlined style={{ color: "blue" }} />}
-            onClick={() => showModal(record)}
-          />
-        </>
+        </div>
       ),
     },
   ];
@@ -96,40 +172,105 @@ const InstructorCourseList: React.FC = () => {
     console.log(name);
   };
 
+  const statuses = [CourseStatusEnum.ACTIVE, CourseStatusEnum.APPROVED, CourseStatusEnum.INACTIVE, CourseStatusEnum.NEW, CourseStatusEnum.REJECTED, CourseStatusEnum.WAITING_APPROVE];
+  const handleStatusChange = (value: string | undefined) => {
+    setStatusFilter(value);
+  };
+
+
   return (
     <Card>
       <h3 className="text-2xl my-5">Course Management</h3>
-      <Input
-        placeholder="Search By Course Name"
-        prefix={<SearchOutlined />}
-        style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
-      />
+      <div className="flex justify-between">
+        <div className="flex gap-4 mb-5">
+            <Input
+              placeholder="Search By Course Name"
+              prefix={<SearchOutlined />}
+              style={{ width: "80%", borderRadius: "4px" }}
+              
+            />
+            <StatusFilter
+              statuses={statuses}
+              selectedStatus={statusFilter}
+              onStatusChange={handleStatusChange}
+            />
+          </div>
+        <div className="flex gap-x-3">
+          <Button
+            onClick={showModalCreate}
+            icon={<PlusCircleOutlined />}
+            shape="round"
+            variant="solid"
+            color="primary"
+            className="items-center"
+          >
+            Create Course
+          </Button>
+          <Button
+            onClick={handleSendToAdmin}
+            disabled={selectedCourses.length < 1}
+            shape="round"
+            variant="solid"
+          >
+            Send request
+          </Button>
+        </div>
+      </div>
       <Table
         dataSource={listCourses}
         columns={columns}
         pagination={{ pageSize: 5 }}
         rowKey="name"
+        rowSelection={{
+          type: "checkbox",
+          ...rowSelection,
+        }}
         bordered
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
       />
 
+      {/* update */}
       <Modal
-        title="Course Details"
-        visible={isModalVisible}
-        onOk={handleOk}
+        title="Change Course"
         onCancel={handleCancel}
+        open={isModalVisible}
+        footer={null}
+        width={1000}
+        forceRender
       >
         {selectedCourse && (
-          <div>
-            <p><strong>Name:</strong> {selectedCourse.name}</p>
-            <p><strong>Category:</strong> {selectedCourse.category_id}</p>
-            <p><strong>Content:</strong> {selectedCourse.content}</p>
-            <p><strong>Price:</strong> {selectedCourse.price}</p>
-            <p><strong>Discount:</strong> {selectedCourse.discount}%</p>
-            <p><strong>Status:</strong> {selectedCourse.status}</p>
-          </div>
+          <CourseOption
+            initializeValue={selectedCourse}
+            mode="update"
+            onFinished={(values) => {
+              console.log("submitted session update", {
+                ...values,
+                created_at: new Date(),
+              });
+            }}
+          />
         )}
+      </Modal>
+
+      {/* Create */}
+      <Modal
+        title="Create Course"
+        onCancel={handleCancel}
+        open={isModalCreateVisible}
+        footer={null}
+        width={1000}
+        forceRender
+      >
+        <CourseOption
+          mode="create"
+          onFinished={(values) => {
+            console.log("submitted session create", {
+              ...values,
+              created_at: new Date(),
+            });
+          }}
+        />
       </Modal>
     </Card>
   );

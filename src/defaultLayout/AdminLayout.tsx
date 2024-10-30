@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { Layout } from "antd";
-import DynamicBreadcrumb from "../components/Breadcrumb/Breadcrumb";
 import AdminNavBar from "../components/Admin/AdminNavbar";
 
 const { Content } = Layout;
@@ -29,9 +28,10 @@ const AdminLayout: React.FC = () => {
           marginLeft: isMobile ? 0 : 250, // MarginLeft cho desktop
           padding: "24px 24px 0 24px",
           marginTop: "80px",
+          backgroundColor: "#e8ebee",
         }}
       >
-        <DynamicBreadcrumb />
+        {/* <DynamicBreadcrumb /> */}
         <Content
           style={{
             borderRadius: "15px",
