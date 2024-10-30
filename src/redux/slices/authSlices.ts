@@ -70,14 +70,16 @@ export const loginWithGoogle = createAsyncThunk<
   string,
   { rejectValue: string }
 >("auth/loginGoogle", async (google_id,
-  // thunkAPI
+  thunkAPI
 ) => {
-  // const { dispatch } = thunkAPI;
+  const { dispatch } = thunkAPI;
   const response = await postRequest("/api/auth/google", { google_id });
-  // if (response.errors?.includes("email_not_found")) {
-  //   dispatch(setRegisterGoogle({is_register : true, google_id:google_id}));
-  //   return thunkAPI.rejectWithValue("email_not_found");
-  // }
+  if (response.errors) {
+    // dispatch(setRegisterGoogle({is_register_google : true, google_id:google_id}));
+    console.log("gg error",response.errors);
+    
+    return thunkAPI.rejectWithValue("email_not_found");
+  }
   localStorage.setItem("token", (response as any).data.token);
   return response.data as AuthState;
 });

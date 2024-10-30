@@ -78,8 +78,8 @@ function App() {
   useEffect(() => {
     const init = () => {
       gapi.client.init({
-        clientId:"67368420889-utrdru1873d1pudjah97ihj32vvfire8.apps.googleusercontent.com",
-        scope:"profile email"
+        clientId:"304146839060-ti5q4aj142djup8uj80qusld4nnhimrr.apps.googleusercontent.com",
+        scope:""
       });
     };
     gapi.load("client:auth2",init)

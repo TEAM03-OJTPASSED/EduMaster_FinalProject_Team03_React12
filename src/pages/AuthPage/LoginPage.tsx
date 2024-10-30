@@ -1,19 +1,19 @@
-import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
+// import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { Button, Divider, Form, Input, Modal } from "antd";
 import { FormProps } from "antd";
 import { Player } from "@lottiefiles/react-lottie-player";
-
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
- 
   login,
+  loginWithGoogle,
   // loginWithGoogle,
   setRegisterGoogle,
 } from "../../redux/slices/authSlices";
 import { AppDispatch, RootState } from "../../redux/store/store";
 import ModalRegisterGoogle from "../../components/ModalRegisterGoogle";
+import GoogleLoginButton from "../../components/GoogleLoginButton";
 
 export type LoginProps = {
   email: string;
@@ -58,16 +58,16 @@ const Loginpage = () => {
       console.log(error);
     }
   };
-  const handleLoginGoogleSuccess = async (
-    credentialResponse: CredentialResponse
-  ) => {
-    console.log("credential", credentialResponse);
-    if (credentialResponse.credential) {
-      dispatch(setRegisterGoogle({is_register : true, google_id:credentialResponse.credential}));
-    }
-    // await dispatch(loginWithGoogle(credentialResponse.credential as string));
-    // await dispatch(getCurrentUser());
-  };
+  // const handleLoginGoogleSuccess = async (
+  //   credentialResponse: CredentialResponse
+  // ) => {
+  //   // console.log("credential", credentialResponse);
+  //   // if (credentialResponse.credential) {
+  //   //   dispatch(setRegisterGoogle({is_register : true, google_id:credentialResponse.credential}));
+  //   // }
+  //   await dispatch(loginWithGoogle(credentialResponse.credential as string));
+  //   // await dispatch(getCurrentUser());
+  // };
 
   return (
     <div className="w-full lg:flex lg:h-[35rem] lg:flex-row lg:rounded-lg mt-12 overflow-hidden shadow-xl">
@@ -140,16 +140,23 @@ const Loginpage = () => {
           Or sign in with
         </Divider>
         <div className="flex justify-center">
-          <GoogleLogin
+          {/* <GoogleLogin
             onSuccess={handleLoginGoogleSuccess}
             onError={() => {
               console.log("Login Failed");
             }}
-          />
+          /> */}
+
+          <GoogleLoginButton />
         </div>
       </div>
       {is_register_google && (
-        <Modal open={isOpenModal}  width={800} footer={null} onCancel={() => setIsOpenModal(false)}>
+        <Modal
+          open={isOpenModal}
+          width={800}
+          footer={null}
+          onCancel={() => setIsOpenModal(false)}
+        >
           <ModalRegisterGoogle />
         </Modal>
       )}
