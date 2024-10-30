@@ -16,7 +16,6 @@ import UserService, {
 } from "../../services/user.service";
 import EditUser from "../../components/Admin/AdminModals/EditUserModal";
 import CreateUser from "../../components/Admin/AdminModals/CreateUserModal";
-import { UserSearchParams } from "../../models/SearchInfo.model";
 import { User } from "../../models/UserModel";
 
 const { Option } = Select;
@@ -40,14 +39,14 @@ const UserManagement: React.FC = () => {
     pageSize: number,
     keyword: string
   ) => {
-    const searchParams: UserSearchParams = {
+    const searchParams = {
       searchCondition: {
         keyword,
         role: "",
         status: statusFilter !== null ? Boolean(statusFilter) : undefined, // Chuyển đổi thành boolean
         is_delete: false,
         // is_verified: true, // Nếu is_verified cũng là boolean
-        is_verified: "", // Nếu is_verified cũng là boolean
+        is_verified: true, // Nếu is_verified cũng là boolean
       },
       pageInfo: { pageNum, pageSize },
     };
