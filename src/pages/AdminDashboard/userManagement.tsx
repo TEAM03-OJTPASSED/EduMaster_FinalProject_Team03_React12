@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Input, Space, Card, Select, Switch } from "antd";
+import { Table, Button, Input, Space, Card, Select, Switch, Tabs } from "antd";
 import {
   SearchOutlined,
   EditOutlined,
@@ -10,41 +10,37 @@ import {
 import useSearch from "../../hooks/useSearch";
 import EditUser from "../../components/Admin/AdminModals/EditUserModal";
 import CreateUser from "../../components/Admin/AdminModals/CreateUserModal";
+import DeleteUserModal from "../../components/Admin/AdminModals/DeleteUserModal";
 import { UserSearchParams } from "../../models/SearchInfo.model";
 import { User } from "../../models/UserModel";
 import { UserService } from "../../services/user.service";
-import DeleteUserModal from "../../components/Admin/AdminModals/DeleteUserModal";
 
 const { Option } = Select;
+const { TabPane } = Tabs;
 
 const UserManagement: React.FC = () => {
   const [editVisible, setEditVisible] = useState(false);
   const [createVisible, setCreateVisible] = useState(false);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [deleteUserModalVisible, setDeleteUserModalVisible] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
+  const [activeTabKey, setActiveTabKey] = useState("active");
   const { searchText, filteredData, handleSearchChange } = useSearch(users, [
     "name",
     "email",
   ]);
-  const [statusFilter, setStatusFilter] = useState<string | null>(null);
 
-  const fetchUsers = async (
-    pageNum: number,
-    pageSize: number,
-    keyword: string
-  ) => {
+  const fetchUsers = async () => {
     const searchParams: UserSearchParams = {
       searchCondition: {
-        keyword,
+        keyword: searchText,
         role: "",
-        status: statusFilter !== null ? Boolean(statusFilter) : undefined,
+        status: activeTabKey === "active",
         is_delete: false,
         is_verified: true,
-        // is_verified: "", // Nếu is_verified cũng là boolean
       },
       pageInfo: { pageNum, pageSize },
     };
@@ -53,19 +49,13 @@ const UserManagement: React.FC = () => {
       const response = await UserService.getUsers(searchParams);
       const responseData = response.data?.pageData;
       const flattenedUsers: User[] = Array.isArray(responseData)
-        ? responseData.flat()
+        ? responseData.flat() // Dùng flat() để chuyển thành User[]
         : [];
-      const totalItems = response.data?.pageInfo?.totalItems ?? 0;
       setUsers(flattenedUsers);
-      setTotal(totalItems);
+      setTotal(response.data?.pageInfo?.totalItems ?? 0);
     } catch (err) {
       console.error("Error fetching users:", err);
     }
-  };
-
-  const handleAddUser = () => {
-    setCurrentUser(null);
-    setCreateVisible(true);
   };
 
   const handleEdit = (record: User) => {
@@ -73,61 +63,31 @@ const UserManagement: React.FC = () => {
     setEditVisible(true);
   };
 
-  const handleCloseModal = () => {
-    setEditVisible(false);
-    setCreateVisible(false);
-    setCurrentUser(null);
-  };
-
   const handleSave = async (updatedUserData: any) => {
-    if (!currentUser) {
-      console.error("No user selected for editing.");
-      return;
-    }
-    const userId = currentUser._id;
+    if (!currentUser) return;
     try {
-      await UserService.updateUser(userId, updatedUserData);
+      await UserService.updateUser(currentUser._id, updatedUserData);
       setEditVisible(false);
-      const updatedUsers = users.map((user) =>
-        user._id === userId ? { ...user, ...updatedUserData } : user
-      );
-      setUsers(updatedUsers);
-      fetchUsers(pageNum, pageSize, searchText);
+      fetchUsers();
     } catch (error) {
       console.error("Error updating user:", error);
     }
   };
 
   const handleDeleteConfirm = async (userId: string) => {
-    try {
-      const response = await deleteUser(userId);
-      if (response) {
-        console.log("User deleted successfully");
-        fetchUsers(pageNum, pageSize, searchText); // Refresh the user list
-      } else {
-        console.error("Failed to delete user");
-      }
-    } catch (error) {
-      console.error("Error deleting user:", error);
-    } finally {
-      setDeleteUserModalVisible(false); // Close the modal after deletion
-    }
+    await UserService.deleteUser(userId);
+    fetchUsers();
+    setDeleteUserModalVisible(false);
   };
 
-  const handleDelete = (record: User) => {
-    setCurrentUser(record); // Set the current user to be deleted
-    setDeleteUserModalVisible(true);
+  const handleTableChange = (pagination: any) => {
+    setPageNum(pagination.current);
+    setPageSize(pagination.pageSize);
   };
 
   useEffect(() => {
-    fetchUsers(pageNum, pageSize, searchText);
-  }, [pageNum, pageSize, searchText, statusFilter]);
-
-  const handleTableChange = (pagination: any, filters: any) => {
-    setPageNum(pagination.current);
-    setPageSize(pagination.pageSize);
-    setStatusFilter(filters.status ? filters.status[0] : null);
-  };
+    fetchUsers();
+  }, [pageNum, pageSize, searchText, activeTabKey]);
 
   const columns = [
     {
@@ -149,11 +109,6 @@ const UserManagement: React.FC = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      filters: [
-        { text: "Active", value: true },
-        { text: "Inactive", value: false },
-      ],
-      onFilter: (value: any, record: User) => record.status === value,
       render: (status: boolean, record: User) => (
         <Switch
           checked={status}
@@ -162,7 +117,7 @@ const UserManagement: React.FC = () => {
               user_id: record._id,
               status: checked,
             });
-            fetchUsers(pageNum, pageSize, searchText);
+            fetchUsers();
           }}
         />
       ),
@@ -177,7 +132,7 @@ const UserManagement: React.FC = () => {
           style={{ width: 120 }}
           onChange={async (value) => {
             await UserService.changeRole({ user_id: record._id, role: value });
-            fetchUsers(pageNum, pageSize, searchText);
+            fetchUsers();
           }}
         >
           <Option value="admin">Admin</Option>
@@ -189,13 +144,16 @@ const UserManagement: React.FC = () => {
     {
       title: "Actions",
       key: "action",
-      render: (record: any) => (
+      render: (record: User) => (
         <Space size="middle">
           <Button icon={<EditOutlined />} onClick={() => handleEdit(record)} />
           <Button
             danger
             icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record)}
+            onClick={() => {
+              setCurrentUser(record);
+              setDeleteUserModalVisible(true);
+            }}
           />
         </Space>
       ),
@@ -206,54 +164,62 @@ const UserManagement: React.FC = () => {
     <div>
       <Card>
         <h1 className="text-2xl my-5">User Management</h1>
-        <div className="flex items-center justify-between mb-4">
-          <Input
-            placeholder="Search By User Name"
-            prefix={<SearchOutlined />}
-            className="w-full md:w-1/3"
-            value={searchText}
-            onChange={handleSearchChange}
-          />
-          <Button
-            type="primary"
-            onClick={handleAddUser}
-            icon={<PlusOutlined />}
-          >
-            Add new user
-          </Button>
-        </div>
-        <Table
-          dataSource={filteredData}
-          columns={columns}
-          pagination={{
-            current: pageNum,
-            pageSize,
-            total,
-            showSizeChanger: true,
-          }}
-          onChange={handleTableChange}
-          rowKey="_id"
-          bordered
-          scroll={{ x: "max-content" }}
-        />
+        <Tabs activeKey={activeTabKey} onChange={setActiveTabKey}>
+          {["active", "inactive"].map((key) => (
+            <TabPane
+              tab={`${key.charAt(0).toUpperCase() + key.slice(1)} Users`}
+              key={key}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <Input
+                  placeholder="Search By User Name"
+                  prefix={<SearchOutlined />}
+                  className="w-full md:w-1/3"
+                  value={searchText}
+                  onChange={handleSearchChange}
+                />
+                <Button
+                  type="primary"
+                  onClick={() => setCreateVisible(true)}
+                  icon={<PlusOutlined />}
+                >
+                  Add new user
+                </Button>
+              </div>
+              <Table
+                dataSource={filteredData}
+                columns={columns}
+                pagination={{
+                  current: pageNum,
+                  pageSize,
+                  total,
+                  showSizeChanger: true,
+                }}
+                onChange={handleTableChange}
+                rowKey="_id"
+                bordered
+                scroll={{ x: "max-content" }}
+              />
+            </TabPane>
+          ))}
+        </Tabs>
       </Card>
       <EditUser
-        key={currentUser?._id}
-        onClose={handleCloseModal}
         visible={editVisible}
+        onClose={() => setEditVisible(false)}
         user={currentUser}
         onSave={handleSave}
       />
       <CreateUser
         visible={createVisible}
-        onClose={handleCloseModal}
-        onSave={handleSave}
+        onClose={() => setCreateVisible(false)}
+        onSave={fetchUsers}
       />
       <DeleteUserModal
         visible={deleteUserModalVisible}
         onCancel={() => setDeleteUserModalVisible(false)}
-        onDelete={() => handleDeleteConfirm(currentUser?._id!)} // Use the current user's id for deletion
-        userName={currentUser?.name}
+        onDelete={() => handleDeleteConfirm(currentUser?._id!)}
+        userName={currentUser?.name || "Undefined User"}
       />
     </div>
   );

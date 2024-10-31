@@ -1,11 +1,11 @@
-import React from 'react';
-import { Modal, Button } from 'antd';
+import React from "react";
+import { Modal, Button } from "antd";
 
 interface DeleteUserModalProps {
   visible: boolean;
   onCancel: () => void;
   onDelete: () => void;
-  userName: string;
+  userName?: string;
 }
 
 const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
@@ -25,7 +25,10 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
         </Button>,
       ]}
     >
-      <p>Are you sure you want to delete user <span style={{ color: 'red', fontWeight: 'bold' }}>{userName}</span>?</p>
+      <p>
+        Are you sure you want to delete user{" "}
+        <span style={{ color: "red", fontWeight: "bold" }}>{userName}</span>?
+      </p>
     </Modal>
   );
 };
