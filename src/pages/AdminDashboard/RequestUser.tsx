@@ -1,9 +1,9 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Table, Button, Input, Space, Card, Modal, message, Spin } from "antd";
-import { 
+import {
   SearchOutlined,
   CheckOutlined,
-  CloseOutlined, 
+  CloseOutlined,
 } from "@ant-design/icons";
 import useSearch from "../../hooks/useSearch";
 import { getUsers, previewInstructor } from "../../services/user.service";
@@ -27,7 +27,11 @@ const RequestUser = () => {
     "email",
   ]);
 
-  const fetchUsers = async (pageNum :number, pageSize :number, keyword:string) => {
+  const fetchUsers = async (
+    pageNum: number,
+    pageSize: number,
+    keyword: string
+  ) => {
     const searchParams = {
       searchCondition: {
         keyword,
@@ -41,7 +45,7 @@ const RequestUser = () => {
 
     try {
       const response = await getUsers(searchParams);
-      setUsers((response as any)?.pageData );
+      setUsers((response as any)?.pageData);
       setTotal((response as any)?.pageInfo.totalItems);
     } catch (err) {
       console.error("Error fetching users:", err);
@@ -52,17 +56,17 @@ const RequestUser = () => {
     fetchUsers(pageNum, pageSize, searchText);
   }, [pageNum, pageSize, searchText]);
 
-  const handleTableChange = (pagination :any ) => {
+  const handleTableChange = (pagination: any) => {
     setPageNum(pagination.current);
     setPageSize(pagination.pageSize);
   };
 
-  const handleShowReason = (record :any) => {
+  const handleShowReason = (record: any) => {
     setCurrentUser(record);
     setReasonVisible(true);
   };
 
-  const handleSubmitPreview = async (status: string, record:any) => {
+  const handleSubmitPreview = async (status: string, record: any) => {
     const formPreview = {
       user_id: record._id,
       status,
@@ -105,22 +109,20 @@ const RequestUser = () => {
     {
       title: "Actions",
       key: "action",
-      render: (record :any) => (
+      render: (record: any) => (
         <Space size="middle">
           <Button
             type="text"
             className="text-green-600"
             icon={<CheckOutlined />}
             onClick={() => handleSubmitPreview("approve", record)}
-          >
-          </Button>
+          ></Button>
           <Button
             className="text-red-600"
             type="text"
             icon={<CloseOutlined />}
             onClick={() => handleShowReason(record)}
-          >
-          </Button>
+          ></Button>
         </Space>
       ),
     },
@@ -133,14 +135,14 @@ const RequestUser = () => {
           <h3 className="text-2xl my-5">Request Instructor Management</h3>
         </div>
         <div className="flex flex-wrap items-center mb-4">
-        <Input
+          <Input
             placeholder="Search By User Name"
             prefix={<SearchOutlined />}
             className="w-full md:w-1/3 mb-2 md:mb-0"
             value={searchText}
             onChange={handleSearchChange}
           />
-          </div>
+        </div>
         <Table
           dataSource={filteredData}
           pagination={{
@@ -169,7 +171,7 @@ const RequestUser = () => {
             htmlType="submit"
             onClick={() => handleSubmitPreview("reject", currentUser)}
           >
-            {loading ? <Spin/> : <span>Submit</span>}
+            {loading ? <Spin /> : <span>Submit</span>}
           </Button>,
         ]}
       >

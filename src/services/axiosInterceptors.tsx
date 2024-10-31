@@ -1,4 +1,8 @@
-import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import axios, {
+  AxiosError,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from "axios";
 import handleError from "./error";
 
 // Tạo instance của axios
@@ -15,7 +19,6 @@ axiosClientVer2.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     // Thêm Authorization header với token, nếu nó tồn tại
     const token = localStorage.getItem("token"); // Hoặc bất kỳ phương pháp nào bạn lưu trữ token
-    console.log("local token", token);
 
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;

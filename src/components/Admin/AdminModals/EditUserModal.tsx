@@ -1,27 +1,9 @@
-import { Modal, Form, Input, Select, Switch, Button } from "antd";
-const { Option } = Select;
-
-interface User {
-  _id: string;
-  key: string;
-  name: string;
-  email: string;
-  phone_number?: string;
-  avatar_url?: string;
-  video_url?: string;
-  bank_name?: string;
-  bank_account_no?: string;
-  bank_account_name?: string;
-  dob: string;
-  status: boolean;
-  role: string;
-  description?: string;
-}
-
+import { Modal, Form, Input, Select, Button } from "antd";
+import { User } from "../../../models/UserModel";
 interface EditUserProps {
   visible: boolean;
   onClose: () => void;
-  user: User | any;
+  user: User;
   onSave: (values: User) => void;
 }
 

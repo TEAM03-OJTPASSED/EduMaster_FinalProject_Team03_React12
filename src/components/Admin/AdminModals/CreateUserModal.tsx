@@ -1,6 +1,7 @@
-import { Modal, Form, Input, Button } from "antd";
+import { Modal, Form, Input, Button, Select } from "antd";
 import { UserService } from "../../../services/user.service";
-// import { createUser } from "../../../services/user.service";
+
+const { Option } = Select;
 
 interface CreateUserProps {
   visible: boolean;
@@ -16,19 +17,10 @@ const CreateUser: React.FC<CreateUserProps> = ({
   const [form] = Form.useForm();
 
   const handleFinish = async (values: any) => {
-    try {
-      // Call the API to create a new user
-      const response = await UserService.createUser(values);
-      if (response.success) {
-        onSave(response.data);
-      } else {
-        console.error("Failed to create user:", response);
-      }
-      form.resetFields();
-      onClose();
-    } catch (error) {
-      console.error("Error creating user:", error);
-    }
+    const response = await UserService.createUser(values);
+    if (response.success) onSave(response.data);
+    form.resetFields();
+    onClose();
   };
 
   return (
@@ -42,7 +34,11 @@ const CreateUser: React.FC<CreateUserProps> = ({
         <Form.Item name="name" label="Full name" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
-        <Form.Item name="email" label="Email" rules={[{ required: true }]}>
+        <Form.Item
+          name="email"
+          label="Email"
+          rules={[{ required: true, type: "email" }]}
+        >
           <Input />
         </Form.Item>
         <Form.Item
@@ -51,6 +47,16 @@ const CreateUser: React.FC<CreateUserProps> = ({
           rules={[{ required: true }]}
         >
           <Input.Password />
+        </Form.Item>
+        <Form.Item name="role" label="Role" rules={[{ required: true }]}>
+          <Select placeholder="Select a role">
+            <Option value="admin">Admin</Option>
+            <Option value="student">Student</Option>
+            <Option value="instructor">Instructor</Option>
+          </Select>
+        </Form.Item>
+        <Form.Item name="phone_number" label="Phone Number">
+          <Input />
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
           <Button type="primary" htmlType="submit" style={{ float: "right" }}>

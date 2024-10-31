@@ -32,7 +32,15 @@ export const UserService = {
     return getRequest(USER_API.GET_USER(userId));
   },
   createUser(param: User): Promise<ApiResponse<User>> {
-    return postRequest(USER_API.CREATE_USER, param);
+    return postRequest<User>(USER_API.CREATE_USER, param)
+      .then((response) => {
+        message.success("User updated successfully!");
+        return response;
+      })
+      .catch((error) => {
+        message.error("Failed to update user.");
+        throw error;
+      });
   },
   updateUser(userId: string, param: User): Promise<ApiResponse<User>> {
     return putRequest<User>(USER_API.UPDATE_USER(userId), param)

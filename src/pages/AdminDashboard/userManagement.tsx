@@ -7,16 +7,16 @@ import {
   PlusCircleOutlined,
 } from "@ant-design/icons";
 
-import useSearch from "../../hooks/useSearch";
+import { debounce } from "lodash"; // Import debounce from lodash
 import EditUser from "../../components/Admin/AdminModals/EditUserModal";
 import CreateUser from "../../components/Admin/AdminModals/CreateUserModal";
 import DeleteUserModal from "../../components/Admin/AdminModals/DeleteUserModal";
 import { UserSearchParams } from "../../models/SearchInfo.model";
 import { User } from "../../models/UserModel";
 import { UserService } from "../../services/user.service";
+import { useDebouncedSearch } from "../../hooks/useSearch";
 
 const { Option } = Select;
-const { TabPane } = Tabs;
 
 const UserManagement: React.FC = () => {
   const [editVisible, setEditVisible] = useState(false);
@@ -28,10 +28,8 @@ const UserManagement: React.FC = () => {
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const [activeTabKey, setActiveTabKey] = useState("active");
-  const { searchText, filteredData, handleSearchChange } = useSearch(users, [
-    "name",
-    "email",
-  ]);
+  const [searchText, setSearchText] = useState("");
+  const filteredData = useDebouncedSearch(users, searchText, 300, ["name", "email"]);
 
   const fetchUsers = async () => {
     const searchParams: UserSearchParams = {
@@ -87,7 +85,10 @@ const UserManagement: React.FC = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, [pageNum, pageSize, searchText, activeTabKey]);
+    // }, [pageNum, pageSize, searchText, activeTabKey]);
+  }, [pageNum, pageSize, activeTabKey]);
+
+
 
   const columns = [
     {
@@ -164,50 +165,55 @@ const UserManagement: React.FC = () => {
     <div>
       <Card>
         <h1 className="text-2xl my-5">User Management</h1>
-        <Tabs activeKey={activeTabKey} onChange={setActiveTabKey}>
-          {["active", "inactive"].map((key) => (
-            <TabPane
-              tab={`${key.charAt(0).toUpperCase() + key.slice(1)} Users`}
-              key={key}
-            >
-              <div className="flex items-center justify-between mb-4">
-                <Input
-                  placeholder="Search By User Name"
-                  prefix={<SearchOutlined />}
-                  className="w-full md:w-1/3"
-                  value={searchText}
-                  onChange={handleSearchChange}
+        <Tabs
+          activeKey={activeTabKey}
+          onChange={setActiveTabKey}
+          items={["active", "inactive"].map((key) => ({
+            key,
+            label: `${key.charAt(0).toUpperCase() + key.slice(1)} Users`,
+            children: (
+              <>
+                <div className="flex items-center justify-between mb-4">
+                  <Input
+                    placeholder="Search By User Name"
+                    prefix={<SearchOutlined />}
+                    className="w-full md:w-1/3"
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)} // Update searchText on input change
+                  />
+                  <Button
+                    type="primary"
+                    onClick={() => setCreateVisible(true)}
+                    icon={<PlusCircleOutlined />}
+                  >
+                    Add new user
+                  </Button>
+                </div>
+                <Table
+                  dataSource={filteredData}
+                  columns={columns}
+                  pagination={{
+                    current: pageNum,
+                    pageSize,
+                    total,
+                    showSizeChanger: true,
+                  }}
+                  onChange={handleTableChange}
+                  rowKey="_id"
+                  bordered
+                  scroll={{ x: "max-content" }}
                 />
-                <Button
-                  type="primary"
-                  onClick={() => setCreateVisible(true)}
-                  icon={<PlusOutlined />}
-                >
-                  Add new user
-                </Button>
-              </div>
-              <Table
-                dataSource={filteredData}
-                columns={columns}
-                pagination={{
-                  current: pageNum,
-                  pageSize,
-                  total,
-                  showSizeChanger: true,
-                }}
-                onChange={handleTableChange}
-                rowKey="_id"
-                bordered
-                scroll={{ x: "max-content" }}
-              />
-            </TabPane>
-          ))}
-        </Tabs>
+              </>
+            ),
+          }))}
+        />
       </Card>
+
       <EditUser
+        key={currentUser?._id}
         visible={editVisible}
         onClose={() => setEditVisible(false)}
-        user={currentUser}
+        user={currentUser ?? ({} as User)}
         onSave={handleSave}
       />
       <CreateUser
