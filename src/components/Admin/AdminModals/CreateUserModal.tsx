@@ -54,7 +54,7 @@ const CreateUser: React.FC<CreateUserProps> = ({
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
           <Button type="primary" htmlType="submit" style={{ float: "right" }}>
-            Save
+            Add
           </Button>
         </Form.Item>
       </Form>

@@ -74,20 +74,16 @@ const BlogManagement = () => {
 
   return (
     <Card>
+      <div className="flex">
       <h3 className="text-2xl my-5">Blog Management</h3>
-      <div className="flex justify-between">
+      </div>
+      <div className="flex flex-wrap items-center mb-4">
         <Input
           placeholder="Search By Blog Name"
           prefix={<SearchOutlined />}
+          className="w-full md:w-1/3 mb-2 md:mb-0"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
-          style={{
-            width: "45%",
-            height: "40px",
-            marginBottom: "20px",
-            marginRight: "10px",
-            borderRadius: "4px",
-          }}
         />
         <Select
           mode="multiple"
@@ -95,7 +91,7 @@ const BlogManagement = () => {
           placeholder="Select categories"
           value={selectedCategories}
           onChange={(values) => setSelectedCategories(values)}
-          style={{ width: '200px', marginBottom: '16px' }}
+          className="w-full md:w-1/4 ml-0 md:ml-3 mb-2 md:mb-0"
         >
           {categories.map((category) => (
             <Option key={category} value={category}>
@@ -106,11 +102,10 @@ const BlogManagement = () => {
         <Button
           onClick={() => console.log("Open Create Blog Modal")}
           icon={<PlusCircleOutlined />}
-          shape="round"
           type="primary"
-          style={{ marginBottom: "20px" }}
+          className="w-full md:w-auto ml-0 md:ml-auto"
         >
-          Create Blog
+          Add New Blog
         </Button>
       </div>
 
@@ -127,6 +122,7 @@ const BlogManagement = () => {
           pagination={{ pageSize: 5 }}
           rowKey="_id"
           bordered
+          scroll={{ x: true }}
         />
       )}
     </Card>

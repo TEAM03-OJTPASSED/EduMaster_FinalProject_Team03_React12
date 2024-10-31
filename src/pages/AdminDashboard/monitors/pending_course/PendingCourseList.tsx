@@ -1,6 +1,6 @@
 import React from "react";
-import { Table, Input, Card, Tag, TableProps, Button } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import { Table, Input, Card, Tag, TableProps, Button, Space } from "antd";
+import { CheckOutlined, CloseOutlined, SearchOutlined } from "@ant-design/icons";
 import { Course, CourseStatusEnum, listCourses } from "../course/courseList";
 
 const PendingCourseList: React.FC = () => {
@@ -68,31 +68,29 @@ const PendingCourseList: React.FC = () => {
       ),
     },
     {
-      title: "Action",
+      title: "Actions",
       key: "action",
       render: (_, record: Course) => (
-        <div className="flex gap-2">
+        <Space size="middle">
           <Button
             type="text"
-            color="primary"
-            variant="solid"
+            className="text-green-600"
+            icon={<CheckOutlined />}
             onClick={() =>
               handleUpdateStatus(record.id, CourseStatusEnum.APPROVED)
             }
           >
-            Approve
           </Button>
           <Button
+            className="text-red-600"
             type="text"
-            color="danger"
-            variant="outlined"
+            icon={<CloseOutlined />}
             onClick={() =>
               handleUpdateStatus(record.id, CourseStatusEnum.REJECTED)
             }
           >
-            Reject
           </Button>
-        </div>
+        </Space>
       ),
     },
   ];
@@ -105,11 +103,13 @@ const PendingCourseList: React.FC = () => {
   return (
     <Card>
       <h3 className="text-2xl my-5">Approve Courses</h3>
+      <div className="flex flex-wrap items-center mb-4">
       <Input
         placeholder="Search By Course Name"
         prefix={<SearchOutlined />}
-        style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
+        className="w-full md:w-1/3 mb-2 md:mb-0"
       />
+      </div>
       <Table
         dataSource={listCourses}
         columns={columns}

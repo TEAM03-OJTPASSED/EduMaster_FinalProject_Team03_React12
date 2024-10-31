@@ -235,7 +235,7 @@ const PayoutManagement: React.FC = () => {
         {/* Transaction Details Modal */}
         <Modal
           title="Transaction Details"
-          visible={isTransactionModalVisible}
+          open={isTransactionModalVisible}
           onCancel={handleTransactionModalCancel}
           footer={null}
           width={800} // Thêm width để không bị overflow Table

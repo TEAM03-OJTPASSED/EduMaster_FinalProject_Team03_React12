@@ -1,4 +1,4 @@
-import { Button, Card, Input, Select, Table, Form } from "antd";
+import { Button, Card, Input, Select, Table, Form, Space } from "antd";
 import {
   SearchOutlined,
   DeleteOutlined,
@@ -99,18 +99,17 @@ const CategoryManagement = () => {
       title: "Actions",
       key: "action",
       render: () => (
-        <>
+        <Space size="middle">
           <Button
-            type="text"
-            icon={<DeleteOutlined style={{ color: "red" }} />}
-            onClick={() => handleDelete}
-          />
-          <Button
-            type="text"
-            icon={<EditOutlined style={{ color: "blue" }} />}
+            icon={<EditOutlined />}
             onClick={() => showModalEdit}
           />
-        </>
+          <Button
+            danger
+            icon={<DeleteOutlined />}
+            onClick={() => handleDelete}
+          />
+        </Space>
       ),
     },
   ];
@@ -141,12 +140,11 @@ const CategoryManagement = () => {
         <Button
           onClick={showModalCreate}
           icon={<PlusCircleOutlined />}
-          shape="round"
           variant="solid"
           color="primary"
           className="w-full md:w-auto ml-0 md:ml-auto"
         >
-          New Category
+          Add New Category
         </Button>
       </div>
 

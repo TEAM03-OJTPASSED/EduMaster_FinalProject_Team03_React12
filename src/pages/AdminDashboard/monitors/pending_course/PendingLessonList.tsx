@@ -63,11 +63,13 @@ const PendingLessonList = () => {
   return (
     <Card>
       <h3 className="text-2xl my-5">Lesson Management</h3>
+      <div className="flex flex-wrap items-center mb-4">
       <Input
         placeholder="Search By Lesson Name"
         prefix={<SearchOutlined />}
-        style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
+        className="w-full md:w-1/3 mb-2 md:mb-0"
       />
+      </div>
       <Table
         dataSource={listLessons}
         columns={columns}

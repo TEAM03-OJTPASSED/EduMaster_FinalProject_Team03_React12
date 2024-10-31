@@ -4,7 +4,7 @@ import {
   SearchOutlined,
   EditOutlined,
   DeleteOutlined,
-  PlusOutlined,
+  PlusCircleOutlined,
 } from "@ant-design/icons";
 
 import useSearch from "../../hooks/useSearch";
