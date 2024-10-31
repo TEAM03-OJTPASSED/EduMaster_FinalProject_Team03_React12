@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getRequest, postRequest } from "../../services/httpsMethod";
+import { postRequest } from "../../services/httpsMethod";
 import { User } from "../../models/UserModel";
 import { DataInterface } from "../../type/data.type";
 import { SearchParamInterface } from "../../type/search.type";
