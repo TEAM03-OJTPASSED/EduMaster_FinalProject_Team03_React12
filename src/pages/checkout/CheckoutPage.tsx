@@ -11,11 +11,12 @@ const { Title, Text } = Typography;
   
 interface CheckoutPageProps {
   carts: Cart[];
-  navigate: (path: string) => void;
+  // navigate: (path: string) => void;
   cancelCart: (cartItem: CartItem) => void
+  checkout: () => void;
 }
 
-const CheckoutPage: React.FC<CheckoutPageProps> = ({carts, navigate, cancelCart}) => {
+const CheckoutPage: React.FC<CheckoutPageProps> = ({carts, cancelCart, checkout}) => {
   const [paymentMethod, setPaymentMethod] = useState('credit_card');
   const {currentUser} = useSelector((state:RootState) => state.auth.login)
 
@@ -24,11 +25,11 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({carts, navigate, cancelCart}
 
   const total = carts.reduce((sum, cart) => sum + cart.price, 0);
 
-  const onFinish = (values: any) => {
-    console.log('Success:', values);
-    message.success('Order placed successfully!');
-    navigate('/');
-  };
+  // const onFinish = (values: any) => {
+  //   console.log('Success:', values);
+  //   message.success('Order placed successfully!');
+  //   navigate('/');
+  // };
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
@@ -43,7 +44,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({carts, navigate, cancelCart}
           <Card title="Billing Information" className="mb-8">
             <Form
               name="checkout"
-              onFinish={onFinish}
+              onFinish={checkout}
               onFinishFailed={onFinishFailed}
               layout="vertical"
             >

@@ -2,16 +2,9 @@ import { Button, Card, Tag } from "antd";
 import { AiOutlineCalendar } from "react-icons/ai";
 import { BiCategory } from "react-icons/bi";
 import { TiUserOutline } from "react-icons/ti";
+import { Blog } from "../models/Blog.model";
 
-interface Blog {
-  id: number;
-  image_url: string;
-  category: string;
-  title: string;
-  author: string;
-  date: string;
-  content: string;
-}
+
 
 interface BlogCardProps {
   blog: Blog;
@@ -19,7 +12,7 @@ interface BlogCardProps {
 }
 
 const BlogCard: React.FC<BlogCardProps> = ({ blog, viewMode }) => (
-  <a href={`/blog-detail/${blog.id}`}>
+  <a href={`/blog-detail/${blog._id}`}>
     <Card
       hoverable
       styles={{
@@ -31,14 +24,14 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog, viewMode }) => (
       cover={
         <div className="relative">
           <img
-            alt={blog.title}
+            alt={blog.name}
             src={blog.image_url}
             className={`${
               viewMode === "list" ? "min-w-[250px] w-[250px]" : "w-full"
             } h-56 object-cover`}
           />
           <Tag className="absolute top-2 left-2 bg-black text-white">
-            {blog.category}
+            {blog.category_name}
           </Tag>
         </div>
       }
@@ -47,24 +40,24 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog, viewMode }) => (
       }`}
     >
       <div className="flex-grow">
-        <p className="text-gray-500 text-sm mb-2">by {blog.author}</p>
+        <p className="text-gray-500 text-sm mb-2">by {blog.user_name}</p>
         <h2 className="text-base font-semibold mb-4 overflow-ellipsis overflow-hidden whitespace-nowrap transition group-hover:text-[#FFAB2D]">
-          {blog.title}
+          {blog.name}
         </h2>
       </div>
       <div>
         <div className="grid grid-cols-2 grid-rows-2 gap-2 justify-between text-sm text-gray-500 mb-4">
           <span className="flex items-center">
             <AiOutlineCalendar className="mr-1 text-orange-500" size={18} />
-            {blog.date}
+            {String(blog.created_at)}
           </span>
           <span className="flex items-center justify-end">
             <TiUserOutline className="mr-1 text-orange-500" size={20} />
-            {blog.author}
+            {blog.user_name}
           </span>
           <span className="flex items-center">
             <BiCategory className="mr-1 text-orange-500" size={18} />
-            {blog.category}
+            {blog.category_name}
           </span>
         </div>
 

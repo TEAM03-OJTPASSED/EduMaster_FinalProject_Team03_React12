@@ -49,7 +49,7 @@ export const SearchFilter: React.FC<SearchFilterProps> = ({ filters, onFilterCha
   const renderCheckboxGroup = (section: FilterSection) => (
     <Checkbox.Group
       className="flex flex-col space-y-2"
-      value={selectedFilters[section.type] as string[]}
+      value={selectedFilters[section.type]}
       // onChange={(checkedValues) => handleFilterChange(section.type, checkedValues)}
     >
       {section.options.map((option) => (

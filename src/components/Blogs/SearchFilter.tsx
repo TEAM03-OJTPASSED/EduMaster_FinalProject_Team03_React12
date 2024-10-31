@@ -11,8 +11,6 @@ interface FilterOption {
 
 interface Filters {
   category: string[];
-  author: string[];
-  date: string[];
 }
 
 interface FilterSection {
@@ -23,7 +21,7 @@ interface FilterSection {
 
 interface BlogSearchFilterProps {
   filters: FilterSection[];
-  onFilterChange: (filters: { [key: string]: string[] | number[] }) => void;
+  onFilterChange: (filterType: keyof Filters, value: string | number) => void;
   selectedFilters: Filters;
 }
 
@@ -44,18 +42,19 @@ export const SearchFilter: React.FC<BlogSearchFilterProps> = ({ filters, onFilte
     };
   }, []);
 
-  const handleFilterChange = (filterType: keyof Filters, checkedValues: string[] | number[]) => {
-    onFilterChange({ [filterType]: checkedValues });
+  const handleFilterChange = (filterType: keyof Filters, checkedValue: string | number) => {
+    onFilterChange(filterType, checkedValue);
   };
+
 
   const renderCheckboxGroup = (section: FilterSection) => (
     <Checkbox.Group
       className="flex flex-col space-y-2"
-      value={selectedFilters[section.type] as string[]}
-      onChange={(checkedValues) => handleFilterChange(section.type, checkedValues)}
+      value={selectedFilters[section.type]}
+      // onChange={(checkedValues) => handleFilterChange(section.type, checkedValues)}
     >
       {section.options.map((option) => (
-        <Checkbox key={option.value} value={option.value}>
+        <Checkbox key={option.value} value={option.value} onChange={(checkedValues) => handleFilterChange(section.type, checkedValues.target.value)}>
           {option.label} {option.count !== undefined && `(${option.count})`}
         </Checkbox>
       ))}

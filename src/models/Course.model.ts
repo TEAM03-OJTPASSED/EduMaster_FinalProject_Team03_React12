@@ -16,7 +16,6 @@ export interface Course {
   price: number;
   discount: number;
   created_at: string;
-  updated_at: string;
   price_paid: number;
   full_time: number; // Assuming full_time represents duration
   instructor_id: string;
@@ -61,12 +60,11 @@ export interface CourseRequest {
 export interface CourseStatusUpdate {
   course_id: string;
   new_status: CourseStatusEnum;
-  comment: "string"
+  comment: string
 }
 
-enum CourseStatusEnum {
+export enum CourseStatusEnum {
   NEW = "new",
-  COMPLETED = "completed",
   WAITING_APPROVE = "waiting_approve",
   APPROVE = "approve",
   REJECT = "reject",

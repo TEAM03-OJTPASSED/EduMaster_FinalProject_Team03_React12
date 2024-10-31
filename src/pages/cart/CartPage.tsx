@@ -80,8 +80,19 @@ const CartPage: React.FC = () => {
     });    
     if (response) handleNotify("Added To Awaiting", "Your cart item(s) are awaiting payment.")
     fetchCart()
+  };
 
-};
+  const handleCheckout = async () => {     
+    const response = await CartService.updateStatusCart({
+      status: CartStatusEnum.COMPLETED,
+      items: carts
+    });    
+    if (response) {
+      handleNotify("Your order was placed successfully", "Happy studying!. A copy of the receipt will be sent to your email shortly.")
+      fetchCart()
+      navigate('/')
+    }
+  };
 
   const handleCancelCart = async (cartItem: CartItem) => {     
     const response = await CartService.updateStatusCart({
@@ -145,8 +156,8 @@ const CartPage: React.FC = () => {
             children: (
               <CheckoutPage 
                 carts={carts} 
-                navigate={navigate} 
                 cancelCart={handleCancelCart}
+                checkout={handleCheckout}
               />
             ),
           },

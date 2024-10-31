@@ -10,7 +10,7 @@ export type Blog = {
     content: string;
     created_at: Date;
     updated_at: Date;
-}[]
+}
 
 export interface BlogRequest {
     name: string;

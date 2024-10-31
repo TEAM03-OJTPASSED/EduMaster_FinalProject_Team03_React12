@@ -1,130 +1,33 @@
-import { Layout } from "antd";
-import { SearchFilter } from "../components/Blogs/SearchFilter";
-import { SearchResults } from "../components/Blogs/SearchResults";
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import DynamicBreadcrumb from "../components/Breadcrumb/Breadcrumb";
+'use client'
 
-interface Blog {
-  id: number;
-  image_url: string;
-  category: string;
-  title: string;
-  author: string;
-  date: string;
-  content: string;
-}
+import { Layout } from "antd"
+import { useEffect, useState } from "react"
+import { SearchFilter } from "../components/Blogs/SearchFilter"
+import { SearchResults } from "../components/Blogs/SearchResults"
+import DynamicBreadcrumb from "../components/Breadcrumb/Breadcrumb"
+import { useSearchParams } from "react-router-dom"
+import { Blog } from "../models/Blog.model"
+import ClientService from "../services/client.service"
+import { GetBlogsClient } from "../models/Client.model"
 
-const blogs: Blog[] = [
-  {
-    id: 1,
-    image_url: "https://picsum.photos/300/200",
-    category: "Technology",
-    title: "Understanding React Hooks",
-    author: "Jane Doe",
-    date: "2023-01-01",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-  {
-    id: 2,
-    image_url: "https://picsum.photos/300/200",
-    category: "Health",
-    title: "The Benefits of a Healthy Lifestyle",
-    author: "John Smith",
-    date: "2023-02-15",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-  {
-    id: 3,
-    image_url: "https://picsum.photos/300/200",
-    category: "Finance",
-    title: "Investing for Beginners",
-    author: "Alice Johnson",
-    date: "2023-03-10",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-  {
-    id: 4,
-    image_url: "https://picsum.photos/300/200",
-    category: "Travel",
-    title: "Top 10 Destinations for 2023",
-    author: "Bob Brown",
-    date: "2023-04-05",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-  {
-    id: 5,
-    image_url: "https://picsum.photos/300/200",
-    category: "Education",
-    title: "The Future of Online Learning",
-    author: "Carol White",
-    date: "2023-05-20",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-  {
-    id: 6,
-    image_url: "https://picsum.photos/300/200",
-    category: "Food",
-    title: "Healthy Recipes for Busy People",
-    author: "David Green",
-    date: "2023-06-15",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-  {
-    id: 7,
-    image_url: "https://picsum.photos/300/200",
-    category: "Lifestyle",
-    title: "Minimalism: A Guide to Simplifying Your Life",
-    author: "Eve Black",
-    date: "2023-07-10",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-  {
-    id: 8,
-    image_url: "https://picsum.photos/300/200",
-    category: "Fitness",
-    title: "10 Tips for Staying Fit at Home",
-    author: "Frank Blue",
-    date: "2023-08-25",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-  {
-    id: 9,
-    image_url: "https://picsum.photos/300/200",
-    category: "Entertainment",
-    title: "The Best Movies of 2023",
-    author: "Grace Yellow",
-    date: "2023-09-15",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-  {
-    id: 10,
-    image_url: "https://picsum.photos/300/200",
-    category: "Science",
-    title: "Breakthroughs in Quantum Computing",
-    author: "Henry Red",
-    date: "2023-10-05",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  },
-];
+
 
 interface FilterOption {
-  value: string | number;
-  label: string;
-  count?: number;
+  value: string | number
+  label: string
+  count?: number
 }
 
 interface Filters {
-  category: string[];
-  author: string[];
-  date: string[];
+  category: string[]
 }
 
 interface FilterSection {
-  title: string;
-  type: keyof Filters;
-  options: FilterOption[];
+  title: string
+  type: keyof Filters
+  options: FilterOption[]
 }
+
 
 const filterSections: FilterSection[] = [
   {
@@ -133,107 +36,116 @@ const filterSections: FilterSection[] = [
     options: [
       { value: "technology", label: "Technology", count: 15 },
       { value: "health", label: "Health", count: 10 },
-      { value: "lifestyle", label: "Lifestyle", count: 8 },
+      { value: "finance", label: "Finance", count: 8 },
+      { value: "travel", label: "Travel", count: 12 },
+      { value: "education", label: "Education", count: 9 },
+      { value: "lifestyle", label: "Lifestyle", count: 11 },
+      { value: "food", label: "Food", count: 7 },
+      { value: "science", label: "Science", count: 6 },
     ],
   },
-  {
-    title: "Authors",
-    type: "author",
-    options: [
-      { value: "jane-doe", label: "Jane Doe", count: 5 },
-      { value: "john-smith", label: "John Smith", count: 3 },
-    ],
-  },
-  {
-    title: "Date",
-    type: "date",
-    options: [
-      { value: "2023", label: "2023", count: 10 },
-      { value: "2022", label: "2022", count: 8 },
-    ],
-  },
-];
+]
 
-const BlogPage: React.FC = () => {
-  const [filteredBlogs, setFilteredBlogs] = useState<Blog[]>(blogs);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const searchQuery = searchParams.get("search") ?? "";
+export default function BlogPage() {
+  const [blogs, setBlogs] = useState<Blog[]>([])
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [noResult, setNoResult] = useState(false)
 
   const [filters, setFilters] = useState<Filters>({
-    category: searchParams.getAll("category"),
-    author: searchParams.getAll("author"),
-    date: searchParams.getAll("date"),
-  });
+    category: [],
+  })
 
-  const updateUrlWithFilters = (newFilters: Partial<Filters>) => {
-    const newSearchParams = new URLSearchParams();
+  const [blogsParams, setBlogsParams] = useState<GetBlogsClient>({
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 10,
+    },
+    searchCondition: {
+      keyword: "",
+      is_deleted: false,
+      category_id: "",
+    },
+  })
 
-    if (searchQuery) newSearchParams.set("search", searchQuery);
+  const handleSearch = (searchText: string) => {
+    // setNoResult(false)
+    const updatedSearchParams = new URLSearchParams(searchParams)
+    if (searchText) {
+      updatedSearchParams.set("search", searchText)
+    } else {
+      updatedSearchParams.delete("search")
+    }
+    setSearchParams(updatedSearchParams)
+    setBlogs([])
+    setBlogsParams((prevParams) => ({
+      ...prevParams,
+      searchCondition: {
+        ...prevParams.searchCondition,
+        keyword: searchText,
+      },
+      pageInfo: {
+        ...prevParams.pageInfo,
+        pageNum: 1,
+      },
+    }))
+  }
 
-    Object.entries(newFilters).forEach(([key, values]) => {
-      if (values.length > 0) {
-        values.forEach((value) => {
-          newSearchParams.append(key, value.toString());
-        });
+  const handleFilterChange = (filterType: keyof Filters, value: string | number) => {
+    setFilters((prevFilters) => {
+      const updatedFilters = { ...prevFilters }
+      const index = updatedFilters[filterType].indexOf(value.toString())
+      if (index > -1) {
+        updatedFilters[filterType].splice(index, 1)
+      } else {
+        updatedFilters[filterType].push(value.toString())
       }
-    });
+      return updatedFilters
+    })
+  }
 
-    setSearchParams(newSearchParams);
-  };
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      setNoResult(false)
+      try {
+        // Replace this with your actual blog service call
+        const response = await ClientService.getBlogs(blogsParams)
+        if (response.data?.pageInfo?.totalItems === 0) setNoResult(true)
+        setBlogs(response?.data?.pageData ?? [])
+      } catch (error) {
+        console.error('Error fetching blogs:', error)
+        setNoResult(true)
+      }
+    }
 
-  const handleFilterChange = (newFilter: Partial<Filters>) => {
-    const updatedFilters = {
-      ...filters,
-      ...newFilter,
-    };
-    setFilters(updatedFilters);
-    updateUrlWithFilters(updatedFilters);
-  };
+    fetchBlogs()
+  }, [blogsParams])
 
   useEffect(() => {
     const applyFilters = () => {
-      return blogs.filter((blog) => {
-        const matchesSearch = searchQuery
-          ? blog.title.toLowerCase().includes(searchQuery.toLowerCase())
-          : true;
+      let result = blogs
 
-        const matchesCategory =
-          filters.category.length === 0 ||
-          filters.category.includes(blog.category);
+      // Apply category filter
+      if (filters.category.length > 0) {
+        result = result.filter((blog) => filters.category.includes(blog.category_name))
+      }
 
-        const matchesAuthor =
-          filters.author.length === 0 || filters.author.includes(blog.author);
-
-        const matchesDate =
-          filters.date.length === 0 || filters.date.includes(blog.date);
-
-        return matchesSearch && matchesCategory && matchesAuthor && matchesDate;
-      });
-    };
-
-    setFilteredBlogs(applyFilters());
-  }, [filters, searchQuery]);
-
-  const handleSearch = (searchText: string) => {
-    const updatedSearchParams = new URLSearchParams(searchParams);
-    if (searchText) {
-      updatedSearchParams.set("search", searchText);
-    } else {
-      updatedSearchParams.delete("search");
+      setBlogs(result)
     }
-    setSearchParams(updatedSearchParams);
-  };
+
+    applyFilters()
+  }, [blogs, filters])
 
   return (
-    <main className="mt-2">
+    <main className="mt-2 min-h-screen relative">
       <div className="p-4 pb-0">
         <DynamicBreadcrumb />
       </div>
       <Layout className="relative">
         <SearchResults
-          blogs={filteredBlogs}
+          noResult={noResult}
+          blogs={blogs}
           onSearch={handleSearch}
-          searchQuery={searchQuery}
+          searchQuery={blogsParams.searchCondition.keyword}
         />
         <SearchFilter
           onFilterChange={handleFilterChange}
@@ -242,7 +154,5 @@ const BlogPage: React.FC = () => {
         />
       </Layout>
     </main>
-  );
-};
-
-export default BlogPage;
+  )
+}
