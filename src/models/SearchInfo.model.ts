@@ -63,7 +63,7 @@ export interface PageInfo {
 
 export interface BlogSearchCondition {
   category_id?: string;
-  is_delete?: boolean
+  is_delete?: boolean;
 }
 
 export interface BlogSearchParams {
