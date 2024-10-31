@@ -1,59 +1,56 @@
 import { useEffect, useState } from "react";
 import { Table, Button, Input, Space, Card, Modal, message, Spin } from "antd";
-import {
-  SearchOutlined,
-  CheckOutlined,
-  CloseOutlined,
-} from "@ant-design/icons";
-import useSearch from "../../hooks/useSearch";
-import { getUsers, previewInstructor } from "../../services/user.service";
+import { SearchOutlined, CheckOutlined, CloseOutlined } from "@ant-design/icons";
+import { useDebouncedSearch } from "../../hooks/useSearch";
+import { previewInstructor, UserService } from "../../services/user.service";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store/store";
+import { User } from "../../models/UserModel";
+import { UserSearchParams } from "../../models/SearchInfo.model";
 
 const RequestUser = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { loading, success } = useSelector(
     (state: RootState) => state.users.previewProfile
   );
+
   const [reasonVisible, setReasonVisible] = useState(false);
-  const [users, setUsers] = useState([]);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [users, setUsers] = useState<User[]>([]);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [reason, setReason] = useState("");
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
-  const { searchText, filteredData, handleSearchChange } = useSearch(users, [
-    "name",
-    "email",
-  ]);
+  const [searchText, setSearchText] = useState("");
+  const filteredData = useDebouncedSearch(users, searchText, 300, ["name", "email"]);
 
-  const fetchUsers = async (
-    pageNum: number,
-    pageSize: number,
-    keyword: string
-  ) => {
-    const searchParams = {
-      searchCondition: {
-        keyword,
-        role: "instructor",
-        status: true,
-        is_verified: "",
-        is_delete: false,
-      },
-      pageInfo: { pageNum, pageSize },
-    };
-
+  const fetchUsers = async () => {
     try {
-      const response = await getUsers(searchParams);
-      setUsers((response as any)?.pageData);
-      setTotal((response as any)?.pageInfo.totalItems);
+      const searchParams: UserSearchParams = {
+        searchCondition: {
+          keyword: searchText,
+          role: "instructor",
+          status: true,
+          is_delete: false,
+          is_verified: true,
+        },
+        pageInfo: { pageNum, pageSize },
+      };
+
+      const response = await UserService.getUsers(searchParams);
+      const responseData = response.data?.pageData;
+      const flattenedUsers: User[] = Array.isArray(responseData)
+        ? responseData.flat()
+        : [];
+      setUsers(flattenedUsers);
+      setTotal(response.data?.pageInfo?.totalItems ?? 0);
     } catch (err) {
       console.error("Error fetching users:", err);
     }
   };
 
   useEffect(() => {
-    fetchUsers(pageNum, pageSize, searchText);
+    fetchUsers();
   }, [pageNum, pageSize, searchText]);
 
   const handleTableChange = (pagination: any) => {
@@ -116,13 +113,13 @@ const RequestUser = () => {
             className="text-green-600"
             icon={<CheckOutlined />}
             onClick={() => handleSubmitPreview("approve", record)}
-          ></Button>
+          />
           <Button
             className="text-red-600"
             type="text"
             icon={<CloseOutlined />}
             onClick={() => handleShowReason(record)}
-          ></Button>
+          />
         </Space>
       ),
     },
@@ -140,7 +137,7 @@ const RequestUser = () => {
             prefix={<SearchOutlined />}
             className="w-full md:w-1/3 mb-2 md:mb-0"
             value={searchText}
-            onChange={handleSearchChange}
+            onChange={(e) => setSearchText(e.target.value)}
           />
         </div>
         <Table

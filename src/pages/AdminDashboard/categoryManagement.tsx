@@ -5,11 +5,12 @@ import {
   EditOutlined,
   PlusCircleOutlined,
 } from "@ant-design/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreateCategoryModal from "../../components/Admin/AdminModals/CreateCategoryModal";
 import UpdateCategoryModal from "../../components/Admin/AdminModals/UpdateCategoryModal";
-import useSearch from "../../hooks/useSearch";
-import { category } from "./monitors/course/courseList";
+import { Category, GetCategories } from "../../models/Category.model";
+import CategoryService from "../../services/category.service";
+import { useDebouncedSearch } from "../../hooks/useSearch";
 
 const { Option } = Select;
 
@@ -21,28 +22,58 @@ const CategoryManagement = () => {
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [editingRecord, setEditingRecord] = useState<any>(null);
+  const [searchText, setSearchText] = useState("");
+  const [pageNum, setPageNum] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [total, setTotal] = useState(0);
+  const filteredData = useDebouncedSearch(categories, searchText, 300, ["name", "parentCat"]);
 
-  // Sử dụng useSearch với users
-  const { searchText, filteredData, handleSearchChange } = useSearch(category, [
-    "name",
-    "parentCat",
-  ]);
+
+  const fetchCategories = async () => {
+    const searchParams: GetCategories = {
+      searchCondition: {
+        keyword: searchText,
+        status: "active",
+        is_deleted: false,
+      },
+      pageInfo: { pageNum, pageSize },
+    };
+
+    try {
+      const response = await CategoryService.getCategories(searchParams);
+      const responseData = response.data?.pageData;
+      const flattenedUsers: Category[] = Array.isArray(responseData)
+        ? responseData.flat() // Dùng flat() để chuyển thành User[]
+        : [];
+      setCategories(flattenedUsers);
+      setTotal(response.data?.pageInfo?.totalItems ?? 0);
+    } catch (err) {
+      console.error("Error fetching users:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, [pageNum, pageSize]);
+
+  const handleTableChange = (pagination: any) => {
+    setPageNum(pagination.current);
+    setPageSize(pagination.pageSize);
+  };
 
   const handleCategoryChange = (value: string) => {
     setSelectedCategory(value);
   };
 
   const handleDelete = (id: string) => {
-    // Xử lý xóa ở đây
     console.log("Deleted record ID: ", id);
   };
 
-  // Show Create Modal
   const showModalCreate = () => {
     setIsCreateModalVisible(true);
   };
 
-  // Show Edit Modal with existing data
   const showModalEdit = (record: any) => {
     setEditingRecord(record);
     form.setFieldsValue({
@@ -98,20 +129,20 @@ const CategoryManagement = () => {
     {
       title: "Actions",
       key: "action",
-      render: () => (
+      render: (record: any) => (
         <Space size="middle">
           <Button
             icon={<EditOutlined />}
-            onClick={() => showModalEdit}
+            onClick={() => showModalEdit(record)}
           />
           <Button
             danger
             icon={<DeleteOutlined />}
-            onClick={() => handleDelete}
+            onClick={() => handleDelete(record._id)}
           />
         </Space>
       ),
-    },
+    }
   ];
 
   return (
@@ -126,7 +157,7 @@ const CategoryManagement = () => {
           prefix={<SearchOutlined />}
           className="w-full md:w-1/3 mb-2 md:mb-0"
           value={searchText}
-          onChange={handleSearchChange}
+          onChange={(e) => setSearchText(e.target.value)}
         />
         <Select
           value={selectedCategory}
@@ -151,11 +182,17 @@ const CategoryManagement = () => {
       <Table
         dataSource={filteredData}
         columns={columns}
-        pagination={{ pageSize: 5 }}
-        rowKey="key"
+        pagination={{
+          current: pageNum,
+          pageSize,
+          total,
+          showSizeChanger: true,
+        }}
+        rowKey="_id"
+        onChange={handleTableChange}
         bordered
         style={{ borderRadius: "8px" }}
-        scroll={{ x: true }} // Thêm scroll cho bảng
+        scroll={{ x: "max-content" }}
       />
 
       {/* Modal for Create */}

@@ -5,7 +5,7 @@ export const useDebouncedSearch = <T,>(
   data: T[],
   searchText: string,
   delay: number = 300,
-  fields: Array<keyof T> = [] // Tham số fields để chỉ định các trường tìm kiếm
+  fields: Array<keyof T> = []
 ) => {
   const [filteredData, setFilteredData] = useState(data);
 
@@ -15,7 +15,7 @@ export const useDebouncedSearch = <T,>(
       const filtered = data.filter((item) =>
         fields.some(
           (field) =>
-            item[field]?.toString().toLowerCase().includes(lowerCasedSearchText) // Kiểm tra từng field
+            item[field]?.toString().toLowerCase().includes(lowerCasedSearchText)
         )
       );
       setFilteredData(filtered);
