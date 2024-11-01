@@ -5,12 +5,7 @@ import { Player } from "@lottiefiles/react-lottie-player";
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  login,
-  loginWithGoogle,
-  // loginWithGoogle,
-  setRegisterGoogle,
-} from "../../redux/slices/authSlices";
+import { login } from "../../redux/slices/authSlices";
 import { AppDispatch, RootState } from "../../redux/store/store";
 import ModalRegisterGoogle from "../../components/ModalRegisterGoogle";
 import GoogleLoginButton from "../../components/GoogleLoginButton";
@@ -23,7 +18,7 @@ export type LoginProps = {
 const Loginpage = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const { currentUser, token, loading, is_register_google } = useSelector(
+  const { currentUser, token, loading, is_register_google} = useSelector(
     (state: RootState) => state.auth.login
   );
   const navigate = useNavigate();
@@ -32,6 +27,7 @@ const Loginpage = () => {
     if (is_register_google) {
       setIsOpenModal(true);
     }
+    
   }, [is_register_google]);
 
   useEffect(() => {
@@ -58,16 +54,7 @@ const Loginpage = () => {
       console.log(error);
     }
   };
-  // const handleLoginGoogleSuccess = async (
-  //   credentialResponse: CredentialResponse
-  // ) => {
-  //   // console.log("credential", credentialResponse);
-  //   // if (credentialResponse.credential) {
-  //   //   dispatch(setRegisterGoogle({is_register : true, google_id:credentialResponse.credential}));
-  //   // }
-  //   await dispatch(loginWithGoogle(credentialResponse.credential as string));
-  //   // await dispatch(getCurrentUser());
-  // };
+
 
   return (
     <div className="w-full lg:flex lg:h-[35rem] lg:flex-row lg:rounded-lg mt-12 overflow-hidden shadow-xl">

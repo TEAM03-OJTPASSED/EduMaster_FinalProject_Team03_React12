@@ -1,13 +1,21 @@
 import { AxiosError } from "axios"; // Import AxiosError
 import { message } from "antd";
-
+// import { AppDispatch } from "../redux/store/store";
+// import {
+//   setIsLoginGoogleFailed,
+//   setRegisterGoogle,
+// } from "../redux/slices/authSlices";
 // Định nghĩa kiểu cho response data
 interface ErrorResponse {
   message?: string;
   Message?: string;
 }
 
-const handleError = (error: AxiosError) => {
+const handleError = (
+  error: AxiosError,
+  // dispatch: AppDispatch,
+  // is_google: boolean
+) => {
   // Chỉ định kiểu cho tham số error
   if (error.response) {
     const { status, data } = error.response; // Lấy status và data từ response
@@ -15,12 +23,12 @@ const handleError = (error: AxiosError) => {
     // Kiểm tra kiểu của data
     if (typeof data === "object" && data !== null) {
       const errorData = data as ErrorResponse; // Ép kiểu data thành ErrorResponse
-
       if (status === 400) {
         message.destroy();
         message.error(
           `${errorData.message || errorData.Message || "Bad Request"}`
         );
+     
       }
       if (status === 401) {
         console.log("401 - Lỗi", error);

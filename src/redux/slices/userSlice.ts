@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getRequest, postRequest } from "../../services/httpsMethod";
 import { User } from "../../models/UserModel";
-import { DataInterface } from "../../type/data.type";
-import { SearchParamInterface } from "../../type/search.type";
+import { DataInterface } from "../../types/data.type";
+import { SearchParamInterface } from "../../types/search.type";
 
 interface initialStateInterface {
   register: {

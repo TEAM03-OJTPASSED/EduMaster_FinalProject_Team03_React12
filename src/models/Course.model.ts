@@ -1,4 +1,4 @@
-import { PageInfo, SearchCondition } from "./SearchInfo.model";
+import { CourseLogSearchCondition, PageInfo, SearchCondition } from "./SearchInfo.model";
 import { Session } from "./Session.model";
 
 export interface Course {
@@ -29,7 +29,7 @@ export interface Course {
   is_purchased: boolean;
   average_rating: number;
   review_count: number;
-  updated_at: string;
+
 }
 
 export interface CourseLog {
@@ -61,10 +61,10 @@ export interface CourseRequest {
 export interface CourseStatusUpdate {
   course_id: string;
   new_status: CourseStatusEnum;
-  comment: "string"
+  comment: string
 }
 
-enum CourseStatusEnum {
+export enum CourseStatusEnum {
   NEW = "new",
   COMPLETED = "completed",
   WAITING_APPROVE = "waiting_approve",
@@ -80,7 +80,7 @@ export interface GetCourses {
 }
 
 export interface GetCourseLogs {
-  searchCondition: SearchCondition;
+  searchCondition: CourseLogSearchCondition;
   pageInfo: PageInfo;
 }
 

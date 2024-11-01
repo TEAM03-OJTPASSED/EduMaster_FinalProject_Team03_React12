@@ -8,7 +8,6 @@ const getRequest = async <T>(url: string): Promise<ApiResponse<T>> => {
   return res.data;
 };
 
-//HOW TO USE:
 
 // [POST]
 const postRequest = async <T>(

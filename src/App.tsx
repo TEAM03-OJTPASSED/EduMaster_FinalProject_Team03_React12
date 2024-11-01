@@ -20,7 +20,6 @@ import PendingCourseList from "./pages/AdminDashboard/monitors/pending_course/Pe
 import PendingSessionList from "./pages/AdminDashboard/monitors/pending_course/PendingSessionList";
 import PendingLessonList from "./pages/AdminDashboard/monitors/pending_course/PendingLessonList";
 import BlogManagement from "./pages/AdminDashboard/BlogManagement";
-import CourseLog from "./pages/AdminDashboard/CourseLog";
 import PurchaseLog from "./pages/AdminDashboard/PurchaseLog";
 import AdminPayout from "./pages/AdminDashboard/payout/AdminPayout";
 import InstructorLayout from "./defaultLayout/InstructorLayout";
@@ -73,12 +72,13 @@ import StudentSubscriptions from "./pages/StudentDashboard/StudentSubscriptions"
 import StudentOrderHistory from "./pages/StudentDashboard/StudentOrderHistory";
 import VerifySuccessToken from "./pages/AuthPage/VerifyToken";
 import { gapi } from "gapi-script";
+import CourseLogPage from "./pages/AdminDashboard/CourseLog";
 
 function App() {
   useEffect(() => {
     const init = () => {
       gapi.client.init({
-        clientId:"304146839060-ti5q4aj142djup8uj80qusld4nnhimrr.apps.googleusercontent.com",
+        clientId:"67368420889-utrdru1873d1pudjah97ihj32vvfire8.apps.googleusercontent.com",
         scope:""
       });
     };
@@ -175,7 +175,7 @@ function App() {
                   <Route path="lesson" element={<PendingLessonList />} />
                 </Route>
                 <Route path="blog" element={<BlogManagement />} />
-                <Route path="course-log" element={<CourseLog />} />
+                <Route path="course-log" element={<CourseLogPage />} />
                 <Route path="purchase-log" element={<PurchaseLog />} />
                 <Route path="settings" element={<AdminSetting />}>
                   <Route index element={<AdminProfile />} />

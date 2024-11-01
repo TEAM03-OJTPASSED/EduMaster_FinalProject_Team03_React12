@@ -5,15 +5,15 @@ import { PurchaseStatusEnum } from "./Purchase.model";
 export interface SearchCondition {
   keyword?: string;
   category_id?: string;
-  status?: "active";
+  status?: string;
   is_deleted: false;
 }
 
 export interface CourseLogSearchCondition {
   course_id: string;
   keyword?: string;
-  old_status: CourseStatusEnum;
-  new_status: CourseStatusEnum;
+  old_status: CourseStatusEnum | "";
+  new_status: CourseStatusEnum | "";
   is_deleted: false;
 }
 
@@ -54,6 +54,11 @@ export interface UserSearchParams {
   pageInfo: PageInfo;
 }
 
+export interface CoursesSearchParams {
+  searchCondition: CourseLogSearchCondition;
+  pageInfo: PageInfo;
+}
+
 export interface PageInfo {
   pageNum: number;
   pageSize: number;
@@ -63,5 +68,5 @@ export interface PageInfo {
 
 export interface BlogSearchCondition {
   category_id?: string;
-  is_delete?: boolean
+  is_delete?: boolean;
 }
