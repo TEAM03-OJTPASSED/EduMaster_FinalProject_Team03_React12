@@ -56,7 +56,7 @@ const PurchasedOrders: React.FC<OrderProps> = ({
                       type="primary"
                       size="large"
                       className="w-full mt-4 view-button ant-btn-variant-solid font-jost"
-                      onClick={() => navigate(`/cart-detail/${cart._id}`)}
+                      onClick={() => navigate(`/course/${cart.course_id}`)}
                     >
                       Learn <ArrowRightOutlined />
                     </Button>,

@@ -1,11 +1,12 @@
 import { Select, Tag } from "antd";
-import { CoursePriceType, CourseStatusEnum, PayoutStatusEnum } from "../pages/AdminDashboard/monitors/course/courseList";
+import { CoursePriceType, PayoutStatusEnum } from "../pages/AdminDashboard/monitors/course/courseList";
+import { CourseStatusEnum } from "../models/Course.model";
 
 const courseStatusColors = {
   [CourseStatusEnum.NEW]: "green",
   [CourseStatusEnum.WAITING_APPROVE]: "orange",
-  [CourseStatusEnum.APPROVED]: "blue",
-  [CourseStatusEnum.REJECTED]: "red",
+  [CourseStatusEnum.APPROVE]: "blue",
+  [CourseStatusEnum.REJECT]: "red",
   [CourseStatusEnum.ACTIVE]: "purple",
   [CourseStatusEnum.INACTIVE]: "gray",
 };

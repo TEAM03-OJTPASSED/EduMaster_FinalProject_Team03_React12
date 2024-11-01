@@ -6,7 +6,6 @@ import {
   Tag,
   Button,
   Modal,
-  Select,
 } from "antd";
 import {
   SearchOutlined,
@@ -24,6 +23,7 @@ import { Category, GetCategories } from "../../../models/Category.model";
 import CategoryService from "../../../services/category.service";
 import { handleNotify } from "../../../utils/handleNotify";
 import { capitalizeFirstLetter } from "../../../utils/capitalize";
+import { CourseStatusToggle } from "../../../components/StatusToggle";
 
 const InstructorCourseList: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -160,10 +160,25 @@ const InstructorCourseList: React.FC = () => {
       } 
   };
 
-  const handleSwitchChange = (id: string, value: CourseStatusEnum) => {
-    console.log("Selected ID:", id);
-    console.log("Selected Value:", value);
-    // Call the API to update the course status
+
+  const handleToggleActive = async (course: Course) => {   
+      const newStatus = course.status === CourseStatusEnum.ACTIVE 
+        ? CourseStatusEnum.INACTIVE 
+        : CourseStatusEnum.ACTIVE;
+      
+      const response = await CourseService.updateCourseStatus({
+        course_id: course._id,
+        new_status: newStatus,
+        comment: `Course status changed to ${newStatus}`
+      });
+      
+      if (response.success) {
+        handleNotify(
+          "Status Updated", 
+          `Course is now ${newStatus.toLowerCase()}`
+        );
+        await fetchCourses();
+      }
   };
 
   const columns = [
@@ -212,6 +227,11 @@ const InstructorCourseList: React.FC = () => {
       title: "Price",
       dataIndex: "price",
       key: "price",
+      render: (price: number) => (
+        <div>
+          <span>${price.toFixed(2)}</span>
+        </div>
+      )
     },
     {
       title: "Discount",
@@ -224,31 +244,27 @@ const InstructorCourseList: React.FC = () => {
       ),
     },
     {
-      title: "Change Status",
-      key: "change status",
-      render: (record: Course) => (
-        <div className="flex">
-          <Select
-            disabled={
-              record.status === CourseStatusEnum.NEW ||
-              record.status === CourseStatusEnum.WAITING_APPROVE ||
-              record.status === CourseStatusEnum.REJECT
-            }
-            style={{ width: 100 }}
-            onChange={(value) => handleSwitchChange(record._id, value)}
-            options={[
-              {
-                label: CourseStatusEnum.ACTIVE,
-                value: CourseStatusEnum.ACTIVE,
-              },
-              {
-                label: CourseStatusEnum.INACTIVE,
-                value: CourseStatusEnum.INACTIVE,
-              },
-            ]}
+      title: "Status Toggle",
+      key: "statusToggle",
+      render: (record: Course) => {
+        const isDisabled = 
+          record.status === CourseStatusEnum.NEW ||
+          record.status === CourseStatusEnum.WAITING_APPROVE ||
+          record.status === CourseStatusEnum.REJECT;
+  
+        return (
+          <CourseStatusToggle
+            status={record.status}
+            disabled={isDisabled}
+            onToggle={async (newStatus) => {
+              await handleToggleActive({
+                ...record,
+                status: newStatus
+              });
+            }}
           />
-        </div>
-      ),
+        );
+      },
     },
     {
       title: "Action",
