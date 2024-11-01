@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 import { Course } from "../../models/Course.model";
+import { handleAddCart } from "../../utils/handleAddCart";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store/store";
+import { useCustomNavigate } from "../../hooks/customNavigate";
 
 type Props = {
   course: Course;
@@ -8,6 +12,8 @@ type Props = {
 export const DetailModal = ({ course, isPurchased }: Props) => {
   const [animateClass, setAnimateClass] = useState("");
   const [showCourseInfo, setShowCourseInfo] = useState(false);
+  const { currentUser } = useSelector((state: RootState) => state.auth.login);
+  const navigate = useCustomNavigate()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -79,7 +85,7 @@ export const DetailModal = ({ course, isPurchased }: Props) => {
                   <div className="bg-orange-500 text-center text-lg font-bold text-white p-2 mt-2 rounded">
                     Start Now
                   </div>
-                  <div className="text-center text-lg font-bold border-2 border-orange-500 p-2 mt-2 rounded">
+                  <div onClick={() => handleAddCart(currentUser.role, course, navigate)} className="text-center cursor-pointer text-lg font-bold border-2 border-orange-500 p-2 mt-2 rounded">
                     Add to cart
                   </div>
                 </div>

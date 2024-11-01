@@ -1,8 +1,8 @@
 export enum CourseStatusEnum {
   NEW = "new",
   WAITING_APPROVE = "waiting_approve",
-  APPROVED = "approved",
-  REJECTED = "rejected",
+  APPROVED = "approve",
+  REJECTED = "reject",
   ACTIVE = "active",
   INACTIVE = "inactive",
 }

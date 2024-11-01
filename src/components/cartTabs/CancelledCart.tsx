@@ -4,35 +4,32 @@ import {
 
   ArrowRightOutlined,
   CodeSandboxCircleFilled,
+  DeleteOutlined,
 
 } from "@ant-design/icons";
+import { Cart, CartItem } from "../../models/Cart.model";
 
 const { Text } = Typography;
 
-interface Course {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  author: string;
-  discount: number;
-
-}
 
 interface OrderProps {
-  courses: Course[];
+  carts: Cart[];
   total: number;
   navigate: (path: string) => void;
   orderDate?: string;
   orderNumber?: string;
   paymentStatus?: string;
+  repurchaseCart: (cartItem: CartItem) => void;
+  removeCart: (cartItem: CartItem) => void;
 }
 
 
 // Purchased Orders Component
 const CancelledOrders: React.FC<OrderProps> = ({
-  courses,
+  carts,
   navigate,
+  repurchaseCart,
+  removeCart
 
 }) => {
   return (
@@ -40,18 +37,18 @@ const CancelledOrders: React.FC<OrderProps> = ({
       <h1 className="mb-2 pt-4 text-4xl font-semibold">Cancelled Payments</h1>
       <div className="flex flex-col md:flex-row gap-8">
         <div className="w-full">
-          {courses.length > 0 ? (
+          {carts.length > 0 ? (
             <List
               itemLayout="horizontal"
-              dataSource={courses}
-              renderItem={(course) => (
+              dataSource={carts}
+              renderItem={(cart) => (
                 <List.Item
-                  key={course.id}
+                  key={cart._id}
                   actions={[
-                    <div key={course.id}>
+                    <div key={cart._id}>
                       <Text className={`font-jost px-8 text-base`}>
-                        <span className={`${course.discount ? "line-through text-gray-400 text-sm pr-2" : "text-black text-right"}`}>đ{course.price.toFixed(0)} </span>
-                        {course.discount > 0 &&  `đ${course.price * (100 - course.discount)/100}`
+                        <span className={`${cart.discount ? "line-through text-gray-400 text-sm pr-2" : "text-black text-right"}`}>${cart.price.toFixed(2)} </span>
+                        {cart.discount > 0 &&  `$${(cart.price * (100 - cart.discount)/100).toFixed(2)}`
                         }
                       </Text>
                       <Text type="danger">
@@ -59,32 +56,38 @@ const CancelledOrders: React.FC<OrderProps> = ({
                       </Text>
                     </div>,
                     <Button
-                      key={course.id}
+                      key={cart._id}
                       type="primary"
                       size="large"
                       className="w-full mt-4 view-button ant-btn-variant-solid font-jost"
-                      onClick={() => navigate(`/course-detail/${course.id}`)}
+                      onClick={() => repurchaseCart({_id: cart._id,cart_no: cart.cart_no})}
                     >
                       Repurchase <ArrowRightOutlined />
                     </Button>,
+                    <Button
+                    type="text"
+                    icon={<DeleteOutlined />}
+                    onClick={() => removeCart({_id: cart._id, cart_no: cart.cart_no})}
+                    aria-label={`Remove ${cart.course_name} from cart`}
+                  />
                   ]}
                 >
                   <List.Item.Meta
                     avatar={
                       <img
-                        src={course.image}
-                        alt={course.name}
+                        src={cart.course_image}
+                        alt={cart.course_name}
                         className="w-24 h-16 object-cover rounded"
                       />
                     }
                     title={
                       <Text strong className="font-jost">
-                        {course.name}
+                        {cart.course_name}
                       </Text>
                     }
                     description={
                       <Space className="flex flex-col items-start">
-                        <Text>By {course.author}</Text>
+                        <Text>By {cart.instructor_name}</Text>
                         
                       </Space>
                     }
@@ -97,14 +100,14 @@ const CancelledOrders: React.FC<OrderProps> = ({
               image={Empty.PRESENTED_IMAGE_SIMPLE}
               description={
                 <Space direction="vertical" align="center">
-                  <Text>You haven't purchased any courses yet</Text>
+                  <Text>You haven't purchased any carts yet</Text>
                   <Button
                     type="primary"
                     icon={<ShoppingCartOutlined />}
-                    onClick={() => navigate("/course")}
+                    onClick={() => navigate("/cart")}
                     className="bg-orange-500 font-jost p-8 py-5 hover:bg-orange-600 view-button ant-btn-variant-solid"
                   >
-                    Browse Courses
+                    Browse Carts
                   </Button>
                 </Space>
               }

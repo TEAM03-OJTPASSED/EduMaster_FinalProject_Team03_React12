@@ -27,7 +27,7 @@ const CourseCard: React.FC<{
 
   return (
     <div className="group relative">
-      <a href={`/course-detail/${course._id}`}>
+      <a href={`/course/${course._id}`}>
         <Card
           hoverable
           styles={{

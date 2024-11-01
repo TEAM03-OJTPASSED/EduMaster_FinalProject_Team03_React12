@@ -1,10 +1,11 @@
 import { message, notification } from "antd";
 import { Course } from "../models/Course.model";
+import CartService from "../services/cart.service";
 
 
 
 
-export const handleAddCart = (userRole : string, course: Course, navigate: any) => {
+export const handleAddCart = async (userRole : string, course: Course, navigate: any) => {
   
     if (!userRole) {
       message.destroy();
@@ -13,9 +14,14 @@ export const handleAddCart = (userRole : string, course: Course, navigate: any) 
     }
     // Add the course to the cart
     //...
-    console.log(course)
-    notification.success({
-      message: "Course Added to Cart",
-      description: `You have added "${course.name}" to your cart.`,
-    });
-  }
+    console.log(course._id)
+    const response = await CartService.createCart(course._id)
+
+    if (response) 
+    {
+      notification.success({
+        message: "Course Added to Cart",
+        description: `You have added "${course.name}" to your cart.`,
+      });
+    }
+}

@@ -1,15 +1,7 @@
 import { Row, Col } from 'antd';
 import BlogCard from '../BlogCard';
+import { Blog } from '../../models/Blog.model';
 
-interface Blog {
-  id: number;
-  image_url: string;
-  category: string;
-  title: string;
-  author: string;
-  date: string;
-  content: string;
-}
 
 interface BlogsGridProps {
   viewMode: "grid" | "list";
@@ -25,7 +17,7 @@ export default function BlogsGrid({ viewMode, blogs }: BlogsGridProps) {
           sm={viewMode === "list" ? 24 : 12}
           md={viewMode === "list" ? 24 : 12}
           lg={viewMode === "list" ? 24 : 8}
-          key={blog.id}
+          key={blog._id}
         >
           <BlogCard blog={blog} viewMode={viewMode} />
         </Col>

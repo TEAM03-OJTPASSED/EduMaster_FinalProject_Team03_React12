@@ -2,10 +2,10 @@ import { CourseStatusEnum } from "../pages/AdminDashboard/monitors/course/course
 import { LessonTypeEnum } from "./Lesson.model";
 import { PurchaseStatusEnum } from "./Purchase.model";
 
-export interface SearchCondition {
+export interface SearchCondition<T = unknown> {
   keyword?: string;
   category_id?: string;
-  status?: string;
+  status?: T;
   is_deleted: false;
 }
 
@@ -69,4 +69,9 @@ export interface PageInfo {
 export interface BlogSearchCondition {
   category_id?: string;
   is_delete?: boolean;
+}
+
+export interface BlogSearchParams {
+  searchCondition: BlogSearchCondition;
+  pageInfo: PageInfo;
 }
