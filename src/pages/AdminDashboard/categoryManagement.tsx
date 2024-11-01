@@ -27,7 +27,7 @@ const CategoryManagement = () => {
   const [pageSize, setPageSize] = useState(10);
   const [categories, setCategories] = useState<Category[]>([]);
   const [total, setTotal] = useState(0);
-  const filteredData = useDebouncedSearch(categories, searchText, 300, ["name", "parentCat"]);
+  const filteredData = useDebouncedSearch(categories, searchText, 300, ["name", "parent_category_id"]);
 
 
   const fetchCategories = async () => {
@@ -123,8 +123,8 @@ const CategoryManagement = () => {
     },
     {
       title: "Parent Category",
-      dataIndex: "parentCat",
-      key: "parentCat",
+      dataIndex: "parent_cat",
+      key: "parent_cat",
     },
     {
       title: "Actions",
