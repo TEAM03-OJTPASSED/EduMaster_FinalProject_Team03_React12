@@ -1,6 +1,10 @@
 import { Table, Input, Card, Tag, TableProps } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import { GetLessons, Lesson, LessonTypeEnum } from "../../../../models/Lesson.model";
+import {
+  GetLessons,
+  Lesson,
+  LessonTypeEnum,
+} from "../../../../models/Lesson.model";
 import { useEffect, useState } from "react";
 import LessonService from "../../../../services/lesson.service";
 import { useDebouncedSearch } from "../../../../hooks/useSearch";
@@ -11,7 +15,10 @@ const LessonList = () => {
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const [courses, setCourses] = useState<Lesson[]>([]);
-  const filteredData = useDebouncedSearch(courses, searchText, 300, ["name", "category_id"]);
+  const filteredData = useDebouncedSearch(courses, searchText, 300, [
+    "name",
+    "lesson_type",
+  ]);
 
   const fetchLessons = async () => {
     const searchParams: GetLessons = {

@@ -12,7 +12,7 @@ const SessionList = () => {
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const [courses, setCourses] = useState<Session[]>([]);
-  const filteredData = useDebouncedSearch(courses, searchText, 300, ["name", "category_id"]);
+  const filteredData = useDebouncedSearch(courses, searchText, 300, ["name"]);
 
   const fetchSessions = async () => {
     const searchParams: GetSessions = {
@@ -46,7 +46,6 @@ const SessionList = () => {
   useEffect(() => {
     fetchSessions();
   }, [pageNum, pageSize]);
-
 
   const columns: TableProps<Session>["columns"] = [
     {

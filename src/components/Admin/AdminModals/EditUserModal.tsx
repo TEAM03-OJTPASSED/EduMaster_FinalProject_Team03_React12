@@ -1,4 +1,4 @@
-import { Modal, Form, Input, Select, Button } from "antd";
+import { Modal, Form, Input, Button } from "antd";
 import { User } from "../../../models/UserModel";
 interface EditUserProps {
   visible: boolean;
