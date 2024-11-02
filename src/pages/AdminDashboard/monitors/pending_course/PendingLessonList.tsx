@@ -31,14 +31,12 @@ const PendingLessonList = () => {
   });
 
   useEffect(() => {
-
     setLessonSearchParam((prev) => ({
       ...prev,
       searchCondition: { ...prev.searchCondition, keyword: searchDebounce },
     }));
   }, [searchDebounce]);
 
-  
   useEffect(() => {
     const fetchData = async () => {
       const res = await LessonService.getLessons(lessonSearchParam);
@@ -108,12 +106,14 @@ const PendingLessonList = () => {
   return (
     <Card>
       <h3 className="text-2xl my-5">Lesson Management</h3>
-      <Input
-        placeholder="Search By Lesson Name"
-        prefix={<SearchOutlined />}
-        style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
-        onChange={handleSearchChange}
-      />
+      <div className="flex flex-wrap items-center mb-4">
+        <Input
+          placeholder="Search By Lesson Name"
+          prefix={<SearchOutlined />}
+          style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
+          onChange={handleSearchChange}
+        />
+      </div>
       <Table
         dataSource={lessonPendingList}
         columns={columns}

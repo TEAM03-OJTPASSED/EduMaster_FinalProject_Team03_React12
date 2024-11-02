@@ -44,7 +44,7 @@ const StatusFilter = ({
   return (
     <Select
       placeholder="Filter By Status"
-      style={{ width: "100%" }}
+      className="w-full md:w-1/4 ml-0 md:ml-3 mb-2 md:mb-0"
       value={selectedStatus}
       onChange={onStatusChange}
       allowClear

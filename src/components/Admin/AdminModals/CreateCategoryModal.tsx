@@ -1,5 +1,5 @@
 // createCategory.tsx
-import { Modal, Form, Input, Select, FormInstance } from "antd";
+import { Modal, Form, Input, Select, FormInstance, Button } from "antd";
 import { FC } from "react";
 
 const { Option } = Select;
@@ -19,10 +19,11 @@ const CreateCategory: FC<CreateCategoryProps> = ({
 }) => {
   return (
     <Modal
-      title="Create Category"
+      title="Create New Category"
       open={open}
       onOk={onCreate}
       onCancel={onCancel}
+      footer={null}
     >
       <Form form={form} layout="vertical">
         <Form.Item
@@ -54,6 +55,11 @@ const CreateCategory: FC<CreateCategoryProps> = ({
             <Option value="parent1">N/A</Option>
             <Option value="parent2">Music</Option>
           </Select>
+        </Form.Item>
+        <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
+          <Button type="primary" htmlType="submit" style={{ float: "right" }}>
+            Add
+          </Button>
         </Form.Item>
       </Form>
     </Modal>

@@ -21,3 +21,13 @@ export interface User {
   created_at: string;
   updated_at: string;
 }
+
+export interface ChangeUserRoleParams {
+  user_id: string;
+  role: string;
+}
+
+export interface ChangeUserStatusParams {
+  user_id: string;
+  status: boolean;
+}

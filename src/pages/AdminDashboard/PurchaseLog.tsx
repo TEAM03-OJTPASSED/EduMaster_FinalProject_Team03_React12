@@ -113,13 +113,15 @@ const Purchaselog = () => {
   return (
     <Card>
       <h3 className="text-2xl my-5">Purchase Log</h3>
+      <div className="flex flex-wrap items-center mb-4">
       <Input
         placeholder="Search By Purchase Number"
         prefix={<SearchOutlined />}
-        style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
+        className="w-full md:w-1/3 mb-2 md:mb-0"
         value={searchText}
         onChange={handleSearchChange}
       />
+      </div>
       <Table
         dataSource={purchaseLogList}
         columns={columns}

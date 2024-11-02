@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { Button, Card, Input, Modal, Table, Select, Spin } from "antd";
-import { SearchOutlined, PlusCircleOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import {
+  SearchOutlined,
+  PlusCircleOutlined,
+  DeleteOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
 import dayjs from "dayjs";
 import CreateBlog from "./blog/CreateBlog";
 import { Blog } from "../../models/Blog.model";
@@ -49,11 +54,13 @@ const BlogManagement = () => {
     searchCondition: {
       keyword: "",
       is_deleted: false,
-    }
+    },
   };
 
   const fetchCategories = async () => {
-    const categoriesResponse = await CategoryService.getCategories(initialCategoriesParams);
+    const categoriesResponse = await CategoryService.getCategories(
+      initialCategoriesParams
+    );
     setListCategories(categoriesResponse.data?.pageData ?? []);
   };
 
@@ -102,7 +109,11 @@ const BlogManagement = () => {
       dataIndex: "image_url",
       key: "image_url",
       render: (imageUrl: string) => (
-        <img src={imageUrl} alt="Blog" style={{ width: "100px", height: "100px" }} />
+        <img
+          src={imageUrl}
+          alt="Blog"
+          style={{ width: "100px", height: "100px" }}
+        />
       ),
     },
     {
@@ -140,6 +151,7 @@ const BlogManagement = () => {
         <Input
           placeholder="Search By Blog Name"
           prefix={<SearchOutlined />}
+          className="w-full md:w-1/3 mb-2 md:mb-0"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           className="w-full md:w-1/3 mb-2 md:mb-0"
@@ -151,7 +163,7 @@ const BlogManagement = () => {
           value={selectedCategories}
           onChange={handleSelectChange}
           className="w-full md:w-1/4 mb-2 md:mb-0 md:ml-3"
-          style={{ minWidth: '200px' }} // Optional: Set a minimum width
+          style={{ minWidth: "200px" }} // Optional: Set a minimum width
         >
           {listCategories.map((category) => (
             <Option key={category._id} value={category._id}>
@@ -167,7 +179,7 @@ const BlogManagement = () => {
           type="primary"
           className="w-full md:w-auto ml-0 md:ml-auto"
         >
-          Create Blog
+          Add New Blog
         </Button>
       </div>
 

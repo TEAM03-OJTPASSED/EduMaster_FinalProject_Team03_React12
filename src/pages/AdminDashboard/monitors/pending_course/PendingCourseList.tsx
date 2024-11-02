@@ -49,7 +49,6 @@ const PendingCourseList: React.FC = () => {
     },
   });
   useEffect(() => {
-
     setCourseSearchParam((prev) => ({
       ...prev,
       searchCondition: { ...prev.searchCondition, keyword: searchDebounce },
@@ -122,27 +121,24 @@ const PendingCourseList: React.FC = () => {
       ),
     },
     {
-      title: "Action",
+      title: "Actions",
       key: "action",
       render: (_, record: Course) => (
-        <div className="flex gap-2">
+        <Space size="middle">
           <Button
             type="text"
             color="primary"
             variant="solid"
             onClick={() => handleUpdateStatus(CourseStatusEnum.APPROVE, record)}
-          >
-            Approve
-          </Button>
+          ></Button>
           <Button
+            className="text-red-600"
             type="text"
             color="danger"
             variant="outlined"
             onClick={() => handleShowReason(record)}
-          >
-            Reject
-          </Button>
-        </div>
+          ></Button>
+        </Space>
       ),
     },
   ];

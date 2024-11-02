@@ -1,5 +1,7 @@
-import { Modal, Form, Input, Button } from "antd";
-// import { createUser } from "../../../services/user.service";
+import { Modal, Form, Input, Button, Select } from "antd";
+import { UserService } from "../../../services/user.service";
+
+const { Option } = Select;
 
 interface CreateUserProps {
   visible: boolean;
@@ -15,31 +17,28 @@ const CreateUser: React.FC<CreateUserProps> = ({
   const [form] = Form.useForm();
 
   const handleFinish = async (values: any) => {
-    try {
-      // Call the API to create a new user
-      const response = await createUser(values);
-      if (response.success) {
-        // If the API response is successful, trigger onSave
-        onSave(response.data);
-      } else {
-        // Handle failure response accordingly (you might want to show an error message)
-        console.error("Failed to create user:", response);
-      }
-      form.resetFields();
-      onClose();
-    } catch (error) {
-      console.error("Error creating user:", error);
-      // Handle error accordingly (show a notification or message)
-    }
+    const response = await UserService.createUser(values);
+    if (response.success) onSave(response.data);
+    form.resetFields();
+    onClose();
   };
 
   return (
-    <Modal title="Add User" open={visible} onCancel={onClose} footer={null}>
-      <Form form={form} onFinish={handleFinish}>
-        <Form.Item name="name" label="Họ và tên" rules={[{ required: true }]}>
+    <Modal title="Add New User" open={visible} onCancel={onClose} footer={null}>
+      <Form
+        form={form}
+        onFinish={handleFinish}
+        labelCol={{ span: 6 }}
+        wrapperCol={{ span: 18 }}
+      >
+        <Form.Item name="name" label="Full name" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
-        <Form.Item name="email" label="Email" rules={[{ required: true }]}>
+        <Form.Item
+          name="email"
+          label="Email"
+          rules={[{ required: true, type: "email" }]}
+        >
           <Input />
         </Form.Item>
         <Form.Item
@@ -49,9 +48,19 @@ const CreateUser: React.FC<CreateUserProps> = ({
         >
           <Input.Password />
         </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Lưu
+        <Form.Item name="role" label="Role" rules={[{ required: true }]}>
+          <Select placeholder="Select a role">
+            <Option value="admin">Admin</Option>
+            <Option value="student">Student</Option>
+            <Option value="instructor">Instructor</Option>
+          </Select>
+        </Form.Item>
+        <Form.Item name="phone_number" label="Phone Number">
+          <Input />
+        </Form.Item>
+        <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
+          <Button type="primary" htmlType="submit" style={{ float: "right" }}>
+            Add
           </Button>
         </Form.Item>
       </Form>
