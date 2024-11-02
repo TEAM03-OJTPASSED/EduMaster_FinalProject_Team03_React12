@@ -93,7 +93,7 @@ export const loginWithGoogle = createAsyncThunk<
 // Google Register function
 export const registerWithGoogle = createAsyncThunk<
   AuthState,
-  ModalRegisterGoogleProps,
+  ModalRegisterGoogleProps
 >("auth/registerGoogle", async (formData) => {
   const response = await postRequest("/api/users/google", formData);
   message.success("Register gg successfully")

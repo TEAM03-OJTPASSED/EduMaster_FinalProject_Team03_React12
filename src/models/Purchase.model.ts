@@ -1,3 +1,5 @@
+import { PageInfo, PurchaseSearchCondition } from "./SearchInfo.model";
+
 export interface Purchase {
     _id: string;
     purchase_no: string;
@@ -23,4 +25,8 @@ export enum PurchaseStatusEnum {
     COMPLETED = 'completed',
 }
   
-  
+
+export interface GetPurchases {
+    searchCondition: PurchaseSearchCondition;
+    pageInfo: PageInfo;
+}

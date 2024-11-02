@@ -44,7 +44,7 @@ export const getUser = async (searchParams: any) => {
 export const createUser = async (searchParams: any): Promise<User> => {
   try {
     const response = await postRequest(`${BASE_URL}/create`, searchParams);
-    return response.data; // Adjust if your response structure is different
+    return response.data as User; // Adjust if your response structure is different
   } catch (error) {
     console.error("Error fetching users:", error);
     throw error; // Rethrow to handle at the calling site

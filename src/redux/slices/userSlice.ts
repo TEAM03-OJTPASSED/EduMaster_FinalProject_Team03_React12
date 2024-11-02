@@ -19,6 +19,7 @@ interface initialStateInterface {
     loading: boolean;
     success: boolean;
     message: string;
+    
   };
   users: {
     loading: boolean;

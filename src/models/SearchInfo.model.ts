@@ -37,7 +37,7 @@ export interface PurchaseSearchCondition {
   purchase_no?: string;
   cart_no?: string;
   course_id?: string;
-  status?: PurchaseStatusEnum;
+  status?: PurchaseStatusEnum | "";
   is_delete?: false;
 }
 
@@ -55,7 +55,7 @@ export interface UserSearchParams {
 }
 
 export interface CoursesSearchParams {
-  searchCondition: CourseLogSearchCondition;
+  searchCondition: SearchCondition;
   pageInfo: PageInfo;
 }
 
