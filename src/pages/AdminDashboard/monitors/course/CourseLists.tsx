@@ -182,7 +182,7 @@ const CourseLists: React.FC = () => {
         onChange={handleTableChange}
         rowKey="_id"
         bordered
-        loading={loading}
+        // loading={loading}
         style={{ borderRadius: "8px" }}
         scroll={{ x: "max-content" }}
       />
