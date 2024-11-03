@@ -16,7 +16,9 @@ const PendingSessionList = () => {
   };
 
   const [sessionPendingList, setSessionPendingList] = useState<Session[]>([]);
-  const [currentSession, setCurrentSession] = useState<PageInfo>({} as PageInfo);
+  const [currentSession, setCurrentSession] = useState<PageInfo>(
+    {} as PageInfo
+  );
   const [sessionSearchParam, setSessionSearchParam] = useState<GetSessions>({
     searchCondition: {
       keyword: "",
@@ -79,12 +81,14 @@ const PendingSessionList = () => {
   return (
     <Card>
       <h3 className="text-2xl my-5">Session Management</h3>
-      <Input
-        placeholder="Search By Course Name"
-        prefix={<SearchOutlined />}
-        style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
-        onChange={handleSearchChange}
-      />
+      <div className="flex flex-wrap items-center mb-4">
+        <Input
+          placeholder="Search By Session Name"
+          prefix={<SearchOutlined />}
+          style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
+          onChange={handleSearchChange}
+        />
+      </div>
       <Table
         dataSource={sessionPendingList}
         columns={columns}

@@ -1,11 +1,15 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table, Input, Card, Tag, TableProps } from "antd";
-import { FilterOutlined, SearchOutlined } from "@ant-design/icons";
-import useDebounce from "../../../../hooks/useDebounce";
-import StatusFilter from "../../../../components/StatusFilter";
-import { Course, GetCourses } from "../../../../models/Course.model";
+import { SearchOutlined } from "@ant-design/icons";
+// import StatusFilter from "../../../../components/StatusFilter";
+import {
+  Course,
+  GetCourses,
+  CourseStatusEnum,
+} from "../../../../models/Course.model";
 import CourseService from "../../../../services/course.service";
-import { CourseStatusEnum } from "./courseList";
+import { useDebouncedSearch } from "../../../../hooks/useSearch";
+import dayjs from "dayjs";
 
 // utils function to filter courses by status
 const getStatusFilterText = (status: CourseStatusEnum) => {
@@ -14,9 +18,9 @@ const getStatusFilterText = (status: CourseStatusEnum) => {
       return "New";
     case CourseStatusEnum.WAITING_APPROVE:
       return "Waiting Approve";
-    case CourseStatusEnum.APPROVED:
+    case CourseStatusEnum.APPROVE:
       return "Approved";
-    case CourseStatusEnum.REJECTED:
+    case CourseStatusEnum.REJECT:
       return "Rejected";
     case CourseStatusEnum.ACTIVE:
       return "Active";
@@ -28,39 +32,47 @@ const getStatusFilterText = (status: CourseStatusEnum) => {
 };
 
 const CourseLists: React.FC = () => {
-  const [inputSearch, setInputSearch] = useState("");
-  const inputSearchDebouce = useDebounce(inputSearch, 500);
-  const [listCourses, setListCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [statusFilter, setStatusFilter] = useState<string>();
+  // const [statusFilter, setStatusFilter] = useState<string>();
+  const [searchText, setSearchText] = useState("");
+  const [pageNum, setPageNum] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
+  const [courses, setCourses] = useState<Course[]>([]);
+  const filteredData = useDebouncedSearch(courses, searchText, 300, [
+    "name",
+    "category_id",
+  ]);
 
-  const initialCoursesParams: GetCourses = {
-    pageInfo: {
-      pageNum: 1,
-      pageSize: 6,
-    },
-    searchCondition: {
-      keyword: "",
-      is_deleted: false,
-      category_id: "",
-    },
-  };
   const fetchCourses = async () => {
-    setLoading(true);
+    const searchParams: GetCourses = {
+      searchCondition: {
+        keyword: searchText,
+        is_deleted: false,
+      },
+      pageInfo: { pageNum, pageSize },
+    };
+
     try {
-      const response = await CourseService.getCourses(initialCoursesParams);
-      setListCourses(response?.data?.pageData ?? []);
-    } finally {
-      setLoading(false);
+      const response = await CourseService.getCourses(searchParams);
+      const responseData = response.data?.pageData;
+      const flattenedUsers: Course[] = Array.isArray(responseData)
+        ? responseData.flat() // Dùng flat() để chuyển thành User[]
+        : [];
+      setCourses(flattenedUsers);
+      setTotal(response.data?.pageInfo?.totalItems ?? 0);
+    } catch (err) {
+      console.error("Error fetching users:", err);
     }
   };
-  useEffect(() => {
-    fetchCourses(); // Fetch courses on component mount
-  }, []);
-  const handleInputSearch = (e: ChangeEvent<HTMLInputElement>) => {
-    setInputSearch(e.target.value);
-    console.log(inputSearchDebouce);
+
+  const handleTableChange = (pagination: any) => {
+    setPageNum(pagination.current);
+    setPageSize(pagination.pageSize);
   };
+
+  useEffect(() => {
+    fetchCourses();
+  }, [pageNum, pageSize]);
 
   const columns: TableProps<Course>["columns"] = [
     {
@@ -74,11 +86,6 @@ const CourseLists: React.FC = () => {
       key: "category_id",
     },
     {
-      title: "Content",
-      dataIndex: "content",
-      key: "content",
-    },
-    {
       title: "Status",
       dataIndex: "status",
       key: "status",
@@ -87,21 +94,23 @@ const CourseLists: React.FC = () => {
         value: status,
       })),
       onFilter: (value, record) => record.status === value,
-      filterIcon: (filtered) => (
-        <FilterOutlined
-          style={{ fontSize: "18px", color: filtered ? "#1890ff" : undefined }}
-        />
-      ), // Tăng kích thước và thay đổi màu của biểu tượng filter
       render: (status: CourseStatusEnum) => {
-        const statusColors = {
-          [CourseStatusEnum.NEW]: "green",
-          [CourseStatusEnum.WAITING_APPROVE]: "red",
-          [CourseStatusEnum.APPROVED]: "yellow",
-          [CourseStatusEnum.REJECTED]: "yellow",
-          [CourseStatusEnum.ACTIVE]: "yellow",
-          [CourseStatusEnum.INACTIVE]: "yellow",
-        };
-        return <Tag color={statusColors[status] || "gray"}>{status}</Tag>;
+        switch (status) {
+          case CourseStatusEnum.NEW:
+            return <Tag color="green">New</Tag>;
+          case CourseStatusEnum.WAITING_APPROVE:
+            return <Tag color="red">Waiting Approve</Tag>;
+          case CourseStatusEnum.APPROVE:
+            return <Tag color="yellow">Approved</Tag>;
+          case CourseStatusEnum.REJECT:
+            return <Tag color="orange">Rejected</Tag>;
+          case CourseStatusEnum.ACTIVE:
+            return <Tag color="blue">Active</Tag>;
+          case CourseStatusEnum.INACTIVE:
+            return <Tag color="gray">Inactive</Tag>;
+          default:
+            return <Tag color="gray">Unknown</Tag>;
+        }
       },
     },
     {
@@ -121,46 +130,61 @@ const CourseLists: React.FC = () => {
         );
       },
     },
+    {
+      title: "Created At",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (createdAt: string) => {
+        return dayjs(createdAt).format("DD-MM-YYYY");
+      },
+    },
   ];
 
-  const statuses = [
-    CourseStatusEnum.ACTIVE,
-    CourseStatusEnum.APPROVED,
-    CourseStatusEnum.INACTIVE,
-    CourseStatusEnum.NEW,
-    CourseStatusEnum.REJECTED,
-    CourseStatusEnum.WAITING_APPROVE,
-  ];
-  const handleStatusChange = (value: string | undefined) => {
-    setStatusFilter(value);
-  };
+  // const statuses = [
+  //   CourseStatusEnum.ACTIVE,
+  //   CourseStatusEnum.APPROVE,
+  //   CourseStatusEnum.INACTIVE,
+  //   CourseStatusEnum.NEW,
+  //   CourseStatusEnum.REJECT,
+  //   CourseStatusEnum.WAITING_APPROVE,
+  // ];
+
+  // const handleStatusChange = (value: string | undefined) => {
+  //   setStatusFilter(value);
+  // };
 
   return (
     <Card>
       <h3 className="text-2xl my-5">Course Management</h3>
-
-      <div className="flex gap-4 mb-5">
+      <div className="flex flex-wrap items-center mb-4">
         <Input
           placeholder="Search By Course Name"
           prefix={<SearchOutlined />}
-          style={{ width: "80%", borderRadius: "4px" }}
-          onChange={(e) => handleInputSearch(e)}
+          className="w-full md:w-1/3 mb-2 md:mb-0"
+          onChange={(e) => setSearchText(e.target.value)}
+          value={searchText}
         />
-        <StatusFilter
+        {/* <StatusFilter
           statuses={statuses}
           selectedStatus={statusFilter}
           onStatusChange={handleStatusChange}
-        />
+        /> */}
       </div>
       <Table
-        dataSource={listCourses}
+        dataSource={filteredData}
         columns={columns}
-        pagination={{ pageSize: 5 }}
-        rowKey="id"
+        pagination={{
+          current: pageNum,
+          pageSize,
+          total,
+          showSizeChanger: true,
+        }}
+        onChange={handleTableChange}
+        rowKey="_id"
         bordered
-        loading={loading}
+        // loading={loading}
         style={{ borderRadius: "8px" }}
-        scroll={{ x: true }}
+        scroll={{ x: "max-content" }}
       />
     </Card>
   );
