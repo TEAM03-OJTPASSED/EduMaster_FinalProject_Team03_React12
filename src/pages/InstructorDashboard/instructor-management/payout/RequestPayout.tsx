@@ -1,4 +1,4 @@
-import { Card, Input, Table, Tag, TableProps, Checkbox, Button, Modal, Spin, message } from "antd";
+/*import { Card, Input, Table, Tag, TableProps, Checkbox, Button, Modal, Spin, message } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { Payout, PayoutStatusEnum } from "../../../AdminDashboard/monitors/course/courseList";
 import { useLocation } from "react-router-dom";
@@ -181,4 +181,4 @@ const RequestPayout = () => {
   );
 };
 
-export default RequestPayout;
+export default RequestPayout;*/

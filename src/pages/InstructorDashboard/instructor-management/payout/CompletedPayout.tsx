@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+/*import React, { useEffect, useState } from "react";
 import { Card, Input, Table, TableProps, Tag } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useLocation } from "react-router-dom";
@@ -89,4 +89,4 @@ const CompletedPayout: React.FC = () => {
   );
 };
 
-export default CompletedPayout;
+export default CompletedPayout;*/
