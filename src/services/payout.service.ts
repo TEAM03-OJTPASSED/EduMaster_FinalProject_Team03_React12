@@ -5,10 +5,10 @@ import { GetPurchases, Purchase } from "../models/Purchase.model";
 import { postRequest } from "./httpsMethod";
 
 const PurchaseService = {
-  getPurchases(
-    params: GetPurchases
-  ): Promise<ApiResponse<APIResponseData<Purchase>>> {
-    return postRequest(PURCHASE_API.GET_PURCHASES, params);
+  createPayout(
+    params: CreatePayout
+  ): Promise<ApiResponse<Payout>>  {
+    return postRequest(PAYOUT_API.GET_PURCHASES, params);
   },
 
   getPurchasesStudent(
