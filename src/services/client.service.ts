@@ -18,7 +18,7 @@ const ClientService = {
     getBlogs(params: GetBlogsClient):  Promise<ApiResponse<APIResponseData<Blog>>> {
         return postRequest(CLIENT_API.BLOG_SEARCH, params,false)
     },
-    getBlogDetail(blogId: string):  Promise<ApiResponse> {
+    getBlogDetail(blogId: string):  Promise<ApiResponse<Blog>> {
         return getRequest(CLIENT_API.BLOG_DETAILS(blogId),false)
     },
     
