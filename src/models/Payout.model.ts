@@ -10,7 +10,7 @@ export enum PayoutStatusEnum {
 
 export interface CreatePayout {
     instructor_id: string;
-    transactions: transaction_id[]
+    transactions: { transaction_id: string }[];
 }
 
-type transaction_id = string;
+
