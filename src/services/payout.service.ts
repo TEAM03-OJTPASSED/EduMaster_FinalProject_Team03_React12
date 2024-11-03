@@ -1,27 +1,27 @@
-import { PURCHASE_API } from "../constants/api/purchase";
-import { ApiResponse, APIResponseData } from "../models/ApiReponse.model";
+// import { PURCHASE_API } from "../constants/api/purchase";
+// import { ApiResponse, APIResponseData } from "../models/ApiReponse.model";
 
-import { GetPurchases, Purchase } from "../models/Purchase.model";
-import { postRequest } from "./httpsMethod";
+// import { GetPurchases, Purchase } from "../models/Purchase.model";
+// import { postRequest } from "./httpsMethod";
 
-const PurchaseService = {
-  createPayout(
-    params: CreatePayout
-  ): Promise<ApiResponse<Payout>>  {
-    return postRequest(PAYOUT_API.GET_PURCHASES, params);
-  },
+// const PurchaseService = {
+//   createPayout(
+//     params: CreatePayout
+//   ): Promise<ApiResponse<Payout>>  {
+//     return postRequest(PAYOUT_API.GET_PURCHASES, params);
+//   },
 
-  getPurchasesStudent(
-    params: GetPurchases
-  ): Promise<ApiResponse<APIResponseData<Purchase>>> {
-    return postRequest(PURCHASE_API.GET_PURCHASES_STUDENT, params);
-  },
+//   getPurchasesStudent(
+//     params: GetPurchases
+//   ): Promise<ApiResponse<APIResponseData<Purchase>>> {
+//     return postRequest(PURCHASE_API.GET_PURCHASES_STUDENT, params);
+//   },
   
-  getPurchasesInstructor( //instructor orders
-    params: GetPurchases
-  ): Promise<ApiResponse<APIResponseData<Purchase>>> {
-    return postRequest(PURCHASE_API.GET_PURCHASES_INSTRUCTOR, params);
-  },
-};
+//   getPurchasesInstructor( //instructor orders
+//     params: GetPurchases
+//   ): Promise<ApiResponse<APIResponseData<Purchase>>> {
+//     return postRequest(PURCHASE_API.GET_PURCHASES_INSTRUCTOR, params);
+//   },
+// };
 
-export default PurchaseService;
+// export default PurchaseService;
