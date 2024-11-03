@@ -10,25 +10,7 @@ export enum PayoutStatusEnum {
 
 export interface CreatePayout {
     instructor_id: string;
-    transactions:{ transaction_id: string }[]; 
+    transactions: transaction_id[]
 }
 
-
-export interface GetPayoutRequest {
-    searchCondition: {
-        payout_no?: string;
-        instructor_id?: string;
-        status?: PayoutStatusEnum;
-        is_delete: boolean;
-    };
-    pageInfo: {
-        pageNum: number;
-        pageSize: number;
-    };
-}
-
-
-export interface UpdateStatusPayoutRequest {
-    status: PayoutStatusEnum;
-    comment: string;
-}
+type transaction_id = string;
