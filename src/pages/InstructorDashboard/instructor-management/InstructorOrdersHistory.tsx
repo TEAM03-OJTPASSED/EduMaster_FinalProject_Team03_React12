@@ -1,9 +1,10 @@
-import { useState } from "react";
+/*import { useEffect, useState } from "react";
 import { Button, Card, Input, Table, Tag } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { salesHistory } from "../../AdminDashboard/monitors/course/courseList";
 import StatusFilter from "../../../components/StatusFilter";
-
+import PurchaseService from "../../../services/purchase.service";
+import { Purchase } from "../../../models/Purchase.model"; 
 const columns = [
   {
     title: "Purchase Number",
@@ -68,9 +69,25 @@ const columns = [
 ];
 
 const InstructorSalesHistory = () => {
+  const [salesHistory, setSalesHistory] = useState<Purchase[]>([]);
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>();
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const fetchSalesHistory = async () => {
+      try {
+        const response: ApiResponse<APIResponseData<Purchase>> = await PurchaseService.getPurchasesInstructor({});
+        setSalesHistory(response.data); 
+      } catch (error) {
+        console.error("Failed to fetch sales history", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSalesHistory();
+  }, []);
   const handleSearch = (event: any) => {
     setSearchText(event.target.value);
   };
@@ -89,6 +106,9 @@ const InstructorSalesHistory = () => {
 
   const statuses = ["Completed", "Pending", "Refunded"];
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   return (
     <Card>
       <h3 className="text-2xl my-5">Orders</h3>
@@ -125,4 +145,4 @@ export default InstructorSalesHistory;
 
 const handleAction = (record: any) => {
   console.log("Viewing details for:", record);
-};
+};*/
