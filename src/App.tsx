@@ -36,9 +36,9 @@ import InstructorReview from "./pages/InstructorDashboard/InstructorReview";
 import InstructorSetting from "./pages/InstructorDashboard/instructor-setting/InstructorSetting";
 import ForgotPasswordPage from "./pages/AuthPage/ForgotPasswordPage";
 import PayoutManagement from "./pages/AdminDashboard/payoutManagement";
-import RequestPayout from "./pages/InstructorDashboard/instructor-management/payout/RequestPayout";
+// import RequestPayout from "./pages/InstructorDashboard/instructor-management/payout/RequestPayout";
 import CompletedPayout from "./pages/InstructorDashboard/instructor-management/payout/CompletedPayout";
-import RejectedPayout from "./pages/InstructorDashboard/instructor-management/payout/RejectedPayout";
+// import RejectedPayout from "./pages/InstructorDashboard/instructor-management/payout/RejectedPayout";
 import DashboardLayout from "./defaultLayout/DashboardLayout";
 import StudentProfile from "./pages/StudentDashboard/studentProfile";
 import StudentCourses from "./pages/StudentDashboard/StudentCourses";
@@ -48,7 +48,6 @@ import FAQsPage from "./pages/FAQPage";
 import ErrorPage from "./pages/ErrorPage";
 import ContactPage from "./pages/ContactPage";
 import CartPage from "./pages/cart/CartPage";
-import CheckoutPage from "./pages/checkout/CheckoutPage";
 import Firebase from "./pages/Firebase";
 import BlogDetailPage from "./pages/BlogDetailPage";
 import StudentContent from "./pages/StudentDashboard/StudentContent";
@@ -128,16 +127,7 @@ function App() {
 
               <Route path="/learn/:id" element={<LearnCoursePage />} />
 
-              <Route
-                path="cart/checkout"
-                element={
-                  <ProtectedRoute
-                    allowedRoles={["student", "instructor", "admin"]}
-                  >
-                    <CheckoutPage />
-                  </ProtectedRoute>
-                }
-              />
+              
             </Route>
 
             {/* Admin Layout */}
@@ -201,14 +191,7 @@ function App() {
                 <Route path="top-up" element={<TopUpPage />} />
                 <Route path="orders" element={<StudentOrderHistory />} />
 
-                <Route path="payout" element={<InstructorPayout />}>
-                  <Route index element={<RequestPayout />} />
-                  <Route
-                    path="completed-payout"
-                    element={<CompletedPayout />}
-                  />
-                  <Route path="rejected-payout" element={<RejectedPayout />} />
-                </Route>
+                ?
                 <Route
                   path="salesHistory"
                   element={<InstructorSalesHistory />}

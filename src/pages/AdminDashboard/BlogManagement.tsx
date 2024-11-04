@@ -118,7 +118,11 @@ const BlogManagement = () => {
       dataIndex: "image_url",
       key: "image_url",
       render: (imageUrl: string) => (
-        <img src={imageUrl} alt="Blog" style={{ width: "100px", height: "100px" }} />
+        <img
+          src={imageUrl}
+          alt="Blog"
+          style={{ width: "100px", height: "100px" }}
+        />
       ),
     },
     {
@@ -156,6 +160,7 @@ const BlogManagement = () => {
         <Input
           placeholder="Search By Blog Name"
           prefix={<SearchOutlined />}
+          className="w-full md:w-1/3 mb-2 md:mb-0"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           className="w-full md:w-1/3 mb-2 md:mb-0"
@@ -183,7 +188,7 @@ const BlogManagement = () => {
           type="primary"
           className="w-full md:w-auto ml-0 md:ml-auto"
         >
-          Create Blog
+          Add New Blog
         </Button>
       </div>
 

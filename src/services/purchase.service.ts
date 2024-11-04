@@ -17,7 +17,7 @@ const PurchaseService = {
     return postRequest(PURCHASE_API.GET_PURCHASES_STUDENT, params);
   },
   
-  getPurchasesInstructor(
+  getPurchasesInstructor( //instructor orders
     params: GetPurchases
   ): Promise<ApiResponse<APIResponseData<Purchase>>> {
     return postRequest(PURCHASE_API.GET_PURCHASES_INSTRUCTOR, params);

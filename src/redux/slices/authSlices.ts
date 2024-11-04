@@ -149,9 +149,6 @@ export const authSlice = createSlice({
       state.login.googleId= action.payload
       state.login.is_google = true;
     },
-    // setIsLoginGoogleSuccess: (state) => {
-    //   state.login.is_google = false;
-    // },
     setIsLoginGoogleFailed: (state) => {
       state.login.is_google = false;
     },
@@ -206,10 +203,12 @@ export const authSlice = createSlice({
       .addCase(registerWithGoogle.fulfilled, (state) => {
         state.login.loading = false;
         state.login.success = true;
+        state.login.is_register_google = false
       })
       .addCase(registerWithGoogle.rejected, (state) => {
         state.login.loading = false;
         state.login.success = false;
+       
       });
   },
 });

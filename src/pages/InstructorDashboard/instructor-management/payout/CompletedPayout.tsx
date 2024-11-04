@@ -1,19 +1,45 @@
+import React, { useEffect, useState } from "react";
 import { Card, Input, Table, TableProps, Tag } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import {
-  Payout,
-  payouts,
-  PayoutStatusEnum,
-} from "../../../AdminDashboard/monitors/course/courseList";
 import { useLocation } from "react-router-dom";
+import PayoutService from "../../../../services/payout.service";
+import { Payout, PayoutStatusEnum } from "../../../../models/Payout.model";
 
-
-const CompletedPayout = () => {
+const CompletedPayout: React.FC = () => {
   const location = useLocation();
-
   const { status } = location.state || {};
+  const [filteredPayouts, setFilteredPayouts] = useState<Payout[]>([]);
+  const [searchKeyword, setSearchKeyword] = useState<string>("");
 
-  const filterdPayouts = payouts.filter((payout) => payout.status === status);
+  const initialParams = {
+    searchCondition: {
+      payout_no: "",
+      instructor_id: "",
+      status: undefined as PayoutStatusEnum | undefined, // Optional property syntax
+      is_delete: false,
+    },
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 10,
+    },
+  };
+  
+
+  
+
+
+  const fetchPayouts = async () => {
+    const response = await PayoutService.getPayout(initialParams); 
+    const payouts = response.data?.pageData || [];
+    const completedPayouts = payouts.filter((payout: Payout) => payout.status === status);
+    setFilteredPayouts(completedPayouts);
+  };
+
+
+  useEffect(() => {
+    
+    fetchPayouts();
+  }, []);
 
   const columns: TableProps<Payout>["columns"] = [
     {
@@ -25,11 +51,9 @@ const CompletedPayout = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status: PayoutStatusEnum) => {
-        if (status === "Completed") {
-          return <Tag color="green">Completed</Tag>
-        }
-      },
+      render: (status: PayoutStatusEnum) => (
+        <Tag color="green">{status}</Tag>
+      ),
     },
     {
       title: "Transaction ID",
@@ -51,7 +75,6 @@ const CompletedPayout = () => {
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
     },
-    
   ];
 
   return (
@@ -63,12 +86,13 @@ const CompletedPayout = () => {
         placeholder="Search By Payout Number"
         prefix={<SearchOutlined />}
         style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
+        onChange={(e) => setSearchKeyword(e.target.value)}
       />
       <Table
-        dataSource={filterdPayouts}
+        dataSource={filteredPayouts.filter((payout) => payout.payout_no.includes(searchKeyword))}
         columns={columns}
         pagination={{ pageSize: 5 }}
-        rowKey="name"
+        rowKey="payout_no"
         bordered
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
@@ -76,4 +100,5 @@ const CompletedPayout = () => {
     </Card>
   );
 };
+
 export default CompletedPayout;

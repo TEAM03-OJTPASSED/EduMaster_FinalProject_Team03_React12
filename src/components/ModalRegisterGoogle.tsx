@@ -39,6 +39,7 @@ const ModalRegisterGoogle = () => {
   const [fileListVideo, setFileListVideo] = useState<UploadFile[]>([]);
   const [form] = Form.useForm();
   const dispatch = useDispatch<AppDispatch>();
+ 
 
   const handleImageChange: UploadProps["onChange"] = ({
     fileList: newFileList,
@@ -75,6 +76,7 @@ const ModalRegisterGoogle = () => {
     };
 
     await dispatch(registerWithGoogle(formData));
+
   };
 
   return (
@@ -258,7 +260,6 @@ const ModalRegisterGoogle = () => {
             shape="round"
             className="bg-[#FF782D] text-xl text-white py-4 w-full hover:bg-[#e66e27]"
           >
-            {/* {loading ? "Waiting" : "Register"} */}
             Confirm
           </Button>
         </Form.Item>

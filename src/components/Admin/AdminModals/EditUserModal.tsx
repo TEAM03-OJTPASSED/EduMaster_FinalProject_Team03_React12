@@ -1,27 +1,9 @@
-import { Modal, Form, Input, Select, Switch, Button } from "antd";
-const { Option } = Select;
-
-interface User {
-  _id: string;
-  key: string;
-  name: string;
-  email: string;
-  phone_number?: string;
-  avatar_url?: string;
-  video_url?: string;
-  bank_name?: string;
-  bank_account_no?: string;
-  bank_account_name?: string;
-  dob: string;
-  status: boolean;
-  role: string;
-  description?: string;
-}
-
+import { Modal, Form, Input, Button } from "antd";
+import { User } from "../../../models/UserModel";
 interface EditUserProps {
   visible: boolean;
   onClose: () => void;
-  user: User | any;
+  user: User;
   onSave: (values: User) => void;
 }
 
@@ -46,12 +28,7 @@ const EditUser: React.FC<EditUserProps> = ({
   };
 
   return (
-    <Modal
-      title="Chỉnh sửa người dùng"
-      open={visible}
-      onCancel={onClose}
-      footer={null}
-    >
+    <Modal title="Update User" open={visible} onCancel={onClose} footer={null}>
       <Form
         form={form}
         initialValues={{
@@ -72,32 +49,18 @@ const EditUser: React.FC<EditUserProps> = ({
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 18 }}
       >
-        <Form.Item name="name" label="Họ và tên" rules={[{ required: true }]}>
+        <Form.Item name="name" label="Full name" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
         <Form.Item name="email" label="Email" rules={[{ required: true }]}>
           <Input disabled />
         </Form.Item>
-        <Form.Item name="phone_number" label="Số điện thoại">
+        <Form.Item name="phone_number" label="Phone number">
           <Input />
-        </Form.Item>
-        <Form.Item
-          name="role"
-          label="Loại người dùng"
-          rules={[{ required: true }]}
-        >
-          <Select>
-            <Option value="admin">Admin</Option>
-            <Option value="instructor">Instructor</Option>
-            <Option value="student">Student</Option>
-          </Select>
-        </Form.Item>
-        <Form.Item name="status" label="Trạng thái" valuePropName="checked">
-          <Switch />
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
           <Button type="primary" htmlType="submit" style={{ float: "right" }}>
-            Lưu
+            Save
           </Button>
         </Form.Item>
       </Form>

@@ -12,7 +12,7 @@ interface BlogCardProps {
 }
 
 const BlogCard: React.FC<BlogCardProps> = ({ blog, viewMode }) => (
-  <a href={`/blog-detail/${blog._id}`}>
+  <a href={`/blog/${blog._id}`}>
     <Card
       hoverable
       styles={{
