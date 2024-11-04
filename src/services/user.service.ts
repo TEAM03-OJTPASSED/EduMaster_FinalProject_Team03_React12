@@ -152,7 +152,25 @@ export const changeRole = async (userId: string, role: string) => {
     throw error; // Ném lỗi để xử lý ở nơi gọi
   }
 };
-
+export const changePassword = async (user_id: string,
+  old_password: string,
+  new_password: string) => {
+  try {
+    const response = await putRequest(`${BASE_URL}/change-password`, {
+      user_id: user_id,
+      old_password: old_password,
+      new_password: new_password
+    });
+    if (response.success) {
+      message.success("User password updated successfully");
+    } else {
+      message.error("Failed to update password");
+    }
+  } catch (error) {
+    console.error("Error changing user password:", error);
+    throw error; 
+  }
+}
 export const changeStatus = async (userId: string, status: boolean) => {
   try {
     const response = await putRequest(`${BASE_URL}/change-status`, {
