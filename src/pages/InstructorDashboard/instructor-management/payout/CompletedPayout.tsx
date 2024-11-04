@@ -1,32 +1,45 @@
-/*import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Input, Table, TableProps, Tag } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useLocation } from "react-router-dom";
-import PayoutService from "../../../services/payout.service"; 
-import { Payout, PayoutStatusEnum } from "../../../models/Payout.model"; 
+import PayoutService from "../../../../services/payout.service";
+import { Payout, PayoutStatusEnum } from "../../../../models/Payout.model";
 
 const CompletedPayout: React.FC = () => {
   const location = useLocation();
   const { status } = location.state || {};
   const [filteredPayouts, setFilteredPayouts] = useState<Payout[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
   const [searchKeyword, setSearchKeyword] = useState<string>("");
 
-  useEffect(() => {
-    const fetchPayouts = async () => {
-      setLoading(true);
-      try {
-        const response = await PayoutService.getPayouts(); 
-        const payouts = response.data || [];
-        const completedPayouts = payouts.filter((payout: Payout) => payout.status === status);
-        setFilteredPayouts(completedPayouts);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const initialParams = {
+    searchCondition: {
+      payout_no: "",
+      instructor_id: "",
+      status: undefined as PayoutStatusEnum | undefined, // Optional property syntax
+      is_delete: false,
+    },
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 10,
+    },
+  };
+  
 
+  
+
+
+  const fetchPayouts = async () => {
+    const response = await PayoutService.getPayout(initialParams); 
+    const payouts = response.data?.pageData || [];
+    const completedPayouts = payouts.filter((payout: Payout) => payout.status === status);
+    setFilteredPayouts(completedPayouts);
+  };
+
+
+  useEffect(() => {
+    
     fetchPayouts();
-  }, [status]);
+  }, []);
 
   const columns: TableProps<Payout>["columns"] = [
     {
@@ -83,10 +96,9 @@ const CompletedPayout: React.FC = () => {
         bordered
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
-        loading={loading}
       />
     </Card>
   );
 };
 
-export default CompletedPayout;*/
+export default CompletedPayout;
