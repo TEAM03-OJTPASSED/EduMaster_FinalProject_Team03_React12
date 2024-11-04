@@ -69,7 +69,7 @@ const CourseLogPage = () => {
   const [courseLogList, setCourseLogList] = useState<CourseLog[]>([]);
   const [currentLog, setCurrentLog] = useState<PageInfo>({
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 5,
     totalItems: 0,
   });
   const [pageNum, setPageNum] = useState(1);
@@ -110,7 +110,7 @@ const CourseLogPage = () => {
               },
               pageInfo: {
                 pageNum,
-                pageSize: 10,
+                pageSize: 5,
               },
             };
             return CourseService.getCourseLogs(searchParam);
@@ -152,13 +152,13 @@ const CourseLogPage = () => {
     <Card>
       <h3 className="text-2xl my-5">Course Log</h3>
       <div className="flex flex-wrap items-center mb-4">
-      <Input
-        placeholder="Search By Course Name"
-        prefix={<SearchOutlined />}
-        className="w-full md:w-1/3 mb-2 md:mb-0"
-        value={searchText}
-        onChange={handleSearch}
-      />
+        <Input
+          placeholder="Search By Course Name"
+          prefix={<SearchOutlined />}
+          className="w-full md:w-1/3 mb-2 md:mb-0"
+          value={searchText}
+          onChange={handleSearch}
+        />
       </div>
       <Table
         dataSource={courseLogList}

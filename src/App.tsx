@@ -60,7 +60,7 @@ import InstructorProfile from "./pages/InstructorDashboard/instructor-setting/In
 import AdminChangePassword from "./pages/AdminDashboard/setting/AdminChangePassword";
 import AdminSetting from "./pages/AdminDashboard/setting/AdminSetting";
 import AdminProfile from "./pages/AdminDashboard/setting/AdminProfile";
-import InstructorSalesHistory from "./pages/InstructorDashboard/instructor-management/InstructorOrdersHistory";
+// import InstructorSalesHistory from "./pages/InstructorDashboard/instructor-management/InstructorOrdersHistory";
 import LearnCoursePage from "./pages/LearnCoursePage";
 import TopUpPage from "./pages/topup/TopupPage";
 import AdminRequestPayout from "./pages/AdminDashboard/payout/RequestPayout";
@@ -77,11 +77,12 @@ function App() {
   useEffect(() => {
     const init = () => {
       gapi.client.init({
-        clientId:"67368420889-utrdru1873d1pudjah97ihj32vvfire8.apps.googleusercontent.com",
-        scope:""
+        clientId:
+          "67368420889-utrdru1873d1pudjah97ihj32vvfire8.apps.googleusercontent.com",
+        scope: "",
       });
     };
-    gapi.load("client:auth2",init)
+    gapi.load("client:auth2", init);
   }, []);
   return (
     <BrowserRouter>
@@ -126,8 +127,6 @@ function App() {
               <Route path="/firebase" element={<Firebase />} />
 
               <Route path="/learn/:id" element={<LearnCoursePage />} />
-
-              
             </Route>
 
             {/* Admin Layout */}
@@ -191,10 +190,17 @@ function App() {
                 <Route path="top-up" element={<TopUpPage />} />
                 <Route path="orders" element={<StudentOrderHistory />} />
 
-                ?
+                <Route path="payout" element={<InstructorPayout />}>
+                  {/* <Route index element={<RequestPayout />} /> */}
+                  <Route
+                    path="completed-payout"
+                    element={<CompletedPayout />}
+                  />
+                  {/* <Route path="rejected-payout" element={<RejectedPayout />} /> */}
+                </Route>
                 <Route
                   path="salesHistory"
-                  element={<InstructorSalesHistory />}
+                  // element={<InstructorSalesHistory />}
                 />
                 <Route path="my-learning" element={<InstructorLearning />} />
                 <Route path="my-courses" element={<InstructorCourses />}>
