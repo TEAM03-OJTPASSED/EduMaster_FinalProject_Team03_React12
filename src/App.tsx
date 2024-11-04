@@ -36,9 +36,9 @@ import InstructorReview from "./pages/InstructorDashboard/InstructorReview";
 import InstructorSetting from "./pages/InstructorDashboard/instructor-setting/InstructorSetting";
 import ForgotPasswordPage from "./pages/AuthPage/ForgotPasswordPage";
 import PayoutManagement from "./pages/AdminDashboard/payoutManagement";
-import RequestPayout from "./pages/InstructorDashboard/instructor-management/payout/RequestPayout";
+// import RequestPayout from "./pages/InstructorDashboard/instructor-management/payout/RequestPayout";
 import CompletedPayout from "./pages/InstructorDashboard/instructor-management/payout/CompletedPayout";
-import RejectedPayout from "./pages/InstructorDashboard/instructor-management/payout/RejectedPayout";
+// import RejectedPayout from "./pages/InstructorDashboard/instructor-management/payout/RejectedPayout";
 import DashboardLayout from "./defaultLayout/DashboardLayout";
 import StudentProfile from "./pages/StudentDashboard/studentProfile";
 import StudentCourses from "./pages/StudentDashboard/StudentCourses";
@@ -191,14 +191,7 @@ function App() {
                 <Route path="top-up" element={<TopUpPage />} />
                 <Route path="orders" element={<StudentOrderHistory />} />
 
-                <Route path="payout" element={<InstructorPayout />}>
-                  <Route index element={<RequestPayout />} />
-                  <Route
-                    path="completed-payout"
-                    element={<CompletedPayout />}
-                  />
-                  <Route path="rejected-payout" element={<RejectedPayout />} />
-                </Route>
+                ?
                 <Route
                   path="salesHistory"
                   element={<InstructorSalesHistory />}

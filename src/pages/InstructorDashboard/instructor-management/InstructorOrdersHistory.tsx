@@ -1,4 +1,4 @@
-/*import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Card, Input, Table, Tag } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { salesHistory } from "../../AdminDashboard/monitors/course/courseList";
@@ -145,4 +145,4 @@ export default InstructorSalesHistory;
 
 const handleAction = (record: any) => {
   console.log("Viewing details for:", record);
-};*/
+};
