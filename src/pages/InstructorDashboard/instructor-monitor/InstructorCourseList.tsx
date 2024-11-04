@@ -52,7 +52,7 @@ const InstructorCourseList: React.FC = () => {
   const initialCoursesParams: GetCourses = {
     pageInfo: {
       pageNum: 1,
-      pageSize: 6,
+      pageSize: 10,
     },
     searchCondition: {
       keyword: "",
