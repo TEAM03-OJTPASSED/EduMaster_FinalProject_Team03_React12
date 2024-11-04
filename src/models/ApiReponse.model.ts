@@ -7,10 +7,10 @@ export interface APIResponseData<T = unknown> {
 
 export interface ApiResponse<T = unknown> {
     success: boolean;
-    data?: T | APIResponseData<T>;
-    message?: string; 
-    errors?: ApiError[]; 
-}
+    data?: T extends APIResponseData<infer U> ? APIResponseData<U> : T;
+    message?: string;
+    errors?: ApiError[];
+  }
 
 export interface ApiError {
     message: string; 

@@ -1,23 +1,33 @@
 export interface User {
-  _id: object;
+  _id: string;
   email: string;
   name: string;
-  google_id: string;
+  google_id?: string;
   role: string;
   status: boolean;
-  description: string;
-  phone_number: string;
-  avatar_url: string;
-  video_url: string;
+  description?: string;
+  phone_number?: string;
+  avatar_url?: string;
+  video_url?: string;
   is_verified: boolean;
   token_version: number;
   balance: number;
   balance_total: number;
-  bank_name: string;
-  bank_account_no: string;
-  bank_account_name: string;
+  bank_name?: string;
+  bank_account_no?: string;
+  bank_account_name?: string;
   is_deleted: boolean;
-  dob: string;
+  dob?: string;
   created_at: string;
   updated_at: string;
+}
+
+export interface ChangeUserRoleParams {
+  user_id: string;
+  role: string;
+}
+
+export interface ChangeUserStatusParams {
+  user_id: string;
+  status: boolean;
 }

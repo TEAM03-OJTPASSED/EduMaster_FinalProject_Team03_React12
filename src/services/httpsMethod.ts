@@ -1,37 +1,61 @@
-import { AxiosResponse } from "axios"; // Import AxiosResponse from axios
+import { AxiosResponse } from "axios";
 import axiosClientVer2 from "./axiosInterceptors";
+import { hideLoadingOverlay, showLoadingOverlay } from "../utils/loadingOverlay";
 import { ApiResponse } from "../models/ApiReponse.model";
 
 // [GET]
-const getRequest = async <T>(url: string): Promise<ApiResponse<T>> => {
-  const res: AxiosResponse<ApiResponse<T>> = await axiosClientVer2.get(url);
-  return res.data; 
+const getRequest = async <T>(url: string, showLoading = true): Promise<ApiResponse<T>> => {
+  if (showLoading) showLoadingOverlay();
+  try {
+    const res: AxiosResponse<ApiResponse<T>> = await axiosClientVer2.get(url);
+    return res.data;
+  } finally {
+    if (showLoading) hideLoadingOverlay();
+  }
 };
 
-//HOW TO USE: 
-
-
 // [POST]
-const postRequest = async <T>(url: string, payload: unknown): Promise<ApiResponse<T>> => {
-  const res: AxiosResponse<ApiResponse<T>> = await axiosClientVer2.post(url, payload);
-  return res.data;
+const postRequest = async <T>(url: string, payload: unknown, showLoading = true): Promise<ApiResponse<T>> => {
+  if (showLoading) showLoadingOverlay();
+  try {
+    const res: AxiosResponse<ApiResponse<T>> = await axiosClientVer2.post(url, payload);
+    return res.data;
+  } finally {
+    if (showLoading) hideLoadingOverlay();
+  }
 };
 
 // [PUT]
-const putRequest = async <T>(url: string, payload: unknown): Promise<ApiResponse<T>> => {
-  const res: AxiosResponse<ApiResponse<T>> = await axiosClientVer2.put(url, payload);
-  return res.data;
+const putRequest = async <T>(url: string, payload: unknown, showLoading = true): Promise<ApiResponse<T>> => {
+  if (showLoading) showLoadingOverlay();
+  try {
+    const res: AxiosResponse<ApiResponse<T>> = await axiosClientVer2.put(url, payload);
+    return res.data;
+  } finally {
+    if (showLoading) hideLoadingOverlay();
+  }
 };
 
 // [PATCH]
-const patchRequest = async <T>(url: string, payload: unknown): Promise<ApiResponse<T>> => {
-  const res: AxiosResponse<ApiResponse<T>> = await axiosClientVer2.patch(url, payload);
-  return res.data; 
+const patchRequest = async <T>(url: string, payload: unknown, showLoading = true): Promise<ApiResponse<T>> => {
+  if (showLoading) showLoadingOverlay();
+  try {
+    const res: AxiosResponse<ApiResponse<T>> = await axiosClientVer2.patch(url, payload);
+    return res.data;
+  } finally {
+    if (showLoading) hideLoadingOverlay();
+  }
 };
 
-const deleteRequest = async <T>(url: string): Promise<ApiResponse<T>> => {
-  const res: AxiosResponse<ApiResponse<T>> = await axiosClientVer2.delete(url);
-  return res.data; // Ensure the returned data matches ApiResponse<T>
+// [DELETE]
+const deleteRequest = async <T>(url: string, showLoading = true): Promise<ApiResponse<T>> => {
+  if (showLoading) showLoadingOverlay();
+  try {
+    const res: AxiosResponse<ApiResponse<T>> = await axiosClientVer2.delete(url);
+    return res.data;
+  } finally {
+    if (showLoading) hideLoadingOverlay();
+  }
 };
 
 // Export functions for use elsewhere
@@ -45,7 +69,7 @@ export { getRequest, postRequest, putRequest, patchRequest, deleteRequest };
 // 2. Import required models for requests and responses.
 
 // 3. Create a service object using the base HTTP methods:
-//    
+//
 //    const CartService = {
 //      createCart(cartId: string): Promise<ApiResponse<specify return structure if needed>> {
 //        return postRequest(CART_API.CREATE_CART, { cartId });
@@ -61,7 +85,7 @@ export { getRequest, postRequest, putRequest, patchRequest, deleteRequest };
 //      }
 //    };
 //    export default CartService;
-//    
+//
 // 4. Use the service methods in your components, handling promises for responses and errors:
 //    E.g.,
 //    CartService.createCart(newCartId)
@@ -81,6 +105,5 @@ export { getRequest, postRequest, putRequest, patchRequest, deleteRequest };
 //       pageSize: 10 // Set to desired items per page
 //   }
 // };
-
 
 // const response = await CartService.getCartByStatus(searchValues);

@@ -5,22 +5,18 @@ import { useState } from "react";
 import { FaBars } from "react-icons/fa";
 import { GrGrid } from "react-icons/gr";
 import BlogsGrid from "../home/BlogsGrid";
+import { Blog } from "../../models/Blog.model";
+import NoResult from "../../assets/no-result.jpg"
 
-interface Blog {
-  id: number;
-  image_url: string;
-  category: string;
-  title: string;
-  author: string;
-  date: string;
-  content: string;
-}
+
+
 
 export const SearchResults: React.FC<{
   blogs: Blog[];
   onSearch: (searchValue: string) => void;
-  searchQuery: string;
-}> = ({ blogs, onSearch, searchQuery }) => {
+  searchQuery?: string;
+  noResult: boolean;
+}> = ({ blogs, onSearch, searchQuery, noResult }) => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
 
   return (
@@ -54,7 +50,7 @@ export const SearchResults: React.FC<{
           />
         </div>
       </div>
-      {blogs.length > 0 ? (
+      {!noResult ? (
         <div>
           <BlogsGrid viewMode={viewMode} blogs={blogs} />
           <Pagination
@@ -65,7 +61,11 @@ export const SearchResults: React.FC<{
           />
         </div>
       ) : (
-        <div className="text-center mt-8">No blogs found</div>
+        <div className="text-center mt-8 flex flex-col justify-center items-center">
+            <img src={NoResult} className="w-[250px] md:w-[400px]" alt="no search results"/>
+            <h1 className="text-xl font-medium w-96 font-jost">We couldn't find what you were looking for. Try searching for something else</h1> 
+
+          </div>
       )}
     </Content>
   );

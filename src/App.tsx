@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import LoadingWrapper from "./components/Loading/LoadingWrapper";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import CoursesPage from "./pages/CoursePage";
 import BlogPage from "./pages/BlogPage";
 import CourseDetailPage from "./pages/CourseDetailPage";
@@ -20,7 +20,6 @@ import PendingCourseList from "./pages/AdminDashboard/monitors/pending_course/Pe
 import PendingSessionList from "./pages/AdminDashboard/monitors/pending_course/PendingSessionList";
 import PendingLessonList from "./pages/AdminDashboard/monitors/pending_course/PendingLessonList";
 import BlogManagement from "./pages/AdminDashboard/BlogManagement";
-import CourseLog from "./pages/AdminDashboard/CourseLog";
 import PurchaseLog from "./pages/AdminDashboard/PurchaseLog";
 import AdminPayout from "./pages/AdminDashboard/payout/AdminPayout";
 import InstructorLayout from "./defaultLayout/InstructorLayout";
@@ -37,9 +36,9 @@ import InstructorReview from "./pages/InstructorDashboard/InstructorReview";
 import InstructorSetting from "./pages/InstructorDashboard/instructor-setting/InstructorSetting";
 import ForgotPasswordPage from "./pages/AuthPage/ForgotPasswordPage";
 import PayoutManagement from "./pages/AdminDashboard/payoutManagement";
-import RequestPayout from "./pages/InstructorDashboard/instructor-management/payout/RequestPayout";
+// import RequestPayout from "./pages/InstructorDashboard/instructor-management/payout/RequestPayout";
 import CompletedPayout from "./pages/InstructorDashboard/instructor-management/payout/CompletedPayout";
-import RejectedPayout from "./pages/InstructorDashboard/instructor-management/payout/RejectedPayout";
+// import RejectedPayout from "./pages/InstructorDashboard/instructor-management/payout/RejectedPayout";
 import DashboardLayout from "./defaultLayout/DashboardLayout";
 import StudentProfile from "./pages/StudentDashboard/studentProfile";
 import StudentCourses from "./pages/StudentDashboard/StudentCourses";
@@ -49,7 +48,6 @@ import FAQsPage from "./pages/FAQPage";
 import ErrorPage from "./pages/ErrorPage";
 import ContactPage from "./pages/ContactPage";
 import CartPage from "./pages/cart/CartPage";
-import CheckoutPage from "./pages/checkout/CheckoutPage";
 import Firebase from "./pages/Firebase";
 import BlogDetailPage from "./pages/BlogDetailPage";
 import StudentContent from "./pages/StudentDashboard/StudentContent";
@@ -72,8 +70,19 @@ import ProfilePage from "./pages/profile/ProfilePage";
 import StudentSubscriptions from "./pages/StudentDashboard/StudentSubscriptions";
 import StudentOrderHistory from "./pages/StudentDashboard/StudentOrderHistory";
 import VerifySuccessToken from "./pages/AuthPage/VerifyToken";
+import { gapi } from "gapi-script";
+import CourseLogPage from "./pages/AdminDashboard/CourseLog";
 
 function App() {
+  useEffect(() => {
+    const init = () => {
+      gapi.client.init({
+        clientId:"67368420889-utrdru1873d1pudjah97ihj32vvfire8.apps.googleusercontent.com",
+        scope:""
+      });
+    };
+    gapi.load("client:auth2",init)
+  }, []);
   return (
     <BrowserRouter>
       <Suspense fallback={<LoadingWrapper />}>
@@ -82,10 +91,28 @@ function App() {
             {/* General Layout */}
             <Route path="/" element={<GeneralLayout />}>
               <Route path="/" element={<HomePage />} />
-              <Route path="/login" element={<Loginpage />} />
-              <Route path="/signup" element={<SignUppage />} />
+              <Route
+                path="/login"
+                element={
+                  <ProtectedRoute>
+                    <Loginpage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/signup"
+                element={
+                  <ProtectedRoute>
+                    <SignUppage />
+                  </ProtectedRoute>
+                }
+              />
+
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-              <Route path="/verify-email/:verification_id" element={<VerifySuccessToken />} />
+              <Route
+                path="/verify-email/:verification_id"
+                element={<VerifySuccessToken />}
+              />
               <Route path="/course" element={<CoursesPage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/contact" element={<ContactPage />} />
@@ -100,16 +127,7 @@ function App() {
 
               <Route path="/learn/:id" element={<LearnCoursePage />} />
 
-              <Route
-                path="cart/checkout"
-                element={
-                  <ProtectedRoute
-                    allowedRoles={["student", "instructor", "admin"]}
-                  >
-                    <CheckoutPage />
-                  </ProtectedRoute>
-                }
-              />
+              
             </Route>
 
             {/* Admin Layout */}
@@ -147,7 +165,7 @@ function App() {
                   <Route path="lesson" element={<PendingLessonList />} />
                 </Route>
                 <Route path="blog" element={<BlogManagement />} />
-                <Route path="course-log" element={<CourseLog />} />
+                <Route path="course-log" element={<CourseLogPage />} />
                 <Route path="purchase-log" element={<PurchaseLog />} />
                 <Route path="settings" element={<AdminSetting />}>
                   <Route index element={<AdminProfile />} />
@@ -173,14 +191,7 @@ function App() {
                 <Route path="top-up" element={<TopUpPage />} />
                 <Route path="orders" element={<StudentOrderHistory />} />
 
-                <Route path="payout" element={<InstructorPayout />}>
-                  <Route index element={<RequestPayout />} />
-                  <Route
-                    path="completed-payout"
-                    element={<CompletedPayout />}
-                  />
-                  <Route path="rejected-payout" element={<RejectedPayout />} />
-                </Route>
+                ?
                 <Route
                   path="salesHistory"
                   element={<InstructorSalesHistory />}

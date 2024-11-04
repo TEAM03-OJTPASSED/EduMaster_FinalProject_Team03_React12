@@ -9,13 +9,13 @@ import {
 
 import dayjs from "dayjs";
 import LessonIOptions from "./create-courses/LessonIOptions";
-import {
-  Lesson,
-  LessonTypeEnum,
-  listCourses,
-  listLessons,
-  listSessions,
-} from "../../AdminDashboard/monitors/course/courseList";
+import { Lesson, LessonRequest } from "../../../models/Lesson.model";
+import CourseService from "../../../services/course.service";
+import SessionService from "../../../services/session.service";
+import { Course, GetCourses } from "../../../models/Course.model";
+import { GetSessions, Session } from "../../../models/Session.model";
+import LessonService from "../../../services/lesson.service";
+import { handleNotify } from "../../../utils/handleNotify";
 
 const InstructorLessonList = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -23,8 +23,13 @@ const InstructorLessonList = () => {
   const [selectedLesson, setSelectedLesson] = useState<Lesson>({} as Lesson);
   const [selectedCourse, setSelectedCourse] = useState<string>();
   const [selectedSession, setSelectedSession] = useState<string>();
-  const [filteredLessons, setFilteredLessons] = useState<Lesson[]>([]);
-  const [searchText, setSearchText] = useState("");
+  const [listCourses, setListCourses] = useState<Course[]>([]);
+  const [listSessions, setListSessions] = useState<Session[]>([]);
+  const [listLessons, setListLessons] = useState<Lesson[]>([]);
+  
+  const [loading, setLoading] = useState(false);
+  // const [filteredLessons, setFilteredLessons] = useState<Lesson[]>([]);
+  // const [searchText, setSearchText] = useState("");
 
   const showModal = (lesson: Lesson) => {
     setSelectedLesson(lesson);
@@ -40,6 +45,123 @@ const InstructorLessonList = () => {
     setIsModalCreateVisible(false);
   };
 
+  const initialCoursesParams: GetCourses = {
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 100,
+    },
+    searchCondition: {
+      keyword: "",
+      is_deleted: false,
+      category_id: "",
+    }
+  }
+
+  const initialSessionsParams: GetSessions = {
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 10,
+    },
+    searchCondition: {
+      keyword: "",
+      is_deleted: false,
+      is_position_order: true,
+      course_id: "",
+    }
+  }
+
+  const fetchCourses = async () => {
+    setLoading(true);
+    try {
+      const response = await CourseService.getCourses(initialCoursesParams);
+      setListCourses(response?.data?.pageData ?? []);
+    } finally {
+      setLoading(false); 
+    }
+  };
+
+  const fetchLessons = async () => {
+    setLoading(true); 
+    try {
+      const response = await LessonService.getLessons(initialSessionsParams);
+      setListLessons(response?.data?.pageData ?? []);
+    } finally {
+      setLoading(false); 
+    }
+  };
+
+  const fetchSessions = async () => {
+    setLoading(true); 
+    try {
+      const response = await SessionService.getSessions(initialSessionsParams);
+      setListSessions(response?.data?.pageData ?? []);
+    } finally {
+      setLoading(false); 
+    }
+  };
+
+  const handleCreateLesson = async (values: LessonRequest) => {
+    const { position_order, full_time, image_url, video_url, ...otherValues } = values;
+    const numericValues = {
+      ...otherValues,
+      position_order: position_order ? Number(position_order) : 0,
+      full_time:  full_time ? Number( full_time) : 0,
+      video_url: video_url || "",
+      image_url: image_url || "",
+
+    };
+  
+    setLoading(true);
+    try {
+      const response = await LessonService.createLesson(numericValues);
+      if (response.success) {
+        handleCancel(); // Close modal if successful
+        handleNotify("Lesson Created Successfully", "The lesson has been created successfully.");
+        await fetchLessons(); // Refresh the course list
+      }
+    } finally {
+      setLoading(false); // Ensures loading is set to false regardless of success/failure
+    }
+  };
+
+  const handleUpdateLesson = async (updatedLesson: LessonRequest) => {
+    setLoading(true);
+    try {
+      if (selectedSession) {
+        const response = await LessonService.updateLesson(selectedLesson._id, updatedLesson);
+        if (response.success) {
+          handleNotify("Lesson Updated Successfully", "The lesson has been updated successfully.");
+          await fetchLessons(); // Refresh the course list
+        }
+      }
+    } finally {
+      setLoading(false); 
+    }
+  }
+
+  const handleDeleteLesson = async (lessonId: string) => {
+    setLoading(true);
+    try {
+      const response = await LessonService.deleteLesson(lessonId);
+      if (response.success) {
+        handleNotify("Lesson Deleted Successfully", "The lesson has been deleted successfully.");
+        await fetchLessons(); // Refresh the course list
+      }
+    } finally {
+      setLoading(false); // Ensures loading is set to false regardless of success/failure
+    }
+  }
+
+
+  useEffect(() => {
+        fetchCourses(); // Call the async function
+        fetchSessions(); // Call the async function
+        fetchLessons(); // Call the async function
+  },[]);
+
+
+
+
   const columns: TableProps<Lesson>["columns"] = [
     {
       title: "Name",
@@ -48,19 +170,19 @@ const InstructorLessonList = () => {
     },
     {
       title: "Session Name",
-      dataIndex: "session_id",
-      key: "session_id",
+      dataIndex: "session_name",
+      key: "session_name",
     },
     {
       title: "Instructor",
-      dataIndex: "user_id",
-      key: "user_id",
+      dataIndex: "user_name",
+      key: "user_name",
     },
     {
       title: "Media",
       dataIndex: "lesson_type",
       key: "lesson_type",
-      render: (lesson_type: LessonTypeEnum) => {
+      render: (lesson_type: "video" | "image") => {
         return <Tag color="gray">{lesson_type}</Tag>;
       },
     },
@@ -85,7 +207,7 @@ const InstructorLessonList = () => {
           <Button
             type="text"
             icon={<DeleteOutlined style={{ color: "red" }} />}
-            onClick={() => handleDelete(record.id)}
+            onClick={() => handleDeleteLesson(record._id)}
           />
           <Button
             type="text"
@@ -97,29 +219,27 @@ const InstructorLessonList = () => {
     },
   ];
 
-  const handleDelete = (id: string) => {
-    console.log("Delete lesson with id:", id);
-  };
 
-  useEffect(() => {
-    let filtered = [...listLessons];
 
-    if (selectedCourse) {
-      filtered = filtered.filter(lesson => String(lesson.course_id) === String(selectedCourse));
-    }
+  // useEffect(() => {
+  //   let filtered = [...listLessons];
 
-    if (selectedSession) {
-      filtered = filtered.filter(lesson => String(lesson.session_id) === String(selectedSession));
-    }
+  //   if (selectedCourse) {
+  //     filtered = filtered.filter(lesson => String(lesson.course_id) === String(selectedCourse));
+  //   }
 
-    if (searchText) {
-      filtered = filtered.filter(lesson => 
-        lesson.name.toLowerCase().includes(searchText.toLowerCase())
-      );
-    }
+  //   if (selectedSession) {
+  //     filtered = filtered.filter(lesson => String(lesson.session_id) === String(selectedSession));
+  //   }
 
-    setFilteredLessons(filtered);
-  }, [selectedCourse, selectedSession, searchText]);
+  //   if (searchText) {
+  //     filtered = filtered.filter(lesson => 
+  //       lesson.name.toLowerCase().includes(searchText.toLowerCase())
+  //     );
+  //   }
+
+  //   setFilteredLessons(filtered);
+  // }, [selectedCourse, selectedSession, searchText]);
 
   const handleCourseChange = (courseId: string) => {
     setSelectedCourse(courseId);
@@ -139,7 +259,7 @@ const InstructorLessonList = () => {
             placeholder="Search By Lesson Name"
             prefix={<SearchOutlined className="w-4 h-4" />}
             className="w-64"
-            onChange={(e) => setSearchText(e.target.value)}
+            // onChange={(e) => setSearchText(e.target.value)}
           />
           <Select
           allowClear
@@ -149,7 +269,7 @@ const InstructorLessonList = () => {
             value={selectedCourse}
           >
             {listCourses.map(course => (
-              <Select.Option key={course.id} value={String(course.id)}>
+              <Select.Option key={course._id} value={String(course._id)}>
                 {course.name}
               </Select.Option>
             ))}
@@ -166,7 +286,7 @@ const InstructorLessonList = () => {
             {selectedCourse && listSessions
               .filter(session => String(session.course_id) === String(selectedCourse))
               .map(session => (
-                <Select.Option key={session.id} value={String(session.id)}>
+                <Select.Option key={session._id} value={String(session._id)}>
                   {session.name}
                 </Select.Option>
               ))}
@@ -186,13 +306,14 @@ const InstructorLessonList = () => {
         </div>
       </div>
       <Table
-        dataSource={filteredLessons}
+        dataSource={listLessons}
         columns={columns}
         pagination={{ pageSize: 5 }}
         rowKey="id"
         bordered
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
+        loading={loading}
       />
 
       <Modal
@@ -205,12 +326,10 @@ const InstructorLessonList = () => {
       >
         {selectedLesson && (
           <LessonIOptions
-            onFinished={(values) => {
-              console.log("Lesson update", {
-                ...values,
-                create_at: new Date(),
-              });
-            }}
+          listCourses={listCourses}
+          listSessions={listSessions}
+            isLoading={loading}
+            onFinished={handleUpdateLesson}
             mode="update"
             initialValues={selectedLesson}
           />
@@ -226,13 +345,11 @@ const InstructorLessonList = () => {
         width={1000}
       >
         <LessonIOptions
-          onFinished={(values) => {
-            console.log("Lesson create", {
-              ...values,
-              create_at: new Date(),
-            });
-          }}
+          onFinished={handleCreateLesson}
           mode="create"
+          isLoading={loading}
+          listCourses={listCourses}
+          listSessions={listSessions}
         />
       </Modal>
     </Card>

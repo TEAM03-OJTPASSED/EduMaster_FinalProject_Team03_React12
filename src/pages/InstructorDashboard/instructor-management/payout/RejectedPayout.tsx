@@ -1,19 +1,32 @@
+/*import React, { useEffect, useState } from "react";
 import { Card, Input, Table, TableProps, Tag } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import {
-  Payout,
-  payouts,
-  PayoutStatusEnum,
-} from "../../../AdminDashboard/monitors/course/courseList";
 import { useLocation } from "react-router-dom";
+import PayoutService from "../../../../services/payout.service"; 
+import { Payout, PayoutStatusEnum } from "../../../../models/Payout.model"; 
 
-
-const RejectedPayout = () => {
+const RejectedPayout: React.FC = () => {
   const location = useLocation();
-
   const { status } = location.state || {};
+  const [filteredPayouts, setFilteredPayouts] = useState<Payout[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [searchKeyword, setSearchKeyword] = useState<string>("");
 
-  const filterdPayouts = payouts.filter((payout) => payout.status === status);
+  useEffect(() => {
+    const fetchPayouts = async () => {
+      setLoading(true);
+      try {
+        const response = await PayoutService.getPayouts(); 
+        const payouts = response.data || [];
+        const rejectedPayouts = payouts.filter((payout: Payout) => payout.status === status);
+        setFilteredPayouts(rejectedPayouts);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPayouts();
+  }, [status]);
 
   const columns: TableProps<Payout>["columns"] = [
     {
@@ -25,11 +38,9 @@ const RejectedPayout = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status: PayoutStatusEnum) => {
-        if (status === "Rejected") {
-          return <Tag color="red">Rejected</Tag>
-        }
-      },
+      render: (status: PayoutStatusEnum) => (
+        <Tag color="red">{status}</Tag>
+      ),
     },
     {
       title: "Transaction ID",
@@ -51,7 +62,6 @@ const RejectedPayout = () => {
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
     },
-    
   ];
 
   return (
@@ -63,17 +73,20 @@ const RejectedPayout = () => {
         placeholder="Search By Payout Number"
         prefix={<SearchOutlined />}
         style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
+        onChange={(e) => setSearchKeyword(e.target.value)}
       />
       <Table
-        dataSource={filterdPayouts}
+        dataSource={filteredPayouts.filter((payout) => payout.payout_no.includes(searchKeyword))}
         columns={columns}
         pagination={{ pageSize: 5 }}
-        rowKey="name"
+        rowKey="payout_no"
         bordered
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
+        loading={loading}
       />
     </Card>
   );
 };
-export default RejectedPayout;
+
+export default RejectedPayout;*/

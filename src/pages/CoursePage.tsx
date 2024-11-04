@@ -1,123 +1,29 @@
-import { Layout } from "antd";
-import { SearchFilter } from "../components/courses/SearchFilter";
-import { SearchResults } from "../components/courses/SearchResult";
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import DynamicBreadcrumb from "../components/Breadcrumb/Breadcrumb";
+'use client'
 
-interface Course {
-  id: number;
-  image_url: string;
-  category: string;
-  name: string;
-  author: string;
-  duration: string;
-  students: number;
-  price: number | string;
-  discount: number;
-  lessons: number;
-  description?: string;
-  updatedDate?: string;
-}
-
-const courses: Course[] = [
-  {
-    id: 1,
-    image_url: "/placeholder.svg?height=200&width=300",
-    category: "Photography",
-    name: "Create An LMS Website With LearnPress",
-    author: "Determined-Poitras",
-    duration: "2Weeks",
-    students: 156,
-    price: "Free",
-    lessons: 2,
-    discount: 0,
-  },
-  {
-    id: 2,
-    image_url: "/placeholder.svg?height=200&width=300",
-    category: "Photography",
-    name: "Design A Website With ThimPresscrececerrcerverger",
-    author: "Determined-Poitras",
-    duration: "2Weeks",
-    students: 156,
-    price: 49.0,
-    lessons: 2,
-    discount: 0,
-
-  },
-  {
-    id: 3,
-    image_url: "/placeholder.svg?height=200&width=300",
-    category: "Photography",
-    name: "Create An LMS Website With LearnPress",
-    author: "Determined-Poitras",
-    duration: "2Weeks",
-    students: 156,
-    price: "Free",
-    lessons: 2,
-    discount: 0,
-
-  },
-  {
-    id: 4,
-    image_url: "/placeholder.svg?height=200&width=300",
-    category: "Photography",
-    name: "Create An LMS Website With LearnPress",
-    author: "Determined-Poitras",
-    duration: "2Weeks",
-    students: 156,
-    price: "Free",
-    lessons: 2,
-    discount: 0,
-
-  },
-  {
-    id: 5,
-    image_url: "/placeholder.svg?height=200&width=300",
-    category: "Photography",
-    name: "Create An LMS Website With LearnPress",
-    author: "Determined-Poitras",
-    duration: "2Weeks",
-    students: 156,
-    price: "Free",
-    lessons: 2,
-    discount: 0,
-
-  },
-  {
-    id: 6,
-    image_url: "/placeholder.svg?height=200&width=300",
-    category: "Photography",
-    name: "Create An LMS Website With LearnPress",
-    author: "Determined-Poitras",
-    duration: "2Weeks",
-    students: 156,
-    price: "Free",
-    lessons: 2,
-    discount: 0,
-
-  },
-];
+import { Layout } from "antd"
+import { useEffect, useState } from "react"
+import { SearchFilter } from "../components/courses/SearchFilter"
+import { SearchResults } from "../components/courses/SearchResult"
+import DynamicBreadcrumb from "../components/Breadcrumb/Breadcrumb"
+import { Course } from "../models/Course.model"
+import { GetCourseClient } from "../models/Client.model"
+import ClientService from "../services/client.service"
+import { useSearchParams } from "react-router-dom"
 
 interface FilterOption {
-  value: string | number;
-  label: string;
-  count?: number;
+  value: string | number
+  label: string
+  count?: number
 }
 
 interface Filters {
-  category: string[];
-  author: string[];
-  price: string[];
-  review: number[];
-  level: string[];
+  category: string[]
 }
 
 interface FilterSection {
-  title: string;
-  type: keyof Filters;
-  options: FilterOption[];
+  title: string
+  type: keyof Filters
+  options: FilterOption[]
 }
 
 const filterSections: FilterSection[] = [
@@ -135,125 +41,31 @@ const filterSections: FilterSection[] = [
       { value: "university", label: "University", count: 15 },
     ],
   },
-  {
-    title: "Instructors",
-    type: "author",
-    options: [
-      { value: "kenny-white", label: "Kenny White", count: 15 },
-      { value: "john-doe", label: "John Doe", count: 15 },
-    ],
-  },
-  {
-    title: "Price",
-    type: "price",
-    options: [
-      { value: "free", label: "Free", count: 15 },
-      { value: "paid", label: "Paid", count: 15 },
-    ],
-  },
-  {
-    title: "Review",
-    type: "review",
-    options: [
-      { value: 5, label: "5 Stars", count: 1025 },
-      { value: 4, label: "4 Stars", count: 800 },
-      { value: 3, label: "3 Stars", count: 600 },
-      { value: 2, label: "2 Stars", count: 300 },
-      { value: 1, label: "1 Star", count: 150 },
-    ],
-  },
-  {
-    title: "Level",
-    type: "level",
-    options: [
-      { value: "all-levels", label: "All Levels", count: 15 },
-      { value: "beginner", label: "Beginner", count: 15 },
-      { value: "intermediate", label: "Intermediate", count: 15 },
-      { value: "expert", label: "Expert", count: 15 },
-    ],
-  },
-];
+  // Add other filter sections here
+]
 
-const CoursesPage: React.FC = () => {
-  const [filteredCourses, setFilteredCourses] = useState<Course[]>(courses);
-  // const navigate = useCustomNavigate();
+export default function CoursesPage() {
+  const [courses, setCourses] = useState<Course[]>([])
   const [searchParams, setSearchParams] = useSearchParams();
-  const searchQuery = searchParams.get("search") ?? "";
+  const [noResult, setNoResult] = useState(false);
 
   const [filters, setFilters] = useState<Filters>({
-    category: searchParams.getAll("category"),
-    author: searchParams.getAll("author"),
-    price: searchParams.getAll("price"),
-    review: searchParams.getAll("review").map(Number),
-    level: searchParams.getAll("level"),
-  });
-
-  const updateUrlWithFilters = (newFilters: Partial<Filters>) => {
-    const newSearchParams = new URLSearchParams();
-
-    if (searchQuery) newSearchParams.set("search", searchQuery);
-
-    Object.entries(newFilters).forEach(([key, values]) => {
-      if (values.length > 0) {
-        values.forEach((value) => {
-          newSearchParams.append(key, value.toString());
-        });
-      }
-    });
-
-    setSearchParams(newSearchParams);
-  };
-
-  const handleFilterChange = (newFilter: Partial<Filters>) => {
-    const updatedFilters = {
-      ...filters,
-      ...newFilter,
-    };
-    setFilters(updatedFilters);
-    updateUrlWithFilters(updatedFilters);
-  };
-
-  useEffect(() => {
-    const applyFilters = () => {
-      return courses.filter((course) => {
-        const matchesSearch = searchQuery
-          ? course.name.toLowerCase().includes(searchQuery.toLowerCase())
-          : true;
-
-        const matchesCategory =
-          filters.category.length === 0 ||
-          filters.category.includes(course.category);
-
-        const matchesAuthor =
-          filters.author.length === 0 || filters.author.includes(course.author);
-
-        const matchesPrice =
-          filters.price.length === 0 ||
-          (course.price === "Free" && filters.price.includes("free")) ||
-          (typeof course.price === "number" && filters.price.includes("paid"));
-
-        const matchesReview =
-          filters.review.length === 0 ||
-          filters.review.some((review) => review <= course.students);
-
-        const matchesLevel =
-          filters.level.length === 0 || filters.level.includes(course.duration);
-
-        return (
-          matchesSearch &&
-          matchesCategory &&
-          matchesAuthor &&
-          matchesPrice &&
-          matchesReview &&
-          matchesLevel
-        );
-      });
-    };
-
-    setFilteredCourses(applyFilters());
-  }, [filters, searchQuery]);
+    category: [],
+  })
+  const [coursesParams, setCoursesParams] = useState<GetCourseClient>({
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 10,
+    },
+    searchCondition: {
+      keyword: "",
+      is_deleted: false,
+      category_id: "",
+    },
+  })
 
   const handleSearch = (searchText: string) => {
+    setNoResult(false)
     const updatedSearchParams = new URLSearchParams(searchParams);
     if (searchText) {
       updatedSearchParams.set("search", searchText);
@@ -261,15 +73,82 @@ const CoursesPage: React.FC = () => {
       updatedSearchParams.delete("search");
     }
     setSearchParams(updatedSearchParams);
-  };
+    setCourses([])
+    setCoursesParams((prevParams) => ({
+      ...prevParams,
+      searchCondition: {
+        ...prevParams.searchCondition,
+        keyword: searchText,
+      },
+      pageInfo: {
+        ...prevParams.pageInfo,
+        pageNum: 1, // Reset to first page on new search
+      },
+    }))
+  }
+
+  const handleFilterChange = (filterType: keyof Filters, value: string | number) => {
+    setFilters((prevFilters) => {
+      const updatedFilters = { ...prevFilters }
+      const index = updatedFilters[filterType].indexOf(value.toString())
+      if (index > -1) {
+        updatedFilters[filterType].splice(index, 1)
+      } else {
+        updatedFilters[filterType].push(value.toString())
+      }
+      return updatedFilters
+    })
+  }
+
+  // const handlePageChange = (page: number, pageSize?: number) => {
+  //   setCoursesParams((prevParams) => ({
+  //     ...prevParams,
+  //     pageInfo: {
+  //       pageNum: page,
+  //       pageSize: pageSize || prevParams.pageInfo.pageSize,
+  //     },
+  //   }))
+  // }
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+        const response = await ClientService.getCourses(coursesParams)
+        if (response.data?.pageInfo?.totalItems === 0) setNoResult(true);
+        setCourses(response?.data?.pageData ?? [])
+    }
+
+    fetchCourses()
+  }, [coursesParams])
+
+  useEffect(() => {
+    const applyFilters = () => {
+      let result = courses
+
+      // Apply category filter
+      if (filters.category.length > 0) {
+        result = result.filter((course) => filters.category.includes(course.category_name))
+      }
+
+      // Apply other filters here...
+
+      setCourses(result)
+    }
+
+    applyFilters()
+  }, [courses, filters])
 
   return (
-    <main className="mt-2">
+    <main className="mt-2 min-h-screen relative">
       <div className="p-4 pb-0">
-      <DynamicBreadcrumb/> 
+        <DynamicBreadcrumb />
       </div>
       <Layout className="relative">
-        <SearchResults courses={filteredCourses} onSearch={handleSearch} searchQuery={searchQuery} />
+        <SearchResults
+          noResult={noResult}
+          courses={courses}
+          onSearch={handleSearch}
+          searchQuery={coursesParams.searchCondition.keyword}
+        />
         <SearchFilter
           onFilterChange={handleFilterChange}
           filters={filterSections}
@@ -277,7 +156,5 @@ const CoursesPage: React.FC = () => {
         />
       </Layout>
     </main>
-  );
-};
-
-export default CoursesPage;
+  )
+}

@@ -1,10 +1,10 @@
 export enum CourseStatusEnum {
-  NEW = "New",
-  WAITING_APPROVE = "Waiting for Approval",
-  APPROVED = "Approved",
-  REJECTED = "Rejected",
-  ACTIVE = "Active",
-  INACTIVE = "Inactive",
+  NEW = "new",
+  WAITING_APPROVE = "waiting_approve",
+  APPROVED = "approve",
+  REJECTED = "reject",
+  ACTIVE = "active",
+  INACTIVE = "inactive",
 }
 
 export enum CoursePriceType {

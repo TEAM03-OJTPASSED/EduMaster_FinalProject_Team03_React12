@@ -4,85 +4,91 @@ import {
   SearchOutlined,
   EditOutlined,
   DeleteOutlined,
+  PlusCircleOutlined,
 } from "@ant-design/icons";
 
-import useSearch from "../../hooks/useSearch";
-import { getUsers } from "../../services/user.service";
+import EditUser from "../../components/Admin/AdminModals/EditUserModal";
+import CreateUser from "../../components/Admin/AdminModals/CreateUserModal";
+import DeleteUserModal from "../../components/Admin/AdminModals/DeleteUserModal";
+import { UserSearchParams } from "../../models/SearchInfo.model";
+import { User } from "../../models/UserModel";
+import { UserService } from "../../services/user.service";
+import { useDebouncedSearch } from "../../hooks/useSearch";
 
 const { Option } = Select;
 
 const UserManagement: React.FC = () => {
-  // dispatch
-
-  // const [editVisible, setEditVisible] = useState(false);
-  // const [deleteVisible, setDeleteVisible] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
-  const [users, setUsers] = useState([]);
+  const [editVisible, setEditVisible] = useState(false);
+  const [createVisible, setCreateVisible] = useState(false);
+  const [deleteUserModalVisible, setDeleteUserModalVisible] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [users, setUsers] = useState<User[]>([]);
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
-  const { searchText, filteredData, handleSearchChange } = useSearch(users, [
+  const [activeTabKey, setActiveTabKey] = useState("active");
+  const [searchText, setSearchText] = useState("");
+  const filteredData = useDebouncedSearch(users, searchText, 300, [
     "name",
     "email",
   ]);
 
-  const fetchUsers = async (
-    pageNum: number,
-    pageSize: number,
-    keyword: string
-  ) => {
-    const searchParams = {
+  const fetchUsers = async () => {
+    const searchParams: UserSearchParams = {
       searchCondition: {
-        keyword,
+        keyword: searchText,
         role: "",
-        status: true,
-        is_verified: "",
+        status: activeTabKey === "active",
         is_delete: false,
+        is_verified: true,
       },
       pageInfo: { pageNum, pageSize },
     };
 
     try {
-      const response = await getUsers(searchParams);
-      setUsers((response as any).pageData);
-      setTotal((response as any).pageInfo.totalItems);
+      const response = await UserService.getUsers(searchParams);
+      const responseData = response.data?.pageData;
+      const flattenedUsers: User[] = Array.isArray(responseData)
+        ? responseData.flat() // Dùng flat() để chuyển thành User[]
+        : [];
+      setUsers(flattenedUsers);
+      setTotal(response.data?.pageInfo?.totalItems ?? 0);
     } catch (err) {
       console.error("Error fetching users:", err);
     }
   };
 
-  useEffect(() => {
-    fetchUsers(pageNum, pageSize, searchText);
-  }, [pageNum, pageSize, searchText]);
-
-  const handleEdit = (record: any) => {
+  const handleEdit = (record: User) => {
     setCurrentUser(record);
-    // // console.log("current user", record);
-    // // console.log("current user2", currentUser);
-    // setEditVisible(true);
+    setEditVisible(true);
   };
 
-  const handleDelete = (record: any) => {
-    setCurrentUser(record);
-    // setDeleteVisible(true);
+  const handleSave = async (updatedUserData: any) => {
+    if (!currentUser) return;
+    try {
+      await UserService.updateUser(currentUser._id, updatedUserData);
+      setEditVisible(false);
+      fetchUsers();
+    } catch (error) {
+      console.error("Error updating user:", error);
+    }
   };
 
-  // const confirmDelete = () => {
-  //   console.log("Deleting user:", currentUser);
-  //   setDeleteVisible(false);
-  // };
+  const handleDeleteConfirm = async (userId: string) => {
+    await UserService.deleteUser(userId);
+    fetchUsers();
+    setDeleteUserModalVisible(false);
+  };
 
   const handleTableChange = (pagination: any) => {
-    console.log(currentUser);
-
     setPageNum(pagination.current);
     setPageSize(pagination.pageSize);
   };
 
-  const handleStatusChange = (checked: any, key: any) => {
-    console.log(checked, key);
-    // Update account status logic here
-  };
+  useEffect(() => {
+    fetchUsers();
+    // }, [pageNum, pageSize, searchText, activeTabKey]);
+  }, [pageNum, pageSize, activeTabKey]);
 
   const columns = [
     {
@@ -104,15 +110,16 @@ const UserManagement: React.FC = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      filters: [
-        { text: "Active", value: true },
-        { text: "Inactive", value: false },
-      ],
-      onFilter: (value: any, record: any) => record.status === value,
-      render: (text: any, record: any) => (
+      render: (status: boolean, record: User) => (
         <Switch
-          checked={text}
-          onChange={(checked) => handleStatusChange(checked, record.key)}
+          checked={status}
+          onChange={async (checked) => {
+            await UserService.changeStatus({
+              user_id: record._id,
+              status: checked,
+            });
+            fetchUsers();
+          }}
         />
       ),
     },
@@ -120,77 +127,36 @@ const UserManagement: React.FC = () => {
       title: "User Role",
       dataIndex: "role",
       key: "role",
-      render: (text: any) => (
-        <Select defaultValue={text} style={{ width: 120 }}>
-          <Option value="Admin">Admin</Option>
-          <Option value="Instructor">Instructor</Option>
-          <Option value="Student">Student</Option>
+      render: (text: string, record: User) => (
+        <Select
+          value={text}
+          style={{ width: 120 }}
+          onChange={async (value) => {
+            await UserService.changeRole({ user_id: record._id, role: value });
+            fetchUsers();
+          }}
+        >
+          <Option value="admin">Admin</Option>
+          <Option value="instructor">Instructor</Option>
+          <Option value="student">Student</Option>
         </Select>
       ),
     },
     {
       title: "Actions",
       key: "action",
-      render: (record: any) => (
+      render: (record: User) => (
         <Space size="middle">
           <Button icon={<EditOutlined />} onClick={() => handleEdit(record)} />
           <Button
             danger
             icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record)}
+            onClick={() => {
+              setCurrentUser(record);
+              setDeleteUserModalVisible(true);
+            }}
           />
         </Space>
-      ),
-    },
-  ];
-
-  const items = [
-    {
-      key: "1",
-      label: "All Users",
-      children: (
-        <Table
-          dataSource={filteredData}
-          columns={columns}
-          pagination={{
-            current: pageNum,
-            pageSize,
-            total,
-            showSizeChanger: true,
-          }}
-          onChange={handleTableChange}
-          rowKey="_id"
-          bordered
-          scroll={{ x: "max-content" }}
-        />
-      ),
-    },
-    {
-      key: "2",
-      label: "Unverified Accounts",
-      children: (
-        <Table
-          dataSource={filteredData.filter((user: any) => !user.is_verified)}
-          columns={columns}
-          pagination={{ pageSize: 5 }}
-          rowKey="key"
-          bordered
-          scroll={{ x: "max-content" }}
-        />
-      ),
-    },
-    {
-      key: "3",
-      label: "Blocked Accounts",
-      children: (
-        <Table
-          dataSource={filteredData.filter((user: any) => user.status === false)}
-          columns={columns}
-          pagination={{ pageSize: 5 }}
-          rowKey="key"
-          bordered
-          scroll={{ x: "max-content" }}
-        />
       ),
     },
   ];
@@ -198,16 +164,69 @@ const UserManagement: React.FC = () => {
   return (
     <div>
       <Card>
-        <h3 className="text-2xl my-5">User Management</h3>
-        <Input
-          placeholder="Search by name or email"
-          prefix={<SearchOutlined />}
-          className="w-full md:w-1/3 mb-2 md:mb-0"
-          value={searchText}
-          onChange={handleSearchChange}
+        <h1 className="text-2xl my-5">User Management</h1>
+        <Tabs
+          activeKey={activeTabKey}
+          onChange={setActiveTabKey}
+          items={["active", "inactive"].map((key) => ({
+            key,
+            label: `${key.charAt(0).toUpperCase() + key.slice(1)} Users`,
+            children: (
+              <>
+                <div className="flex items-center justify-between mb-4">
+                  <Input
+                    placeholder="Search By User Name"
+                    prefix={<SearchOutlined />}
+                    className="w-full md:w-1/3"
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)} // Update searchText on input change
+                  />
+                  <Button
+                    type="primary"
+                    onClick={() => setCreateVisible(true)}
+                    icon={<PlusCircleOutlined />}
+                  >
+                    Add new user
+                  </Button>
+                </div>
+                <Table
+                  dataSource={filteredData}
+                  columns={columns}
+                  pagination={{
+                    current: pageNum,
+                    pageSize,
+                    total,
+                    showSizeChanger: true,
+                  }}
+                  onChange={handleTableChange}
+                  rowKey="_id"
+                  bordered
+                  scroll={{ x: "max-content" }}
+                />
+              </>
+            ),
+          }))}
         />
-        <Tabs defaultActiveKey="1" items={items} />
       </Card>
+
+      <EditUser
+        key={currentUser?._id}
+        visible={editVisible}
+        onClose={() => setEditVisible(false)}
+        user={currentUser ?? ({} as User)}
+        onSave={handleSave}
+      />
+      <CreateUser
+        visible={createVisible}
+        onClose={() => setCreateVisible(false)}
+        onSave={fetchUsers}
+      />
+      <DeleteUserModal
+        visible={deleteUserModalVisible}
+        onCancel={() => setDeleteUserModalVisible(false)}
+        onDelete={() => handleDeleteConfirm(currentUser?._id!)}
+        userName={currentUser?.name || "Undefined User"}
+      />
     </div>
   );
 };

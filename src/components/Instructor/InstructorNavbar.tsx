@@ -6,11 +6,9 @@ import { useCustomNavigate } from "../../hooks/customNavigate"; // Hook tùy ch�
 import InstructorSidebar from "./InstructorSidebar";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
-
 const { Sider } = Layout; // Chỉ destructure Sider
-
 const InstructorNavbar = () => {
-  const { currentUser } = useSelector((state: RootState) => state.auth);
+  const { currentUser } = useSelector((state: RootState) => state.auth.login);
   const navigate = useCustomNavigate();
   const [isMobile, setIsMobile] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);

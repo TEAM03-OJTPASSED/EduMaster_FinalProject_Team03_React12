@@ -6,41 +6,32 @@ import { FaBars } from "react-icons/fa";
 import { GrGrid } from "react-icons/gr";
 import CoursesGrid from "../home/CoursesGrid";
 import NoResult from "../../assets/no-result.jpg"
-import { handleAddCart } from "../../utils/handleAddCart";
 import { useCustomNavigate } from "../../hooks/customNavigate";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../redux/store/store";
+import { Course } from "../../models/Course.model";
+import { addToCart } from "../../redux/slices/cartSlice";
 
-interface Course {
-  id: number;
-  image_url: string;
-  category: string;
-  name: string;
-  author: string;
-  duration: string;
-  students: number;
-  price: number | string;
-  discount: number;
-  lessons: number;
-  description?: string;
-  updatedDate?: string;
-}
+
 
 export const SearchResults: React.FC<{
   courses: Course[];
   onSearch: (searchValue: string) => void;
-  searchQuery: string;
+  searchQuery?: string;
+  noResult: boolean;
   // onCourseSelected: (course: Course) => void;
-}> = ({ courses, onSearch, searchQuery }) => {
+}> = ({ courses, onSearch, searchQuery, noResult }) => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
   const navigate = useCustomNavigate()
+  const dispatch = useDispatch<AppDispatch>();
 
-  const {currentUser} = useSelector((state : RootState) => state.auth)
+
+  const {currentUser} = useSelector((state : RootState) => state.auth.login)
 
 
-  const onAddCart = (course: Course) => {
-    handleAddCart(currentUser.role, course, navigate);
-  }
+  const onAddCart = async (course: Course) => {
+    await dispatch(addToCart({ course, userRole: currentUser?.role, navigate }));
+  };
   
   return (
     <Content className="py-8 px-4 bg-white">
@@ -75,27 +66,27 @@ export const SearchResults: React.FC<{
             className=" md:inline-block hidden view-button"
           />
         </div>
-      </div>
-      {courses.length > 0 ? (<div>
-            
-              
-            <CoursesGrid viewMode={viewMode} courses={courses} onAddCartClick={onAddCart}/>
+      </div>           
+            {!noResult ? (<>
+  
+              <CoursesGrid viewMode={viewMode} courses={courses} onAddCartClick={onAddCart}/>
         
+              <Pagination
+                total={courses.length}
+                showSizeChanger
+                showQuickJumper
+                className="mt-8 text-center"
+              /></>)
+              : (
 
-            <Pagination
-              total={courses.length}
-              showSizeChanger
-              showQuickJumper
-              className="mt-8 text-center"
-            />
-            </div>)
-        : (
-          <div className="text-center mt-8 flex flex-col justify-center items-center">
+                <div className="text-center mt-8 flex flex-col justify-center items-center">
             <img src={NoResult} className="w-[250px] md:w-[400px]" alt="no search results"/>
             <h1 className="text-xl font-medium w-96 font-jost">We couldn't find what you were looking for. Try searching for something else</h1> 
 
           </div>
-        )}
+              )
+            }       
+        
     </Content>
   );
 };

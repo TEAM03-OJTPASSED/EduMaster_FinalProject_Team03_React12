@@ -16,13 +16,16 @@ import {
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
-import { Course } from "../../../AdminDashboard/monitors/course/courseList";
 import { API_UPLOAD_FILE } from "../../../../constants/upload";
+import { Course } from "../../../../models/Course.model";
+import { Category } from "../../../../models/Category.model";
 
 type CourseInformationProps = {
   initializeValue?: Course;
   mode: "create" | "update";
+  isLoading: boolean;
   onFinished: FormProps["onFinish"];
+  categories: Category[];
 };
 
 type CoursePriceType = "Free" | "Paid";
@@ -33,13 +36,20 @@ const CourseOption: React.FC<CourseInformationProps> = ({
   initializeValue,
   mode,
   onFinished,
+  isLoading,
+  categories,
 }) => {
   const [imageFileList, setImageFileList] = useState<UploadFile[]>([]);
   const [videoFileList, setVideoFileList] = useState<UploadFile[]>([]);
 
+
+
+
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | undefined>(
     initializeValue?.video_url
   );
+
+  const [toggleDisable, setToggleDisable] = useState(false);
 
   const [selectTypePrice, setSelectPriceType] = useState<CoursePriceType>(
     initializeValue?.price && initializeValue.price > 0 ? "Paid" : "Free"
@@ -47,8 +57,13 @@ const CourseOption: React.FC<CourseInformationProps> = ({
 
   const [form] = Form.useForm<Course>();
 
+  
+
+
+
   useEffect(() => {
     if (initializeValue && mode === "update") {
+     
       setImageFileList(
         initializeValue?.image_url
           ? [
@@ -73,24 +88,24 @@ const CourseOption: React.FC<CourseInformationProps> = ({
             ]
           : []
       );
-      form.setFieldsValue({
-        ...initializeValue,
-        content: initializeValue.content,
-      });
     }
   }, [initializeValue, form, mode]);
 
-  const handleImageChange: UploadProps["onChange"] = async ({
-    fileList: newFileList,
-  }) => {
+  const handleImageChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
     setImageFileList(newFileList || []);
+    
+    const isUploading = newFileList.some(file => file.status === "uploading");
+    setToggleDisable(isUploading);
+  
     if (newFileList.length > 0 && newFileList[0].status === "done") {
       const uploadedImageUrl = newFileList[0].response?.secure_url;
       form.setFieldsValue({ image_url: uploadedImageUrl });
-    } else {
+    } else if (newFileList.length === 0 || newFileList[0].status === "error") {
       form.setFieldsValue({ image_url: "" });
     }
   };
+  
+
   const handleVideoChange: UploadProps["onChange"] = ({
     fileList: newFileList,
   }) => {
@@ -135,12 +150,23 @@ const CourseOption: React.FC<CourseInformationProps> = ({
           >
             <Select
               placeholder="Select category"
-              options={[
-                { label: "Javascript", value: "category_id-1" },
-                { label: "TypeScript", value: "category_id-2" },
-                { label: "Machine Learning", value: "category_id-3" },
-              ]}
+              options={categories.map((category) => ({
+                value: category._id,
+                label: category.name,
+              }))}
             />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            label="Level"
+            name="level"
+            rules={[
+              { required: true, message: "Please input estimated level" },
+            ]}
+            normalize={(value) => (value ? Number(value) : value)}
+          >
+            <Input placeholder="Level" />
           </Form.Item>
         </Col>
       </Row>
@@ -225,10 +251,12 @@ const CourseOption: React.FC<CourseInformationProps> = ({
       {/* hidden when type free */}
       {selectTypePrice === "Free" && (
         <div>
-          <Form.Item name="price" hidden>
+          <Form.Item name="price" hidden
+          normalize={(value) => (value ? Number(value) : value)}>
             <Input type="number" value={0} />
           </Form.Item>
-          <Form.Item name="discount" hidden>
+          <Form.Item name="discount" hidden
+          normalize={(value) => (value ? Number(value) : value)}>
             <Input type="number" value={0} />
           </Form.Item>
         </div>
@@ -240,6 +268,7 @@ const CourseOption: React.FC<CourseInformationProps> = ({
             label="Price"
             name="price"
             rules={[{ required: true, message: "Please input price" }]}
+            normalize={(value) => (value ? Number(value) : value)}
           >
             <Input type="number" placeholder="Input price" />
           </Form.Item>
@@ -248,6 +277,7 @@ const CourseOption: React.FC<CourseInformationProps> = ({
             label="Discount"
             name="discount"
             rules={[{ required: true, message: "Please input discount" }]}
+            normalize={(value) => (value ? Number(value) : value)}
           >
             <Input type="number" placeholder="Input discount" />
           </Form.Item>
@@ -256,12 +286,14 @@ const CourseOption: React.FC<CourseInformationProps> = ({
       {/* Button Submit */}
       <Form.Item>
         <Button
+          loading={isLoading}
           className="w-full"
           variant="solid"
           color="primary"
           htmlType="submit"
+          disabled={toggleDisable}
         >
-          Change
+          {mode === "create" ? "Create" : "Update"}
         </Button>
       </Form.Item>
     </Form>

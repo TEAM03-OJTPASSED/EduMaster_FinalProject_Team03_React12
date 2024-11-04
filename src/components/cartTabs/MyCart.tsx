@@ -1,104 +1,151 @@
-import { List, Checkbox, Button, Empty, Card, Space, Typography } from "antd";
+import { List, Checkbox, Button, Empty, Card, Space, Typography, Skeleton } from "antd";
 import {
   DeleteOutlined,
   ShoppingCartOutlined,
   ArrowRightOutlined,
 } from "@ant-design/icons";
 import { useCallback } from "react";
+import { Cart, CartItem } from "../../models/Cart.model";
 
 const { Text } = Typography;
 
-interface Course {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  author: string;
-  discount: number;
-}
-
 interface MyCartProps {
-  courses: Course[];
-  selectedCourses: number[];
-  toggleSelectCourse: (courseId: number) => void;
-  removeCourse: (courseId: number) => void;
+  carts: Cart[];
+  selectedCarts: CartItem[];
+  toggleSelectCart: (cartItem: CartItem) => void;
+  removeCart: (cartItem: CartItem) => void;
   total: number;
   navigate: (path: string) => void;
+  onCheckOut: () => void;
+  isLoading?: boolean; // New prop for loading state
 }
 
+const CartSkeleton = () => (
+  <div className="w-full">
+    {[1, 2, 3].map((i) => (
+      <div key={i} className="mb-4 p-4 border rounded-lg">
+        <div className="flex items-center gap-4">
+          <Skeleton.Button active className="!w-5 !h-5 !min-w-5" />
+          <Skeleton.Image active className="!w-24 !h-16" />
+          <div className="flex-1">
+            <Skeleton.Input active className="!w-3/4" />
+            <Skeleton.Input active size="small" className="!w-1/2 mt-2" />
+          </div>
+          <Skeleton.Input active className="!w-20 !min-w-20" />
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
+const OrderSummarySkeleton = () => (
+  <Card title="Order Summary" className="sticky top-4">
+    <Space direction="vertical" className="w-full">
+      <div className="flex justify-between">
+        <Skeleton.Input active size="small" className="!w-20" />
+        <Skeleton.Input active size="small" className="!w-20" />
+      </div>
+      <div className="flex justify-between items-center mt-4">
+        <Skeleton.Input active size="small" className="!w-20" />
+        <Skeleton.Input active size="large" className="!w-32" />
+      </div>
+      <Skeleton.Button active block className="mt-4" />
+    </Space>
+  </Card>
+);
+
 const MyCart: React.FC<MyCartProps> = ({
-  courses,
-  selectedCourses,
-  toggleSelectCourse,
-  removeCourse,
+  carts,
+  selectedCarts,
+  toggleSelectCart,
+  removeCart,
   total,
   navigate,
+  onCheckOut,
+  isLoading = false,
 }) => {
   const handleToggleSelect = useCallback(
-    (courseId: number) => {
-      toggleSelectCourse(courseId);
+    (cartId: string, cartNo: string) => {
+      toggleSelectCart({ cart_no: cartNo, _id: cartId });
     },
-    [toggleSelectCourse]
+    [toggleSelectCart]
   );
 
-  const handleRemoveCourse = useCallback(
-    (courseId: number) => {
-      removeCourse(courseId);
+  const handleRemoveCart = useCallback(
+    (cartId: string, cartNo: string) => {
+      removeCart({ cart_no: cartNo, _id: cartId });
     },
-    [removeCourse]
+    [removeCart]
   );
+
+  if (isLoading) {
+    return (
+      <>
+        <h1 className="mb-2 pt-4 text-4xl font-semibold">Your Cart</h1>
+        <div className="flex flex-col md:flex-row gap-8">
+          <div className="w-full md:w-2/3">
+            <CartSkeleton />
+          </div>
+          <div className="w-full md:w-1/3">
+            <OrderSummarySkeleton />
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
       <h1 className="mb-2 pt-4 text-4xl font-semibold">Your Cart</h1>
       <div className="flex flex-col md:flex-row gap-8">
         <div className="w-full md:w-2/3">
-          {courses.length > 0 ? (
+          {carts.length > 0 ? (
             <List
               itemLayout="horizontal"
-              dataSource={courses}
-              renderItem={(course) => (
+              dataSource={carts}
+              renderItem={(cart) => (
                 <List.Item
-                  key={course.id}
+                  key={cart._id}
                   actions={[
                     <>
                       <Text className={`font-jost px-8 text-base`}>
-                        <span className={`${course.discount ? "line-through text-gray-400 text-sm pr-2" : "text-black text-right"}`}>đ{course.price.toFixed(0)} </span>
-                        {course.discount > 0 &&  `đ${course.price * (100 - course.discount)/100}`
-                        }
+                        <span className={`${cart.discount ? "line-through text-gray-400 text-sm pr-2" : "text-black text-right"}`}>
+                          ${cart.price.toFixed(0)}
+                        </span>
+                        {cart.discount > 0 && `$${(cart.price * (100 - cart.discount)) / 100}`}
                       </Text>
                       <Button
                         type="text"
                         icon={<DeleteOutlined />}
-                        onClick={() => handleRemoveCourse(course.id)}
-                        aria-label={`Remove ${course.name} from cart`}
+                        onClick={() => handleRemoveCart(cart._id, cart.cart_no)}
+                        aria-label={`Remove ${cart.course_name} from cart`}
                       />
                     </>,
                   ]}
-                  onClick={() => handleToggleSelect(course.id)}
+                  onClick={() => handleToggleSelect(cart._id, cart.cart_no)}
                   className="cursor-pointer"
                 >
                   <Checkbox
-                    checked={selectedCourses.includes(course.id)}
-                    onChange={() => handleToggleSelect(course.id)}
+                    checked={selectedCarts.some((selectedCart) => selectedCart._id === cart._id)}
+                    onChange={() => handleToggleSelect(cart._id, cart.cart_no)}
                     className="mr-4 custom-checkbox"
                   />
                   <List.Item.Meta
                     avatar={
                       <img
-                        src={course.image}
-                        alt={course.name}
+                        src={cart.course_image}
+                        alt={cart.course_name}
                         className="w-24 h-16 object-cover rounded"
                       />
                     }
                     title={
                       <Text strong className="font-jost">
-                        {course.name}
+                        {cart.course_name}
                       </Text>
                     }
                     description={
                       <Space className="flex flex-col items-start pt-0 mt-0 justify-end space-y-0">
-                        <Text>By {course.author}</Text>
+                        <Text>By {cart.instructor_name}</Text>
                       </Space>
                     }
                   />
@@ -114,10 +161,10 @@ const MyCart: React.FC<MyCartProps> = ({
                   <Button
                     type="primary"
                     icon={<ShoppingCartOutlined />}
-                    onClick={() => navigate("/course")}
+                    onClick={() => navigate("/cart")}
                     className="bg-orange-500 font-jost p-8 py-5 hover:bg-orange-600 view-button ant-btn-variant-solid"
                   >
-                    Browse Courses
+                    Browse Carts
                   </Button>
                 </Space>
               }
@@ -129,20 +176,20 @@ const MyCart: React.FC<MyCartProps> = ({
             <Space direction="vertical" className="w-full">
               <div className="flex justify-between">
                 <Text>Subtotal</Text>
-                <Text>đ {total.toFixed(0)}</Text>
+                <Text>${total.toFixed(2)}</Text>
               </div>
               <div className="flex justify-between items-center">
                 <Text strong>Total</Text>
                 <Text strong className="text-4xl font-jost">
-                  đ {total.toFixed(0)}
+                  ${total.toFixed(2)}
                 </Text>
               </div>
               <Button
                 type="primary"
                 size="large"
                 className="w-full mt-4 view-button ant-btn-variant-solid font-jost"
-                onClick={() => navigate("/cart/checkout")}
-                disabled={selectedCourses.length === 0}
+                onClick={onCheckOut}
+                disabled={selectedCarts.length === 0}
               >
                 Proceed to Checkout <ArrowRightOutlined />
               </Button>

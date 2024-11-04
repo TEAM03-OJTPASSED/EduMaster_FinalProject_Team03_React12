@@ -118,11 +118,11 @@ const LearnCoursePage = () => {
           lesson.is_completed ? "Mark as Completed" : "Mark as Incomplete"
         );
         // Update the lesson's is_completed status in the state
-        setSession((prevSessions) => {
+        setSession((prevSessions :any) => {
           if (!prevSessions) return null;
-          return prevSessions?.map((sessionItem) => ({
+          return prevSessions?.map((sessionItem:any) => ({
             ...sessionItem,
-            lesson_list: sessionItem.lesson_list.map((lessonItem) =>
+            lesson_list: sessionItem.lesson_list.map((lessonItem:any) =>
               lessonItem._id === lesson._id
                 ? { ...lessonItem, is_completed: !lesson.is_completed }
                 : lessonItem

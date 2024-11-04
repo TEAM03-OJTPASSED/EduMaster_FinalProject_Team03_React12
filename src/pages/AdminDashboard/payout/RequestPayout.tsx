@@ -1,4 +1,4 @@
-import { Card, Input, Table, Tag, TableProps, Button } from "antd";
+import { Card, Input, Table, Tag, TableProps, Button, Space } from "antd";
 import {
   CheckOutlined,
   CloseOutlined,
@@ -93,10 +93,10 @@ const AdminRequestPayout = () => {
       key: "balance_instructor_received",
     },
     {
-      title: "Action",
+      title: "Actions",
       key: "action",
       render: (_, record: Payout) => (
-        <>
+        <Space size="middle">
           <Button
             type="text"
             className="text-green-600"
@@ -106,7 +106,6 @@ const AdminRequestPayout = () => {
               record.status !== PayoutStatusEnum.new
             }
           >
-            Approve
           </Button>
           <Button
             className="text-red-600"
@@ -118,14 +117,13 @@ const AdminRequestPayout = () => {
             }
             onClick={showModal}
           >
-            Reject
           </Button>
           <RejectPayoutModal
             isOpen={isModalOpen}
             handleOk={handleOk}
             handleCancel={handleCancel}
           />
-        </>
+        </Space>
       ),
     },
   ];
@@ -135,11 +133,13 @@ const AdminRequestPayout = () => {
       <div className="flex">
         <h3 className="text-2xl my-5">Payout Management</h3>
       </div>
+      <div className="flex flex-wrap items-center mb-4">
       <Input
         placeholder="Search By Payout Number"
         prefix={<SearchOutlined />}
-        style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
+        className="w-full md:w-1/3 mb-2 md:mb-0"
       />
+      </div>
       <Table
         dataSource={filterdPayouts}
         columns={columns}

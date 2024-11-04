@@ -1,3 +1,5 @@
+import { LessonSearchCondition, PageInfo } from "./SearchInfo.model";
+
 export interface Lesson {
   is_completed: boolean;
   _id: string;
@@ -17,6 +19,7 @@ export interface Lesson {
   user_name: string;
   course_name: string;
   session_name: string;
+  // is_completed: string;
 };
 
 export interface LessonRequest {
@@ -29,4 +32,15 @@ export interface LessonRequest {
   image_url: string;
   full_time: number;
   position_order: number;
+}
+
+export interface GetLessons { 
+  searchCondition: LessonSearchCondition;
+  pageInfo: PageInfo;
+}
+
+export enum LessonTypeEnum {
+    TEXT = "text",
+    VIDEO = "video",
+    IMAGE = "image",
 }
