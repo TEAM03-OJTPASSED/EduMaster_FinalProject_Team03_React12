@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Card, Input, Table, TableProps, Tag } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import { useLocation } from "react-router-dom";
 import PayoutService from "../../../../services/payout.service";
 import { Payout, PayoutStatusEnum } from "../../../../models/Payout.model";
 
 const CompletedPayout: React.FC = () => {
-  const location = useLocation();
-  const { status } = location.state || {};
+ 
   const [filteredPayouts, setFilteredPayouts] = useState<Payout[]>([]);
   const [searchKeyword, setSearchKeyword] = useState<string>("");
 
@@ -15,7 +13,7 @@ const CompletedPayout: React.FC = () => {
     searchCondition: {
       payout_no: "",
       instructor_id: "",
-      status: undefined as PayoutStatusEnum | undefined, // Optional property syntax
+      status: PayoutStatusEnum.COMPLETED,
       is_delete: false,
     },
     pageInfo: {
@@ -31,8 +29,7 @@ const CompletedPayout: React.FC = () => {
   const fetchPayouts = async () => {
     const response = await PayoutService.getPayout(initialParams); 
     const payouts = response.data?.pageData || [];
-    const completedPayouts = payouts.filter((payout: Payout) => payout.status === status);
-    setFilteredPayouts(completedPayouts);
+    setFilteredPayouts(payouts);
   };
 
 
