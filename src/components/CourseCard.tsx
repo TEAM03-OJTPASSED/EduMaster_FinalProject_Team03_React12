@@ -27,7 +27,7 @@ const CourseCard: React.FC<{
 
   return (
     <div className="group relative">
-      <a href={`/course-detail/${course._id}`}>
+      <a href={`/course/${course._id}`}>
         <Card
           hoverable
           styles={{
@@ -104,7 +104,7 @@ const CourseCard: React.FC<{
           <div className="w-80 font-jost bg-white p-4 rounded-3xl shadow-lg ">
           <h3 className="text-xl font-semibold mb-2">{course.name}</h3>
           <p className="text-sm text-gray-600 mb-2">
-            Updated {course.updated_at ?? "Recently"}
+            Updated {new Date(course.updated_at).toLocaleDateString() ?? "Recently"}
           </p>
           <p className="text-sm text-gray-700 mb-4">
             {course.description ??

@@ -1,4 +1,8 @@
-import { PageInfo, SearchCondition } from "./SearchInfo.model";
+import {
+  CourseLogSearchCondition,
+  PageInfo,
+  SearchCondition,
+} from "./SearchInfo.model";
 import { Session } from "./Session.model";
 
 export interface Course {
@@ -16,7 +20,6 @@ export interface Course {
   price: number;
   discount: number;
   created_at: string;
-  updated_at: string;
   price_paid: number;
   full_time: number; // Assuming full_time represents duration
   instructor_id: string;
@@ -35,15 +38,14 @@ export interface CourseLog {
   _id: string;
   course_id: string;
   user_id: string;
-  old_status: CourseStatusEnum; 
+  old_status: CourseStatusEnum;
   new_status: CourseStatusEnum;
   comment: string;
-  created_at: string; 
+  created_at: string;
   is_deleted: boolean;
   user_name: string;
   course_name: string;
 }
-
 
 export interface CourseRequest {
   name: string;
@@ -60,12 +62,11 @@ export interface CourseRequest {
 export interface CourseStatusUpdate {
   course_id: string;
   new_status: CourseStatusEnum;
-  comment: "string"
+  comment: string;
 }
 
-enum CourseStatusEnum {
+export enum CourseStatusEnum {
   NEW = "new",
-  COMPLETED = "completed",
   WAITING_APPROVE = "waiting_approve",
   APPROVE = "approve",
   REJECT = "reject",
@@ -79,7 +80,6 @@ export interface GetCourses {
 }
 
 export interface GetCourseLogs {
-  searchCondition: SearchCondition;
+  searchCondition: CourseLogSearchCondition;
   pageInfo: PageInfo;
 }
-

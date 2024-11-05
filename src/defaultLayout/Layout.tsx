@@ -10,12 +10,12 @@ const GeneralLayout = () => {
       {/* Auth User */}
       {/* <UserAuth /> */}
       {/* Navbar section */}
-      <div className="w-full h-16 left-0 flex items-center bg-white shadow">
+      <div className="w-full h-16 left-0 flex items-center bg-white shadow fixed z-50 ">
         <Navbar />
       </div>
 
       {/* Content section */}
-      <div className="flex justify-center overflow-hidden">
+      <div className="flex justify-center overflow-hidden pt-16">
         <div className="md:w-[85%] w-[95%]">
           <Outlet />
         </div>

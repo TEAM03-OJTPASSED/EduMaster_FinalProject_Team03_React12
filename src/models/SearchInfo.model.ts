@@ -1,18 +1,19 @@
 import { CourseStatusEnum } from "../pages/AdminDashboard/monitors/course/courseList";
+import { LessonTypeEnum } from "./Lesson.model";
 import { PurchaseStatusEnum } from "./Purchase.model";
 
-export interface SearchCondition {
+export interface SearchCondition<T = unknown> {
   keyword?: string;
   category_id?: string;
-  status?: "active";
+  status?: T;
   is_deleted: false;
 }
 
 export interface CourseLogSearchCondition {
   course_id: string;
   keyword?: string;
-  old_status: CourseStatusEnum;
-  new_status: CourseStatusEnum;
+  old_status: CourseStatusEnum | "";
+  new_status: CourseStatusEnum | "";
   is_deleted: false;
 }
 
@@ -24,9 +25,11 @@ export interface SessionSearchCondition {
 }
 
 export interface LessonSearchCondition {
-  course_id: string;
+  course_id?: string;
+  session_id?: string;
+  lesson_type?: LessonTypeEnum;
   keyword?: string;
-  is_position_order: boolean;
+  is_position_order: false;
   is_deleted: false;
 }
 
@@ -34,7 +37,7 @@ export interface PurchaseSearchCondition {
   purchase_no?: string;
   cart_no?: string;
   course_id?: string;
-  status?: PurchaseStatusEnum;
+  status?: PurchaseStatusEnum | "";
   is_delete?: false;
 }
 
@@ -51,9 +54,24 @@ export interface UserSearchParams {
   pageInfo: PageInfo;
 }
 
+export interface CoursesSearchParams {
+  searchCondition: SearchCondition;
+  pageInfo: PageInfo;
+}
+
 export interface PageInfo {
   pageNum: number;
   pageSize: number;
   totalItems?: number;
   totalPages?: number;
+}
+
+export interface BlogSearchCondition {
+  category_id?: string;
+  is_delete?: boolean;
+}
+
+export interface BlogSearchParams {
+  searchCondition: BlogSearchCondition;
+  pageInfo: PageInfo;
 }

@@ -23,13 +23,13 @@ import { ProofOfProduct } from "../components/home/ProofOfProduct";
 import Search from "antd/es/input/Search";
 import { BiSolidArrowFromLeft } from "react-icons/bi";
 import { IoArrowUpOutline } from "react-icons/io5";
-import { handleAddCart } from "../utils/handleAddCart";
-import { useSelector } from "react-redux";
-import { RootState } from "../redux/store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../redux/store/store";
 import { Course } from "../models/Course.model";
 import ClientService from "../services/client.service";
 import { GetCourseClient } from "../models/Client.model";
 import { useEffect, useState } from "react";
+import { addToCart } from "../redux/slices/cartSlice";
 
 interface Category {
   icon: React.ReactNode;
@@ -140,14 +140,14 @@ const HomePage = () => {
     document.documentElement.scrollTop = 0;
   };
 
-  const {currentUser} = useSelector((state : RootState) => state.auth)
+  const {currentUser} = useSelector((state : RootState) => state.auth.login)
+
+  const dispatch = useDispatch<AppDispatch>();
 
 
-  const onAddCart = (course: Course) => {
-    // Add the course to the cart
-    //...
-    handleAddCart(currentUser.role, course,navigate)
-  }
+  const onAddCart = async (course: Course) => {
+    await dispatch(addToCart({ course, userRole: currentUser?.role, navigate }));
+  };
 
   return (
     <div className="flex flex-col items-center">

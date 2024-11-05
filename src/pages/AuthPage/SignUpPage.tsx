@@ -2,7 +2,6 @@ import {
   Alert,
   Button,
   Col,
-  Divider,
   Form,
   Input,
   Radio,
@@ -18,7 +17,6 @@ import { Player } from "@lottiefiles/react-lottie-player";
 import { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { API_UPLOAD_FILE } from "../../constants/upload";
-import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // import { loginWithGoogle } from "../../redux/slices/authSlices";
@@ -72,14 +70,8 @@ const SignUppage = () => {
     const { confirmPassword, ...others } = values;
     register(others, dispatch);
   };
-
-  const handleRegisterGoogleSuccess = async (
-    credentialResponse: CredentialResponse
-  ) => {
-    console.log("google_id", credentialResponse.credential);
-  };
   const handleVideoChange: UploadProps["onChange"] = ({
-    fileList: newFileList,
+    fileList: newFileList
   }) => {
     setFileListVideo(newFileList || []);
     if (newFileList.length > 0 && newFileList[0].status === "done") {
@@ -412,17 +404,6 @@ const SignUppage = () => {
                 </Button>
               </Form.Item>
             </Form>
-            <Divider plain className="text-gray-500">
-              Or sign up with
-            </Divider>
-            <div className="flex justify-center">
-              <GoogleLogin
-                onSuccess={handleRegisterGoogleSuccess}
-                onError={() => {
-                  console.log("Login Failed");
-                }}
-              />
-            </div>
             <div className="text-center mt-6">
               <span className="text-gray-500">Don’t have an account? </span>
               <NavLink to={"/login"} className="text-[#FF782D] hover:underline">

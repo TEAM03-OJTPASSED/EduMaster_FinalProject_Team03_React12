@@ -1,64 +1,76 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Table, Button, Input, Space, Card, Modal, message, Spin } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
-import useSearch from "../../hooks/useSearch";
-import { getUsers, previewInstructor } from "../../services/user.service";
+import {
+  SearchOutlined,
+  CheckOutlined,
+  CloseOutlined,
+} from "@ant-design/icons";
+import { useDebouncedSearch } from "../../hooks/useSearch";
+import { previewInstructor, UserService } from "../../services/user.service";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store/store";
+import { User } from "../../models/UserModel";
+import { UserSearchParams } from "../../models/SearchInfo.model";
 
 const RequestUser = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { loading, success } = useSelector(
     (state: RootState) => state.users.previewProfile
   );
+
   const [reasonVisible, setReasonVisible] = useState(false);
-  const [users, setUsers] = useState([]);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [users, setUsers] = useState<User[]>([]);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [reason, setReason] = useState("");
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
-  const { searchText, filteredData, handleSearchChange } = useSearch(users, [
+  const [searchText, setSearchText] = useState("");
+  const filteredData = useDebouncedSearch(users, searchText, 300, [
     "name",
     "email",
   ]);
 
-  const fetchUsers = async (pageNum :number, pageSize :number, keyword:string) => {
-    const searchParams = {
-      searchCondition: {
-        keyword,
-        role: "instructor",
-        status: true,
-        is_verified: "",
-        is_delete: false,
-      },
-      pageInfo: { pageNum, pageSize },
-    };
-
+  const fetchUsers = async () => {
     try {
-      const response = await getUsers(searchParams);
-      setUsers((response as any)?.pageData );
-      setTotal((response as any)?.pageInfo.totalItems);
+      const searchParams: UserSearchParams = {
+        searchCondition: {
+          keyword: searchText,
+          role: "instructor",
+          status: true,
+          is_delete: false,
+          is_verified: true,
+        },
+        pageInfo: { pageNum, pageSize },
+      };
+
+      const response = await UserService.getUsers(searchParams);
+      const responseData = response.data?.pageData;
+      const flattenedUsers: User[] = Array.isArray(responseData)
+        ? responseData.flat()
+        : [];
+      setUsers(flattenedUsers);
+      setTotal(response.data?.pageInfo?.totalItems ?? 0);
     } catch (err) {
       console.error("Error fetching users:", err);
     }
   };
 
   useEffect(() => {
-    fetchUsers(pageNum, pageSize, searchText);
+    fetchUsers();
   }, [pageNum, pageSize, searchText]);
 
-  const handleTableChange = (pagination :any ) => {
+  const handleTableChange = (pagination: any) => {
     setPageNum(pagination.current);
     setPageSize(pagination.pageSize);
   };
 
-  const handleShowReason = (record :any) => {
+  const handleShowReason = (record: any) => {
     setCurrentUser(record);
     setReasonVisible(true);
   };
 
-  const handleSubmitPreview = async (status: string, record:any) => {
+  const handleSubmitPreview = async (status: string, record: any) => {
     const formPreview = {
       user_id: record._id,
       status,
@@ -84,12 +96,12 @@ const RequestUser = () => {
       key: "email",
     },
     {
-      title: "Số điện thoại",
+      title: "Phone Number",
       dataIndex: "phone",
       key: "phone",
     },
     {
-      title: "Tên đăng nhập",
+      title: "Username",
       dataIndex: "username",
       key: "username",
     },
@@ -99,24 +111,22 @@ const RequestUser = () => {
       key: "createdAt",
     },
     {
-      title: "Hành động",
+      title: "Actions",
       key: "action",
-      render: (record :any) => (
+      render: (record: any) => (
         <Space size="middle">
           <Button
-            color="primary"
+            type="text"
+            className="text-green-600"
+            icon={<CheckOutlined />}
             onClick={() => handleSubmitPreview("approve", record)}
-            variant="outlined"
-          >
-            Approve
-          </Button>
+          />
           <Button
-            color="danger"
+            className="text-red-600"
+            type="text"
+            icon={<CloseOutlined />}
             onClick={() => handleShowReason(record)}
-            variant="outlined"
-          >
-            Reject
-          </Button>
+          />
         </Space>
       ),
     },
@@ -128,13 +138,15 @@ const RequestUser = () => {
         <div className="flex">
           <h3 className="text-2xl my-5">Request Instructor Management</h3>
         </div>
-        <Input
-          placeholder="Tìm kiếm..."
-          prefix={<SearchOutlined />}
-          style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
-          value={searchText}
-          onChange={handleSearchChange}
-        />
+        <div className="flex flex-wrap items-center mb-4">
+          <Input
+            placeholder="Search By User Name"
+            prefix={<SearchOutlined />}
+            className="w-full md:w-1/3 mb-2 md:mb-0"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
+        </div>
         <Table
           dataSource={filteredData}
           pagination={{
@@ -163,7 +175,7 @@ const RequestUser = () => {
             htmlType="submit"
             onClick={() => handleSubmitPreview("reject", currentUser)}
           >
-            {loading ? <Spin/> : <span>Submit</span>}
+            {loading ? <Spin /> : <span>Submit</span>}
           </Button>,
         ]}
       >

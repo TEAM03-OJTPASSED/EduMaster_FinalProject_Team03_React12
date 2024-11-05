@@ -1,23 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Card, Input, Table, Tag } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import { salesHistory } from "../../AdminDashboard/monitors/course/courseList";
 import StatusFilter from "../../../components/StatusFilter";
-
+import PurchaseService from "../../../services/purchase.service";
+import { Purchase } from "../../../models/Purchase.model"; 
 const columns = [
+  
   {
     title: "Purchase Number",
-    dataIndex: "purchaseNumber",
+    dataIndex: "purchase_no",
     key: "purchaseNumber",
   },
   {
     title: "Cart No",
-    dataIndex: "CartNo",
+    dataIndex: "cart_no",
     key: "CartNo",
   },
   {
     title: "Course Name",
-    dataIndex: "courseName",
+    dataIndex: "course_nam",
     key: "courseName",
   },
   {
@@ -47,13 +48,13 @@ const columns = [
   },
   {
     title: "Price Paid",
-    dataIndex: "pricePaid",
+    dataIndex: "price_paid",
     key: "pricePaid",
     render: (price: number) => `$${price.toFixed(2)}`,
   },
   {
     title: "Student Name",
-    dataIndex: "studentName",
+    dataIndex: "student_name",
     key: "studentName",
   },
   {
@@ -68,9 +69,31 @@ const columns = [
 ];
 
 const InstructorSalesHistory = () => {
+  const [salesHistory, setSalesHistory] = useState<Purchase[]>([]);
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>();
 
+
+  const initialParams = {
+    searchCondition: {
+      purchase_no: "",
+      cart_no: "",
+      course_id: "",
+    },
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 10,
+    },
+  };
+
+  useEffect(() => {
+    const fetchSalesHistory = async () => {
+        const response = await PurchaseService.getPurchasesInstructor(initialParams);
+        setSalesHistory(response.data?.pageData || []); 
+    };
+
+    fetchSalesHistory();
+  }, []);
   const handleSearch = (event: any) => {
     setSearchText(event.target.value);
   };
@@ -79,13 +102,7 @@ const InstructorSalesHistory = () => {
     setStatusFilter(value);
   };
 
-  const filteredCourses = salesHistory
-    .filter((course: any) =>
-      course.courseName.toLowerCase().includes(searchText.toLowerCase())
-    )
-    .filter((course: any) =>
-      statusFilter ? course.status === statusFilter : true
-    );
+  
 
   const statuses = ["Completed", "Pending", "Refunded"];
 
@@ -109,7 +126,7 @@ const InstructorSalesHistory = () => {
         </div>
       </div>
       <Table
-        dataSource={filteredCourses}
+        dataSource={salesHistory}
         columns={columns}
         pagination={{ pageSize: 4 }}
         rowKey="purchaseNumber"

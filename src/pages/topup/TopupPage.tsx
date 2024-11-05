@@ -39,8 +39,8 @@ const TopUpPage = () => {
   const [error, setError] = useState<string>("");
 
   const handleSubmit = () => {
-    if (!amount || amount < 10000) {
-      setError("Minimum amount is đ 10,000");
+    if (!amount || amount < 5) {
+      setError("Minimum amount is $5");
       return;
     }
 
@@ -59,7 +59,7 @@ const TopUpPage = () => {
 
   const formatAmount = (value: number | undefined): string => {
     if (!value) return "";
-    return `đ ${value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+    return `$ ${value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
   };
 
 
@@ -77,7 +77,7 @@ const TopUpPage = () => {
         <Card className="bg-gray-50">
           <div className="flex items-center gap-2">
             <span className="text-gray-500">Current Balance</span>
-            <span className="text-xl font-bold">đ 200,000</span>
+            <span className="text-xl font-bold">$200,000</span>
           </div>
         </Card>
 
@@ -94,7 +94,7 @@ const TopUpPage = () => {
               step={1000}
             />
             <Text className="block mb-6 text-gray-500">
-              Minimum top-up amount: đ 10,000
+              Minimum top-up amount: $10
             </Text>
           </div>
 

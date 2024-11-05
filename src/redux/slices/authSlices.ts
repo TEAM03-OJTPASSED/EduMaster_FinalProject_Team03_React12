@@ -1,14 +1,25 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+// Import necessary modules
+import {
+  AsyncThunkAction,
+  createAsyncThunk,
+  createSlice,
+} from "@reduxjs/toolkit";
 import { getRequest, postRequest } from "../../services/httpsMethod";
 import { User } from "../../models/UserModel";
 import { message } from "antd";
-interface AuthState {
-  token: string | null;
-  currentUser: User;
-  loading: boolean;
-  error: string | null;
-  success: boolean;
-  // verify-token
+import { ModalRegisterGoogleProps } from "../../components/ModalRegisterGoogle";
+
+export interface AuthState {
+  login: {
+    token: string | null;
+    currentUser: User;
+    loading: boolean;
+    error: string | null;
+    success: boolean;
+    is_google: boolean;
+    is_register_google: boolean;
+    googleId?: string;
+  };
   verifyToken: {
     loading: boolean;
     error: string | null;
@@ -20,14 +31,19 @@ interface AuthState {
     success: boolean;
   };
 }
+
 const token = localStorage.getItem("token");
 const currentUser = JSON.parse(localStorage.getItem("user") ?? "{}");
 const initialState: AuthState = {
-  loading: false,
-  currentUser: currentUser,
-  token: token,
-  error: null,
-  success: false, // for monitoring the registration process.
+  login: {
+    loading: false,
+    currentUser: currentUser,
+    token: token,
+    error: null,
+    is_google: false,
+    success: false,
+    is_register_google: false,
+  },
   verifyToken: {
     loading: false,
     error: "",
@@ -40,58 +56,73 @@ const initialState: AuthState = {
   },
 };
 
-// login
+// Login function
 export const login = createAsyncThunk<
   AuthState,
   { email: string; password: string },
   { rejectValue: string }
->("auth/login", async ({ email, password }) => {
+>("auth/login", async ({ email, password }, thunkAPI) => {
+  const { dispatch } = thunkAPI;
   const response = await postRequest("/api/auth", { email, password });
-  message.success("Login successfully");
-  console.log("user token", (response as any).data.token);
   localStorage.setItem("token", (response as any).data.token);
-  return response.data as AuthState; // Ensure response matches AuthState
+  if (response.success) {
+    await dispatch(getCurrentUser());
+  }
+  return response.data as AuthState;
 });
 
-// login gg
+// Google Login function
 export const loginWithGoogle = createAsyncThunk<
-  AuthState, // Return type (the resolved data)
+  AuthState,
   string,
-  { rejectValue: string } // Configuration for rejected case
->("auth/loginGoogle", async (google_id) => {
-  console.log("gg id", google_id);
+  { rejectValue: string }
+>("auth/loginGoogle", async (google_id, thunkAPI): Promise<AuthState> => {
+  const { dispatch } = thunkAPI;
   const response = await postRequest("/api/auth/google", {
     google_id: google_id,
   });
-  // console.log("gg token",(response as any).data.token);
-  // console.log("gg res", response.data.token);
+  console.log("res gg", response.data);
   localStorage.setItem("token", (response as any).data.token);
-  return response.data as AuthState; // Ensure response matches AuthState
+  if (response.success) {
+    await dispatch(getCurrentUser());
+  }
+
+  return response.data as AuthState;
 });
 
-// getCurrent user
+// Google Register function
+export const registerWithGoogle = createAsyncThunk<
+  AuthState,
+  ModalRegisterGoogleProps
+>("auth/registerGoogle", async (formData) => {
+  const response = await postRequest("/api/users/google", formData);
+  message.success("Register gg successfully")
+  localStorage.setItem("token", (response as any).data.token);
+  return response.data as AuthState;
+});
+
+// Get Current User function
 export const getCurrentUser = createAsyncThunk("auth/user", async () => {
   const res = await getRequest("/api/auth");
   localStorage.setItem("user", JSON.stringify(res.data));
-  console.log("current user", res.data);
-  return res.data; // Ensure the data matches the expected type
+  message.success("Login successfully");
+  return res.data;
 });
 
-// verify token when check mail
-
-// Tạo slice cho auth
+// Auth Slice
 export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    logout: (state, action) => {
-      state.currentUser = action.payload;
+    logout: (state) => {
+      state.login.currentUser = {} as User;
+      state.login.token = null;
       localStorage.removeItem("token");
     },
     verifyTokenPending: (state) => {
       state.verifyToken.loading = true;
     },
-    verifyTokenFulFilled: (state) => {
+    verifyTokenFulfilled: (state) => {
       state.verifyToken.loading = false;
       state.verifyToken.success = true;
     },
@@ -102,7 +133,7 @@ export const authSlice = createSlice({
     resendTokenPending: (state) => {
       state.resendToken.loading = true;
     },
-    resendTokenFulFilled: (state) => {
+    resendTokenFulfilled: (state) => {
       state.resendToken.loading = false;
       state.resendToken.success = true;
     },
@@ -110,56 +141,91 @@ export const authSlice = createSlice({
       state.resendToken.loading = false;
       state.resendToken.success = false;
     },
+    setRegisterGoogle: (state, action) => {
+      state.login.is_register_google = action.payload.is_register;
+      state.login.googleId = action.payload.google_id;
+    },
+    setIsLoginGoogleStart: (state,action) => {
+      state.login.googleId= action.payload
+      state.login.is_google = true;
+    },
+    setIsLoginGoogleFailed: (state) => {
+      state.login.is_google = false;
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(login.pending, (state) => {
-        state.loading = true; // Đặt loading thành true khi đang chờ phản hồi
+        state.login.loading = true;
       })
-      .addCase(login.fulfilled, (state, action) => {
-        state.loading = false; // Đặt loading về false khi có phản hồi
-        state.token = action.payload as unknown as string;
-        state.success = true;
+      .addCase(login.fulfilled, (state) => {
+        state.login.loading = false;
+
+        state.login.success = true;
       })
       .addCase(login.rejected, (state) => {
-        state.loading = false;
-        state.error = "Login failed";
-        state.success = false;
+        state.login.loading = false;
+        state.login.error = "Login failed";
+        state.login.success = false;
       })
       .addCase(getCurrentUser.pending, (state) => {
-        state.loading = true;
+        state.login.loading = true;
       })
       .addCase(getCurrentUser.fulfilled, (state, action) => {
-        state.loading = false;
-        state.success = true;
-        state.currentUser = action.payload as User;
+        state.login.loading = false;
+        state.login.success = true;
+        state.login.currentUser = action.payload as User;
       })
       .addCase(getCurrentUser.rejected, (state, action) => {
-        state.loading = false;
-        state.success = false;
-        state.error = action.payload as string;
+        state.login.loading = false;
+        state.login.success = false;
+        state.login.error = action.payload as string;
       })
       .addCase(loginWithGoogle.pending, (state) => {
-        state.loading = true;
+        state.login.loading = true;
+        state.login.is_google = true;
+
       })
       .addCase(loginWithGoogle.fulfilled, (state) => {
-        state.loading = false;
-        state.success = true;
+        state.login.loading = false;
+        state.login.success = true;
+        state.login.is_google = false;
       })
       .addCase(loginWithGoogle.rejected, (state) => {
-        state.loading = false;
-        state.success = false;
+        state.login.loading = false;
+        state.login.success = false;
+        state.login.is_register_google = true;
+        state.login.is_google = false;
+      })
+      .addCase(registerWithGoogle.pending, (state) => {
+        state.login.loading = true;
+      })
+      .addCase(registerWithGoogle.fulfilled, (state) => {
+        state.login.loading = false;
+        state.login.success = true;
+        state.login.is_register_google = false
+      })
+      .addCase(registerWithGoogle.rejected, (state) => {
+        state.login.loading = false;
+        state.login.success = false;
+       
       });
   },
 });
 
+// Export actions and reducer
 export const {
   logout,
-  verifyTokenFulFilled,
+  verifyTokenFulfilled,
   verifyTokenPending,
   verifyTokenRejected,
-  resendTokenFulFilled,
+  resendTokenFulfilled,
   resendTokenPending,
   resendTokenRejected,
+  setRegisterGoogle,
+  setIsLoginGoogleStart,
+  setIsLoginGoogleFailed,
+  // setIsLoginGoogleSuccess,
 } = authSlice.actions;
-export default authSlice.reducer; // Xuất reducer, không phải slice
+
+export default authSlice.reducer;

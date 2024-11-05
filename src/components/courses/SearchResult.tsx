@@ -6,11 +6,11 @@ import { FaBars } from "react-icons/fa";
 import { GrGrid } from "react-icons/gr";
 import CoursesGrid from "../home/CoursesGrid";
 import NoResult from "../../assets/no-result.jpg"
-import { handleAddCart } from "../../utils/handleAddCart";
 import { useCustomNavigate } from "../../hooks/customNavigate";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../redux/store/store";
 import { Course } from "../../models/Course.model";
+import { addToCart } from "../../redux/slices/cartSlice";
 
 
 
@@ -23,13 +23,15 @@ export const SearchResults: React.FC<{
 }> = ({ courses, onSearch, searchQuery, noResult }) => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
   const navigate = useCustomNavigate()
+  const dispatch = useDispatch<AppDispatch>();
 
-  const {currentUser} = useSelector((state : RootState) => state.auth)
+
+  const {currentUser} = useSelector((state : RootState) => state.auth.login)
 
 
-  const onAddCart = (course: Course) => {
-    handleAddCart(currentUser.role, course, navigate);
-  }
+  const onAddCart = async (course: Course) => {
+    await dispatch(addToCart({ course, userRole: currentUser?.role, navigate }));
+  };
   
   return (
     <Content className="py-8 px-4 bg-white">

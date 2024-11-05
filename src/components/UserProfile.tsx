@@ -1,0 +1,230 @@
+import React, { useEffect, useState } from "react";
+import { Button, Form, Input, Row, Col, Upload, UploadProps, UploadFile } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { API_UPLOAD_FILE } from "../constants/upload";
+import FormItem from "antd/es/form/FormItem";
+
+interface UserProfileFormProps {
+  currentUser: UserProfile;
+  onSave: (values: UserProfile) => void;
+}
+
+export type UserProfile = {
+  name?: string;
+  email?: string;
+  description?: string;
+  avatar_url?: string | null;
+  video_url?: string;
+  phone_number?: string;
+  bank_name?: string;
+  bank_account_no?: string;
+  bank_account_name?: string;
+};
+
+const UserProfileForm: React.FC<UserProfileFormProps> = ({ currentUser, onSave }) => {
+  const [imageFileList, setImageFileList] = useState<UploadFile[]>([]);
+  const [videoFileList, setVideoFileList] = useState<UploadFile[]>([]);
+  const [form] = Form.useForm();
+
+  useEffect(() => {
+    if (currentUser) {
+      form.setFieldsValue({
+        avatar_url: currentUser.avatar_url
+          ? [
+            {
+              uid: "-1",
+              url: currentUser.avatar_url,
+              name: "avatar.jpg",
+              status: "done",
+            },
+          ]
+          : [],
+        name: currentUser.name || "",
+        phone_number: currentUser.phone_number || "",
+        bank_account_no: currentUser.bank_account_no || "",
+        description: currentUser.description || "",
+        email: currentUser.email || "",
+        bank_name: currentUser.bank_name || "",
+        bank_account_name: currentUser.bank_account_name || "",
+        video_url: currentUser.video_url || "",
+      });
+    }
+  }, [currentUser, form]);
+
+  const handleImageChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
+    setImageFileList(newFileList);
+
+    if (newFileList.length > 0 && newFileList[0].status === "done") {
+      const uploadedImageUrl = newFileList[0].response?.secure_url;
+      form.setFieldsValue({ avatar_url: uploadedImageUrl });
+      console.log("image url:", uploadedImageUrl);
+    } else if (newFileList.length === 0 || newFileList[0].status === "error") {
+      form.setFieldsValue({ avatar_url: "" });
+    }
+  };
+
+  const handleVideoChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
+    setVideoFileList(newFileList);
+    if (newFileList.length > 0 && newFileList[0].status === "done") {
+      const uploadedVideoUrl = newFileList[0].response?.secure_url;
+      form.setFieldsValue({ video_url: uploadedVideoUrl });
+      console.log("video url:", uploadedVideoUrl);
+    } else if (newFileList.length === 0 || newFileList[0].status === "error") {
+      form.setFieldsValue({ video_url: "" });
+    }
+  };
+
+  const handleSubmit = () => {
+    const formValues = form.getFieldsValue([
+      "name",
+      "avatar_url",
+      "phone_number",
+      "bank_account_no",
+      "description",
+      "email",
+      "bank_name",
+      "bank_account_name",
+      "video_url",
+    ]);
+    console.log("form values:", formValues);
+    onSave(formValues);
+  };
+
+  return (
+    <Form form={form} labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} layout="horizontal">
+      <Row gutter={16} align="middle">
+        <Col span={12}>
+          <Row gutter={16} align="middle">
+            <Col>
+              <FormItem label="Current Avatar">
+                <Upload
+                  listType="picture-card"
+                  fileList={[
+                    {
+                      uid: "-1",
+                      name: "current_avatar.jpg",
+                      status: "done",
+                      url: currentUser.avatar_url || "placeholder_image_url",
+                    },
+                  ]}
+                  showUploadList={{ showRemoveIcon: false }}
+                />
+              </FormItem>
+            </Col>
+            <Col>
+              <Form.Item label="New Avatar" name="avatar_url">
+                <Upload
+                  action={API_UPLOAD_FILE}
+                  listType="picture-card"
+                  onChange={handleImageChange}
+                  fileList={imageFileList}
+                  maxCount={1}
+                >
+                  {imageFileList.length < 1 && (
+                    <button style={{ border: 0, background: "none" }} type="button">
+                      <PlusOutlined />
+                      <div>Upload</div>
+                    </button>
+                  )}
+                </Upload>
+              </Form.Item>
+            </Col>
+          </Row>
+        </Col>
+        <Col span={12}>
+          <Form.Item label="Video" name="video_url">
+            <Upload
+              action={API_UPLOAD_FILE}
+              listType="picture-card"
+              accept="video/*"
+              onChange={handleVideoChange}
+              fileList={videoFileList}
+              maxCount={1}
+            >
+              {videoFileList.length < 1 && (
+                <button style={{ border: 0, background: "none" }} type="button">
+                  <PlusOutlined />
+                  <div>Upload</div>
+                </button>
+              )}
+            </Upload>
+          </Form.Item>
+        </Col>
+      </Row>
+
+
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item
+            label="Full Name"
+            name="name"
+            rules={[{ required: true, message: "Please enter your name" }]}
+          >
+            <Input placeholder="Full Name" />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item label="Email" name="email">
+            <Input placeholder="Email" />
+          </Form.Item>
+        </Col>
+      </Row>
+
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item
+            label="Bank Account"
+            name="bank_account_no"
+            rules={[{ required: true, message: "Please enter your bank account number" }]}
+          >
+            <Input placeholder="Bank Account" />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            label="Phone Number"
+            name="phone_number"
+            rules={[{ required: true, message: "Please enter your phone number" }]}
+          >
+            <Input placeholder="Phone Number" />
+          </Form.Item>
+        </Col>
+      </Row>
+
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item label="Bank Name" name="bank_name">
+            <Input placeholder="Bank Name" />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item label="Bank Account Name" name="bank_account_name">
+            <Input placeholder="Bank Account Name" />
+          </Form.Item>
+        </Col>
+      </Row>
+
+      <Form.Item label="Description" name="description">
+        <CKEditor
+          editor={ClassicEditor}
+          data={currentUser.description || ""}
+          onChange={(_, editor) => {
+            const data = editor.getData();
+            form.setFieldsValue({ description: data });
+          }}
+          config={{ placeholder: "Enter your description..." }}
+        />
+      </Form.Item>
+
+      <div className="pt-4">
+        <Button type="primary" onClick={handleSubmit}>
+          Save Changes
+        </Button>
+      </div>
+    </Form>
+  );
+};
+
+export default UserProfileForm;

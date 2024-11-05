@@ -18,8 +18,9 @@ import logoImage from "../assets/EduMaster.png";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useLocation } from "react-router-dom";
 import { useCustomNavigate } from "../hooks/customNavigate";
-import { useSelector } from "react-redux";
-import { RootState } from "../redux/store/store.ts";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../redux/store/store.ts";
+import { fetchCartCount } from "../redux/slices/cartSlice.tsx";
 
 // Define the type for menu items
 interface MenuItem {
@@ -48,7 +49,7 @@ const items: MenuItem[] = [
 ];
 
 const Navbar = () => {
-  const { currentUser, token } = useSelector((state: RootState) => state.auth);
+  const { currentUser, token } = useSelector((state: RootState) => state.auth.login);
   const navigate = useCustomNavigate();
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [activeButton, setActiveButton] = useState<string>("");
@@ -56,6 +57,18 @@ const Navbar = () => {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const searchInputRef = useRef<InputRef>(null);
   const location = useLocation();
+
+  const { cartCount } = useSelector((state: RootState) => state.cart);
+  const dispatch = useDispatch<AppDispatch>();
+  
+  // Replace the existing useEffect for fetchCartData with:
+  useEffect(() => {
+    if (userLoggedIn) {
+      dispatch(fetchCartCount());
+    }
+  }, [dispatch, userLoggedIn]);
+  
+
   useEffect(() => {
     if (localStorage.getItem("user") != null) {
       setUserLoggedIn(true);
@@ -63,6 +76,7 @@ const Navbar = () => {
       setUserLoggedIn(false);
     }
   }, [currentUser, token]);
+
 
   useEffect(() => {
     const pathToButtonKeyMap: { [key: string]: string } = {
@@ -238,7 +252,7 @@ const Navbar = () => {
               >
                 <ShoppingCartOutlined />
                 <span className="absolute top-0 right-0 w-4 h-4 bg-orange-500 rounded-full text-xs text-white font-semibold">
-                  2
+                  {cartCount}
                 </span>
               </button>
             )}
@@ -289,7 +303,7 @@ const Navbar = () => {
               >
                 <ShoppingCartOutlined />
                 <span className="absolute top-0 right-0 w-4 h-4 bg-orange-500 rounded-full text-xs text-white font-semibold">
-                  2
+                  {cartCount}
                 </span>
               </button>
             )}

@@ -25,6 +25,7 @@ const CourseCardSkeleton = ({ viewMode }: { viewMode: "grid" | "list" }) => {
         cover={
           <div className="relative">
             <Skeleton.Image 
+              active
               style={{ 
                 width: '100%',
                 height: '100%',

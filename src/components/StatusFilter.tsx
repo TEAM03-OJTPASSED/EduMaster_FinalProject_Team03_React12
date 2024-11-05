@@ -1,11 +1,12 @@
 import { Select, Tag } from "antd";
-import { CoursePriceType, CourseStatusEnum, PayoutStatusEnum } from "../pages/AdminDashboard/monitors/course/courseList";
+import { CoursePriceType, PayoutStatusEnum } from "../pages/AdminDashboard/monitors/course/courseList";
+import { CourseStatusEnum } from "../models/Course.model";
 
 const courseStatusColors = {
   [CourseStatusEnum.NEW]: "green",
   [CourseStatusEnum.WAITING_APPROVE]: "orange",
-  [CourseStatusEnum.APPROVED]: "blue",
-  [CourseStatusEnum.REJECTED]: "red",
+  [CourseStatusEnum.APPROVE]: "blue",
+  [CourseStatusEnum.REJECT]: "red",
   [CourseStatusEnum.ACTIVE]: "purple",
   [CourseStatusEnum.INACTIVE]: "gray",
 };
@@ -43,7 +44,7 @@ const StatusFilter = ({
   return (
     <Select
       placeholder="Filter By Status"
-      style={{ width: "100%" }}
+      className="w-full md:w-1/4 ml-0 md:ml-3 mb-2 md:mb-0"
       value={selectedStatus}
       onChange={onStatusChange}
       allowClear

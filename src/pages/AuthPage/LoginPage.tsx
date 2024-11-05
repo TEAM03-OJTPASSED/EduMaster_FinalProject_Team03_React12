@@ -1,17 +1,14 @@
-import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
-import { Button, Divider, Form, Input } from "antd";
+// import { CredentialResponse, GoogleLogin } from "@react-oauth/google";
+import { Button, Divider, Form, Input, Modal } from "antd";
 import { FormProps } from "antd";
 import { Player } from "@lottiefiles/react-lottie-player";
-
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getCurrentUser,
-  login,
-  loginWithGoogle,
-} from "../../redux/slices/authSlices";
+import { login } from "../../redux/slices/authSlices";
 import { AppDispatch, RootState } from "../../redux/store/store";
+import ModalRegisterGoogle from "../../components/ModalRegisterGoogle";
+import GoogleLoginButton from "../../components/GoogleLoginButton";
 
 export type LoginProps = {
   email: string;
@@ -20,13 +17,20 @@ export type LoginProps = {
 
 const Loginpage = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { currentUser, token, loading } = useSelector(
-    (state: RootState) => state.auth
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const { currentUser, token, loading, is_register_google} = useSelector(
+    (state: RootState) => state.auth.login
   );
   const navigate = useNavigate();
+
   useEffect(() => {
-    console.log("Token:", token);
-    console.log("CurrentUser:", currentUser);
+    if (is_register_google) {
+      setIsOpenModal(true);
+    }
+    
+  }, [is_register_google]);
+
+  useEffect(() => {
     if (currentUser) {
       if (
         currentUser?.role === "student" ||
@@ -45,22 +49,12 @@ const Loginpage = () => {
     try {
       const { email, password } = values;
       await dispatch(login({ email, password }));
-      await dispatch(getCurrentUser());
+      // await dispatch(getCurrentUser());
     } catch (error) {
       console.log(error);
     }
   };
-  const handleLoginGoogleSuccess = async (
-    credentialResponse: CredentialResponse
-  ) => {
-    try {
-      console.log("credential", credentialResponse);
-      await dispatch(loginWithGoogle(credentialResponse.credential as string));
-      await dispatch(getCurrentUser());
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
 
   return (
     <div className="w-full lg:flex lg:h-[35rem] lg:flex-row lg:rounded-lg mt-12 overflow-hidden shadow-xl">
@@ -133,20 +127,26 @@ const Loginpage = () => {
           Or sign in with
         </Divider>
         <div className="flex justify-center">
-          <GoogleLogin
+          {/* <GoogleLogin
             onSuccess={handleLoginGoogleSuccess}
             onError={() => {
               console.log("Login Failed");
             }}
-          />
-        </div>
-        <div className="text-center mt-6">
-          <span className="text-gray-500">Don’t have an account? </span>
-          <NavLink to={"/signup"} className="text-[#FF782D] hover:underline">
-            Sign up
-          </NavLink>
+          /> */}
+
+          <GoogleLoginButton />
         </div>
       </div>
+      {is_register_google && (
+        <Modal
+          open={isOpenModal}
+          width={800}
+          footer={null}
+          onCancel={() => setIsOpenModal(false)}
+        >
+          <ModalRegisterGoogle />
+        </Modal>
+      )}
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import LoadingWrapper from "./components/Loading/LoadingWrapper";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import CoursesPage from "./pages/CoursePage";
 import BlogPage from "./pages/BlogPage";
 import CourseDetailPage from "./pages/CourseDetailPage";
@@ -20,7 +20,6 @@ import PendingCourseList from "./pages/AdminDashboard/monitors/pending_course/Pe
 import PendingSessionList from "./pages/AdminDashboard/monitors/pending_course/PendingSessionList";
 import PendingLessonList from "./pages/AdminDashboard/monitors/pending_course/PendingLessonList";
 import BlogManagement from "./pages/AdminDashboard/BlogManagement";
-import CourseLog from "./pages/AdminDashboard/CourseLog";
 import PurchaseLog from "./pages/AdminDashboard/PurchaseLog";
 import AdminPayout from "./pages/AdminDashboard/payout/AdminPayout";
 import InstructorLayout from "./defaultLayout/InstructorLayout";
@@ -49,7 +48,6 @@ import FAQsPage from "./pages/FAQPage";
 import ErrorPage from "./pages/ErrorPage";
 import ContactPage from "./pages/ContactPage";
 import CartPage from "./pages/cart/CartPage";
-import CheckoutPage from "./pages/checkout/CheckoutPage";
 import Firebase from "./pages/Firebase";
 import BlogDetailPage from "./pages/BlogDetailPage";
 import StudentContent from "./pages/StudentDashboard/StudentContent";
@@ -72,8 +70,20 @@ import ProfilePage from "./pages/profile/ProfilePage";
 import StudentSubscriptions from "./pages/StudentDashboard/StudentSubscriptions";
 import StudentOrderHistory from "./pages/StudentDashboard/StudentOrderHistory";
 import VerifySuccessToken from "./pages/AuthPage/VerifyToken";
+import { gapi } from "gapi-script";
+import CourseLogPage from "./pages/AdminDashboard/CourseLog";
 
 function App() {
+  useEffect(() => {
+    const init = () => {
+      gapi.client.init({
+        clientId:
+          "67368420889-utrdru1873d1pudjah97ihj32vvfire8.apps.googleusercontent.com",
+        scope: "",
+      });
+    };
+    gapi.load("client:auth2", init);
+  }, []);
   return (
     <BrowserRouter>
       <Suspense fallback={<LoadingWrapper />}>
@@ -110,24 +120,13 @@ function App() {
               <Route path="/faqs" element={<FAQsPage />} />
               <Route path="/*" element={<ErrorPage />} />
               <Route path="cart" element={<CartPage />} />
-              <Route path="/blog-detail/:id" element={<BlogDetailPage />} />
+              <Route path="/blog/:id" element={<BlogDetailPage />} />
               <Route path="/profile/:id" element={<ProfilePage />} />
 
-              <Route path="/course-detail/:id" element={<CourseDetailPage />} />
+              <Route path="/course/:id" element={<CourseDetailPage />} />
               <Route path="/firebase" element={<Firebase />} />
 
               <Route path="/learn/:id" element={<LearnCoursePage />} />
-
-              <Route
-                path="cart/checkout"
-                element={
-                  <ProtectedRoute
-                    allowedRoles={["student", "instructor", "admin"]}
-                  >
-                    <CheckoutPage />
-                  </ProtectedRoute>
-                }
-              />
             </Route>
 
             {/* Admin Layout */}
@@ -192,7 +191,7 @@ function App() {
                 <Route path="orders" element={<StudentOrderHistory />} />
 
                 <Route path="payout" element={<InstructorPayout />}>
-                  <Route index element={<RequestPayout />} />
+                   <Route index element={<RequestPayout />} /> 
                   <Route
                     path="completed-payout"
                     element={<CompletedPayout />}
