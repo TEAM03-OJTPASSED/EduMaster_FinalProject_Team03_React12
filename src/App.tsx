@@ -158,6 +158,7 @@ function App() {
                   <Route index element={<CourseLists />} />
                   <Route path="session" element={<SessionList />} />
                   <Route path="lesson" element={<LessonList />} />
+                  <Route path="course-log" element={<CourseLog />} />
                 </Route>
                 <Route path="pending-courses" element={<PendingCourse />}>
                   <Route index element={<PendingCourseList />} />
@@ -165,7 +166,6 @@ function App() {
                   <Route path="lesson" element={<PendingLessonList />} />
                 </Route>
                 <Route path="blog" element={<BlogManagement />} />
-                <Route path="course-log" element={<CourseLog />} />
                 <Route path="purchase-log" element={<PurchaseLog />} />
                 <Route path="settings" element={<AdminSetting />}>
                   <Route index element={<AdminProfile />} />
