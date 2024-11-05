@@ -157,7 +157,7 @@ function App() {
                   <Route index element={<CourseLists />} />
                   <Route path="session" element={<SessionList />} />
                   <Route path="lesson" element={<LessonList />} />
-                  <Route path="course-log" element={<CourseLog />} />
+                  <Route path="course-log" element={<CourseLogPage />} />
                 </Route>
                 <Route path="pending-courses" element={<PendingCourse />}>
                   <Route index element={<PendingCourseList />} />
