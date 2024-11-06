@@ -128,6 +128,8 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
       setVideoPreviewUrl(undefined);
       setVisibility("text");
     } else if (lessonType === LessonTypeEnum.VIDEO) {
+      form.setFieldsValue({ image_url: "" });
+      setImageFileList([]);
       setVisibility("video");
     }
   };
@@ -254,7 +256,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
           </Form.Item>
 
           <div className="flex justify-around">
-            {visibility !== LessonTypeEnum.TEXT && (
+            {visibility === LessonTypeEnum.IMAGE && (
               <Form.Item 
                 label="Lesson Image" 
                 name="image_url"
