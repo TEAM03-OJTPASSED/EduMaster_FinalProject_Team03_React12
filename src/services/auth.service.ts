@@ -18,6 +18,7 @@ import {
   verifyTokenPending,
   verifyTokenRejected,
 } from "../redux/slices/authSlices";
+import { handleNotify } from "../utils/handleNotify";
 
 export const register = async (
   formData: RegisterType,
@@ -28,6 +29,7 @@ export const register = async (
     const res = await postRequest("/api/users", formData);
     console.log("res", res.data);
     dispatch(registerFulfilled());
+    handleNotify("success", )
   } catch (error) {
     console.log(error);
     dispatch(registerRejected());
