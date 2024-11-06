@@ -5,8 +5,8 @@ import {
 } from "@reduxjs/toolkit";
 import { getRequest, postRequest } from "../../services/httpsMethod";
 import { User } from "../../models/UserModel";
-import { message } from "antd";
 import { ModalRegisterGoogleProps } from "../../components/ModalRegisterGoogle";
+import { handleNotify } from "../../utils/handleNotify";
 import { handleNotify } from "../../utils/handleNotify";
 
 export interface AuthState {

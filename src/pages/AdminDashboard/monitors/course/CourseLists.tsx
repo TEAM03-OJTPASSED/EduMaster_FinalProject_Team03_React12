@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Input, Card, Tag, TableProps } from "antd";
+import { Table, Input, Card, Tag, TableProps, Button, Modal } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 // import StatusFilter from "../../../../components/StatusFilter";
 import {
@@ -10,6 +10,9 @@ import {
 import CourseService from "../../../../services/course.service";
 import { useDebouncedSearch } from "../../../../hooks/useSearch";
 import dayjs from "dayjs";
+const CourseLogModal = React.lazy(
+  () => import("../../../../components/CourseLogModal")
+);
 
 // utils function to filter courses by status
 const getStatusFilterText = (status: CourseStatusEnum) => {
@@ -42,6 +45,11 @@ const CourseLists: React.FC = () => {
     "name",
     "category_id",
   ]);
+  // open log
+  const [isOpenLog, setIsOpenLog] = useState(false);
+  const [currentCourse, setCurrentCourse] = useState<Course>({} as Course);
+
+  //
 
   const fetchCourses = async () => {
     const searchParams: GetCourses = {
@@ -68,6 +76,11 @@ const CourseLists: React.FC = () => {
   const handleTableChange = (pagination: any) => {
     setPageNum(pagination.current);
     setPageSize(pagination.pageSize);
+  };
+
+  const handleViewLog = (item: Course) => {
+    setIsOpenLog(true);
+    setCurrentCourse(item);
   };
 
   useEffect(() => {
@@ -138,6 +151,21 @@ const CourseLists: React.FC = () => {
         return dayjs(createdAt).format("DD-MM-YYYY");
       },
     },
+    {
+      title: "Course Log",
+      key: "course_log",
+      render: (record: Course) => {
+        return (
+          <Button
+            color="primary"
+            variant="solid"
+            onClick={() => handleViewLog(record)}
+          >
+            View Log
+          </Button>
+        );
+      },
+    },
   ];
 
   // const statuses = [
@@ -154,39 +182,53 @@ const CourseLists: React.FC = () => {
   // };
 
   return (
-    <Card>
-      <h3 className="text-2xl my-5">Course Management</h3>
-      <div className="flex flex-wrap items-center mb-4">
-        <Input
-          placeholder="Search By Course Name"
-          prefix={<SearchOutlined />}
-          className="w-full md:w-1/3 mb-2 md:mb-0"
-          onChange={(e) => setSearchText(e.target.value)}
-          value={searchText}
-        />
-        {/* <StatusFilter
+    <div>
+      <Card>
+        <h3 className="text-2xl my-5">Course Management</h3>
+        <div className="flex flex-wrap items-center mb-4">
+          <Input
+            placeholder="Search By Course Name"
+            prefix={<SearchOutlined />}
+            className="w-full md:w-1/3 mb-2 md:mb-0"
+            onChange={(e) => setSearchText(e.target.value)}
+            value={searchText}
+          />
+          {/* <StatusFilter
           statuses={statuses}
           selectedStatus={statusFilter}
           onStatusChange={handleStatusChange}
         /> */}
-      </div>
-      <Table
-        dataSource={filteredData}
-        columns={columns}
-        pagination={{
-          current: pageNum,
-          pageSize,
-          total,
-          showSizeChanger: true,
+        </div>
+        <Table
+          dataSource={filteredData}
+          columns={columns}
+          pagination={{
+            current: pageNum,
+            pageSize,
+            total,
+            showSizeChanger: true,
+          }}
+          onChange={handleTableChange}
+          rowKey="_id"
+          bordered
+          // loading={loading}
+          style={{ borderRadius: "8px" }}
+          scroll={{ x: "max-content" }}
+        />
+      </Card>
+      <Modal
+        open={isOpenLog}
+        width={1000}
+        closable
+        onCancel={() => {
+          setIsOpenLog(false);
+          setCurrentCourse({} as Course);
         }}
-        onChange={handleTableChange}
-        rowKey="_id"
-        bordered
-        // loading={loading}
-        style={{ borderRadius: "8px" }}
-        scroll={{ x: "max-content" }}
-      />
-    </Card>
+        footer={null}
+      >
+        <CourseLogModal course_id={currentCourse._id} />
+      </Modal>
+    </div>
   );
 };
 

@@ -39,7 +39,6 @@ const ModalRegisterGoogle = () => {
   const [fileListVideo, setFileListVideo] = useState<UploadFile[]>([]);
   const [form] = Form.useForm();
   const dispatch = useDispatch<AppDispatch>();
- 
 
   const handleImageChange: UploadProps["onChange"] = ({
     fileList: newFileList,
@@ -76,12 +75,16 @@ const ModalRegisterGoogle = () => {
     };
 
     await dispatch(registerWithGoogle(formData));
-
   };
 
   return (
     <div>
-      <Form form={form} onFinish={onFinish} initialValues={{ role: "student" }}>
+      <Form
+        layout="vertical"
+        form={form}
+        onFinish={onFinish}
+        initialValues={{ role: "student" }}
+      >
         {/* Role selection */}
         <Form.Item label="You are" name="role">
           <Radio.Group onChange={handleSelectChange} value={selectedRole}>
@@ -187,8 +190,8 @@ const ModalRegisterGoogle = () => {
             </Form.Item>
 
             {/* Bank Information */}
-            <Row gutter={16}>
-              <Col span={12}>
+        
+              <div className="flex flex-wrap gap-4">
                 <Form.Item
                   label="Bank Name"
                   name="bank_name"
@@ -198,13 +201,13 @@ const ModalRegisterGoogle = () => {
                       message: "Please input your bank name!",
                     },
                   ]}
-                  className="mb-6"
+                  className="flex-grow mb-6 md:!w-72 lg:!w-60"
                 >
                   <Select
                     showSearch
                     placeholder="Select Your Bank Name"
                     optionFilterProp="label"
-                    className="!w-full"
+                    className="w-full !h-[3.25rem]"
                     options={[
                       { label: "Vietcombank", value: "Vietcombank" },
                       { label: "Agribank", value: "Agribank" },
@@ -213,28 +216,25 @@ const ModalRegisterGoogle = () => {
                     ]}
                   />
                 </Form.Item>
-              </Col>
 
-              <Col span={12}>
                 <Form.Item
                   label="Bank Account"
                   name="bank_account_no"
                   rules={[
                     {
                       required: true,
-                      message: "Please input bank account!",
+                      message: "Please input your bank account!",
                     },
                   ]}
-                  className="mb-6"
+                  className="flex-grow mb-6 md:!w-72 lg:!w-60"
                 >
                   <Input
-                    type="number"
                     placeholder="Enter your bank account"
                     className="p-3 text-lg border-gray-300 rounded-lg focus:border-[#FF782D]"
                   />
                 </Form.Item>
-              </Col>
-            </Row>
+              </div>
+           
 
             <Form.Item
               label="Bank Account Name"
