@@ -1,7 +1,7 @@
 import { PageInfo } from "./SearchInfo.model";
 
 export interface APIResponseData<T = unknown> {
-    pageData: T[];
+    pageData?: T[];
     pageInfo?: PageInfo;
 }
 
