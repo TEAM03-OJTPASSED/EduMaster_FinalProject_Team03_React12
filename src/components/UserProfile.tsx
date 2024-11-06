@@ -106,7 +106,7 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ currentUser, onSave }
                       uid: "-1",
                       name: "current_avatar.jpg",
                       status: "done",
-                      url: currentUser.avatar_url || "placeholder_image_url",
+                      url: typeof currentUser.avatar_url === "string" ? currentUser.avatar_url : "placeholder_image_url",
                     },
                   ]}
                   showUploadList={{ showRemoveIcon: false }}

@@ -41,10 +41,10 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog, viewMode }) => (
       }`}
     >
       <div className="flex-grow">
-        <p className="text-gray-500 text-sm mb-2">by {blog.creator}</p>
+        <p className="text-gray-500 text-sm mb-2">by {blog.user_name}</p>
         <h2 className="text-base font-semibold mb-4 overflow-ellipsis overflow-hidden whitespace-nowrap transition group-hover:text-[#FFAB2D]">
           {blog.name}
-        </h2>
+        </h2> 
       </div>
       <div>
         <div className="grid grid-cols-2 grid-rows-2 gap-2 justify-between text-sm text-gray-500 mb-4">
@@ -54,7 +54,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog, viewMode }) => (
           </span>
           <span className="flex items-center justify-end">
             <TiUserOutline className="mr-1 text-orange-500" size={20} />
-            {blog.creator}
+            {blog.user_name}
           </span>
           <span className="flex items-center">
             <BiCategory className="mr-1 text-orange-500" size={18} />
