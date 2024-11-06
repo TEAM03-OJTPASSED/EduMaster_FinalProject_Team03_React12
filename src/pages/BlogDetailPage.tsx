@@ -82,7 +82,7 @@ const BlogDetailPage = () => {
         <BlogHeader
           title={blog.name}
           date={dayjs(blog.created_at).format("DD/MM/YYYY")}
-          creator={blog.creator}
+          creator={blog.user_name}
           comments={comments.length}
         />
         <div className="w-full">
