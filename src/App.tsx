@@ -118,7 +118,7 @@ function App() {
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/faqs" element={<FAQsPage />} />
               <Route path="/*" element={<ErrorPage />} />
-              <Route path="cart" element={<CartPage />} />
+              <Route path="cart/:status" element={<CartPage />} />
               <Route path="/blog/:id" element={<BlogDetailPage />} />
               <Route path="/profile/:id" element={<ProfilePage />} />
 

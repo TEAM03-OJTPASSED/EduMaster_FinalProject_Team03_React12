@@ -15,15 +15,16 @@ const CourseCard: React.FC<{
   onAddCartClick: (course: Course) => void;
 }> = ({ course, viewMode, index, onAddCartClick }) => {
   const [isMdScreen, setIsMdScreen] = useState(false);
+  const [isInCart, setIsInCart] = useState(course.is_in_cart);
   const navigate = useCustomNavigate();
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 992px)");
     const handleResize = () => setIsMdScreen(mediaQuery.matches);
     handleResize(); // Initial check
-    mediaQuery.addEventListener("change", handleResize); // Listen to screen changes
+    mediaQuery.addEventListener("change", handleResize); 
 
-    return () => mediaQuery.removeEventListener("change", handleResize); // Cleanup on unmount
+    return () => mediaQuery.removeEventListener("change", handleResize); 
   }, []);
 
   return (
@@ -131,23 +132,24 @@ const CourseCard: React.FC<{
                 Subtitles
               </li>
             </ul>
-            {!course.is_in_cart &&
+            {!isInCart &&
               <Button
                 className="font-jost w-full bg-primary text-primary-foreground hover:bg-primary/90 flex view-button ant-btn-variant-solid"
                 onClick={(e) => {
                   e.preventDefault();
                   onAddCartClick(course);
+                  setIsInCart(true);
                 }}
               >
                 <FaShoppingCart className="text-white" size={18} /> Add to cart
               </Button> 
             }
-            {(course.is_in_cart && !course.is_purchased) &&
+            {(isInCart && !course.is_purchased) &&
                 <Button
                 className="font-jost w-full bg-primary text-primary-foreground hover:bg-primary/90 flex view-button ant-btn-variant-solid"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate('/cart')
+                  navigate(`/cart/new`)
                 }}
               >
                 <FaShoppingCart className="text-white" size={18} /> View In Your Cart
@@ -160,6 +162,7 @@ const CourseCard: React.FC<{
                 onClick={(e) => {
                   e.preventDefault();
                   navigate(`/course/${course._id}`)
+                  window.scrollTo(0, 0)
                 }}
               >
                 <FaBook className="text-white" size={18} /> Learn Now

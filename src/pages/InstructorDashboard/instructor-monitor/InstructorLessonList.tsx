@@ -1,14 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Table,
-  Input,
-  Card,
-  Tag,
-  TableProps,
-  Button,
-  Modal,
-  Select,
-} from "antd";
+import { Table, Input, Card, Tag, TableProps, Button, Modal, Select } from "antd";
 import {
   SearchOutlined,
   DeleteOutlined,
@@ -35,7 +26,6 @@ const InstructorLessonList = () => {
   const [listCourses, setListCourses] = useState<Course[]>([]);
   const [listSessions, setListSessions] = useState<Session[]>([]);
   const [listLessons, setListLessons] = useState<Lesson[]>([]);
-  
   const [loading, setLoading] = useState(false);
 
   const showModal = (lesson: Lesson) => {
@@ -67,7 +57,7 @@ const InstructorLessonList = () => {
       is_deleted: false,
       category_id: "",
     }
-  }
+  };
 
   const initialSessionsParams: GetSessions = {
     pageInfo: {
@@ -101,33 +91,32 @@ const InstructorLessonList = () => {
       const response = await CourseService.getCourses(initialCoursesParams);
       setListCourses(response?.data?.pageData ?? []);
     } finally {
-      setLoading(false);
+      setLoading(false); 
     }
   };
 
   const fetchLessons = async () => {
-    setLoading(true);
+    setLoading(true); 
     try {
       const response = await LessonService.getLessons(initialLessonsParams);
       setListLessons(response?.data?.pageData ?? []);
     } finally {
-      setLoading(false);
+      setLoading(false); 
     }
   };
 
   const fetchSessions = async () => {
-    setLoading(true);
+    setLoading(true); 
     try {
       const response = await SessionService.getSessions(initialSessionsParams);
       setListSessions(response?.data?.pageData ?? []);
     } finally {
-      setLoading(false);
+      setLoading(false); 
     }
   };
 
   const handleCreateLesson = async (values: LessonRequest) => {
-    const { position_order, full_time, image_url, video_url, ...otherValues } =
-      values;
+    const { position_order, full_time, image_url, video_url, ...otherValues } = values;
     const numericValues = {
       ...otherValues,
       position_order: position_order ? Number(position_order) : 0,
@@ -135,7 +124,7 @@ const InstructorLessonList = () => {
       video_url: video_url || "",
       image_url: image_url || "",
     };
-
+  
     setLoading(true);
     try {
       const response = await LessonService.createLesson(numericValues);
@@ -153,10 +142,7 @@ const InstructorLessonList = () => {
     setLoading(true);
     try {
       if (selectedSession) {
-        const response = await LessonService.updateLesson(
-          selectedLesson._id,
-          updatedLesson
-        );
+        const response = await LessonService.updateLesson(selectedLesson._id, updatedLesson);
         if (response.success) {
           resetModalState();
           handleNotify("Lesson Updated Successfully", "The lesson has been updated successfully.");
@@ -164,7 +150,7 @@ const InstructorLessonList = () => {
         }
       }
     } finally {
-      setLoading(false);
+      setLoading(false); 
     }
   };
 
@@ -244,28 +230,6 @@ const InstructorLessonList = () => {
     },
   ];
 
-
-
-  // useEffect(() => {
-  //   let filtered = [...listLessons];
-
-  //   if (selectedCourse) {
-  //     filtered = filtered.filter(lesson => String(lesson.course_id) === String(selectedCourse));
-  //   }
-
-  //   if (selectedSession) {
-  //     filtered = filtered.filter(lesson => String(lesson.session_id) === String(selectedSession));
-  //   }
-
-  //   if (searchText) {
-  //     filtered = filtered.filter(lesson => 
-  //       lesson.name.toLowerCase().includes(searchText.toLowerCase())
-  //     );
-  //   }
-
-  //   setFilteredLessons(filtered);
-  // }, [selectedCourse, selectedSession, searchText]);
-
   const handleCourseChange = (courseId: string) => {
     setSelectedCourse(courseId);
     setSelectedSession(undefined);
@@ -292,7 +256,7 @@ const InstructorLessonList = () => {
             onChange={handleCourseChange}
             value={selectedCourse}
           >
-            {listCourses.map((course) => (
+            {listCourses.map(course => (
               <Select.Option key={course._id} value={String(course._id)}>
                 {course.name}
               </Select.Option>
@@ -307,17 +271,13 @@ const InstructorLessonList = () => {
             value={selectedSession}
             disabled={!selectedCourse}
           >
-            {selectedCourse &&
-              listSessions
-                .filter(
-                  (session) =>
-                    String(session.course_id) === String(selectedCourse)
-                )
-                .map((session) => (
-                  <Select.Option key={session._id} value={String(session._id)}>
-                    {session.name}
-                  </Select.Option>
-                ))}
+            {selectedCourse && listSessions
+              .filter(session => String(session.course_id) === String(selectedCourse))
+              .map(session => (
+                <Select.Option key={session._id} value={String(session._id)}>
+                  {session.name}
+                </Select.Option>
+              ))}
           </Select>
         </div>
 

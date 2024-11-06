@@ -248,7 +248,7 @@ const Navbar = () => {
             {userLoggedIn && (
               <button
                 className="p-0 w-10 h-10 text-2xl relative"
-                onClick={() => navigate("/cart")}
+                onClick={() => navigate("/cart/new")}
               >
                 <ShoppingCartOutlined />
                 <span className="absolute top-0 right-0 w-4 h-4 bg-orange-500 rounded-full text-xs text-white font-semibold">
@@ -299,7 +299,7 @@ const Navbar = () => {
             {userLoggedIn && (
               <button
                 className="p-0 w-10 h-10 text-2xl relative mr-8"
-                onClick={() => navigate("/cart")}
+                onClick={() => navigate("/cart/new")}
               >
                 <ShoppingCartOutlined />
                 <span className="absolute top-0 right-0 w-4 h-4 bg-orange-500 rounded-full text-xs text-white font-semibold">
