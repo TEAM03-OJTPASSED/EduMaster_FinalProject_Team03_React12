@@ -95,7 +95,7 @@ export const registerWithGoogle = createAsyncThunk<
   ModalRegisterGoogleProps
 >("auth/registerGoogle", async (formData) => {
   const response = await postRequest("/api/users/google", formData);
-  handleNotify('success',"Register gg successfully", " ")
+  handleNotify("Register gg successfully", " ")
   localStorage.setItem("token", (response as any).data.token);
   return response.data as AuthState;
 });
@@ -104,7 +104,7 @@ export const registerWithGoogle = createAsyncThunk<
 export const getCurrentUser = createAsyncThunk("auth/user", async () => {
   const res = await getRequest("/api/auth");
   localStorage.setItem("user", JSON.stringify(res.data));
-  handleNotify('success',"Login successfully", " ");
+  handleNotify("Login successfully", " ");
   return res.data;
 });
 

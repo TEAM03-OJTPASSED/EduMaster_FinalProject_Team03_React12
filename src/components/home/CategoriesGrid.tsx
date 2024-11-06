@@ -15,7 +15,7 @@ const CategoriesGrid: React.FC<CategoriesGridProps> = ({ categories }) => {
   return (
     <Row gutter={[20, 20]}>
       {categories.length < 1 ? (
-        <>adwd</>
+        <></>
       ) : (
         categories.map((category, index) => (
           <Col xs={24} sm={12} md={8} lg={6} xl={4} key={index}>

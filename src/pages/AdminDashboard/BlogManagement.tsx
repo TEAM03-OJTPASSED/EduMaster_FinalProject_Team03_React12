@@ -1,22 +1,17 @@
 import { useEffect, useState } from "react";
-import { Button, Card, Input, Modal, Table, Select } from "antd";
+import { Button, Card, Input, Modal, Table, Select, Tag } from "antd";
 import { SearchOutlined, PlusCircleOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import CreateBlog from "./blog/CreateBlog";
-import DeleteBlog from "./blog/DeleteBlog"; // Import the DeleteBlog component
+import DeleteBlog from "./blog/DeleteBlog"; 
 import { Blog } from "../../models/Blog.model";
 import { BlogSearchParams } from "../../models/SearchInfo.model";
 import BlogService from "../../services/blog.service";
-import { Category, GetCategories } from "../../models/Category.model";
-import CategoryService from "../../services/category.service";
-
-const { Option } = Select;
 
 const BlogManagement = () => {
   const [isModalCreateVisible, setIsModalCreateVisible] = useState(false);
   const [isModalDeleteVisible, setIsModalDeleteVisible] = useState(false); // State for delete modal
   const [deleteId, setDeleteId] = useState<string | null>(null); // ID of the blog to delete
-  const [listCategories, setListCategories] = useState<Category[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [fetchedBlogs, setFetchedBlogs] = useState<Blog[]>([]);
   const [blogs, setBlogs] = useState<Blog[]>([]);
@@ -35,31 +30,15 @@ const BlogManagement = () => {
         },
       };
       const res = await BlogService.getBlogs(searchParams);
+      console.log("Blog:", res.data?.pageData)
       const pageData = res.data?.pageData ?? [];
       setFetchedBlogs(pageData);
       setBlogs(pageData);
     } finally {
     }
   };
-
-  const fetchCategories = async () => {
-    const initialCategoriesParams: GetCategories = {
-      pageInfo: {
-        pageNum: 1,
-        pageSize: 100,
-      },
-      searchCondition: {
-        keyword: "",
-        is_deleted: false,
-      },
-    };
-    const categoriesResponse = await CategoryService.getCategories(initialCategoriesParams);
-    setListCategories(categoriesResponse.data?.pageData ?? []);
-  };
-
   useEffect(() => {
     fetchBlogs();
-    fetchCategories();
   }, []);
 
   useEffect(() => {
@@ -104,14 +83,23 @@ const BlogManagement = () => {
       key: "name",
     },
     {
+      title: "Tag",
+      dataIndex: "tags",
+      key: "tags",
+      render: (tags: string[]) => (
+        <>
+          {tags.map((tag) => (
+            <Tag color="blue" key={tag}>
+              {tag}
+            </Tag>
+          ))}
+        </>
+      ),
+    },
+    {
       title: "Description",
       dataIndex: "description",
       key: "description",
-    },
-    {
-      title: "Category",
-      dataIndex: "category_name",
-      key: "category_name",
     },
     {
       title: "Image",
@@ -121,7 +109,7 @@ const BlogManagement = () => {
         <img
           src={imageUrl}
           alt="Blog"
-          style={{ width: "100px", height: "100px" }}
+          style={{ width: "50px", height: "50px" }}
         />
       ),
     },
@@ -173,11 +161,7 @@ const BlogManagement = () => {
           className="w-full md:w-1/4 mb-2 md:mb-0 md:ml-3"
           style={{ minWidth: '200px' }}
         >
-          {listCategories.map((category) => (
-            <Option key={category._id} value={category._id}>
-              {category.name}
-            </Option>
-          ))}
+          
         </Select>
         <Button
           onClick={showModalCreate}
@@ -214,7 +198,7 @@ const BlogManagement = () => {
         onCancel={handleCancel}
         width="80%"
         style={{ top: 20 }}
-        bodyStyle={{ height: "80vh", padding: 0 }}
+        bodyStyle={{ height: "68vh", padding: 0 }}
         footer={null}
       >
         <CreateBlog onSuccess={onSuccess} />

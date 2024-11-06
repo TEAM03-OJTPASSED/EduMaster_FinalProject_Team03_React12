@@ -1,14 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Table,
-  Input,
-  Card,
-  Tag,
-  TableProps,
-  Button,
-  Modal,
-  Select,
-} from "antd";
+import { Table, Input, Card, Tag, TableProps, Button, Modal, Select } from "antd";
 import {
   SearchOutlined,
   DeleteOutlined,
@@ -18,7 +9,7 @@ import {
 
 import dayjs from "dayjs";
 import LessonIOptions from "./create-courses/LessonIOptions";
-import { Lesson, LessonRequest } from "../../../models/Lesson.model";
+import { GetLessons, Lesson, LessonRequest } from "../../../models/Lesson.model";
 import CourseService from "../../../services/course.service";
 import SessionService from "../../../services/session.service";
 import { Course, GetCourses } from "../../../models/Course.model";
@@ -35,10 +26,7 @@ const InstructorLessonList = () => {
   const [listCourses, setListCourses] = useState<Course[]>([]);
   const [listSessions, setListSessions] = useState<Session[]>([]);
   const [listLessons, setListLessons] = useState<Lesson[]>([]);
-
   const [loading, setLoading] = useState(false);
-  // const [filteredLessons, setFilteredLessons] = useState<Lesson[]>([]);
-  // const [searchText, setSearchText] = useState("");
 
   const showModal = (lesson: Lesson) => {
     setSelectedLesson(lesson);
@@ -49,9 +37,14 @@ const InstructorLessonList = () => {
     setIsModalCreateVisible(true);
   };
 
-  const handleCancel = () => {
+  const resetModalState = () => {
+    setSelectedLesson({} as Lesson);
     setIsModalVisible(false);
     setIsModalCreateVisible(false);
+  };
+
+  const handleCancel = () => {
+    resetModalState();
   };
 
   const initialCoursesParams: GetCourses = {
@@ -63,7 +56,7 @@ const InstructorLessonList = () => {
       keyword: "",
       is_deleted: false,
       category_id: "",
-    },
+    }
   };
 
   const initialSessionsParams: GetSessions = {
@@ -76,7 +69,20 @@ const InstructorLessonList = () => {
       is_deleted: false,
       is_position_order: true,
       course_id: "",
+    }
+  };
+
+  const initialLessonsParams: GetLessons = {
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 10,
     },
+    searchCondition: {
+      keyword: "",
+      is_deleted: false,
+      course_id: "",
+      is_position_order: false
+    }
   };
 
   const fetchCourses = async () => {
@@ -85,33 +91,32 @@ const InstructorLessonList = () => {
       const response = await CourseService.getCourses(initialCoursesParams);
       setListCourses(response?.data?.pageData ?? []);
     } finally {
-      setLoading(false);
+      setLoading(false); 
     }
   };
 
   const fetchLessons = async () => {
-    setLoading(true);
+    setLoading(true); 
     try {
-      const response = await LessonService.getLessons(initialSessionsParams);
+      const response = await LessonService.getLessons(initialLessonsParams);
       setListLessons(response?.data?.pageData ?? []);
     } finally {
-      setLoading(false);
+      setLoading(false); 
     }
   };
 
   const fetchSessions = async () => {
-    setLoading(true);
+    setLoading(true); 
     try {
       const response = await SessionService.getSessions(initialSessionsParams);
       setListSessions(response?.data?.pageData ?? []);
     } finally {
-      setLoading(false);
+      setLoading(false); 
     }
   };
 
   const handleCreateLesson = async (values: LessonRequest) => {
-    const { position_order, full_time, image_url, video_url, ...otherValues } =
-      values;
+    const { position_order, full_time, image_url, video_url, ...otherValues } = values;
     const numericValues = {
       ...otherValues,
       position_order: position_order ? Number(position_order) : 0,
@@ -119,20 +124,17 @@ const InstructorLessonList = () => {
       video_url: video_url || "",
       image_url: image_url || "",
     };
-
+  
     setLoading(true);
     try {
       const response = await LessonService.createLesson(numericValues);
       if (response.success) {
-        handleCancel(); // Close modal if successful
-        handleNotify(
-          "Lesson Created Successfully",
-          "The lesson has been created successfully."
-        );
-        await fetchLessons(); // Refresh the course list
+        resetModalState();
+        handleNotify("Lesson Created Successfully", "The lesson has been created successfully.");
+        await fetchLessons();
       }
     } finally {
-      setLoading(false); // Ensures loading is set to false regardless of success/failure
+      setLoading(false);
     }
   };
 
@@ -140,20 +142,15 @@ const InstructorLessonList = () => {
     setLoading(true);
     try {
       if (selectedSession) {
-        const response = await LessonService.updateLesson(
-          selectedLesson._id,
-          updatedLesson
-        );
+        const response = await LessonService.updateLesson(selectedLesson._id, updatedLesson);
         if (response.success) {
-          handleNotify(
-            "Lesson Updated Successfully",
-            "The lesson has been updated successfully."
-          );
-          await fetchLessons(); // Refresh the course list
+          resetModalState();
+          handleNotify("Lesson Updated Successfully", "The lesson has been updated successfully.");
+          await fetchLessons();
         }
       }
     } finally {
-      setLoading(false);
+      setLoading(false); 
     }
   };
 
@@ -162,21 +159,18 @@ const InstructorLessonList = () => {
     try {
       const response = await LessonService.deleteLesson(lessonId);
       if (response.success) {
-        handleNotify(
-          "Lesson Deleted Successfully",
-          "The lesson has been deleted successfully."
-        );
-        await fetchLessons(); // Refresh the course list
+        handleNotify("Lesson Deleted Successfully", "The lesson has been deleted successfully.");
+        await fetchLessons();
       }
     } finally {
-      setLoading(false); // Ensures loading is set to false regardless of success/failure
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchCourses(); // Call the async function
-    fetchSessions(); // Call the async function
-    fetchLessons(); // Call the async function
+    fetchCourses();
+    fetchSessions();
+    fetchLessons();
   }, []);
 
   const columns: TableProps<Lesson>["columns"] = [
@@ -236,29 +230,9 @@ const InstructorLessonList = () => {
     },
   ];
 
-  // useEffect(() => {
-  //   let filtered = [...listLessons];
-
-  //   if (selectedCourse) {
-  //     filtered = filtered.filter(lesson => String(lesson.course_id) === String(selectedCourse));
-  //   }
-
-  //   if (selectedSession) {
-  //     filtered = filtered.filter(lesson => String(lesson.session_id) === String(selectedSession));
-  //   }
-
-  //   if (searchText) {
-  //     filtered = filtered.filter(lesson =>
-  //       lesson.name.toLowerCase().includes(searchText.toLowerCase())
-  //     );
-  //   }
-
-  //   setFilteredLessons(filtered);
-  // }, [selectedCourse, selectedSession, searchText]);
-
   const handleCourseChange = (courseId: string) => {
     setSelectedCourse(courseId);
-    setSelectedSession(undefined); // Reset session when course changes
+    setSelectedSession(undefined);
   };
 
   const handleSessionChange = (sessionId: string) => {
@@ -274,7 +248,6 @@ const InstructorLessonList = () => {
             placeholder="Search By Lesson Name"
             prefix={<SearchOutlined className="w-4 h-4" />}
             className="w-64"
-            // onChange={(e) => setSearchText(e.target.value)}
           />
           <Select
             allowClear
@@ -283,7 +256,7 @@ const InstructorLessonList = () => {
             onChange={handleCourseChange}
             value={selectedCourse}
           >
-            {listCourses.map((course) => (
+            {listCourses.map(course => (
               <Select.Option key={course._id} value={String(course._id)}>
                 {course.name}
               </Select.Option>
@@ -298,17 +271,13 @@ const InstructorLessonList = () => {
             value={selectedSession}
             disabled={!selectedCourse}
           >
-            {selectedCourse &&
-              listSessions
-                .filter(
-                  (session) =>
-                    String(session.course_id) === String(selectedCourse)
-                )
-                .map((session) => (
-                  <Select.Option key={session._id} value={String(session._id)}>
-                    {session.name}
-                  </Select.Option>
-                ))}
+            {selectedCourse && listSessions
+              .filter(session => String(session.course_id) === String(selectedCourse))
+              .map(session => (
+                <Select.Option key={session._id} value={String(session._id)}>
+                  {session.name}
+                </Select.Option>
+              ))}
           </Select>
         </div>
 
@@ -342,6 +311,7 @@ const InstructorLessonList = () => {
         footer={null}
         forceRender
         width={1000}
+        destroyOnClose={true}
       >
         {selectedLesson && (
           <LessonIOptions
@@ -356,12 +326,17 @@ const InstructorLessonList = () => {
       </Modal>
 
       <Modal
-        title="Lesson Details"
+        title={<h1 className="text-lg">Lesson Details</h1>}
+        
         open={isModalCreateVisible}
         onCancel={handleCancel}
         footer={null}
         forceRender
-        width={1000}
+        width={1200}
+        className="min-h-800"
+        destroyOnClose={true}
+
+        
       >
         <LessonIOptions
           onFinished={handleCreateLesson}

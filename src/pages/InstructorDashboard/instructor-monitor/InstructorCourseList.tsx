@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Table,
-  Input,
-  Card,
-  Tag,
-  Button,
-  Modal,
-} from "antd";
+import { Table, Input, Card, Tag, Button, Modal } from "antd";
 import {
   SearchOutlined,
   DeleteOutlined,
@@ -18,7 +11,12 @@ import {
 import CourseOption from "./create-courses/CourseOption";
 import StatusFilter from "../../../components/StatusFilter";
 import CourseService from "../../../services/course.service";
-import { Course, CourseRequest, CourseStatusEnum, GetCourses } from "../../../models/Course.model";
+import {
+  Course,
+  CourseRequest,
+  CourseStatusEnum,
+  GetCourses,
+} from "../../../models/Course.model";
 import { Category, GetCategories } from "../../../models/Category.model";
 import CategoryService from "../../../services/category.service";
 import { handleNotify } from "../../../utils/handleNotify";
@@ -35,9 +33,12 @@ const InstructorCourseList: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const showModal = async (course: Course) => {
+    setSelectedCourse(null); // Reset the selected course first
     const response = await CourseService.getCourse(course._id);
-    if (response.data != undefined ) setSelectedCourse(response.data);
-    setIsModalVisible(true);
+    if (response.data != undefined) {
+      setSelectedCourse(response.data);
+      setIsModalVisible(true);
+    }
   };
 
   const showModalCreate = () => {
@@ -47,7 +48,10 @@ const InstructorCourseList: React.FC = () => {
   const handleCancel = () => {
     setIsModalVisible(false);
     setIsModalCreateVisible(false);
+    setSelectedCourse(null); // Reset selected course when closing
   };
+
+
 
   const initialCoursesParams: GetCourses = {
     pageInfo: {
@@ -58,8 +62,8 @@ const InstructorCourseList: React.FC = () => {
       keyword: "",
       is_deleted: false,
       category_id: "",
-    }
-  }
+    },
+  };
 
   const initialCategoriesParams: GetCategories = {
     pageInfo: {
@@ -69,8 +73,8 @@ const InstructorCourseList: React.FC = () => {
     searchCondition: {
       keyword: "",
       is_deleted: false,
-    }
-  }
+    },
+  };
 
   const fetchCourses = async () => {
     setLoading(true);
@@ -78,17 +82,19 @@ const InstructorCourseList: React.FC = () => {
       const response = await CourseService.getCourses(initialCoursesParams);
       setListCourses(response?.data?.pageData ?? []);
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
   const fetchCategories = async () => {
-    setLoading(true); 
+    setLoading(true);
     try {
-      const response = await CategoryService.getCategories(initialCategoriesParams);
+      const response = await CategoryService.getCategories(
+        initialCategoriesParams
+      );
       setListCategories(response?.data?.pageData ?? []);
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -101,13 +107,16 @@ const InstructorCourseList: React.FC = () => {
       video_url: video_url || "",
       image_url: image_url || "",
     };
-  
+
     setLoading(true);
     try {
       const response = await CourseService.createCourse(numericValues);
       if (response.success) {
         handleCancel();
-        handleNotify("Course Created Successfully", "The course has been created successfully.");
+        handleNotify(
+          "Course Created Successfully",
+          "The course has been created successfully."
+        );
         await fetchCourses();
       }
     } finally {
@@ -120,65 +129,79 @@ const InstructorCourseList: React.FC = () => {
     try {
       const response = await CourseService.deleteCourse(courseId);
       if (response.success) {
-        handleNotify("Course Deleted Successfully", "The course has been deleted successfully.");
+        handleNotify(
+          "Course Deleted Successfully",
+          "The course has been deleted successfully."
+        );
         await fetchCourses();
       }
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const handleUpdateCourse = async (updatedCourse: CourseRequest) => {
     setLoading(true);
     try {
       if (selectedCourse) {
-        const response = await CourseService.updateCourse(selectedCourse._id, updatedCourse);
+        const response = await CourseService.updateCourse(
+          selectedCourse._id,
+          updatedCourse
+        );
         if (response.success) {
-          handleNotify("Course Updated Successfully", "The course has been updated successfully.");
+          handleNotify(
+            "Course Updated Successfully",
+            "The course has been updated successfully."
+          );
           await fetchCourses();
         }
       }
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     fetchCourses();
     fetchCategories();
-  },[]);
+  }, []);
 
-  const handleSendToAdmin = async (course: Course) => {   
+  const handleSendToAdmin = async (course: Course) => {
     console.log("Sending course to admin:", course);
-    
-      const response = await CourseService.updateCourseStatus({course_id: course._id,
-        new_status: CourseStatusEnum.WAITING_APPROVE,
-        comment: "Please approve my course"});
-      if (response.success) {
-        handleNotify("Request sent to admin", "The course will be awaiting approval. Please be alert in the next few days.");
-        await fetchCourses();
-      } 
+
+    const response = await CourseService.updateCourseStatus({
+      course_id: course._id,
+      new_status: CourseStatusEnum.WAITING_APPROVE,
+      comment: "Please approve my course",
+    });
+    if (response.success) {
+      handleNotify(
+        "Request sent to admin",
+        "The course will be awaiting approval. Please be alert in the next few days."
+      );
+      await fetchCourses();
+    }
   };
 
-
-  const handleToggleActive = async (course: Course) => {   
-      const newStatus = course.status === CourseStatusEnum.ACTIVE 
-        ? CourseStatusEnum.INACTIVE 
+  const handleToggleActive = async (course: Course) => {
+    const newStatus =
+      course.status === CourseStatusEnum.ACTIVE
+        ? CourseStatusEnum.INACTIVE
         : CourseStatusEnum.ACTIVE;
-      
-      const response = await CourseService.updateCourseStatus({
-        course_id: course._id,
-        new_status: newStatus,
-        comment: `Course status changed to ${newStatus}`
-      });
-      
-      if (response.success) {
-        handleNotify(
-          "Status Updated", 
-          `Course is now ${newStatus.toLowerCase()}`
-        );
-        await fetchCourses();
-      }
+
+    const response = await CourseService.updateCourseStatus({
+      course_id: course._id,
+      new_status: newStatus,
+      comment: `Course status changed to ${newStatus}`,
+    });
+
+    if (response.success) {
+      handleNotify(
+        "Status Updated",
+        `Course is now ${newStatus.toLowerCase()}`
+      );
+      await fetchCourses();
+    }
   };
 
   const columns = [
@@ -220,7 +243,11 @@ const InstructorCourseList: React.FC = () => {
           [CourseStatusEnum.ACTIVE]: "yellow",
           [CourseStatusEnum.INACTIVE]: "yellow",
         };
-        return <Tag color={statusColors[status] || "gray"}>{capitalizeFirstLetter(status)}</Tag>;
+        return (
+          <Tag color={statusColors[status] || "gray"}>
+            {capitalizeFirstLetter(status)}
+          </Tag>
+        );
       },
     },
     {
@@ -231,7 +258,7 @@ const InstructorCourseList: React.FC = () => {
         <div>
           <span>${price.toFixed(2)}</span>
         </div>
-      )
+      ),
     },
     {
       title: "Discount",
@@ -247,11 +274,11 @@ const InstructorCourseList: React.FC = () => {
       title: "Status Toggle",
       key: "statusToggle",
       render: (record: Course) => {
-        const isDisabled = 
+        const isDisabled =
           record.status === CourseStatusEnum.NEW ||
           record.status === CourseStatusEnum.WAITING_APPROVE ||
           record.status === CourseStatusEnum.REJECT;
-  
+
         return (
           <CourseStatusToggle
             status={record.status}
@@ -259,7 +286,7 @@ const InstructorCourseList: React.FC = () => {
             onToggle={async (newStatus) => {
               await handleToggleActive({
                 ...record,
-                status: newStatus
+                status: newStatus,
               });
             }}
           />
@@ -281,27 +308,37 @@ const InstructorCourseList: React.FC = () => {
             icon={<DeleteOutlined style={{ color: "red" }} />}
             onClick={() => handleDeleteCourse(record._id)}
           />
-          <Button
-            type="text"
-            icon={<SendOutlined style={{ color: "blue" }} />}
-            onClick={() => handleSendToAdmin(record)}
-            disabled={
-              record.status !== CourseStatusEnum.NEW &&
-              record.status !== CourseStatusEnum.REJECT
-            }
-            title={
-              record.status !== CourseStatusEnum.NEW &&
-              record.status !== CourseStatusEnum.REJECT
-                ? "Can only send NEW or REJECT courses"
-                : "Send to admin for approval"
-            }
-          />
+
+          {record.status == CourseStatusEnum.NEW && (
+            <Button
+              type="text"
+              icon={<SendOutlined style={{ color: "blue" }} />}
+              onClick={() => handleSendToAdmin(record)}
+              disabled={
+                record.status !== CourseStatusEnum.NEW &&
+                record.status !== CourseStatusEnum.REJECT
+              }
+              title={
+                record.status !== CourseStatusEnum.NEW &&
+                record.status !== CourseStatusEnum.REJECT
+                  ? "Can only send NEW or REJECT courses"
+                  : "Send to admin for approval"
+              }
+            />
+          )}
         </div>
       ),
     },
   ];
 
-  const statuses = [CourseStatusEnum.ACTIVE, CourseStatusEnum.APPROVE, CourseStatusEnum.INACTIVE, CourseStatusEnum.NEW, CourseStatusEnum.REJECT, CourseStatusEnum.WAITING_APPROVE];
+  const statuses = [
+    CourseStatusEnum.ACTIVE,
+    CourseStatusEnum.APPROVE,
+    CourseStatusEnum.INACTIVE,
+    CourseStatusEnum.NEW,
+    CourseStatusEnum.REJECT,
+    CourseStatusEnum.WAITING_APPROVE,
+  ];
   const handleStatusChange = (value: string | undefined) => {
     setStatusFilter(value);
   };
@@ -353,9 +390,11 @@ const InstructorCourseList: React.FC = () => {
         footer={null}
         width={1000}
         forceRender
+        destroyOnClose={true} 
       >
         {selectedCourse && (
           <CourseOption
+            key={selectedCourse._id} 
             categories={listCategories}
             initializeValue={selectedCourse}
             mode="update"
@@ -372,8 +411,10 @@ const InstructorCourseList: React.FC = () => {
         footer={null}
         width={1000}
         forceRender
+        destroyOnClose={true} // Add this to ensure form state is destroyed
       >
         <CourseOption
+          key={isModalCreateVisible ? 'create-new' : 'create'} // Add key prop to force remount
           mode="create"
           onFinished={handleCreateCourse}
           isLoading={loading}

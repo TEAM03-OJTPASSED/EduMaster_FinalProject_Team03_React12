@@ -21,12 +21,12 @@ const InstructorSessionList = () => {
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
   const [isModalCreateVisible, setIsModalCreateVisible] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<string>();
-  // const [searchText, setSearchText] = useState("");
   const [listCourses, setListCourses] = useState<Course[]>([]);
   const [listSessions, setListSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(false);
 
   const showModal = (session: Session) => {
+    setSelectedSession(null); // Reset the selected session first
     setSelectedSession(session);
     setIsModalVisible(true);
   };
@@ -38,6 +38,7 @@ const InstructorSessionList = () => {
   const handleCancel = () => {
     setIsModalVisible(false);
     setIsModalCreateVisible(false);
+    setSelectedSession(null); // Reset selected session when closing
   };
 
   const handleCourseChange = (courseId: string | undefined) => {
@@ -261,9 +262,11 @@ const InstructorSessionList = () => {
         footer={null}
         forceRender
         width={1000}
+        destroyOnClose={true}
       >
         {selectedSession && (
           <SessionOptions
+            key={selectedSession._id}
             isLoading={loading}
             listCourses={listCourses}
             initialState={selectedSession}
@@ -273,7 +276,7 @@ const InstructorSessionList = () => {
         )}
       </Modal>
 
-      {/* Create */}
+      {/* Create Modal */}
       <Modal
         title="Create Session"
         onCancel={handleCancel}
@@ -281,9 +284,11 @@ const InstructorSessionList = () => {
         footer={null}
         forceRender
         width={1000}
+        destroyOnClose={true} 
       >
         <SessionOptions
-        listCourses={listCourses}
+          key={isModalCreateVisible ? 'create-new' : 'create'} 
+          listCourses={listCourses}
           mode="create"
           onFinish={handleCreateSession}
           isLoading={loading}

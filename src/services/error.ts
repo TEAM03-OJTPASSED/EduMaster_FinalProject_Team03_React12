@@ -8,7 +8,7 @@ interface ErrorResponse {
 }
 
 const handleError = (error: AxiosError) => {
-  
+
   // Chỉ định kiểu cho tham số error
   if (error.response) {
     const { status, data } = error.response; // Lấy status và data từ response
@@ -18,33 +18,33 @@ const handleError = (error: AxiosError) => {
       const errorData = data as ErrorResponse;
       
       if (status === 400) {
-        handleNotify('error', 'Bad Request', errorData.message || errorData.Message || 'Bad Request');
+        handleNotify('Bad Request', errorData.message || errorData.Message || 'Bad Request', 'error');
       }
       if (status === 401) {
         console.log("401 - Lỗi", error);
-        handleNotify('error', 'Unauthorized', errorData.message || errorData.Message || 'Unauthorized');
+        handleNotify('Unauthorized', errorData.message || errorData.Message || 'Unauthorized', 'error');
       }
       if (status === 403) {
         console.log("403 - Lỗi", errorData);
-        handleNotify('error', 'Forbidden', errorData.message || errorData.Message || 'Forbidden');
+        handleNotify('Forbidden', errorData.message || errorData.Message || 'Forbidden', 'error');
       }
       if (status === 404) {
         console.log("404 - Not Found", error);
       }
       if (status === 409) {
         console.log("409 - Tạo sổ.", error);
-        handleNotify('error', 'Conflict', errorData.message || errorData.Message || 'Conflict');
+        handleNotify('Conflict', errorData.message || errorData.Message || 'Conflict', 'error');
       }
       if (status === 500) {
         console.log("500 - Internal Server Error", error);
-        handleNotify('error', 'Internal Server Error', errorData.message || errorData.Message || 'Internal Server Error');
+        handleNotify('Internal Server Error', errorData.message || errorData.Message || 'Internal Server Error', 'error');
       }
     } else {
       console.log("Unexpected data format:", data);
     }
   } else {
     console.log("Error:", error.message);
-    handleNotify('error', 'Error', error.message);
+    handleNotify('Error', error.message, 'error');
   }
 };
 

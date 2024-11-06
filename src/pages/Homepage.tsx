@@ -4,18 +4,18 @@ import heroImage from "../assets/pexels-kseniachernaya-7301126.jpg";
 // import { BiSearch } from "react-icons/bi";
 import CategoriesGrid from "../components/home/CategoriesGrid";
 
-import {
-  FaPalette,
-  FaCode,
-  FaComments,
-  FaVideo,
-  FaCamera,
-  FaChartLine,
-  FaPenNib,
-  FaChartPie,
-  FaAtom,
-  FaNetworkWired,
-} from "react-icons/fa";
+// import {
+//   FaPalette,
+//   FaCode,
+//   FaComments,
+//   FaVideo,
+//   FaCamera,
+//   FaChartLine,
+//   FaPenNib,
+//   FaChartPie,
+//   FaAtom,
+//   FaNetworkWired,
+// } from "react-icons/fa";
 import CoursesGrid from "../components/home/CoursesGrid";
 import CTABanner from "../components/home/CTABanner";
 import LatestArticles from "../components/home/LatestArticles";
@@ -37,64 +37,62 @@ interface Category {
   courses: number;
 }
 
-const categories: Category[] = [
-  {
-    icon: <FaPalette className="text-4xl text-orange-500" />,
-    title: "Art & Design",
-    courses: 38,
-  },
-  {
-    icon: <FaCode className="text-4xl text-orange-500" />,
-    title: "Development",
-    courses: 38,
-  },
-  {
-    icon: <FaComments className="text-4xl text-orange-500" />,
-    title: "Communication",
-    courses: 38,
-  },
-  {
-    icon: <FaVideo className="text-4xl text-orange-500" />,
-    title: "Videography",
-    courses: 38,
-  },
-  {
-    icon: <FaCamera className="text-4xl text-orange-500" />,
-    title: "Photography",
-    courses: 38,
-  },
-  {
-    icon: <FaChartLine className="text-4xl text-orange-500" />,
-    title: "Marketing",
-    courses: 38,
-  },
-  {
-    icon: <FaPenNib className="text-4xl text-orange-500" />,
-    title: "Content Writing",
-    courses: 38,
-  },
-  {
-    icon: <FaChartPie className="text-4xl text-orange-500" />,
-    title: "Finance",
-    courses: 38,
-  },
-  {
-    icon: <FaAtom className="text-4xl text-orange-500" />,
-    title: "Science",
-    courses: 38,
-  },
-  {
-    icon: <FaNetworkWired className="text-4xl text-orange-500" />,
-    title: "Network",
-    courses: 38,
-  },
-];
-
+// const categories: Category[] = [
+//   {
+//     icon: <FaPalette className="text-4xl text-orange-500" />,
+//     title: "Art & Design",
+//     courses: 38,
+//   },
+//   {
+//     icon: <FaCode className="text-4xl text-orange-500" />,
+//     title: "Development",
+//     courses: 38,
+//   },
+//   {
+//     icon: <FaComments className="text-4xl text-orange-500" />,
+//     title: "Communication",
+//     courses: 38,
+//   },
+//   {
+//     icon: <FaVideo className="text-4xl text-orange-500" />,
+//     title: "Videography",
+//     courses: 38,
+//   },
+//   {
+//     icon: <FaCamera className="text-4xl text-orange-500" />,
+//     title: "Photography",
+//     courses: 38,
+//   },
+//   {
+//     icon: <FaChartLine className="text-4xl text-orange-500" />,
+//     title: "Marketing",
+//     courses: 38,
+//   },
+//   {
+//     icon: <FaPenNib className="text-4xl text-orange-500" />,
+//     title: "Content Writing",
+//     courses: 38,
+//   },
+//   {
+//     icon: <FaChartPie className="text-4xl text-orange-500" />,
+//     title: "Finance",
+//     courses: 38,
+//   },
+//   {
+//     icon: <FaAtom className="text-4xl text-orange-500" />,
+//     title: "Science",
+//     courses: 38,
+//   },
+//   {
+//     icon: <FaNetworkWired className="text-4xl text-orange-500" />,
+//     title: "Network",
+//     courses: 38,
+//   },
+// ];
 
 const HomePage = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  
 
   useEffect(() => {
     const initialCoursesParams: GetCourseClient = {
@@ -106,21 +104,19 @@ const HomePage = () => {
         keyword: "",
         is_deleted: false,
         category_id: "",
-      }
-    }
+      },
+    };
     const fetchCourses = async () => {
       const response = await ClientService.getCourses(initialCoursesParams);
       setCourses(response?.data?.pageData ?? []);
-
     };
 
     fetchCourses(); // Call the async function
-    },[]);
-
-  
+    setCategories([]);
+  }, []);
 
   const navigate = useCustomNavigate();
-  
+
   window.addEventListener("scroll", function () {
     const floatElements = document.querySelectorAll(".float-animation");
 
@@ -133,20 +129,21 @@ const HomePage = () => {
       }
     });
   });
-  
+
   const backToTop = () => {
     document.documentElement.style.scrollBehavior = "smooth";
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
   };
 
-  const {currentUser} = useSelector((state : RootState) => state.auth.login)
+  const { currentUser } = useSelector((state: RootState) => state.auth.login);
 
   const dispatch = useDispatch<AppDispatch>();
 
-
   const onAddCart = async (course: Course) => {
-    await dispatch(addToCart({ course, userRole: currentUser?.role, navigate }));
+    await dispatch(
+      addToCart({ course, userRole: currentUser?.role, navigate })
+    );
   };
 
   return (
@@ -266,7 +263,11 @@ const HomePage = () => {
                   <BiSolidArrowFromLeft className="group-hover:scale-150 transition " />
                 </Button>
               </div>
-              <CoursesGrid courses={courses} viewMode="grid" onAddCartClick={onAddCart} />
+              <CoursesGrid
+                courses={courses}
+                viewMode="grid"
+                onAddCartClick={onAddCart}
+              />
             </div>
           </div>
         </section>
