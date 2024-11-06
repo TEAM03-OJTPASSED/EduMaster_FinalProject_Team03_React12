@@ -132,7 +132,6 @@ const InstructorLessonList = () => {
       ...otherValues,
       position_order: position_order ? Number(position_order) : 0,
       full_time: full_time ? Number(full_time) : 0,
-      full_time: full_time ? Number(full_time) : 0,
       video_url: video_url || "",
       image_url: image_url || "",
     };
