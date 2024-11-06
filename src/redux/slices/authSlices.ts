@@ -1,6 +1,5 @@
 // Import necessary modules
 import {
-  AsyncThunkAction,
   createAsyncThunk,
   createSlice,
 } from "@reduxjs/toolkit";
@@ -8,6 +7,7 @@ import { getRequest, postRequest } from "../../services/httpsMethod";
 import { User } from "../../models/UserModel";
 import { message } from "antd";
 import { ModalRegisterGoogleProps } from "../../components/ModalRegisterGoogle";
+import { handleNotify } from "../../utils/handleNotify";
 
 export interface AuthState {
   login: {
@@ -96,7 +96,7 @@ export const registerWithGoogle = createAsyncThunk<
   ModalRegisterGoogleProps
 >("auth/registerGoogle", async (formData) => {
   const response = await postRequest("/api/users/google", formData);
-  message.success("Register gg successfully")
+  handleNotify('success',"Register gg successfully", " ")
   localStorage.setItem("token", (response as any).data.token);
   return response.data as AuthState;
 });
@@ -105,7 +105,7 @@ export const registerWithGoogle = createAsyncThunk<
 export const getCurrentUser = createAsyncThunk("auth/user", async () => {
   const res = await getRequest("/api/auth");
   localStorage.setItem("user", JSON.stringify(res.data));
-  message.success("Login successfully");
+  handleNotify('success',"Login successfully", " ");
   return res.data;
 });
 
