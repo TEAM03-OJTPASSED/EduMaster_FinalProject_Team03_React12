@@ -379,4 +379,8 @@ h2.ant-typography {
  0% {  box-shadow: 0 0 0 2px inset }
  100%{ box-shadow: 0 0 0 10px inset }
 }
+
+.ck-editor__editable {
+  min-height: 200px;
+}
   

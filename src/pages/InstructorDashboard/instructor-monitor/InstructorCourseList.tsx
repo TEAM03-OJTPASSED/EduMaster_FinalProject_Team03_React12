@@ -33,9 +33,12 @@ const InstructorCourseList: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const showModal = async (course: Course) => {
+    setSelectedCourse(null); // Reset the selected course first
     const response = await CourseService.getCourse(course._id);
-    if (response.data != undefined) setSelectedCourse(response.data);
-    setIsModalVisible(true);
+    if (response.data != undefined) {
+      setSelectedCourse(response.data);
+      setIsModalVisible(true);
+    }
   };
 
   const showModalCreate = () => {
@@ -45,7 +48,10 @@ const InstructorCourseList: React.FC = () => {
   const handleCancel = () => {
     setIsModalVisible(false);
     setIsModalCreateVisible(false);
+    setSelectedCourse(null); // Reset selected course when closing
   };
+
+
 
   const initialCoursesParams: GetCourses = {
     pageInfo: {
@@ -384,9 +390,11 @@ const InstructorCourseList: React.FC = () => {
         footer={null}
         width={1000}
         forceRender
+        destroyOnClose={true} 
       >
         {selectedCourse && (
           <CourseOption
+            key={selectedCourse._id} 
             categories={listCategories}
             initializeValue={selectedCourse}
             mode="update"
@@ -403,8 +411,10 @@ const InstructorCourseList: React.FC = () => {
         footer={null}
         width={1000}
         forceRender
+        destroyOnClose={true} // Add this to ensure form state is destroyed
       >
         <CourseOption
+          key={isModalCreateVisible ? 'create-new' : 'create'} // Add key prop to force remount
           mode="create"
           onFinished={handleCreateCourse}
           isLoading={loading}

@@ -18,7 +18,7 @@ import {
 
 import dayjs from "dayjs";
 import LessonIOptions from "./create-courses/LessonIOptions";
-import { Lesson, LessonRequest } from "../../../models/Lesson.model";
+import { GetLessons, Lesson, LessonRequest } from "../../../models/Lesson.model";
 import CourseService from "../../../services/course.service";
 import SessionService from "../../../services/session.service";
 import { Course, GetCourses } from "../../../models/Course.model";
@@ -35,10 +35,8 @@ const InstructorLessonList = () => {
   const [listCourses, setListCourses] = useState<Course[]>([]);
   const [listSessions, setListSessions] = useState<Session[]>([]);
   const [listLessons, setListLessons] = useState<Lesson[]>([]);
-
+  
   const [loading, setLoading] = useState(false);
-  // const [filteredLessons, setFilteredLessons] = useState<Lesson[]>([]);
-  // const [searchText, setSearchText] = useState("");
 
   const showModal = (lesson: Lesson) => {
     setSelectedLesson(lesson);
@@ -49,9 +47,14 @@ const InstructorLessonList = () => {
     setIsModalCreateVisible(true);
   };
 
-  const handleCancel = () => {
+  const resetModalState = () => {
+    setSelectedLesson({} as Lesson);
     setIsModalVisible(false);
     setIsModalCreateVisible(false);
+  };
+
+  const handleCancel = () => {
+    resetModalState();
   };
 
   const initialCoursesParams: GetCourses = {
@@ -63,8 +66,8 @@ const InstructorLessonList = () => {
       keyword: "",
       is_deleted: false,
       category_id: "",
-    },
-  };
+    }
+  }
 
   const initialSessionsParams: GetSessions = {
     pageInfo: {
@@ -76,7 +79,20 @@ const InstructorLessonList = () => {
       is_deleted: false,
       is_position_order: true,
       course_id: "",
+    }
+  };
+
+  const initialLessonsParams: GetLessons = {
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 10,
     },
+    searchCondition: {
+      keyword: "",
+      is_deleted: false,
+      course_id: "",
+      is_position_order: false
+    }
   };
 
   const fetchCourses = async () => {
@@ -92,7 +108,7 @@ const InstructorLessonList = () => {
   const fetchLessons = async () => {
     setLoading(true);
     try {
-      const response = await LessonService.getLessons(initialSessionsParams);
+      const response = await LessonService.getLessons(initialLessonsParams);
       setListLessons(response?.data?.pageData ?? []);
     } finally {
       setLoading(false);
@@ -116,6 +132,7 @@ const InstructorLessonList = () => {
       ...otherValues,
       position_order: position_order ? Number(position_order) : 0,
       full_time: full_time ? Number(full_time) : 0,
+      full_time: full_time ? Number(full_time) : 0,
       video_url: video_url || "",
       image_url: image_url || "",
     };
@@ -124,15 +141,12 @@ const InstructorLessonList = () => {
     try {
       const response = await LessonService.createLesson(numericValues);
       if (response.success) {
-        handleCancel(); // Close modal if successful
-        handleNotify(
-          "Lesson Created Successfully",
-          "The lesson has been created successfully."
-        );
-        await fetchLessons(); // Refresh the course list
+        resetModalState();
+        handleNotify("Lesson Created Successfully", "The lesson has been created successfully.");
+        await fetchLessons();
       }
     } finally {
-      setLoading(false); // Ensures loading is set to false regardless of success/failure
+      setLoading(false);
     }
   };
 
@@ -145,11 +159,9 @@ const InstructorLessonList = () => {
           updatedLesson
         );
         if (response.success) {
-          handleNotify(
-            "Lesson Updated Successfully",
-            "The lesson has been updated successfully."
-          );
-          await fetchLessons(); // Refresh the course list
+          resetModalState();
+          handleNotify("Lesson Updated Successfully", "The lesson has been updated successfully.");
+          await fetchLessons();
         }
       }
     } finally {
@@ -162,21 +174,18 @@ const InstructorLessonList = () => {
     try {
       const response = await LessonService.deleteLesson(lessonId);
       if (response.success) {
-        handleNotify(
-          "Lesson Deleted Successfully",
-          "The lesson has been deleted successfully."
-        );
-        await fetchLessons(); // Refresh the course list
+        handleNotify("Lesson Deleted Successfully", "The lesson has been deleted successfully.");
+        await fetchLessons();
       }
     } finally {
-      setLoading(false); // Ensures loading is set to false regardless of success/failure
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchCourses(); // Call the async function
-    fetchSessions(); // Call the async function
-    fetchLessons(); // Call the async function
+    fetchCourses();
+    fetchSessions();
+    fetchLessons();
   }, []);
 
   const columns: TableProps<Lesson>["columns"] = [
@@ -236,6 +245,8 @@ const InstructorLessonList = () => {
     },
   ];
 
+
+
   // useEffect(() => {
   //   let filtered = [...listLessons];
 
@@ -248,7 +259,7 @@ const InstructorLessonList = () => {
   //   }
 
   //   if (searchText) {
-  //     filtered = filtered.filter(lesson =>
+  //     filtered = filtered.filter(lesson => 
   //       lesson.name.toLowerCase().includes(searchText.toLowerCase())
   //     );
   //   }
@@ -258,7 +269,7 @@ const InstructorLessonList = () => {
 
   const handleCourseChange = (courseId: string) => {
     setSelectedCourse(courseId);
-    setSelectedSession(undefined); // Reset session when course changes
+    setSelectedSession(undefined);
   };
 
   const handleSessionChange = (sessionId: string) => {
@@ -274,7 +285,6 @@ const InstructorLessonList = () => {
             placeholder="Search By Lesson Name"
             prefix={<SearchOutlined className="w-4 h-4" />}
             className="w-64"
-            // onChange={(e) => setSearchText(e.target.value)}
           />
           <Select
             allowClear
@@ -342,6 +352,7 @@ const InstructorLessonList = () => {
         footer={null}
         forceRender
         width={1000}
+        destroyOnClose={true}
       >
         {selectedLesson && (
           <LessonIOptions
@@ -356,12 +367,17 @@ const InstructorLessonList = () => {
       </Modal>
 
       <Modal
-        title="Lesson Details"
+        title={<h1 className="text-lg">Lesson Details</h1>}
+        
         open={isModalCreateVisible}
         onCancel={handleCancel}
         footer={null}
         forceRender
-        width={1000}
+        width={1200}
+        className="min-h-800"
+        destroyOnClose={true}
+
+        
       >
         <LessonIOptions
           onFinished={handleCreateLesson}
