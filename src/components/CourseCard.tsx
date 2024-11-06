@@ -2,10 +2,11 @@ import { Button, Card, Tag } from "antd";
 import { useEffect, useState } from "react";
 import { AiOutlineClockCircle } from "react-icons/ai";
 import { BiBook } from "react-icons/bi";
-import { FaShoppingCart } from "react-icons/fa";
+import { FaBook, FaShoppingCart } from "react-icons/fa";
 import { TiUserOutline } from "react-icons/ti";
 import { Course } from "../models/Course.model";
 import { FaStar } from "react-icons/fa6";
+import { useCustomNavigate } from "../hooks/customNavigate";
 
 const CourseCard: React.FC<{
   course: Course;
@@ -14,6 +15,7 @@ const CourseCard: React.FC<{
   onAddCartClick: (course: Course) => void;
 }> = ({ course, viewMode, index, onAddCartClick }) => {
   const [isMdScreen, setIsMdScreen] = useState(false);
+  const navigate = useCustomNavigate();
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 992px)");
@@ -129,15 +131,41 @@ const CourseCard: React.FC<{
                 Subtitles
               </li>
             </ul>
-            <Button
-              className="font-jost w-full bg-primary text-primary-foreground hover:bg-primary/90 flex view-button ant-btn-variant-solid"
-              onClick={(e) => {
-                e.preventDefault();
-                onAddCartClick(course);
-              }}
-            >
-              <FaShoppingCart className="text-white" size={18} /> Add to cart
-            </Button>
+            {!course.is_in_cart &&
+              <Button
+                className="font-jost w-full bg-primary text-primary-foreground hover:bg-primary/90 flex view-button ant-btn-variant-solid"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onAddCartClick(course);
+                }}
+              >
+                <FaShoppingCart className="text-white" size={18} /> Add to cart
+              </Button> 
+            }
+            {(course.is_in_cart && !course.is_purchased) &&
+                <Button
+                className="font-jost w-full bg-primary text-primary-foreground hover:bg-primary/90 flex view-button ant-btn-variant-solid"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate('/cart')
+                }}
+              >
+                <FaShoppingCart className="text-white" size={18} /> View In Your Cart
+              </Button>
+            }
+
+            {course.is_purchased &&
+              <Button
+                className=  "font-jost w-full bg-primary text-primary-foreground hover:bg-primary/90 flex view-button ant-btn-variant-solid"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(`/course/${course._id}`)
+                }}
+              >
+                <FaBook className="text-white" size={18} /> Learn Now
+              </Button> 
+            }
+            
           </div>
         </div>
       </a>
