@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import BlogDetailSkeleton from "../components/Blogs/BlogDetailSkeleton";
 import ClientService from "../services/client.service";
 import parse from "html-react-parser";
+import dayjs from "dayjs";
 
 // Sample comments data
 const comments = [
@@ -80,14 +81,14 @@ const BlogDetailPage = () => {
       <div className="w-3/4">
         <BlogHeader
           title={blog.name}
-          date={new Date(blog.created_at).toLocaleDateString()}
-          creator={blog.user_name}
+          date={dayjs(blog.created_at).format("DD/MM/YYYY")}
+          creator={blog.creator}
           comments={comments.length}
         />
         <div className="w-full">
           {renderContent(blog.content)}
         </div>
-        <TagList tags={["1", "2", "6", "7"]} />
+        <TagList tags={blog.tags || []} />
         <div>
           <h2 className="text-lg font-semibold mt-8">Recent Blogs</h2>
           <div className="flex gap-4">
