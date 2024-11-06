@@ -100,7 +100,7 @@ const CourseLogModal: React.FC<CourseModalProps> = ({ course_id }) => {
       setCurrentCourseLog(res.data?.pageInfo as PageInfo);
     };
     fetchData();
-  }, [courseLogSearchParam]);
+  }, [courseLogSearchParam,course_id]);
 
   return (
     <div>
