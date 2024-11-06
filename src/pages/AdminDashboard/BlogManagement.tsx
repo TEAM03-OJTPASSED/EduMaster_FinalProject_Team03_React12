@@ -163,7 +163,6 @@ const BlogManagement = () => {
           className="w-full md:w-1/3 mb-2 md:mb-0"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
-          className="w-full md:w-1/3 mb-2 md:mb-0"
         />
         <Select
           mode="multiple"

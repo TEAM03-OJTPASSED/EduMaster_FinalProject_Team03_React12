@@ -1,25 +1,33 @@
-/*import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Input, Table, TableProps, Tag } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import { useLocation } from "react-router-dom";
 import PayoutService from "../../../../services/payout.service"; 
 import { Payout, PayoutStatusEnum } from "../../../../models/Payout.model"; 
 
 const RejectedPayout: React.FC = () => {
-  const location = useLocation();
-  const { status } = location.state || {};
+  
   const [filteredPayouts, setFilteredPayouts] = useState<Payout[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchKeyword, setSearchKeyword] = useState<string>("");
-
+  const initialParams = {
+    searchCondition: {
+      payout_no: "",
+      instructor_id: "",
+      status: PayoutStatusEnum.REJECTED,
+      is_delete: false,
+    },
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 10,
+    },
+  };
   useEffect(() => {
     const fetchPayouts = async () => {
       setLoading(true);
       try {
-        const response = await PayoutService.getPayouts(); 
-        const payouts = response.data || [];
-        const rejectedPayouts = payouts.filter((payout: Payout) => payout.status === status);
-        setFilteredPayouts(rejectedPayouts);
+        const response = await PayoutService.getPayout(initialParams); 
+        const payouts = response.data?.pageData || [];
+        setFilteredPayouts(payouts);
       } finally {
         setLoading(false);
       }
@@ -89,4 +97,4 @@ const RejectedPayout: React.FC = () => {
   );
 };
 
-export default RejectedPayout;*/
+export default RejectedPayout;

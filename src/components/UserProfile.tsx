@@ -1,8 +1,10 @@
-import React, { useEffect } from "react";
-import { Button, Form, Input, Row, Col, Upload } from "antd";
+import React, { useEffect, useState } from "react";
+import { Button, Form, Input, Row, Col, Upload, UploadProps, UploadFile } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { API_UPLOAD_FILE } from "../constants/upload";
+import FormItem from "antd/es/form/FormItem";
 
 interface UserProfileFormProps {
   currentUser: UserProfile;
@@ -22,6 +24,8 @@ export type UserProfile = {
 };
 
 const UserProfileForm: React.FC<UserProfileFormProps> = ({ currentUser, onSave }) => {
+  const [imageFileList, setImageFileList] = useState<UploadFile[]>([]);
+  const [videoFileList, setVideoFileList] = useState<UploadFile[]>([]);
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -29,13 +33,13 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ currentUser, onSave }
       form.setFieldsValue({
         avatar_url: currentUser.avatar_url
           ? [
-              {
-                uid: "-1",
-                url: currentUser.avatar_url,
-                name: "avatar.jpg",
-                status: "done",
-              },
-            ]
+            {
+              uid: "-1",
+              url: currentUser.avatar_url,
+              name: "avatar.jpg",
+              status: "done",
+            },
+          ]
           : [],
         name: currentUser.name || "",
         phone_number: currentUser.phone_number || "",
@@ -49,6 +53,29 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ currentUser, onSave }
     }
   }, [currentUser, form]);
 
+  const handleImageChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
+    setImageFileList(newFileList);
+
+    if (newFileList.length > 0 && newFileList[0].status === "done") {
+      const uploadedImageUrl = newFileList[0].response?.secure_url;
+      form.setFieldsValue({ avatar_url: uploadedImageUrl });
+      console.log("image url:", uploadedImageUrl);
+    } else if (newFileList.length === 0 || newFileList[0].status === "error") {
+      form.setFieldsValue({ avatar_url: "" });
+    }
+  };
+
+  const handleVideoChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
+    setVideoFileList(newFileList);
+    if (newFileList.length > 0 && newFileList[0].status === "done") {
+      const uploadedVideoUrl = newFileList[0].response?.secure_url;
+      form.setFieldsValue({ video_url: uploadedVideoUrl });
+      console.log("video url:", uploadedVideoUrl);
+    } else if (newFileList.length === 0 || newFileList[0].status === "error") {
+      form.setFieldsValue({ video_url: "" });
+    }
+  };
+
   const handleSubmit = () => {
     const formValues = form.getFieldsValue([
       "name",
@@ -61,38 +88,80 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ currentUser, onSave }
       "bank_account_name",
       "video_url",
     ]);
-
-    const processedValues: UserProfile = {
-      name: formValues.name || "",
-      email: formValues.email || "",
-      description: formValues.description || "",
-      avatar_url: formValues.avatar_url && formValues.avatar_url.length > 0
-        ? formValues.avatar_url[0].url
-        : null,
-      video_url: formValues.video_url || "",
-      phone_number: formValues.phone_number || "",
-      bank_name: formValues.bank_name || "",
-      bank_account_no: formValues.bank_account_no || "",
-      bank_account_name: formValues.bank_account_name || "",
-    };
-
-    onSave(processedValues);
+    console.log("form values:", formValues);
+    onSave(formValues);
   };
 
   return (
     <Form form={form} labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} layout="horizontal">
-      <Form.Item label="Avatar" name="avatar_url" valuePropName="fileList">
-        <Upload accept="image/*" listType="picture-card">
-          <button style={{ border: 0, background: "none" }} type="button">
-            <PlusOutlined />
-            <div style={{ marginTop: 8 }}>Upload</div>
-          </button>
-        </Upload>
-      </Form.Item>
+      <Row gutter={16} align="middle">
+        <Col span={12}>
+          <Row gutter={16} align="middle">
+            <Col>
+              <FormItem label="Current Avatar">
+                <Upload
+                  listType="picture-card"
+                  fileList={[
+                    {
+                      uid: "-1",
+                      name: "current_avatar.jpg",
+                      status: "done",
+                      url: currentUser.avatar_url || "placeholder_image_url",
+                    },
+                  ]}
+                  showUploadList={{ showRemoveIcon: false }}
+                />
+              </FormItem>
+            </Col>
+            <Col>
+              <Form.Item label="New Avatar" name="avatar_url">
+                <Upload
+                  action={API_UPLOAD_FILE}
+                  listType="picture-card"
+                  onChange={handleImageChange}
+                  fileList={imageFileList}
+                  maxCount={1}
+                >
+                  {imageFileList.length < 1 && (
+                    <button style={{ border: 0, background: "none" }} type="button">
+                      <PlusOutlined />
+                      <div>Upload</div>
+                    </button>
+                  )}
+                </Upload>
+              </Form.Item>
+            </Col>
+          </Row>
+        </Col>
+        <Col span={12}>
+          <Form.Item label="Video" name="video_url">
+            <Upload
+              action={API_UPLOAD_FILE}
+              listType="picture-card"
+              accept="video/*"
+              onChange={handleVideoChange}
+              fileList={videoFileList}
+              maxCount={1}
+            >
+              {videoFileList.length < 1 && (
+                <button style={{ border: 0, background: "none" }} type="button">
+                  <PlusOutlined />
+                  <div>Upload</div>
+                </button>
+              )}
+            </Upload>
+          </Form.Item>
+        </Col>
+      </Row>
+
 
       <Row gutter={16}>
         <Col span={12}>
-          <Form.Item label="Full Name" name="name" rules={[{ required: true, message: "Please enter your name" }]}>
+          <Form.Item
+            label="Full Name"
+            name="name"
+            rules={[{ required: true, message: "Please enter your name" }]}
+          >
             <Input placeholder="Full Name" />
           </Form.Item>
         </Col>
@@ -105,12 +174,20 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ currentUser, onSave }
 
       <Row gutter={16}>
         <Col span={12}>
-          <Form.Item label="Bank Account" name="bank_account_no" rules={[{ required: true, message: "Please enter your bank account number" }]}>
+          <Form.Item
+            label="Bank Account"
+            name="bank_account_no"
+            rules={[{ required: true, message: "Please enter your bank account number" }]}
+          >
             <Input placeholder="Bank Account" />
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item label="Phone Number" name="phone_number" rules={[{ required: true, message: "Please enter your phone number" }]}>
+          <Form.Item
+            label="Phone Number"
+            name="phone_number"
+            rules={[{ required: true, message: "Please enter your phone number" }]}
+          >
             <Input placeholder="Phone Number" />
           </Form.Item>
         </Col>

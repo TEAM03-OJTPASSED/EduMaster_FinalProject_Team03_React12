@@ -27,6 +27,7 @@
     "esbuild": "^0.24.0",
     "firebase": "^10.14.1",
     "gapi-script": "^1.2.0",
+    "html-react-parser": "^5.1.18",
     "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.4",
     "lodash": "^4.17.21",

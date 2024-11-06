@@ -1,41 +1,44 @@
-/*import { Card, Input, Table, Tag, TableProps, Checkbox, Button, Modal, Spin, message } from "antd";
+import { Card, Input, Table, Tag, TableProps, Checkbox, Button, Modal} from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import { Payout, PayoutStatusEnum } from "../../../AdminDashboard/monitors/course/courseList";
-import { useLocation } from "react-router-dom";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { getPayout } from "../../../../services/payout.service"; 
+import PayoutService from "../../../../services/payout.service";
+import { GetPayoutRequest, Payout, PayoutStatusEnum } from "../../../../models/Payout.model";
 
 const RequestPayout = () => {
-  const location = useLocation();
-  const { status } = location.state || {};
   
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]); 
   const [isModalVisible, setIsModalVisible] = useState(false); 
   const [payouts, setPayouts] = useState<Payout[]>([]); 
-  const [loading, setLoading] = useState(true); 
-  const [error, setError] = useState<string | null>(null); 
+
+
+  const initialParams: GetPayoutRequest = {
+    searchCondition: {
+      payout_no: "",
+      instructor_id: "",
+      status: PayoutStatusEnum.NEW,
+      is_delete: false,
+    },
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 10,
+    },
+  };
+  
+  
+
 
   useEffect(() => {
     const fetchPayouts = async () => {
-      try {
-        setLoading(true);
-        const response = await getPayout();
-        setPayouts(response.data);
-      } catch (err) {
-        setError("Failed to fetch payouts");
-        message.error("Failed to fetch payouts"); 
-      } finally {
-        setLoading(false);
-      }
+        const response = await PayoutService.getPayout(initialParams);
+        const payouts = response.data?.pageData || [];
+        setPayouts(payouts)
     };
 
     fetchPayouts();
   }, []);
 
-  const filterdPayouts = payouts.filter((payout) =>
-    Array.isArray(status) ? status.includes(payout.status) : payout.status === status
-  );
+
 
   const columns: TableProps<Payout>["columns"] = [
     {
@@ -59,20 +62,20 @@ const RequestPayout = () => {
       dataIndex: "status",
       key: "status",
       filters: [
-        { text: PayoutStatusEnum.new, value: PayoutStatusEnum.new },
-        { text: PayoutStatusEnum.request_payout, value: PayoutStatusEnum.request_payout },
+        { text: PayoutStatusEnum.NEW, value: PayoutStatusEnum.NEW },
+        { text: PayoutStatusEnum.REQUEST_PAYOUT, value: PayoutStatusEnum.REQUEST_PAYOUT},
       ],
       onFilter: (value: any, record: any) => record.status === value,
       render: (status: PayoutStatusEnum) => {
         switch (status) {
-          case PayoutStatusEnum.new:
-            return <Tag color="blue">{PayoutStatusEnum.new}</Tag>;
-          case PayoutStatusEnum.request_payout:
-            return <Tag color="yellow">{PayoutStatusEnum.request_payout}</Tag>;
-          case PayoutStatusEnum.completed:
-            return <Tag color="green">{PayoutStatusEnum.completed}</Tag>;
-          case PayoutStatusEnum.rejected:
-            return <Tag color="red">{PayoutStatusEnum.rejected}</Tag>;
+          case PayoutStatusEnum.NEW:
+            return <Tag color="blue">{PayoutStatusEnum.NEW}</Tag>;
+          case PayoutStatusEnum.REQUEST_PAYOUT:
+            return <Tag color="yellow">{PayoutStatusEnum.REQUEST_PAYOUT}</Tag>;
+          case PayoutStatusEnum.COMPLETED:
+            return <Tag color="green">{PayoutStatusEnum.COMPLETED}</Tag>;
+          case PayoutStatusEnum.REJECTED:
+            return <Tag color="red">{PayoutStatusEnum.REJECTED}</Tag>;
           default:
             return <Tag color="gray">Unknown</Tag>;
         }
@@ -106,6 +109,7 @@ const RequestPayout = () => {
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
     },
+    
   ];
 
   const handleSelect = (key: React.Key) => {
@@ -127,13 +131,6 @@ const RequestPayout = () => {
     
   };
 
-  if (loading) {
-    return <Spin size="large" />; 
-  }
-
-  if (error) {
-    return <div>{error}</div>; 
-  }
 
   return (
     <Card>
@@ -160,7 +157,7 @@ const RequestPayout = () => {
         Update Selected
       </Button>
       <Table
-        dataSource={filterdPayouts}
+        dataSource={payouts}
         columns={columns}
         pagination={{ pageSize: 5 }}
         rowKey="payout_no"
@@ -181,4 +178,4 @@ const RequestPayout = () => {
   );
 };
 
-export default RequestPayout;*/
+export default RequestPayout;

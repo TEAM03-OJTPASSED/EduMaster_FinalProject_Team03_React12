@@ -36,9 +36,9 @@ import InstructorReview from "./pages/InstructorDashboard/InstructorReview";
 import InstructorSetting from "./pages/InstructorDashboard/instructor-setting/InstructorSetting";
 import ForgotPasswordPage from "./pages/AuthPage/ForgotPasswordPage";
 import PayoutManagement from "./pages/AdminDashboard/payoutManagement";
-// import RequestPayout from "./pages/InstructorDashboard/instructor-management/payout/RequestPayout";
+import RequestPayout from "./pages/InstructorDashboard/instructor-management/payout/RequestPayout";
 import CompletedPayout from "./pages/InstructorDashboard/instructor-management/payout/CompletedPayout";
-// import RejectedPayout from "./pages/InstructorDashboard/instructor-management/payout/RejectedPayout";
+import RejectedPayout from "./pages/InstructorDashboard/instructor-management/payout/RejectedPayout";
 import DashboardLayout from "./defaultLayout/DashboardLayout";
 import StudentProfile from "./pages/StudentDashboard/studentProfile";
 import StudentCourses from "./pages/StudentDashboard/StudentCourses";
@@ -60,7 +60,7 @@ import InstructorProfile from "./pages/InstructorDashboard/instructor-setting/In
 import AdminChangePassword from "./pages/AdminDashboard/setting/AdminChangePassword";
 import AdminSetting from "./pages/AdminDashboard/setting/AdminSetting";
 import AdminProfile from "./pages/AdminDashboard/setting/AdminProfile";
-// import InstructorSalesHistory from "./pages/InstructorDashboard/instructor-management/InstructorOrdersHistory";
+import InstructorSalesHistory from "./pages/InstructorDashboard/instructor-management/InstructorOrdersHistory";
 import LearnCoursePage from "./pages/LearnCoursePage";
 import TopUpPage from "./pages/topup/TopupPage";
 import AdminRequestPayout from "./pages/AdminDashboard/payout/RequestPayout";
@@ -157,6 +157,7 @@ function App() {
                   <Route index element={<CourseLists />} />
                   <Route path="session" element={<SessionList />} />
                   <Route path="lesson" element={<LessonList />} />
+                  <Route path="course-log" element={<CourseLogPage />} />
                 </Route>
                 <Route path="pending-courses" element={<PendingCourse />}>
                   <Route index element={<PendingCourseList />} />
@@ -164,7 +165,6 @@ function App() {
                   <Route path="lesson" element={<PendingLessonList />} />
                 </Route>
                 <Route path="blog" element={<BlogManagement />} />
-                <Route path="course-log" element={<CourseLogPage />} />
                 <Route path="purchase-log" element={<PurchaseLog />} />
                 <Route path="settings" element={<AdminSetting />}>
                   <Route index element={<AdminProfile />} />
@@ -191,16 +191,16 @@ function App() {
                 <Route path="orders" element={<StudentOrderHistory />} />
 
                 <Route path="payout" element={<InstructorPayout />}>
-                  {/* <Route index element={<RequestPayout />} /> */}
+                   <Route index element={<RequestPayout />} /> 
                   <Route
                     path="completed-payout"
                     element={<CompletedPayout />}
                   />
-                  {/* <Route path="rejected-payout" element={<RejectedPayout />} /> */}
+                  <Route path="rejected-payout" element={<RejectedPayout />} />
                 </Route>
                 <Route
                   path="salesHistory"
-                  // element={<InstructorSalesHistory />}
+                  element={<InstructorSalesHistory />}
                 />
                 <Route path="my-learning" element={<InstructorLearning />} />
                 <Route path="my-courses" element={<InstructorCourses />}>

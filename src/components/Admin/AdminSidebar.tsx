@@ -80,12 +80,6 @@ const menuItems: MenuItem[] = [
         path: "/dashboard/admin/pending-courses",
       },
       {
-        key: "course-log",
-        icon: <SnippetsOutlined />,
-        label: "Course log",
-        path: "/dashboard/admin/course-log",
-      },
-      {
         key: "purchase-log",
         icon: <ShoppingCartOutlined />,
         label: "Purchase log",
