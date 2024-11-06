@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
-
-const useDebounce  = (search:string, delay:number) => {
+const useDebounce = (search: string, delay: number) => {
   const [value, setValue] = useState<string>(search);
   useEffect(() => {
     const timeout = setTimeout(() => {

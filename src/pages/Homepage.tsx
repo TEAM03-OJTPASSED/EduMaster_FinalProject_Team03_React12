@@ -90,11 +90,9 @@ const categories: Category[] = [
   },
 ];
 
-
 const HomePage = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  
 
   useEffect(() => {
     const initialCoursesParams: GetCourseClient = {
@@ -106,21 +104,18 @@ const HomePage = () => {
         keyword: "",
         is_deleted: false,
         category_id: "",
-      }
-    }
+      },
+    };
     const fetchCourses = async () => {
       const response = await ClientService.getCourses(initialCoursesParams);
       setCourses(response?.data?.pageData ?? []);
-
     };
 
     fetchCourses(); // Call the async function
-    },[]);
-
-  
+  }, []);
 
   const navigate = useCustomNavigate();
-  
+
   window.addEventListener("scroll", function () {
     const floatElements = document.querySelectorAll(".float-animation");
 
@@ -133,20 +128,21 @@ const HomePage = () => {
       }
     });
   });
-  
+
   const backToTop = () => {
     document.documentElement.style.scrollBehavior = "smooth";
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
   };
 
-  const {currentUser} = useSelector((state : RootState) => state.auth.login)
+  const { currentUser } = useSelector((state: RootState) => state.auth.login);
 
   const dispatch = useDispatch<AppDispatch>();
 
-
   const onAddCart = async (course: Course) => {
-    await dispatch(addToCart({ course, userRole: currentUser?.role, navigate }));
+    await dispatch(
+      addToCart({ course, userRole: currentUser?.role, navigate })
+    );
   };
 
   return (
@@ -266,7 +262,11 @@ const HomePage = () => {
                   <BiSolidArrowFromLeft className="group-hover:scale-150 transition " />
                 </Button>
               </div>
-              <CoursesGrid courses={courses} viewMode="grid" onAddCartClick={onAddCart} />
+              <CoursesGrid
+                courses={courses}
+                viewMode="grid"
+                onAddCartClick={onAddCart}
+              />
             </div>
           </div>
         </section>

@@ -1,52 +1,44 @@
 import React, { useEffect, useState } from "react";
 import { Table, Input, Card, Button, Tabs } from "antd";
 import { SearchOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
-import { Course } from "../../components/UserAuthTest";
 import { useCustomNavigate } from "../../hooks/customNavigate";
-import { CartStatusEnum, SearchCartByStatus } from "../../models/Cart.model";
+import {
+  Cart,
+  CartStatusEnum,
+  SearchCartByStatus,
+} from "../../models/Cart.model";
 import CartService from "../../services/cart.service";
 
 const InstructorCourseList: React.FC = () => {
   const navigate = useCustomNavigate();
-  const [isLoading, setIsLoading] = useState(true);
   const [carts, setCarts] = useState<Cart[]>([]);
-  const [cartStatus, setCartStatus] = useState<string>(CartStatusEnum.NEW);
+  // const [cartStatus, setCartStatus] = useState<string>(CartStatusEnum.NEW);
 
-  const initialCartSearchParams = (
-    cartStatus: CartStatusEnum
-  ): SearchCartByStatus => ({
+  const initialCartSearchParams: SearchCartByStatus = {
     pageInfo: {
       pageNum: 1,
       pageSize: 10,
     },
     searchCondition: {
-      status: "completed",
+      status: CartStatusEnum.COMPLETED,
       is_deleted: false,
     },
-  });
-
-  const fetchCart = async () => {
-    setIsLoading(true);
-    try {
-      const status = cartStatus as CartStatusEnum;
-      const response = await CartService.getCartsByStatus(
-        initialCartSearchParams(status)
-      );
-      setCarts(response.data?.pageData || []);
-    } finally {
-      // Handle error
-      setIsLoading(false);
-    }
-  };
-
-  // Navigate to course details page
-  const handleViewCourse = (courseId: number) => {
-    navigate(`/course/${courseId}`);
   };
 
   useEffect(() => {
     fetchCart();
-  }, [cartStatus]);
+  }, []);
+  const fetchCart = async () => {
+    const response = await CartService.getCartsByStatus(
+      initialCartSearchParams
+    );
+    setCarts(response?.data?.pageData as Cart[]);
+  };
+
+  // Navigate to course details page
+  const handleViewCourse = (courseId: string) => {
+    navigate(`/course/${courseId}`);
+  };
 
   // Table columns with fixed width
   const columns = [
@@ -55,7 +47,7 @@ const InstructorCourseList: React.FC = () => {
       dataIndex: "course_name",
       key: "course_name",
       width: 200,
-      render: (name: string, course: Course) => (
+      render: (name: string, course: Cart) => (
         <Button type="link" onClick={() => handleViewCourse(course.course_id)}>
           {name}
         </Button>
@@ -86,22 +78,10 @@ const InstructorCourseList: React.FC = () => {
       ),
     },
     {
-      title: "Video",
-      dataIndex: "course_video",
-      key: "course_video",
-      render: (imageUrl: string) => (
-        <img
-          src={imageUrl}
-          alt="Course"
-          style={{ width: "50px", height: "50px", objectFit: "cover" }}
-        />
-      ),
-    },
-    {
       title: "Actions",
       key: "action",
       width: 150,
-      render: (course: Course) => (
+      render: (course: Cart) => (
         <div>
           <Button
             type="link"
