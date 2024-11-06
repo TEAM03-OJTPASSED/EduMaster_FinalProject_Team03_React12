@@ -29,7 +29,7 @@ export interface LessonSearchCondition {
   session_id?: string;
   lesson_type?: LessonTypeEnum;
   keyword?: string;
-  is_position_order: false;
+  is_position_order: boolean;
   is_deleted: false;
 }
 

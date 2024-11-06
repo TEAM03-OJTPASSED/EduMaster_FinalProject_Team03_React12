@@ -92,6 +92,7 @@ const CourseLists: React.FC = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      width:250
     },
     {
       title: "Category Name",

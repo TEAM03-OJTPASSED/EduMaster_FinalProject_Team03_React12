@@ -11,7 +11,6 @@ import {
   SettingOutlined,
   BookOutlined,
   HourglassOutlined,
-  SnippetsOutlined,
   ShoppingCartOutlined,
   WalletOutlined,
 } from "@ant-design/icons";
