@@ -7,7 +7,14 @@ import {
   SnippetsOutlined,
   CommentOutlined,
 } from "@ant-design/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  GetPayoutRequest,
+  Payout,
+  PayoutStatusEnum,
+} from "../../models/Payout.model";
+import PayoutService from "../../services/payout.service";
+import dayjs from "dayjs";
 
 const cardStyle = {
   borderRadius: "8px",
@@ -16,37 +23,72 @@ const cardStyle = {
 };
 
 const AdminContent = () => {
-  const [dataSource] = useState([
-    {
-      key: "1",
-      number: "Nguyễn Văn A",
-      amount: "23",
-      date: "2023-01-15",
-    },
-    {
-      key: "2",
-      number: "Nguyễn Văn A",
-      amount: "20231",
-      date: "2023-01-15",
-    },
-    {
-      key: "3",
-      number: "Nguyễn Văn A",
-      amount: "2023",
-      date: "2023-01-15",
-    },
-  ]);
+  const [setPayout] = useState<Payout[]>([]);
+  const [pageNum, setPageNum] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
+  const [transactions, setTransactions] = useState<any[]>([]);
+
+  const fetchPayout = async () => {
+    const searchParams: GetPayoutRequest = {
+      searchCondition: {
+        payout_no: "",
+        instructor_id: "",
+        status: PayoutStatusEnum.COMPLETED && PayoutStatusEnum.NEW,
+        is_delete: false,
+      },
+      pageInfo: { pageNum, pageSize },
+    };
+
+    try {
+      const response = await PayoutService.getPayout(searchParams);
+      const responseData = response.data?.pageData;
+
+      if (Array.isArray(responseData)) {
+        // Kết hợp thông tin transactions và instructor_name
+        const transactionsWithInstructorInfo = responseData.flatMap(
+          (payout) =>
+            payout.transactions?.map((transaction) => ({
+              ...transaction,
+              instructor_name: payout.instructor_name, // Gắn instructor_name từ payout
+              payout_no: payout.payout_no, // Gắn instructor_name từ payout
+              // price: payout.price, // Gắn giá từ payout nếu cần
+            })) || []
+        );
+
+        setTransactions(transactionsWithInstructorInfo);
+      }
+
+      const flattenedUsers: Payout[] = Array.isArray(responseData)
+        ? responseData.flat()
+        : [];
+      setPayout(flattenedUsers);
+      setTotal(response.data?.pageInfo?.totalItems ?? 0);
+    } catch (err) {
+      console.error("Error fetching users:", err);
+    }
+  };
+
+  const handleTableChange = (pagination: any) => {
+    setPageNum(pagination.current);
+    setPageSize(pagination.pageSize);
+  };
+
+  useEffect(() => {
+    fetchPayout();
+    // }, [pageNum, pageSize, searchText, activeTabKey]);
+  }, [pageNum, pageSize]);
 
   const columns = [
     {
       title: "Payout Number",
-      dataIndex: "number",
-      key: "number",
+      dataIndex: "payout_no",
+      key: "payout_no",
     },
     {
       title: "Amount",
-      dataIndex: "amount",
-      key: "amount",
+      dataIndex: "price",
+      key: "price",
       render: (amount: number) => (
         <Typography.Text style={{ color: "#16DBAA", fontWeight: 500 }}>
           ${amount}
@@ -54,9 +96,22 @@ const AdminContent = () => {
       ),
     },
     {
-      title: "Date",
-      dataIndex: "date",
-      key: "date",
+      title: "Name",
+      dataIndex: "instructor_name",
+      key: "instructor_name",
+      render: (instructorName: string) => (
+        <Typography.Text style={{ color: "#4a5568" }}>
+          {instructorName}
+        </Typography.Text>
+      ),
+    },
+    {
+      title: "Created At",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (createdAt: string) => {
+        return dayjs(createdAt).format("DD-MM-YYYY");
+      },
     },
   ];
 
@@ -268,10 +323,16 @@ const AdminContent = () => {
         <span style={{ fontSize: "18px" }}>Latest Transactions</span>
       </Divider>
       <Table
-        dataSource={dataSource}
+        dataSource={transactions}
         columns={columns}
-        pagination={{ pageSize: 5 }}
-        rowKey="key"
+        pagination={{
+          current: pageNum,
+          pageSize,
+          total,
+          showSizeChanger: true,
+        }}
+        onChange={handleTableChange}
+        rowKey="_id"
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
       />
