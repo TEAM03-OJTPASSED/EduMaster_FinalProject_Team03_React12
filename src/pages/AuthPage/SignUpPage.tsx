@@ -40,7 +40,7 @@ export type RegisterType = {
 const SignUppage = () => {
   const dispatch = useDispatch();
   const [selectedRole, setSelectedRole] = useState<string>("student");
-  const { loading, success } = useSelector(
+  const { loading } = useSelector(
     (state: RootState) => state.users.register
   );
   // const [imageUrl, setImageUrl] = useState("");
