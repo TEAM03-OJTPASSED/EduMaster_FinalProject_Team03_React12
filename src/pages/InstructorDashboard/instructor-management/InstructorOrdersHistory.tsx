@@ -1,33 +1,22 @@
 import { useEffect, useState } from "react";
-import { Button, Card, Input, Table, Tag, Checkbox, Modal } from "antd";
-import { SearchOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import StatusFilter from "../../../components/StatusFilter";
+import { Button, Card, Table, Tag, Checkbox, Modal } from "antd";
 import PurchaseService from "../../../services/purchase.service";
-import { Purchase } from "../../../models/Purchase.model";
+import { Purchase, PurchaseStatusEnum } from "../../../models/Purchase.model"; 
+import GlobalSearchUnit from "../../../components/GlobalSearchUnit";
+import { statusFormatter } from "../../../utils/statusFormatter";
+import { PlusCircleOutlined } from "@ant-design/icons";
 import PayoutService from "../../../services/payout.service";
 import { CreatePayout } from "../../../models/Payout.model";
 import { handleNotify } from "../../../utils/handleNotify";
 
-const InstructorOrdersHistory = () => {
+
+
+
+const InstructorSalesHistory = () => {
   const [salesHistory, setSalesHistory] = useState<Purchase[]>([]);
-  const [searchText, setSearchText] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>();
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Purchase | null>(null); // Thêm state cho đơn hàng được chọn
-
-
-  const initialParams = {
-    searchCondition: {
-      purchase_no: "",
-      cart_no: "",
-      course_id: "",
-    },
-    pageInfo: {
-      pageNum: 1,
-      pageSize: 10,
-    },
-  };
 
   useEffect(() => {
     const fetchSalesHistory = async () => {
@@ -38,13 +27,6 @@ const InstructorOrdersHistory = () => {
     fetchSalesHistory();
   }, []);
 
-  const handleSearch = (event: any) => {
-    setSearchText(event.target.value);
-  };
-
-  const handleStatusChange = (value: string | undefined) => {
-    setStatusFilter(value);
-  };
 
   const handleSelect = (key: React.Key) => {
     const newSelectedRowKeys = selectedRowKeys.includes(key)
@@ -86,17 +68,17 @@ const InstructorOrdersHistory = () => {
   };
 
   const columns = [
-    { 
-      title: "Select",
-      dataIndex: "select",
-      key: "select",
-      render: (_: any, record: any) => (
-        <Checkbox
-          checked={selectedRowKeys.includes(record.purchase_no)}
-          onChange={() => handleSelect(record.purchase_no)}
-        />
-      ),
-    },
+      { 
+        title: "Select",
+        dataIndex: "select",
+        key: "select",
+        render: (_: any, record: any) => (
+          <Checkbox
+            checked={selectedRowKeys.includes(record.purchase_no)}
+            onChange={() => handleSelect(record.purchase_no)}
+          />
+        ),
+      },
     {
       title: "Purchase Number",
       dataIndex: "purchase_no",
@@ -109,22 +91,29 @@ const InstructorOrdersHistory = () => {
     },
     {
       title: "Course Name",
-      dataIndex: "course_name",
+      dataIndex: "course_nam",
       key: "courseName",
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      filters: [
-        { text: "Completed", value: "Completed" },
-        { text: "Pending", value: "Pending" },
-        { text: "Refunded", value: "Refunded" },
-      ],
-      onFilter: (value: any, record: any) => record.status.trim() === value.trim(),
+      // filters: [
+      //   { text: "Completed", value: "Completed" },
+      //   { text: "Pending", value: "Pending" },
+      //   { text: "Refunded", value: "Refunded" },
+      // ],
+      // onFilter: (value: any, record: any) =>
+      //   record.status.trim() === value.trim(),
       render: (status: string) => (
         <Tag
-          color={status === "Completed" ? "green" : status === "Pending" ? "orange" : "red"}
+          color={
+            status === "Completed"
+              ? "green"
+              : status === "Pending"
+              ? "orange"
+              : "red" // Màu cho trạng thái khác (Refunded)
+          }
         >
           {status}
         </Tag>
@@ -152,24 +141,49 @@ const InstructorOrdersHistory = () => {
     },
   ];
 
+
+
+
+  const initialParams = {
+    searchCondition: {
+      purchase_no: "",
+      cart_no: "",
+      course_id: "",
+    },
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 10,
+    },
+  };
+
+  useEffect(() => {
+    const fetchSalesHistory = async () => {
+        const response = await PurchaseService.getPurchasesInstructor(initialParams);
+        setSalesHistory(response.data?.pageData || []); 
+    };
+
+    fetchSalesHistory();
+  }, []);
+
+
+  
+
+
   return (
     <Card>
       <h3 className="text-2xl my-5">Orders</h3>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
-        <div className="flex gap-4">
-          <Input
+      <GlobalSearchUnit 
             placeholder="Search By Course Name"
-            prefix={<SearchOutlined />}
-            style={{ width: "80%", borderRadius: "4px" }}
-            value={searchText}
-            onChange={handleSearch}
-          />
-          <StatusFilter
-            statuses={["Completed", "Pending", "Refunded"]}
-            selectedStatus={statusFilter}
-            onStatusChange={handleStatusChange}
-          />
-        </div>
+            selectFields={[
+              {
+                name: "status",
+                options:  Object.values(PurchaseStatusEnum).map((status) => ({label: statusFormatter(status), value: status})),
+                placeholder: "Filter by Status"
+              }
+            ]}
+        />
+
         <Button
           onClick={handleCreateOrder}
           icon={<PlusCircleOutlined />}
@@ -214,4 +228,4 @@ const InstructorOrdersHistory = () => {
   );
 };
 
-export default InstructorOrdersHistory;
+export default InstructorSalesHistory;

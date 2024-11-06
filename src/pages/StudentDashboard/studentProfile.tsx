@@ -16,7 +16,7 @@ const StudentProfile = () => {
 
     await updatedUser(currentUser._id, extendedFormValues);
     localStorage.setItem("user", JSON.stringify({ ...currentUser, ...extendedFormValues }));
-    window.location.reload();
+
   };
 
   return (

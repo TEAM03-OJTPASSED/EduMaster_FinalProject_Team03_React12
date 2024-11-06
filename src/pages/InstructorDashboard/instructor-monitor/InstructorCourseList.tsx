@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Table, Input, Card, Tag, Button, Modal } from "antd";
+import { Table, Card, Tag, Button, Modal } from "antd";
 import {
-  SearchOutlined,
   DeleteOutlined,
   EditOutlined,
   PlusCircleOutlined,
@@ -9,7 +8,6 @@ import {
 } from "@ant-design/icons";
 
 import CourseOption from "./create-courses/CourseOption";
-import StatusFilter from "../../../components/StatusFilter";
 import CourseService from "../../../services/course.service";
 import {
   Course,
@@ -22,12 +20,13 @@ import CategoryService from "../../../services/category.service";
 import { handleNotify } from "../../../utils/handleNotify";
 import { capitalizeFirstLetter } from "../../../utils/capitalize";
 import { CourseStatusToggle } from "../../../components/StatusToggle";
+import GlobalSearchUnit from "../../../components/GlobalSearchUnit";
+import { statusFormatter } from "../../../utils/statusFormatter";
 
 const InstructorCourseList: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [isModalCreateVisible, setIsModalCreateVisible] = useState(false);
-  const [statusFilter, setStatusFilter] = useState<string>();
   const [listCourses, setListCourses] = useState<Course[]>([]);
   const [listCategories, setListCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
@@ -339,26 +338,21 @@ const InstructorCourseList: React.FC = () => {
     CourseStatusEnum.REJECT,
     CourseStatusEnum.WAITING_APPROVE,
   ];
-  const handleStatusChange = (value: string | undefined) => {
-    setStatusFilter(value);
-  };
-
+  
   return (
     <Card>
       <h3 className="text-2xl my-5">Course Management</h3>
       <div className="flex justify-between">
-        <div className="flex gap-4 mb-5">
-          <Input
+        <GlobalSearchUnit 
             placeholder="Search By Course Name"
-            prefix={<SearchOutlined />}
-            style={{ width: "80%", borderRadius: "4px" }}
-          />
-          <StatusFilter
-            statuses={statuses}
-            selectedStatus={statusFilter}
-            onStatusChange={handleStatusChange}
-          />
-        </div>
+            selectFields={[
+              {
+                name: "status",
+                options: statuses.map((status) => ({label: statusFormatter(status), value: status})),
+                placeholder: "Filter by Status"
+              }
+            ]}
+        />
         <div>
           <Button
             onClick={showModalCreate}
