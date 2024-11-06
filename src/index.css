@@ -383,4 +383,17 @@ h2.ant-typography {
 .ck-editor__editable {
   min-height: 200px;
 }
+
+.custom-selector {
+  border-radius: 4rem !important;
+}
+
+.custom-selector .ant-select-selector {
+  border-radius: inherit;
+  background-color: inherit;
+  color: inherit;
+  padding: inherit;
+  font-size: inherit;
+}
+
   

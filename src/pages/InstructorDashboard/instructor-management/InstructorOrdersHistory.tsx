@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { Button, Card, Input, Table, Tag } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
-import StatusFilter from "../../../components/StatusFilter";
+import { Button, Card, Table, Tag } from "antd";
 import PurchaseService from "../../../services/purchase.service";
-import { Purchase } from "../../../models/Purchase.model"; 
+import { Purchase, PurchaseStatusEnum } from "../../../models/Purchase.model"; 
+import GlobalSearchUnit from "../../../components/GlobalSearchUnit";
+import { statusFormatter } from "../../../utils/statusFormatter";
 const columns = [
   
   {
@@ -25,13 +25,13 @@ const columns = [
     title: "Status",
     dataIndex: "status",
     key: "status",
-    filters: [
-      { text: "Completed", value: "Completed" },
-      { text: "Pending", value: "Pending" },
-      { text: "Refunded", value: "Refunded" },
-    ],
-    onFilter: (value: any, record: any) =>
-      record.status.trim() === value.trim(),
+    // filters: [
+    //   { text: "Completed", value: "Completed" },
+    //   { text: "Pending", value: "Pending" },
+    //   { text: "Refunded", value: "Refunded" },
+    // ],
+    // onFilter: (value: any, record: any) =>
+    //   record.status.trim() === value.trim(),
     render: (status: string) => (
       <Tag
         color={
@@ -70,8 +70,7 @@ const columns = [
 
 const InstructorSalesHistory = () => {
   const [salesHistory, setSalesHistory] = useState<Purchase[]>([]);
-  const [searchText, setSearchText] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>();
+
 
 
   const initialParams = {
@@ -94,36 +93,25 @@ const InstructorSalesHistory = () => {
 
     fetchSalesHistory();
   }, []);
-  const handleSearch = (event: any) => {
-    setSearchText(event.target.value);
-  };
-
-  const handleStatusChange = (value: string | undefined) => {
-    setStatusFilter(value);
-  };
+  
 
   
 
-  const statuses = ["Completed", "Pending", "Refunded"];
 
   return (
     <Card>
       <h3 className="text-2xl my-5">Orders</h3>
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
-        <div className="flex gap-4">
-          <Input
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <GlobalSearchUnit 
             placeholder="Search By Course Name"
-            prefix={<SearchOutlined />}
-            style={{ width: "80%", borderRadius: "4px" }}
-            value={searchText}
-            onChange={handleSearch}
-          />
-          <StatusFilter
-            statuses={statuses}
-            selectedStatus={statusFilter}
-            onStatusChange={handleStatusChange}
-          />
-        </div>
+            selectFields={[
+              {
+                name: "status",
+                options:  Object.values(PurchaseStatusEnum).map((status) => ({label: statusFormatter(status), value: status})),
+                placeholder: "Filter by Status"
+              }
+            ]}
+        />
       </div>
       <Table
         dataSource={salesHistory}

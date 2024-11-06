@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import { Table, Input, Card, Button, Modal, Select } from "antd";
+import { Table, Card, Button, Modal } from "antd";
 import {
-  SearchOutlined,
   EditOutlined,
   DeleteOutlined,
   PlusCircleOutlined,
@@ -15,12 +14,12 @@ import { Course, GetCourses } from "../../../models/Course.model";
 import SessionService from "../../../services/session.service";
 import CourseService from "../../../services/course.service";
 import { handleNotify } from "../../../utils/handleNotify";
+import GlobalSearchUnit from "../../../components/GlobalSearchUnit";
 
 const InstructorSessionList = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
   const [isModalCreateVisible, setIsModalCreateVisible] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<string>();
   const [listCourses, setListCourses] = useState<Course[]>([]);
   const [listSessions, setListSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(false);
@@ -41,9 +40,7 @@ const InstructorSessionList = () => {
     setSelectedSession(null); // Reset selected session when closing
   };
 
-  const handleCourseChange = (courseId: string | undefined) => {
-    setSelectedCourse(courseId);
-  };
+ 
 
 
   const initialCoursesParams: GetCourses = {
@@ -209,9 +206,18 @@ const InstructorSessionList = () => {
   return (
     <Card>
       <h3 className="text-2xl my-5">Session Management</h3>
-      <div className="flex justify-between">
-        <div className=" gap-4 flex">
-        <Input
+      <div className="flex justify-between overflow-hidden">
+          <GlobalSearchUnit 
+          placeholder="Search By Session Name"
+          selectFields={[
+            {
+              name: "course_id",
+              options: listCourses.map((course) => ({label: course.name, value: course._id})),
+              placeholder: "Filter by Course"
+            }
+          ]}
+          />
+        {/* <Input
           placeholder="Search By Session Name"
           prefix={<SearchOutlined />}
           style={{ width: "80%", marginBottom: "20px", borderRadius: "4px" }}
@@ -229,8 +235,7 @@ const InstructorSessionList = () => {
               {course.name}
             </Select.Option>
           ))}
-        </Select>
-        </div>
+        </Select> */}
         <div className="flex">
           <Button
             onClick={showModalCreate}
