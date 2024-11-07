@@ -7,7 +7,7 @@ import { PageInfo } from "../../models/SearchInfo.model";
 import PurchaseService from "../../services/purchase.service";
 import useDebounce from "../../hooks/useDebounce";
 
-// Define columns for the Purchase Log table
+// Define columns for the Purchase Log table 
 const StudentOrderHistory = () => {
   const [searchText, setSearchText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);

@@ -59,7 +59,9 @@ const SessionOptions: React.FC<SessionOptionsProps> = ({
           </Col>
         </Row>
   
-        <Form.Item label="Course Name" name="course_id">
+        <Form.Item label="Course Name" name="course_id"
+                  rules={[{ required: true, message: "Please select course name" }]}
+>
           <Select
             placeholder="Select course name"
             options={listCourses.map((course: Course, index) => ({

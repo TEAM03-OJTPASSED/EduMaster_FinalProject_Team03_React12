@@ -4,6 +4,7 @@ import { PurchaseStatusEnum } from "./Purchase.model";
 
 export interface SearchCondition<T = unknown> {
   keyword?: string;
+  user_id?: string;
   category_id?: string;
   status?: T;
   is_deleted: false;

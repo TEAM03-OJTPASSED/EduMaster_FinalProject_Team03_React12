@@ -9,6 +9,7 @@ import {
   Modal,
   message,
   Space,
+  Select,
 } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import {
@@ -20,6 +21,9 @@ import {
 import CourseService from "../../../../services/course.service";
 import { PageInfo } from "../../../../models/SearchInfo.model";
 import useDebounce from "../../../../hooks/useDebounce";
+import { Category, GetCategories } from "../../../../models/Category.model";
+import CategoryService from "../../../../services/category.service";
+
 
 const PendingCourseList: React.FC = () => {
   const [searchText, setSearchText] = useState<string>("");
@@ -28,11 +32,13 @@ const PendingCourseList: React.FC = () => {
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
   };
-  // Reject Courses
+
+  // Status and category filters
+  const [categoryFilter, setCategoryFilter] = useState<Category[]>([]);
   const [reasonReject, setReasonReject] = useState<string>("");
   const [reasonVisible, setReasonVisible] = useState<boolean>(false);
   const [currentCourse, setCurrentCourse] = useState<Course>({} as Course);
-  //
+
   const [coursePendingList, setCoursePendingList] = useState<Course[]>([]);
   const [currentCourses, setCurrentCourses] = useState<PageInfo>(
     {} as PageInfo
@@ -49,6 +55,7 @@ const PendingCourseList: React.FC = () => {
       pageSize: 5,
     },
   });
+
   useEffect(() => {
     setCourseSearchParam((prev) => ({
       ...prev,
@@ -61,10 +68,34 @@ const PendingCourseList: React.FC = () => {
       const res = await CourseService.getCourses(courseSearchParam);
       setCoursePendingList(res?.data?.pageData as Course[]);
       setCurrentCourses(res?.data?.pageInfo as PageInfo);
-      console.log();
     };
     fetchData();
   }, [courseSearchParam]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const categorySearchParam: GetCategories = {
+        searchCondition: {
+          keyword: "",
+          is_deleted: false,
+        },
+        pageInfo: {
+          pageNum: 1,
+          pageSize: 10,
+        },
+      };
+      const res = await CategoryService.getCategories(categorySearchParam);
+      setCategoryFilter(res?.data?.pageData as Category[]);
+    };
+    fetchCategories();
+  }, []);
+
+  const handleCategoryChange = (value: string) => {
+    setCourseSearchParam((prev) => ({
+      ...prev,
+      searchCondition: { ...prev.searchCondition, category_id: value },
+    }));
+  };
 
   const columns: TableProps<Course>["columns"] = [
     {
@@ -82,28 +113,20 @@ const PendingCourseList: React.FC = () => {
       dataIndex: "user_name",
       key: "user_name",
     },
-
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
       render: (status: CourseStatusEnum) => {
-        switch (status) {
-          case CourseStatusEnum.NEW:
-            return <Tag color="green">New</Tag>;
-          case CourseStatusEnum.WAITING_APPROVE:
-            return <Tag color="orange">Waiting Approve</Tag>;
-          case CourseStatusEnum.APPROVE:
-            return <Tag color="yellow">Approve</Tag>;
-          case CourseStatusEnum.REJECT:
-            return <Tag color="red">Reject</Tag>;
-          case CourseStatusEnum.ACTIVE:
-            return <Tag color="yellow">Active</Tag>;
-          case CourseStatusEnum.INACTIVE:
-            return <Tag color="yellow">Inactive</Tag>;
-          default:
-            return <Tag color="gray">Unknown</Tag>;
-        }
+        const colorMap = {
+          [CourseStatusEnum.NEW]: "green",
+          [CourseStatusEnum.WAITING_APPROVE]: "orange",
+          [CourseStatusEnum.APPROVE]: "yellow",
+          [CourseStatusEnum.REJECT]: "red",
+          [CourseStatusEnum.ACTIVE]: "blue",
+          [CourseStatusEnum.INACTIVE]: "gray",
+        };
+        return <Tag color={colorMap[status]}>{status}</Tag>;
       },
     },
     {
@@ -116,9 +139,7 @@ const PendingCourseList: React.FC = () => {
       dataIndex: "discount",
       key: "discount",
       render: (discount: number) => (
-        <div>
-          <span className="text-red-500"> {discount}%</span>
-        </div>
+        <span className="text-red-500">{discount}%</span>
       ),
     },
     {
@@ -128,26 +149,27 @@ const PendingCourseList: React.FC = () => {
         <Space size="middle">
           <Button
             type="text"
-            color="primary"
-            variant="solid"
             onClick={() => handleUpdateStatus(CourseStatusEnum.APPROVE, record)}
-          ></Button>
+          >
+            Approve
+          </Button>
           <Button
             className="text-red-600"
             type="text"
-            color="danger"
-            variant="outlined"
             onClick={() => handleShowReason(record)}
-          ></Button>
+          >
+            Reject
+          </Button>
         </Space>
       ),
     },
   ];
 
-  const handleShowReason = (record: any) => {
+  const handleShowReason = (record: Course) => {
     setCurrentCourse(record);
     setReasonVisible(true);
   };
+
   const handleUpdateStatus = async (
     status: CourseStatusEnum,
     course: Course
@@ -158,7 +180,7 @@ const PendingCourseList: React.FC = () => {
       comment: reasonReject,
     };
     await CourseService.updateCourseStatus(formAction);
-    message.success("Submit preview successfully");
+    message.success("Status updated successfully");
     setReasonVisible(false);
   };
 
@@ -166,12 +188,24 @@ const PendingCourseList: React.FC = () => {
     <div>
       <Card>
         <h3 className="text-2xl my-5">Approve Courses</h3>
-        <Input
-          placeholder="Search By Course Name"
-          prefix={<SearchOutlined />}
-          style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
-          onChange={handleSearchChange}
-        />
+        <div>
+          <Input
+            placeholder="Search By Course Name"
+            prefix={<SearchOutlined />}
+            style={{ marginBottom: "20px", borderRadius: "4px" }}
+            className="w-full md:w-1/4"
+            onChange={handleSearchChange}
+          />
+          <Select
+            onChange={handleCategoryChange}
+            placeholder="Select a category"
+            className="w-full md:w-1/4 ml-0 md:ml-3 mb-2 md:mb-0"
+            options={categoryFilter.map((item: Category) => ({
+              label: item.name,
+              value: item._id,  
+            }))}
+          />
+        </div>
         <Table
           dataSource={coursePendingList}
           columns={columns}
@@ -200,13 +234,10 @@ const PendingCourseList: React.FC = () => {
           <Button
             color="primary"
             key="submit"
-            variant="solid"
-            htmlType="submit"
             onClick={() =>
               handleUpdateStatus(CourseStatusEnum.REJECT, currentCourse)
             }
           >
-            {/* {loading ? <Spin /> : <span>Submit</span>} */}
             Submit
           </Button>,
         ]}

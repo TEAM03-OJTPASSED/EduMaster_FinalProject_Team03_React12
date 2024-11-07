@@ -1,16 +1,6 @@
 import { useEffect, useState } from "react";
+import { Table, Card, Tag, TableProps, Button, Modal } from "antd";
 import {
-  Table,
-  Input,
-  Card,
-  Tag,
-  TableProps,
-  Button,
-  Modal,
-  Select,
-} from "antd";
-import {
-  SearchOutlined,
   DeleteOutlined,
   EditOutlined,
   PlusCircleOutlined,
@@ -25,17 +15,17 @@ import { Course, GetCourses } from "../../../models/Course.model";
 import { GetSessions, Session } from "../../../models/Session.model";
 import LessonService from "../../../services/lesson.service";
 import { handleNotify } from "../../../utils/handleNotify";
+import GlobalSearchUnit from "../../../components/GlobalSearchUnit";
 
 const InstructorLessonList = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalCreateVisible, setIsModalCreateVisible] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState<Lesson>({} as Lesson);
-  const [selectedCourse, setSelectedCourse] = useState<string>();
-  const [selectedSession, setSelectedSession] = useState<string>();
+  // const [selectedCourse, setSelectedCourse] = useState<string>();
+  // const [selectedSession, setSelectedSession] = useState<string>();
   const [listCourses, setListCourses] = useState<Course[]>([]);
   const [listSessions, setListSessions] = useState<Session[]>([]);
   const [listLessons, setListLessons] = useState<Lesson[]>([]);
-  
   const [loading, setLoading] = useState(false);
 
   const showModal = (lesson: Lesson) => {
@@ -67,7 +57,7 @@ const InstructorLessonList = () => {
       is_deleted: false,
       category_id: "",
     }
-  }
+  };
 
   const initialSessionsParams: GetSessions = {
     pageInfo: {
@@ -101,33 +91,32 @@ const InstructorLessonList = () => {
       const response = await CourseService.getCourses(initialCoursesParams);
       setListCourses(response?.data?.pageData ?? []);
     } finally {
-      setLoading(false);
+      setLoading(false); 
     }
   };
 
   const fetchLessons = async () => {
-    setLoading(true);
+    setLoading(true); 
     try {
       const response = await LessonService.getLessons(initialLessonsParams);
       setListLessons(response?.data?.pageData ?? []);
     } finally {
-      setLoading(false);
+      setLoading(false); 
     }
   };
 
   const fetchSessions = async () => {
-    setLoading(true);
+    setLoading(true); 
     try {
       const response = await SessionService.getSessions(initialSessionsParams);
       setListSessions(response?.data?.pageData ?? []);
     } finally {
-      setLoading(false);
+      setLoading(false); 
     }
   };
 
   const handleCreateLesson = async (values: LessonRequest) => {
-    const { position_order, full_time, image_url, video_url, ...otherValues } =
-      values;
+    const { position_order, full_time, image_url, video_url, ...otherValues } = values;
     const numericValues = {
       ...otherValues,
       position_order: position_order ? Number(position_order) : 0,
@@ -135,7 +124,7 @@ const InstructorLessonList = () => {
       video_url: video_url || "",
       image_url: image_url || "",
     };
-
+  
     setLoading(true);
     try {
       const response = await LessonService.createLesson(numericValues);
@@ -152,11 +141,8 @@ const InstructorLessonList = () => {
   const handleUpdateLesson = async (updatedLesson: LessonRequest) => {
     setLoading(true);
     try {
-      if (selectedSession) {
-        const response = await LessonService.updateLesson(
-          selectedLesson._id,
-          updatedLesson
-        );
+      if (selectedLesson) {
+        const response = await LessonService.updateLesson(selectedLesson._id, updatedLesson);
         if (response.success) {
           resetModalState();
           handleNotify("Lesson Updated Successfully", "The lesson has been updated successfully.");
@@ -164,7 +150,7 @@ const InstructorLessonList = () => {
         }
       }
     } finally {
-      setLoading(false);
+      setLoading(false); 
     }
   };
 
@@ -244,43 +230,46 @@ const InstructorLessonList = () => {
     },
   ];
 
+  // const handleCourseChange = (courseId: string) => {
+  //   setSelectedCourse(courseId);
+  //   setSelectedSession(undefined);
+  // };
 
-
-  // useEffect(() => {
-  //   let filtered = [...listLessons];
-
-  //   if (selectedCourse) {
-  //     filtered = filtered.filter(lesson => String(lesson.course_id) === String(selectedCourse));
-  //   }
-
-  //   if (selectedSession) {
-  //     filtered = filtered.filter(lesson => String(lesson.session_id) === String(selectedSession));
-  //   }
-
-  //   if (searchText) {
-  //     filtered = filtered.filter(lesson => 
-  //       lesson.name.toLowerCase().includes(searchText.toLowerCase())
-  //     );
-  //   }
-
-  //   setFilteredLessons(filtered);
-  // }, [selectedCourse, selectedSession, searchText]);
-
-  const handleCourseChange = (courseId: string) => {
-    setSelectedCourse(courseId);
-    setSelectedSession(undefined);
-  };
-
-  const handleSessionChange = (sessionId: string) => {
-    setSelectedSession(sessionId);
-  };
+  // const handleSessionChange = (sessionId: string) => {
+  //   setSelectedSession(sessionId);
+  // };
 
   return (
     <Card>
       <h3 className="text-2xl my-5">Lesson Management</h3>
       <div className="flex justify-between">
-        <div className="flex flex-wrap gap-4 mb-5">
-          <Input
+        <div className="flex justify-between gap-4 mb-5 overflow-hidden">
+          <GlobalSearchUnit 
+            placeholder="Search by Lesson Name"
+            selectFields={[
+              {
+                name: "course_id",
+                placeholder:"Filter by Course",
+                options: listCourses.map(course => ({
+                  value: course._id,
+                  label: course.name,
+                }))
+              },
+              {
+                name: "session_id",
+                placeholder:"Filter by Session",
+                options: listSessions.map(session => ({
+                  value: session._id,
+                  label: session.name,
+                }))
+              },
+
+            ]}
+          />
+
+
+
+          {/* <Input
             placeholder="Search By Lesson Name"
             prefix={<SearchOutlined className="w-4 h-4" />}
             className="w-64"
@@ -292,7 +281,7 @@ const InstructorLessonList = () => {
             onChange={handleCourseChange}
             value={selectedCourse}
           >
-            {listCourses.map((course) => (
+            {listCourses.map(course => (
               <Select.Option key={course._id} value={String(course._id)}>
                 {course.name}
               </Select.Option>
@@ -307,18 +296,14 @@ const InstructorLessonList = () => {
             value={selectedSession}
             disabled={!selectedCourse}
           >
-            {selectedCourse &&
-              listSessions
-                .filter(
-                  (session) =>
-                    String(session.course_id) === String(selectedCourse)
-                )
-                .map((session) => (
-                  <Select.Option key={session._id} value={String(session._id)}>
-                    {session.name}
-                  </Select.Option>
-                ))}
-          </Select>
+            {selectedCourse && listSessions
+              .filter(session => String(session.course_id) === String(selectedCourse))
+              .map(session => (
+                <Select.Option key={session._id} value={String(session._id)}>
+                  {session.name}
+                </Select.Option>
+              ))}
+          </Select> */}
         </div>
 
         <div className="flex">

@@ -8,6 +8,7 @@ import {
   SearchCartByStatus,
 } from "../../models/Cart.model";
 import CartService from "../../services/cart.service";
+import GlobalSearchUnit from "../../components/GlobalSearchUnit";
 
 const InstructorCourseList: React.FC = () => {
   const navigate = useCustomNavigate();
@@ -102,11 +103,10 @@ const InstructorCourseList: React.FC = () => {
     <Card>
       <h3 className="text-2xl my-5">My Learning</h3>
 
-      <Input
-        placeholder="Search By Course Name"
-        prefix={<SearchOutlined />}
-        style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
-      />
+      <div>
+        <GlobalSearchUnit placeholder="Search by Course Name"/>
+
+      </div>
 
       <Tabs>
         <Tabs.TabPane>
