@@ -12,7 +12,6 @@ import CartService from "../../services/cart.service";
 const InstructorCourseList: React.FC = () => {
   const navigate = useCustomNavigate();
   const [carts, setCarts] = useState<Cart[]>([]);
-  // const [cartStatus, setCartStatus] = useState<string>(CartStatusEnum.NEW);
 
   const initialCartSearchParams: SearchCartByStatus = {
     pageInfo: {
@@ -24,16 +23,16 @@ const InstructorCourseList: React.FC = () => {
       is_deleted: false,
     },
   };
-
-  useEffect(() => {
-    fetchCart();
-  }, []);
   const fetchCart = async () => {
     const response = await CartService.getCartsByStatus(
       initialCartSearchParams
     );
     setCarts(response?.data?.pageData as Cart[]);
   };
+
+  useEffect(() => {
+    fetchCart();
+  }, []);
 
   // Navigate to course details page
   const handleViewCourse = (courseId: string) => {

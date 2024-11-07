@@ -23,16 +23,6 @@ import { useCustomNavigate } from "../../hooks/customNavigate";
 const { Title, Paragraph, Text } = Typography;
 const { TabPane } = Tabs;
 
-interface Course {
-  id: string;
-  title: string;
-  description: string;
-  students: number;
-  rating: number;
-  category: string;
-  subcategory: string;
-}
-
 const ProfilePage: React.FC = () => {
   const instructorInfo = {
     name: "Prof. Edu Master",
@@ -139,7 +129,6 @@ const ProfilePage: React.FC = () => {
                           value={course.rating}
                           prefix={<StarFilled />}
                           className="font-exo"
-
                         />
                       </div>
                     }
@@ -157,15 +146,15 @@ const ProfilePage: React.FC = () => {
                       description={course.description}
                     />
                     <div className="flex justify-between items-center ">
-                    <Tag color="orange">{course.id}</Tag>
-                    <div className="mt-2">
-                      <Tag className="bg-orange-500 font-jost text-white text-base">
-                        {course.category}
-                      </Tag>
-                      <Tag className="bg-gray-500 font-jost text-white ml-2 text-base">
-                        {course.subcategory}
-                      </Tag>
-                    </div>
+                      <Tag color="orange">{course.id}</Tag>
+                      <div className="mt-2">
+                        <Tag className="bg-orange-500 font-jost text-white text-base">
+                          {course.category}
+                        </Tag>
+                        <Tag className="bg-gray-500 font-jost text-white ml-2 text-base">
+                          {course.subcategory}
+                        </Tag>
+                      </div>
                     </div>
                   </List.Item>
                 )}

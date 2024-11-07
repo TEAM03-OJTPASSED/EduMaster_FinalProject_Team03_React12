@@ -63,7 +63,6 @@ const StudentOrderHistory = () => {
       );
       setPurchaseLogList(res?.data?.pageData as Purchase[]);
       setCurrentPurchase(res?.data?.pageInfo as PageInfo);
-      console.log();
     };
     fetchData();
   }, [purchaseLogSearchParam]);
@@ -165,7 +164,10 @@ const StudentOrderHistory = () => {
               <strong>Course Name:</strong> {selectedCart.course_name}
             </p>
             <p>
-              <strong>Purchase No:</strong> {selectedCart.cart_no}
+              <strong>Purchase No:</strong> {selectedCart.purchase_no}
+            </p>
+            <p>
+              <strong>Cart No:</strong> {selectedCart.cart_no}
             </p>
             <p>
               <strong>Price Paid:</strong> ${selectedCart.price.toFixed(2)}
