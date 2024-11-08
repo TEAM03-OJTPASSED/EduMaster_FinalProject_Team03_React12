@@ -20,3 +20,13 @@ export interface BlogRequest {
     description: string;
     content: string;
 }
+
+export interface BlogEditRequest {
+    _id: string;
+    name: string;
+    user_id?: string;
+    image_url: string;
+    description: string;
+    content: string;
+    tags: string[]; 
+};
