@@ -1,7 +1,7 @@
 import { BLOG_API } from "../constants/api/blog";
 import { ApiResponse, APIResponseData } from "../models/ApiReponse.model";
-import { Blog, BlogRequest } from "../models/Blog.model";
-import { BlogSearchCondition } from "../models/SearchInfo.model";
+import { Blog, BlogRequest,  } from "../models/Blog.model";
+import { BlogSearchParams } from "../models/SearchInfo.model";
 import { deleteRequest, getRequest, postRequest, putRequest } from "./httpsMethod";
 
 const BlogService = {
@@ -11,7 +11,7 @@ const BlogService = {
     },
 
     // Get a list of blogs with optional search filters
-    getBlogs(params: BlogSearchCondition): Promise<ApiResponse<APIResponseData<Blog[]>>> {
+    getBlogs(params: BlogSearchParams): Promise<ApiResponse<APIResponseData<Blog>>> {
         return postRequest(BLOG_API.GET_BLOGS, params);
     },
 

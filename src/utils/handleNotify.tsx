@@ -1,10 +1,7 @@
 import { notification } from "antd";
-
-
-export const handleNotify = (message:string, description: string) => {
-    notification.success({
-        message: message,
-        description: description,
-      });
-}
-
+export const handleNotify = (message: string, description: string, type: 'success' | 'error' | 'info' | 'warning' = 'success') => {
+  notification[type]({
+    message: message,
+    description: description,
+  });
+};

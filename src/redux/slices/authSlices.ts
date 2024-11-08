@@ -1,18 +1,23 @@
 // Import necessary modules
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  createAsyncThunk,
+  createSlice,
+} from "@reduxjs/toolkit";
 import { getRequest, postRequest } from "../../services/httpsMethod";
 import { User } from "../../models/UserModel";
-import { message } from "antd";
+import { ModalRegisterGoogleProps } from "../../components/ModalRegisterGoogle";
+import { handleNotify } from "../../utils/handleNotify";
 
-interface AuthState {
+export interface AuthState {
   login: {
     token: string | null;
     currentUser: User;
     loading: boolean;
     error: string | null;
     success: boolean;
+    is_google: boolean;
     is_register_google: boolean;
-    googleId?:string
+    googleId?: string;
   };
   verifyToken: {
     loading: boolean;
@@ -34,6 +39,7 @@ const initialState: AuthState = {
     currentUser: currentUser,
     token: token,
     error: null,
+    is_google: false,
     success: false,
     is_register_google: false,
   },
@@ -55,11 +61,11 @@ export const login = createAsyncThunk<
   { email: string; password: string },
   { rejectValue: string }
 >("auth/login", async ({ email, password }, thunkAPI) => {
-  const {dispatch} = thunkAPI
+  const { dispatch } = thunkAPI;
   const response = await postRequest("/api/auth", { email, password });
   localStorage.setItem("token", (response as any).data.token);
-  if(response.success){
-    await dispatch(getCurrentUser())
+  if (response.success) {
+    await dispatch(getCurrentUser());
   }
   return response.data as AuthState;
 });
@@ -69,29 +75,27 @@ export const loginWithGoogle = createAsyncThunk<
   AuthState,
   string,
   { rejectValue: string }
->("auth/loginGoogle", async (google_id,
-  // thunkAPI
-) => {
-  // const { dispatch } = thunkAPI;
-  const response = await postRequest("/api/auth/google", { google_id });
-  // if (response.errors?.includes("email_not_found")) {
-  //   dispatch(setRegisterGoogle({is_register : true, google_id:google_id}));
-  //   return thunkAPI.rejectWithValue("email_not_found");
-  // }
+>("auth/loginGoogle", async (google_id, thunkAPI): Promise<AuthState> => {
+  const { dispatch } = thunkAPI;
+  const response = await postRequest("/api/auth/google", {
+    google_id: google_id,
+  });
+  console.log("res gg", response.data);
   localStorage.setItem("token", (response as any).data.token);
+  if (response.success) {
+    await dispatch(getCurrentUser());
+  }
+
   return response.data as AuthState;
 });
 
 // Google Register function
 export const registerWithGoogle = createAsyncThunk<
   AuthState,
-  string,
-  { rejectValue: string }
->("auth/registerGoogle", async (google_id, formData) => {
-  const response = await postRequest("/api/users/google", {
-    ...formData,
-    google_id,
-  });
+  ModalRegisterGoogleProps
+>("auth/registerGoogle", async (formData) => {
+  const response = await postRequest("/api/users/google", formData);
+  handleNotify("Register gg successfully", " ")
   localStorage.setItem("token", (response as any).data.token);
   return response.data as AuthState;
 });
@@ -100,7 +104,7 @@ export const registerWithGoogle = createAsyncThunk<
 export const getCurrentUser = createAsyncThunk("auth/user", async () => {
   const res = await getRequest("/api/auth");
   localStorage.setItem("user", JSON.stringify(res.data));
-  message.success("Login successfully");
+  handleNotify("Login successfully", " ");
   return res.data;
 });
 
@@ -138,7 +142,14 @@ export const authSlice = createSlice({
     },
     setRegisterGoogle: (state, action) => {
       state.login.is_register_google = action.payload.is_register;
-      state.login.googleId = action.payload.google_id
+      state.login.googleId = action.payload.google_id;
+    },
+    setIsLoginGoogleStart: (state,action) => {
+      state.login.googleId= action.payload
+      state.login.is_google = true;
+    },
+    setIsLoginGoogleFailed: (state) => {
+      state.login.is_google = false;
     },
   },
   extraReducers: (builder) => {
@@ -148,7 +159,7 @@ export const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state) => {
         state.login.loading = false;
-      
+
         state.login.success = true;
       })
       .addCase(login.rejected, (state) => {
@@ -171,17 +182,19 @@ export const authSlice = createSlice({
       })
       .addCase(loginWithGoogle.pending, (state) => {
         state.login.loading = true;
+        state.login.is_google = true;
+
       })
       .addCase(loginWithGoogle.fulfilled, (state) => {
         state.login.loading = false;
         state.login.success = true;
+        state.login.is_google = false;
       })
-      .addCase(loginWithGoogle.rejected, (state, action) => {
+      .addCase(loginWithGoogle.rejected, (state) => {
         state.login.loading = false;
         state.login.success = false;
-        if (action.payload === "email_not_found") {
-          state.login.is_register_google = true;
-        }
+        state.login.is_register_google = true;
+        state.login.is_google = false;
       })
       .addCase(registerWithGoogle.pending, (state) => {
         state.login.loading = true;
@@ -189,10 +202,12 @@ export const authSlice = createSlice({
       .addCase(registerWithGoogle.fulfilled, (state) => {
         state.login.loading = false;
         state.login.success = true;
+        state.login.is_register_google = false
       })
       .addCase(registerWithGoogle.rejected, (state) => {
         state.login.loading = false;
         state.login.success = false;
+       
       });
   },
 });
@@ -207,6 +222,9 @@ export const {
   resendTokenPending,
   resendTokenRejected,
   setRegisterGoogle,
+  setIsLoginGoogleStart,
+  setIsLoginGoogleFailed,
+  // setIsLoginGoogleSuccess,
 } = authSlice.actions;
 
 export default authSlice.reducer;

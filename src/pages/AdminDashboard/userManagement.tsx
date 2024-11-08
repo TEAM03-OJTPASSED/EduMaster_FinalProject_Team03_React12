@@ -1,53 +1,46 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Input, Space, Card, Select, Switch } from "antd";
+import { Table, Button, Input, Space, Card, Select, Switch, Tabs } from "antd";
 import {
   SearchOutlined,
   EditOutlined,
   DeleteOutlined,
-  PlusOutlined,
+  PlusCircleOutlined,
 } from "@ant-design/icons";
 
-import useSearch from "../../hooks/useSearch";
-import UserService, {
-  changeRole,
-  changeStatus,
-  deleteUser,
-  updatedUser,
-} from "../../services/user.service";
 import EditUser from "../../components/Admin/AdminModals/EditUserModal";
 import CreateUser from "../../components/Admin/AdminModals/CreateUserModal";
+import DeleteUserModal from "../../components/Admin/AdminModals/DeleteUserModal";
 import { UserSearchParams } from "../../models/SearchInfo.model";
 import { User } from "../../models/UserModel";
+import { UserService } from "../../services/user.service";
+import { useDebouncedSearch } from "../../hooks/useSearch";
 
 const { Option } = Select;
 
 const UserManagement: React.FC = () => {
   const [editVisible, setEditVisible] = useState(false);
-  const [createVisible, setCreateVisible] = useState(false); // State for CreateUser modal
+  const [createVisible, setCreateVisible] = useState(false);
+  const [deleteUserModalVisible, setDeleteUserModalVisible] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
-  const { searchText, filteredData, handleSearchChange } = useSearch(users, [
+  const [activeTabKey, setActiveTabKey] = useState("active");
+  const [searchText, setSearchText] = useState("");
+  const filteredData = useDebouncedSearch(users, searchText, 300, [
     "name",
     "email",
   ]);
-  const [statusFilter, setStatusFilter] = useState<string | null>(null);
 
-  const fetchUsers = async (
-    pageNum: number,
-    pageSize: number,
-    keyword: string
-  ) => {
+  const fetchUsers = async () => {
     const searchParams: UserSearchParams = {
       searchCondition: {
-        keyword,
+        keyword: searchText,
         role: "",
-        status: statusFilter !== null ? Boolean(statusFilter) : undefined, // Chuyển đổi thành boolean
+        status: activeTabKey === "active",
         is_delete: false,
-        // is_verified: true, // Nếu is_verified cũng là boolean
-        is_verified: "", // Nếu is_verified cũng là boolean
+        is_verified: true,
       },
       pageInfo: { pageNum, pageSize },
     };
@@ -56,19 +49,13 @@ const UserManagement: React.FC = () => {
       const response = await UserService.getUsers(searchParams);
       const responseData = response.data?.pageData;
       const flattenedUsers: User[] = Array.isArray(responseData)
-        ? responseData.flat()
+        ? responseData.flat() // Dùng flat() để chuyển thành User[]
         : [];
-      const totalItems = response.data?.pageInfo?.totalItems ?? 0;
       setUsers(flattenedUsers);
-      setTotal(totalItems);
+      setTotal(response.data?.pageInfo?.totalItems ?? 0);
     } catch (err) {
       console.error("Error fetching users:", err);
     }
-  };
-
-  const handleAddUser = () => {
-    setCurrentUser(null);
-    setCreateVisible(true); // Open CreateUser modal
   };
 
   const handleEdit = (record: User) => {
@@ -76,83 +63,32 @@ const UserManagement: React.FC = () => {
     setEditVisible(true);
   };
 
-  const handleCloseModal = () => {
-    setEditVisible(false);
-    setCreateVisible(false);
-    setCurrentUser(null);
-  };
-
   const handleSave = async (updatedUserData: any) => {
-    if (!currentUser) {
-      console.error("No user selected for editing.");
-      return;
-    }
-
-    const userId = currentUser._id;
-    const promises: Promise<any>[] = [];
-
-    // Check role change
-    if (updatedUserData.role !== currentUser.role) {
-      promises.push(changeRole(userId, updatedUserData.role));
-    }
-
-    // Check status change
-    if (updatedUserData.status !== currentUser.status) {
-      promises.push(changeStatus(userId, updatedUserData.status));
-    }
-
-    // Check for other updates
-    const { role, status, ...otherUpdatedFields } = updatedUserData;
-    const hasOtherUpdates = Object.keys(otherUpdatedFields).some(
-      (key) =>
-        otherUpdatedFields[key as keyof User] !== currentUser[key as keyof User]
-    );
-
-    if (hasOtherUpdates) {
-      promises.push(updatedUser(userId, otherUpdatedFields));
-    }
-
+    if (!currentUser) return;
     try {
-      await Promise.all(promises);
+      await UserService.updateUser(currentUser._id, updatedUserData);
       setEditVisible(false);
-      const updatedUsers = users.map((user) =>
-        user._id === userId ? { ...user, ...updatedUserData } : user
-      );
-      setUsers(updatedUsers);
-      fetchUsers(pageNum, pageSize, searchText); // Fetch users after save
+      fetchUsers();
     } catch (error) {
       console.error("Error updating user:", error);
     }
   };
 
-  const handleDelete = async (record: User) => {
-    try {
-      const userId = record._id;
-      const response = await deleteUser(userId);
-      if (response) {
-        console.log("User deleted successfully");
-        fetchUsers(pageNum, pageSize, searchText); // Refresh the user list
-      } else {
-        console.error("Failed to delete user");
-      }
-    } catch (error) {
-      console.error("Error deleting user:", error);
-    }
+  const handleDeleteConfirm = async (userId: string) => {
+    await UserService.deleteUser(userId);
+    fetchUsers();
+    setDeleteUserModalVisible(false);
   };
 
-  useEffect(() => {
-    fetchUsers(pageNum, pageSize, searchText);
-  }, [pageNum, pageSize, searchText, statusFilter]);
-
-  const handleTableChange = (pagination: any, filters: any) => {
+  const handleTableChange = (pagination: any) => {
     setPageNum(pagination.current);
     setPageSize(pagination.pageSize);
-    setStatusFilter(filters.status ? filters.status[0] : null);
   };
 
   useEffect(() => {
-    fetchUsers(pageNum, pageSize, searchText);
-  }, [pageNum, pageSize, searchText, statusFilter]);
+    fetchUsers();
+    // }, [pageNum, pageSize, searchText, activeTabKey]);
+  }, [pageNum, pageSize, activeTabKey]);
 
   const columns = [
     {
@@ -174,21 +110,15 @@ const UserManagement: React.FC = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      filters: [
-        { text: "Active", value: true },
-        { text: "Inactive", value: false },
-      ],
-      onFilter: (value: any, record: User) => record.status === value,
       render: (status: boolean, record: User) => (
         <Switch
           checked={status}
           onChange={async (checked) => {
-            try {
-              await changeStatus(record._id, checked);
-              fetchUsers(pageNum, pageSize, searchText);
-            } catch (error) {
-              console.error("Error updating status:", error);
-            }
+            await UserService.changeStatus({
+              user_id: record._id,
+              status: checked,
+            });
+            fetchUsers();
           }}
         />
       ),
@@ -202,8 +132,8 @@ const UserManagement: React.FC = () => {
           value={text}
           style={{ width: 120 }}
           onChange={async (value) => {
-            await changeRole(record._id, value);
-            fetchUsers(pageNum, pageSize, searchText);
+            await UserService.changeRole({ user_id: record._id, role: value });
+            fetchUsers();
           }}
         >
           <Option value="admin">Admin</Option>
@@ -215,13 +145,16 @@ const UserManagement: React.FC = () => {
     {
       title: "Actions",
       key: "action",
-      render: (record: any) => (
+      render: (record: User) => (
         <Space size="middle">
           <Button icon={<EditOutlined />} onClick={() => handleEdit(record)} />
           <Button
             danger
             icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record)}
+            onClick={() => {
+              setCurrentUser(record);
+              setDeleteUserModalVisible(true);
+            }}
           />
         </Space>
       ),
@@ -231,49 +164,68 @@ const UserManagement: React.FC = () => {
   return (
     <div>
       <Card>
-        <h1 className="text-2xl my-2">User Management</h1>
-        <div className="flex items-center justify-between mb-4">
-          <Input
-            placeholder="Search"
-            prefix={<SearchOutlined />}
-            className="w-full md:w-1/3"
-            value={searchText}
-            onChange={handleSearchChange}
-          />
-          <Button
-            type="primary"
-            onClick={handleAddUser}
-            icon={<PlusOutlined />}
-          >
-            Add user
-          </Button>
-        </div>
-        <Table
-          dataSource={filteredData}
-          columns={columns}
-          pagination={{
-            current: pageNum,
-            pageSize,
-            total,
-            showSizeChanger: true,
-          }}
-          onChange={handleTableChange}
-          rowKey="_id"
-          bordered
-          scroll={{ x: "max-content" }}
+        <h1 className="text-2xl my-5">User Management</h1>
+        <Tabs
+          activeKey={activeTabKey}
+          onChange={setActiveTabKey}
+          items={["active", "inactive"].map((key) => ({
+            key,
+            label: `${key.charAt(0).toUpperCase() + key.slice(1)} Users`,
+            children: (
+              <>
+                <div className="flex items-center justify-between mb-4">
+                  <Input
+                    placeholder="Search By User Name"
+                    prefix={<SearchOutlined />}
+                    className="w-full md:w-1/3"
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)} // Update searchText on input change
+                  />
+                  <Button
+                    type="primary"
+                    onClick={() => setCreateVisible(true)}
+                    icon={<PlusCircleOutlined />}
+                  >
+                    Add new user
+                  </Button>
+                </div>
+                <Table
+                  dataSource={filteredData}
+                  columns={columns}
+                  pagination={{
+                    current: pageNum,
+                    pageSize,
+                    total,
+                    showSizeChanger: true,
+                  }}
+                  onChange={handleTableChange}
+                  rowKey="_id"
+                  bordered
+                  scroll={{ x: "max-content" }}
+                />
+              </>
+            ),
+          }))}
         />
       </Card>
+
       <EditUser
         key={currentUser?._id}
-        onClose={handleCloseModal}
         visible={editVisible}
-        user={currentUser}
+        onClose={() => setEditVisible(false)}
+        user={currentUser ?? ({} as User)}
         onSave={handleSave}
       />
       <CreateUser
         visible={createVisible}
-        onClose={handleCloseModal}
-        onSave={handleSave}
+        onClose={() => setCreateVisible(false)}
+        onSave={fetchUsers}
+      />
+      <DeleteUserModal
+        visible={deleteUserModalVisible}
+        onCancel={() => setDeleteUserModalVisible(false)}
+        onDelete={() => handleDeleteConfirm(currentUser?._id!)}
+        userName={currentUser?.name || "Undefined User"}
       />
     </div>
   );

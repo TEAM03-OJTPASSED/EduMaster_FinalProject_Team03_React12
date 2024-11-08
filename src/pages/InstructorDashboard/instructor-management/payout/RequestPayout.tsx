@@ -1,28 +1,70 @@
-import { Card, Input, Table, Tag, TableProps } from "antd";
-import {
-  SearchOutlined,
-} from "@ant-design/icons";
-import {
-  Payout,
-  payouts,
-  PayoutStatusEnum,
-} from "../../../AdminDashboard/monitors/course/courseList";
-
-import { useLocation } from "react-router-dom";
+import { Card, Input, Table, Tag, TableProps, Checkbox, Button, Modal } from "antd";
+import { SearchOutlined, SendOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
+import { useEffect, useState } from "react";
+import PayoutService from "../../../../services/payout.service";
+import { GetPayoutRequest, Payout, PayoutStatusEnum, Transaction } from "../../../../models/Payout.model";
 
 const RequestPayout = () => {
-  const location = useLocation();
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [payouts, setPayouts] = useState<Payout[]>([]);
 
-  const { status } = location.state || {};
+  const initialParams: GetPayoutRequest = {
+    searchCondition: {
+      payout_no: "",
+      instructor_id: "",
+      status: PayoutStatusEnum.NEW,
+      is_delete: false,
+    },
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 10,
+    },
+  };
 
-  const filterdPayouts = payouts.filter((payout) =>
-    Array.isArray(status)
-      ? status.includes(payout.status)
-      : payout.status === status
-  );
+  useEffect(() => {
+    const fetchPayouts = async () => {
+      const response = await PayoutService.getPayout(initialParams);
+      const payouts = response.data?.pageData || [];
+      setPayouts(payouts);
+    };
+
+    fetchPayouts();
+  }, []);
+
+  const handleSelect = (key: React.Key) => {
+    const newSelectedRowKeys = selectedRowKeys.includes(key)
+      ? selectedRowKeys.filter((k) => k !== key)
+      : [...selectedRowKeys, key];
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+
+  const handleCreate = async () => {
+    setIsModalVisible(true);
+  };
+
+  const handleUpdate = async () => {
+    console.log("Update payouts:", selectedRowKeys);
+  };
+
+  const handleSendToAdmin = async (payout: Payout) => {
+    console.log("Sending payout to admin:", payout);
+    // Add logic here to handle payout request to admin
+  };
 
   const columns: TableProps<Payout>["columns"] = [
+    {
+      title: "Select",
+      dataIndex: "select",
+      key: "select",
+      render: (_, record) => (
+        <Checkbox
+          checked={selectedRowKeys.includes(record.payout_no)}
+          onChange={() => handleSelect(record.payout_no)}
+        />
+      ),
+    },
     {
       title: "Payout No",
       dataIndex: "payout_no",
@@ -33,40 +75,34 @@ const RequestPayout = () => {
       dataIndex: "status",
       key: "status",
       filters: [
-        { text: PayoutStatusEnum.new, value: PayoutStatusEnum.new },
-        {
-          text: PayoutStatusEnum.request_payout,
-          value: PayoutStatusEnum.request_payout,
-        },
+        { text: PayoutStatusEnum.NEW, value: PayoutStatusEnum.NEW },
+        { text: PayoutStatusEnum.REQUEST_PAYOUT, value: PayoutStatusEnum.REQUEST_PAYOUT },
       ],
-      onFilter: (value: any, record: any) => record.status === value, // Đảm bảo value là string
+      onFilter: (value: any, record: any) => record.status === value,
       render: (status: PayoutStatusEnum) => {
-        switch (status) {
-          case PayoutStatusEnum.new:
-            return <Tag color="blue">{PayoutStatusEnum.new}</Tag>;
-          case PayoutStatusEnum.request_payout:
-            return <Tag color="yellow">{PayoutStatusEnum.request_payout}</Tag>;
-          case PayoutStatusEnum.completed:
-            return <Tag color="green">{PayoutStatusEnum.completed}</Tag>;
-          case PayoutStatusEnum.rejected:
-            return <Tag color="red">{PayoutStatusEnum.rejected}</Tag>;
-          default:
-            return <Tag color="gray">Unknown</Tag>; // Mặc định cho trạng thái khác
-        }
+        const statusColors = {
+          [PayoutStatusEnum.NEW]: "blue",
+          [PayoutStatusEnum.REQUEST_PAYOUT]: "yellow",
+          [PayoutStatusEnum.COMPLETED]: "green",
+          [PayoutStatusEnum.REJECTED]: "red",
+        };
+        return <Tag color={statusColors[status] || "gray"}>{status}</Tag>;
       },
     },
     {
       title: "Created at",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at) => {
-        return <div>{dayjs(created_at).format("DD/MM/YYYY")}</div>;
-      },
+      render: (created_at) => dayjs(created_at).format("DD/MM/YYYY"),
     },
     {
       title: "Transaction ID",
-      dataIndex: "transaction_id",
-      key: "transaction_id",
+      dataIndex: "transactions",
+      key: "transactions",
+      render: (transactions:Transaction[]) =>
+        transactions.map((transaction, index) => (
+          <span key={index}>{transaction.purchase_id},</span>
+        )),
     },
     {
       title: "Balance Origin",
@@ -83,28 +119,52 @@ const RequestPayout = () => {
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
     },
+    {
+      title: "Action",
+      key: "action",
+      render: (record: Payout) => (
+        <Button
+          type="text"
+          icon={<SendOutlined style={{ color: "blue" }} />}
+          onClick={() => handleSendToAdmin(record)}
+          title="Send to admin for approval"
+        />
+        
+      ),
+    },
   ];
 
   return (
     <Card>
-      <div className="flex">
-        <h3 className="text-2xl my-5">Payout Management</h3>
-      </div>
+      <h3 className="text-2xl my-5">Payout Management</h3>
       <Input
         placeholder="Search By Payout Number"
         prefix={<SearchOutlined />}
         style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
       />
+      <Button type="default" onClick={handleUpdate} disabled={selectedRowKeys.length === 0}>
+        Update Selected
+      </Button>
       <Table
-        dataSource={filterdPayouts}
+        dataSource={payouts}
         columns={columns}
         pagination={{ pageSize: 5 }}
-        rowKey="name"
+        rowKey="payout_no"
         bordered
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
       />
+      <Modal
+        title="Create Payout"
+        visible={isModalVisible}
+        onOk={() => setIsModalVisible(false)}
+        onCancel={() => setIsModalVisible(false)}
+      >
+        <p>Form to create a payout will go here.</p>
+      </Modal>
     </Card>
   );
 };
+
 export default RequestPayout;
+ 

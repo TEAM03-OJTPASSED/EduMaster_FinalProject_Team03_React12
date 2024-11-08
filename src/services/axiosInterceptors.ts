@@ -1,5 +1,17 @@
-import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import axios, {
+  AxiosError,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from "axios";
 import handleError from "./error";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../redux/store/store";
+import {
+  setIsLoginGoogleFailed,
+  setRegisterGoogle,
+} from "../redux/slices/authSlices";
+// import { useDispatch, useSelector } from "react-redux";
+// import { AppDispatch, RootState } from "../redux/store/store";
 
 // Tạo instance của axios
 export const axiosClientVer2 = axios.create({
@@ -15,7 +27,6 @@ axiosClientVer2.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     // Thêm Authorization header với token, nếu nó tồn tại
     const token = localStorage.getItem("token"); // Hoặc bất kỳ phương pháp nào bạn lưu trữ token
-    console.log("local token", token);
 
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
@@ -35,9 +46,15 @@ axiosClientVer2.interceptors.response.use(
     // Xử lý thành công response, nếu cần
     return response;
   },
-  (error) => {
+  (error: AxiosError) => {
     // Xử lý lỗi phản hồi toàn cầu
     handleError(error);
+    const dispatch = useDispatch<AppDispatch>();
+    const { is_google } = useSelector((state: RootState) => state.auth.login);
+    if (is_google && error.response?.data) {
+      dispatch(setIsLoginGoogleFailed());
+      dispatch(setRegisterGoogle(true));
+    }
     // Luôn trả về lỗi cho hàm gọi
     return Promise.reject(error);
   }

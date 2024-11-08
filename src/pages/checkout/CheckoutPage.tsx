@@ -1,49 +1,35 @@
 import React, { useState } from 'react';
 import { Form, Input, Button, Card, List, Typography, Space, Radio, Divider, message } from 'antd';
 import { CreditCardOutlined, BankOutlined, DollarOutlined } from '@ant-design/icons';
-import { useCustomNavigate } from '../../hooks/customNavigate';
-import DynamicBreadcrumb from '../../components/Breadcrumb/Breadcrumb';
 import { RootState } from '../../redux/store/store';
 import { useSelector } from 'react-redux';
+import { Cart, CartItem } from '../../models/Cart.model';
 
 const { Title, Text } = Typography;
 
-interface Course {
-  id: number;
-  name: string;
-  price: number;
+
+  
+interface CheckoutPageProps {
+  carts: Cart[];
+  // navigate: (path: string) => void;
+  cancelCart: (cartItem: CartItem) => void
+  checkout: () => void;
 }
 
-// interface User {
-//     name: string;
-//     email: string;
-//     phone: string;
-//     address: string;
-// }
-
-const CheckoutPage: React.FC = () => {
-  const navigate = useCustomNavigate();
+const CheckoutPage: React.FC<CheckoutPageProps> = ({carts, cancelCart, checkout}) => {
   const [paymentMethod, setPaymentMethod] = useState('credit_card');
-
   const {currentUser} = useSelector((state:RootState) => state.auth.login)
 
   
-
-  const courses: Course[] = [
-    { id: 1, name: "Advanced Web Development", price: 24000000 },
-    { id: 2, name: "Data Science Fundamentals", price: 24000000},
-    { id: 3, name: "Digital Marketing Mastery", price: 24000000 },
-  ];
-
   
 
-  const total = courses.reduce((sum, course) => sum + course.price, 0);
+  const total = carts.reduce((sum, cart) => sum + cart.price, 0);
 
-  const onFinish = (values: any) => {
-    console.log('Success:', values);
-    message.success('Order placed successfully!');
-    navigate('/');
-  };
+  // const onFinish = (values: any) => {
+  //   console.log('Success:', values);
+  //   message.success('Order placed successfully!');
+  //   navigate('/');
+  // };
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
@@ -51,16 +37,14 @@ const CheckoutPage: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 font-jost">
-            <DynamicBreadcrumb/>
-
-      <Title level={1} className="mb-8 font-exo">Checkout</Title>
+    <div className="container mx-auto  py-4 font-jost">
+      <h1 className="mb-2 pb-4 text-4xl font-semibold">Awaiting Payment</h1>
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="w-full lg:w-2/3">
           <Card title="Billing Information" className="mb-8">
             <Form
               name="checkout"
-              onFinish={onFinish}
+              onFinish={checkout}
               onFinishFailed={onFinishFailed}
               layout="vertical"
             >
@@ -161,18 +145,28 @@ const CheckoutPage: React.FC = () => {
         <div className="w-full lg:w-1/3">
           <Card title="Order Summary" className="sticky top-4">
             <List
-              dataSource={courses}
-              renderItem={(course) => (
-                <List.Item key={course.id}>
-                  <Text>{course.name}</Text>
-                  <Text>${course.price.toFixed(2)}</Text>
+              dataSource={carts}
+              renderItem={(cart) => (
+                <List.Item key={cart._id} className='justify-between'>
+                  <Text>{cart.course_name}</Text>
+                  <div className='flex w-1/4 justify-end items-center'>
+                  <Text className=''>${cart.price.toFixed(2)}</Text>
+                  <Button
+                    type="link"
+                    onClick={() => cancelCart(cart)}
+                    className="text-red-500 px-2"
+                  >
+                    X
+
+                  </Button>
+                  </div>
                 </List.Item>
               )}
             />
             <Divider />
             <div className="flex justify-between items-center">
                 <Text strong>Total</Text>
-                <Text strong className='text-4xl font-jost '>đ {total.toFixed(0)}</Text>
+                <Text strong className='text-4xl font-jost '>${total.toFixed(2)}</Text>
             </div>
           </Card>
         </div>

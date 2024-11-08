@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import { Table, Input, Card, Button, Modal, Select } from "antd";
+import { Table, Card, Button, Modal } from "antd";
 import {
-  SearchOutlined,
   EditOutlined,
   DeleteOutlined,
   PlusCircleOutlined,
@@ -15,18 +14,45 @@ import { Course, GetCourses } from "../../../models/Course.model";
 import SessionService from "../../../services/session.service";
 import CourseService from "../../../services/course.service";
 import { handleNotify } from "../../../utils/handleNotify";
+import GlobalSearchUnit from "../../../components/GlobalSearchUnit";
+
+
+const initialCoursesParams: GetCourses = {
+  pageInfo: {
+    pageNum: 1,
+    pageSize: 100,
+  },
+  searchCondition: {
+    keyword: "",
+    is_deleted: false,
+    category_id: "",
+  }
+}
+
+const initialSessionsParams: GetSessions = {
+  pageInfo: {
+    pageNum: 1,
+    pageSize: 10,
+  },
+  searchCondition: {
+    keyword: "",
+    is_deleted: false,
+    is_position_order: true,
+    course_id: "",
+  }
+}
 
 const InstructorSessionList = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
   const [isModalCreateVisible, setIsModalCreateVisible] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<string>();
-  // const [searchText, setSearchText] = useState("");
   const [listCourses, setListCourses] = useState<Course[]>([]);
   const [listSessions, setListSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(false);
+  const [searchParams, setSearchParams] = useState<GetSessions>(initialSessionsParams)
 
   const showModal = (session: Session) => {
+    setSelectedSession(null); // Reset the selected session first
     setSelectedSession(session);
     setIsModalVisible(true);
   };
@@ -38,37 +64,8 @@ const InstructorSessionList = () => {
   const handleCancel = () => {
     setIsModalVisible(false);
     setIsModalCreateVisible(false);
+    setSelectedSession(null); // Reset selected session when closing
   };
-
-  const handleCourseChange = (courseId: string | undefined) => {
-    setSelectedCourse(courseId);
-  };
-
-
-  const initialCoursesParams: GetCourses = {
-    pageInfo: {
-      pageNum: 1,
-      pageSize: 100,
-    },
-    searchCondition: {
-      keyword: "",
-      is_deleted: false,
-      category_id: "",
-    }
-  }
-
-  const initialSessionsParams: GetSessions = {
-    pageInfo: {
-      pageNum: 1,
-      pageSize: 10,
-    },
-    searchCondition: {
-      keyword: "",
-      is_deleted: false,
-      is_position_order: true,
-      course_id: "",
-    }
-  }
 
   const fetchCourses = async () => {
     setLoading(true);
@@ -83,7 +80,7 @@ const InstructorSessionList = () => {
   const fetchSessions = async () => {
     setLoading(true); 
     try {
-      const response = await SessionService.getSessions(initialSessionsParams);
+      const response = await SessionService.getSessions(searchParams);
       setListSessions(response?.data?.pageData ?? []);
     } finally {
       setLoading(false); 
@@ -139,11 +136,27 @@ const InstructorSessionList = () => {
     }
   }
 
+  const handleSearch = (values: Record<string, any>) => {
+    console.log(values)
+    setSearchParams({
+      pageInfo: searchParams.pageInfo,
+      searchCondition: {
+        ...searchParams.searchCondition, // Spread existing searchCondition fields
+        course_id: values.course_id,
+        keyword: values.keyword,
+      }
+    });
+  };
+
 
   useEffect(() => {
-        fetchCourses(); // Call the async function
-        fetchSessions(); // Call the async function
+    fetchCourses(); // Call the async function
+    fetchSessions(); // Call the async function
   },[]);
+
+  useEffect(() => {
+    fetchSessions();
+  },[searchParams]); //update based on search params
 
   // filter sessions usefx
   // useEffect(() => {
@@ -208,9 +221,19 @@ const InstructorSessionList = () => {
   return (
     <Card>
       <h3 className="text-2xl my-5">Session Management</h3>
-      <div className="flex justify-between">
-        <div className=" gap-4 flex">
-        <Input
+      <div className="flex justify-between overflow-hidden">
+          <GlobalSearchUnit 
+          onSubmit={handleSearch}
+          placeholder="Search By Session Name"
+          selectFields={[
+            {
+              name: "course_id",
+              options: listCourses.map((course) => ({label: course.name, value: course._id})),
+              placeholder: "Filter by Course"
+            }
+          ]}
+          />
+        {/* <Input
           placeholder="Search By Session Name"
           prefix={<SearchOutlined />}
           style={{ width: "80%", marginBottom: "20px", borderRadius: "4px" }}
@@ -228,8 +251,7 @@ const InstructorSessionList = () => {
               {course.name}
             </Select.Option>
           ))}
-        </Select>
-        </div>
+        </Select> */}
         <div className="flex">
           <Button
             onClick={showModalCreate}
@@ -261,9 +283,11 @@ const InstructorSessionList = () => {
         footer={null}
         forceRender
         width={1000}
+        destroyOnClose={true}
       >
         {selectedSession && (
           <SessionOptions
+            key={selectedSession._id}
             isLoading={loading}
             listCourses={listCourses}
             initialState={selectedSession}
@@ -273,7 +297,7 @@ const InstructorSessionList = () => {
         )}
       </Modal>
 
-      {/* Create */}
+      {/* Create Modal */}
       <Modal
         title="Create Session"
         onCancel={handleCancel}
@@ -281,9 +305,11 @@ const InstructorSessionList = () => {
         footer={null}
         forceRender
         width={1000}
+        destroyOnClose={true} 
       >
         <SessionOptions
-        listCourses={listCourses}
+          key={isModalCreateVisible ? 'create-new' : 'create'} 
+          listCourses={listCourses}
           mode="create"
           onFinish={handleCreateSession}
           isLoading={loading}

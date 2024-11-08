@@ -11,7 +11,6 @@ import {
   SettingOutlined,
   BookOutlined,
   HourglassOutlined,
-  SnippetsOutlined,
   ShoppingCartOutlined,
   WalletOutlined,
 } from "@ant-design/icons";
@@ -78,12 +77,6 @@ const menuItems: MenuItem[] = [
         icon: <HourglassOutlined />,
         label: "Pending Course",
         path: "/dashboard/admin/pending-courses",
-      },
-      {
-        key: "course-log",
-        icon: <SnippetsOutlined />,
-        label: "Course log",
-        path: "/dashboard/admin/course-log",
       },
       {
         key: "purchase-log",

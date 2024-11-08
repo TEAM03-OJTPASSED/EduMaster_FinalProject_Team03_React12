@@ -1,5 +1,4 @@
 import {
-  Alert,
   Button,
   Col,
   Form,
@@ -20,7 +19,7 @@ import { API_UPLOAD_FILE } from "../../constants/upload";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // import { loginWithGoogle } from "../../redux/slices/authSlices";
-import { register} from "../../services/auth.service";
+import { register } from "../../services/auth.service";
 import { RootState } from "../../redux/store/store";
 
 export type RegisterType = {
@@ -41,7 +40,7 @@ export type RegisterType = {
 const SignUppage = () => {
   const dispatch = useDispatch();
   const [selectedRole, setSelectedRole] = useState<string>("student");
-  const { loading, success } = useSelector(
+  const { loading } = useSelector(
     (state: RootState) => state.users.register
   );
   // const [imageUrl, setImageUrl] = useState("");
@@ -71,7 +70,7 @@ const SignUppage = () => {
     register(others, dispatch);
   };
   const handleVideoChange: UploadProps["onChange"] = ({
-    fileList: newFileList
+    fileList: newFileList,
   }) => {
     setFileListVideo(newFileList || []);
     if (newFileList.length > 0 && newFileList[0].status === "done") {
@@ -101,19 +100,6 @@ const SignUppage = () => {
           <h1 className="text-4xl font-semibold text-center text-gray-800">
             Register
           </h1>
-          {/* notification */}
-          {success && (
-            <div className="my-4">
-              <Alert
-                showIcon
-                description="Please check email"
-                type="success"
-                message={`Register successfully`}
-                closable
-              />
-            </div>
-          )}
-
           <div className="h-full ">
             <Form
               form={form}
@@ -313,83 +299,66 @@ const SignUppage = () => {
                       />
                     </Form.Item>
                     {/* account */}
-                    <div>
-                      <div className="flex justify-between">
-                        <Form.Item<RegisterType>
-                          label="Bank Name"
-                          name="bank_name"
-                          rules={[
-                            {
-                              required: true,
-                              message: "Please input your bank name!",
-                            },
-                          ]}
-                          className="mb-6"
-                        >
-                          <Select
-                            showSearch
-                            placeholder="Select Your Bank Name"
-                            optionFilterProp="label"
-                            className="!w-50 !h-[3.25rem]"
-                            options={[
-                              {
-                                label: "",
-                                value: "",
-                              },
-                              {
-                                label: "Vietcombank",
-                                value: "Vietcombank",
-                              },
-                              {
-                                label: "Agribank",
-                                value: "Agribank",
-                              },
-                              {
-                                label: "TP Bank",
-                                value: "TP Bank",
-                              },
-                              {
-                                label: "ACB",
-                                value: "ACB",
-                              },
-                            ]}
-                          />
-                        </Form.Item>
-                        <Form.Item<RegisterType>
-                          label="Bank Account"
-                          name="bank_account_no"
-                          rules={[
-                            {
-                              required: true,
-                              message: "Please input bank account!",
-                            },
-                          ]}
-                          className="mb-6"
-                        >
-                          <Input
-                            placeholder="Enter your bank account"
-                            className="p-3 text-lg border-gray-300 rounded-lg focus:border-[#FF782D]"
-                          />
-                        </Form.Item>
-                      </div>
-
+                    <div className="flex flex-wrap gap-4">
                       <Form.Item<RegisterType>
-                        label="Bank Account Name"
-                        name="bank_account_name"
+                        label="Bank Name"
+                        name="bank_name"
                         rules={[
                           {
                             required: true,
-                            message: "Please input your bank account name!",
+                            message: "Please input your bank name!",
                           },
                         ]}
-                        className="mb-6"
+                        className="flex-grow mb-6 md:!w-72 lg:!w-60"
+                      >
+                        <Select
+                          showSearch
+                          placeholder="Select Your Bank Name"
+                          optionFilterProp="label"
+                          className="w-full !h-[3.25rem]"
+                          options={[
+                            { label: "Vietcombank", value: "Vietcombank" },
+                            { label: "Agribank", value: "Agribank" },
+                            { label: "TP Bank", value: "TP Bank" },
+                            { label: "ACB", value: "ACB" },
+                          ]}
+                        />
+                      </Form.Item>
+
+                      <Form.Item<RegisterType>
+                        label="Bank Account"
+                        name="bank_account_no"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your bank account!",
+                          },
+                        ]}
+                        className="flex-grow mb-6 md:!w-72 lg:!w-60"
                       >
                         <Input
-                          placeholder="Enter your bank account name"
+                          placeholder="Enter your bank account"
                           className="p-3 text-lg border-gray-300 rounded-lg focus:border-[#FF782D]"
                         />
                       </Form.Item>
                     </div>
+
+                    <Form.Item<RegisterType>
+                      label="Bank Account Name"
+                      name="bank_account_name"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input your bank account name!",
+                        },
+                      ]}
+                      className="mb-6"
+                    >
+                      <Input
+                        placeholder="Enter your bank account name"
+                        className="p-3 text-lg border-gray-300 rounded-lg focus:border-[#FF782D]"
+                      />
+                    </Form.Item>
                   </>
                 )}
               </div>

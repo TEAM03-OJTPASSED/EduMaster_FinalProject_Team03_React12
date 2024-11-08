@@ -150,7 +150,7 @@ const PayoutManagement: React.FC = () => {
     },
     {
       // Can use action with Request payout & New status only
-      title: "Action",
+      title: "Actions",
       key: "action",
       render: (_, record: Payout) => (
         <>
@@ -235,7 +235,7 @@ const PayoutManagement: React.FC = () => {
         {/* Transaction Details Modal */}
         <Modal
           title="Transaction Details"
-          visible={isTransactionModalVisible}
+          open={isTransactionModalVisible}
           onCancel={handleTransactionModalCancel}
           footer={null}
           width={800} // Thêm width để không bị overflow Table

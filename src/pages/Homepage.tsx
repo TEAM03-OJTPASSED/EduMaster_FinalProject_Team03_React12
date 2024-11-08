@@ -4,18 +4,18 @@ import heroImage from "../assets/pexels-kseniachernaya-7301126.jpg";
 // import { BiSearch } from "react-icons/bi";
 import CategoriesGrid from "../components/home/CategoriesGrid";
 
-import {
-  FaPalette,
-  FaCode,
-  FaComments,
-  FaVideo,
-  FaCamera,
-  FaChartLine,
-  FaPenNib,
-  FaChartPie,
-  FaAtom,
-  FaNetworkWired,
-} from "react-icons/fa";
+// import {
+//   FaPalette,
+//   FaCode,
+//   FaComments,
+//   FaVideo,
+//   FaCamera,
+//   FaChartLine,
+//   FaPenNib,
+//   FaChartPie,
+//   FaAtom,
+//   FaNetworkWired,
+// } from "react-icons/fa";
 import CoursesGrid from "../components/home/CoursesGrid";
 import CTABanner from "../components/home/CTABanner";
 import LatestArticles from "../components/home/LatestArticles";
@@ -23,13 +23,13 @@ import { ProofOfProduct } from "../components/home/ProofOfProduct";
 import Search from "antd/es/input/Search";
 import { BiSolidArrowFromLeft } from "react-icons/bi";
 import { IoArrowUpOutline } from "react-icons/io5";
-import { handleAddCart } from "../utils/handleAddCart";
-import { useSelector } from "react-redux";
-import { RootState } from "../redux/store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../redux/store/store";
 import { Course } from "../models/Course.model";
 import ClientService from "../services/client.service";
 import { GetCourseClient } from "../models/Client.model";
 import { useEffect, useState } from "react";
+import { addToCart } from "../redux/slices/cartSlice";
 
 interface Category {
   icon: React.ReactNode;
@@ -37,64 +37,62 @@ interface Category {
   courses: number;
 }
 
-const categories: Category[] = [
-  {
-    icon: <FaPalette className="text-4xl text-orange-500" />,
-    title: "Art & Design",
-    courses: 38,
-  },
-  {
-    icon: <FaCode className="text-4xl text-orange-500" />,
-    title: "Development",
-    courses: 38,
-  },
-  {
-    icon: <FaComments className="text-4xl text-orange-500" />,
-    title: "Communication",
-    courses: 38,
-  },
-  {
-    icon: <FaVideo className="text-4xl text-orange-500" />,
-    title: "Videography",
-    courses: 38,
-  },
-  {
-    icon: <FaCamera className="text-4xl text-orange-500" />,
-    title: "Photography",
-    courses: 38,
-  },
-  {
-    icon: <FaChartLine className="text-4xl text-orange-500" />,
-    title: "Marketing",
-    courses: 38,
-  },
-  {
-    icon: <FaPenNib className="text-4xl text-orange-500" />,
-    title: "Content Writing",
-    courses: 38,
-  },
-  {
-    icon: <FaChartPie className="text-4xl text-orange-500" />,
-    title: "Finance",
-    courses: 38,
-  },
-  {
-    icon: <FaAtom className="text-4xl text-orange-500" />,
-    title: "Science",
-    courses: 38,
-  },
-  {
-    icon: <FaNetworkWired className="text-4xl text-orange-500" />,
-    title: "Network",
-    courses: 38,
-  },
-];
-
+// const categories: Category[] = [
+//   {
+//     icon: <FaPalette className="text-4xl text-orange-500" />,
+//     title: "Art & Design",
+//     courses: 38,
+//   },
+//   {
+//     icon: <FaCode className="text-4xl text-orange-500" />,
+//     title: "Development",
+//     courses: 38,
+//   },
+//   {
+//     icon: <FaComments className="text-4xl text-orange-500" />,
+//     title: "Communication",
+//     courses: 38,
+//   },
+//   {
+//     icon: <FaVideo className="text-4xl text-orange-500" />,
+//     title: "Videography",
+//     courses: 38,
+//   },
+//   {
+//     icon: <FaCamera className="text-4xl text-orange-500" />,
+//     title: "Photography",
+//     courses: 38,
+//   },
+//   {
+//     icon: <FaChartLine className="text-4xl text-orange-500" />,
+//     title: "Marketing",
+//     courses: 38,
+//   },
+//   {
+//     icon: <FaPenNib className="text-4xl text-orange-500" />,
+//     title: "Content Writing",
+//     courses: 38,
+//   },
+//   {
+//     icon: <FaChartPie className="text-4xl text-orange-500" />,
+//     title: "Finance",
+//     courses: 38,
+//   },
+//   {
+//     icon: <FaAtom className="text-4xl text-orange-500" />,
+//     title: "Science",
+//     courses: 38,
+//   },
+//   {
+//     icon: <FaNetworkWired className="text-4xl text-orange-500" />,
+//     title: "Network",
+//     courses: 38,
+//   },
+// ];
 
 const HomePage = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  
 
   useEffect(() => {
     const initialCoursesParams: GetCourseClient = {
@@ -106,21 +104,19 @@ const HomePage = () => {
         keyword: "",
         is_deleted: false,
         category_id: "",
-      }
-    }
+      },
+    };
     const fetchCourses = async () => {
       const response = await ClientService.getCourses(initialCoursesParams);
       setCourses(response?.data?.pageData ?? []);
-
     };
 
     fetchCourses(); // Call the async function
-    },[]);
-
-  
+    setCategories([]);
+  }, []);
 
   const navigate = useCustomNavigate();
-  
+
   window.addEventListener("scroll", function () {
     const floatElements = document.querySelectorAll(".float-animation");
 
@@ -133,21 +129,22 @@ const HomePage = () => {
       }
     });
   });
-  
+
   const backToTop = () => {
     document.documentElement.style.scrollBehavior = "smooth";
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
   };
 
-  const {currentUser} = useSelector((state : RootState) => state.auth.login)
+  const { currentUser } = useSelector((state: RootState) => state.auth.login);
 
+  const dispatch = useDispatch<AppDispatch>();
 
-  const onAddCart = (course: Course) => {
-    // Add the course to the cart
-    //...
-    handleAddCart(currentUser.role, course,navigate)
-  }
+  const onAddCart = async (course: Course) => {
+    await dispatch(
+      addToCart({ course, userRole: currentUser?.role, navigate })
+    );
+  };
 
   return (
     <div className="flex flex-col items-center">
@@ -266,7 +263,11 @@ const HomePage = () => {
                   <BiSolidArrowFromLeft className="group-hover:scale-150 transition " />
                 </Button>
               </div>
-              <CoursesGrid courses={courses} viewMode="grid" onAddCartClick={onAddCart} />
+              <CoursesGrid
+                courses={courses}
+                viewMode="grid"
+                onAddCartClick={onAddCart}
+              />
             </div>
           </div>
         </section>

@@ -19,7 +19,7 @@ export interface Lesson {
   user_name: string;
   course_name: string;
   session_name: string;
-  is_completed: string;
+  // is_completed: string;
 };
 
 export interface LessonRequest {

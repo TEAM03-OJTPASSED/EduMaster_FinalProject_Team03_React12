@@ -1,73 +1,92 @@
-import React, { useState } from "react";
-import { Table, Input, Card, Tag, Button, Tabs } from "antd";
+import React, { useEffect, useState } from "react";
+import { Table, Input, Card, Button, Tabs } from "antd";
 import { SearchOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
-import { Course } from "../../components/UserAuthTest";
-import {
-  CourseStatusEnum,
-  listCourses,
-} from "../AdminDashboard/monitors/course/courseList";
 import { useCustomNavigate } from "../../hooks/customNavigate";
+import {
+  Cart,
+  CartStatusEnum,
+  SearchCartByStatus,
+} from "../../models/Cart.model";
+import CartService from "../../services/cart.service";
+import GlobalSearchUnit from "../../components/GlobalSearchUnit";
 
 const InstructorCourseList: React.FC = () => {
   const navigate = useCustomNavigate();
-  const [activeTab, setActiveTab] = useState<string>("in-progress");
+  const [carts, setCarts] = useState<Cart[]>([]);
+
+  const initialCartSearchParams: SearchCartByStatus = {
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 10,
+    },
+    searchCondition: {
+      status: CartStatusEnum.COMPLETED,
+      is_deleted: false,
+    },
+  };
+  const fetchCart = async () => {
+    const response = await CartService.getCartsByStatus(
+      initialCartSearchParams
+    );
+    setCarts(response?.data?.pageData as Cart[]);
+  };
+
+  useEffect(() => {
+    fetchCart();
+  }, []);
 
   // Navigate to course details page
-  const handleViewCourse = (courseId: number) => {
-    navigate(`/course-detail/${courseId}`);
+  const handleViewCourse = (courseId: string) => {
+    navigate(`/course/${courseId}`);
   };
 
   // Table columns with fixed width
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: "Course Name",
+      dataIndex: "course_name",
+      key: "course_name",
       width: 200,
-      render: (name: string, course: Course) => (
-        <Button type="link" onClick={() => handleViewCourse(course.id)}>
+      render: (name: string, course: Cart) => (
+        <Button type="link" onClick={() => handleViewCourse(course.course_id)}>
           {name}
         </Button>
       ),
     },
     {
       title: "Author",
-      dataIndex: "author_id",
-      key: "author_id",
-      width: 250,
-      ellipsis: true,
-      render: () => <p>University Of Michigan</p>,
+      dataIndex: "instructor_name",
+      key: "instructor_name",
+    },
+
+    {
+      title: "Created At",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (date: string) => new Date(date).toLocaleDateString(),
     },
     {
-      title: "Category",
-      dataIndex: "category_id",
-      key: "category_id",
-      width: 150,
-    },
-    {
-      title: "Content",
-      dataIndex: "content",
-      key: "content",
-      width: 300,
-      ellipsis: true, // Adding ellipsis for long content
-    },
-    {
-      title: "Progress",
-      dataIndex: "progress",
-      key: "progress",
-      width: 120,
-      render: () => <Tag>80%</Tag>,
+      title: "Image",
+      dataIndex: "course_image",
+      key: "course_image",
+      render: (imageUrl: string) => (
+        <img
+          src={imageUrl}
+          alt="Course"
+          style={{ width: "50px", height: "50px", objectFit: "cover" }}
+        />
+      ),
     },
     {
       title: "Actions",
       key: "action",
       width: 150,
-      render: (course: Course) => (
+      render: (course: Cart) => (
         <div>
           <Button
             type="link"
             icon={<EyeOutlined />}
-            onClick={() => handleViewCourse(course.id)}
+            onClick={() => handleViewCourse(course.course_id)}
             style={{ marginRight: 8 }}
           >
             View
@@ -80,46 +99,24 @@ const InstructorCourseList: React.FC = () => {
     },
   ];
 
-  // Filter courses based on the active tab
-  const filteredCourses = listCourses.filter((course) => {
-    if (activeTab === "in-progress") {
-      return course.status === CourseStatusEnum.ACTIVE;//just for mock purposes
-    }
-    if (activeTab === "completed") {
-      return course.status === CourseStatusEnum.WAITING_APPROVE; //just for mock purposes
-    }
-    return true;
-  });
-
   return (
     <Card>
       <h3 className="text-2xl my-5">My Learning</h3>
 
-      <Input
-        placeholder="Search By Course Name"
-        prefix={<SearchOutlined />}
-        style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
-      />
+      <div>
+        <GlobalSearchUnit placeholder="Search by Course Name"/>
 
-      <Tabs defaultActiveKey="in-progress" onChange={setActiveTab}>
-        <Tabs.TabPane tab="In Progress" key="in-progress">
+      </div>
+
+      <Tabs>
+        <Tabs.TabPane>
           <Table
-            dataSource={filteredCourses}
+            dataSource={carts}
             columns={columns}
             pagination={{ pageSize: 5 }}
             rowKey="id"
             bordered
             scroll={{ x: true }} // Enables horizontal scrolling if columns overflow
-          />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="Completed" key="completed">
-          <Table
-            dataSource={filteredCourses}
-            columns={columns}
-            pagination={{ pageSize: 5 }}
-            rowKey="id"
-            bordered
-            scroll={{ x: true }}
           />
         </Tabs.TabPane>
       </Tabs>

@@ -15,8 +15,21 @@ import {
 import { useState } from "react";
 import { API_UPLOAD_FILE } from "../constants/upload";
 import { PlusOutlined } from "@ant-design/icons";
-import { useSelector } from "react-redux";
-import { RootState } from "../redux/store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../redux/store/store";
+import { registerWithGoogle } from "../redux/slices/authSlices";
+
+export interface ModalRegisterGoogleProps {
+  google_id: string;
+  role?: string;
+  avatar_url?: string;
+  video_url?: string;
+  bank_name?: string;
+  phone_number?: number;
+  description?: string;
+  bank_account_no?: number;
+  bank_account_name?: string;
+}
 
 const ModalRegisterGoogle = () => {
   const { googleId } = useSelector((state: RootState) => state.auth.login);
@@ -25,6 +38,7 @@ const ModalRegisterGoogle = () => {
   const [fileListImage, setFileListImage] = useState<UploadFile[]>([]);
   const [fileListVideo, setFileListVideo] = useState<UploadFile[]>([]);
   const [form] = Form.useForm();
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleImageChange: UploadProps["onChange"] = ({
     fileList: newFileList,
@@ -53,15 +67,24 @@ const ModalRegisterGoogle = () => {
   const handleSelectChange = (e: RadioChangeEvent) => {
     setSelectedRole(e.target.value);
   };
-
-  const onFinish: FormProps["onFinish"] = (values) => {
+  const onFinish: FormProps["onFinish"] = async (values) => {
     // luc submit thi them field credential id nua
-    console.log({ ...values, google_id: googleId });
+    const formData: ModalRegisterGoogleProps = {
+      ...values,
+      google_id: googleId,
+    };
+
+    await dispatch(registerWithGoogle(formData));
   };
 
   return (
     <div>
-      <Form form={form} onFinish={onFinish} initialValues={{ role: "student" }}>
+      <Form
+        layout="vertical"
+        form={form}
+        onFinish={onFinish}
+        initialValues={{ role: "student" }}
+      >
         {/* Role selection */}
         <Form.Item label="You are" name="role">
           <Radio.Group onChange={handleSelectChange} value={selectedRole}>
@@ -167,8 +190,8 @@ const ModalRegisterGoogle = () => {
             </Form.Item>
 
             {/* Bank Information */}
-            <Row gutter={16}>
-              <Col span={12}>
+        
+              <div className="flex flex-wrap gap-4">
                 <Form.Item
                   label="Bank Name"
                   name="bank_name"
@@ -178,13 +201,13 @@ const ModalRegisterGoogle = () => {
                       message: "Please input your bank name!",
                     },
                   ]}
-                  className="mb-6"
+                  className="flex-grow mb-6 md:!w-72 lg:!w-60"
                 >
                   <Select
                     showSearch
                     placeholder="Select Your Bank Name"
                     optionFilterProp="label"
-                    className="!w-full"
+                    className="w-full !h-[3.25rem]"
                     options={[
                       { label: "Vietcombank", value: "Vietcombank" },
                       { label: "Agribank", value: "Agribank" },
@@ -193,28 +216,25 @@ const ModalRegisterGoogle = () => {
                     ]}
                   />
                 </Form.Item>
-              </Col>
 
-              <Col span={12}>
                 <Form.Item
                   label="Bank Account"
                   name="bank_account_no"
                   rules={[
                     {
                       required: true,
-                      message: "Please input bank account!",
+                      message: "Please input your bank account!",
                     },
                   ]}
-                  className="mb-6"
+                  className="flex-grow mb-6 md:!w-72 lg:!w-60"
                 >
                   <Input
-                    type="number"
                     placeholder="Enter your bank account"
                     className="p-3 text-lg border-gray-300 rounded-lg focus:border-[#FF782D]"
                   />
                 </Form.Item>
-              </Col>
-            </Row>
+              </div>
+           
 
             <Form.Item
               label="Bank Account Name"
@@ -240,7 +260,6 @@ const ModalRegisterGoogle = () => {
             shape="round"
             className="bg-[#FF782D] text-xl text-white py-4 w-full hover:bg-[#e66e27]"
           >
-            {/* {loading ? "Waiting" : "Register"} */}
             Confirm
           </Button>
         </Form.Item>

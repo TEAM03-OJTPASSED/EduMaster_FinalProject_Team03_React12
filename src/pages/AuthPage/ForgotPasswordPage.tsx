@@ -8,7 +8,7 @@ import { NavLink } from "react-router-dom";
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState<string>("");
 
-  const { loading, success, error, message } = useSelector(
+  const { loading, success, message } = useSelector(
     (state: RootState) => state.users.forgotPassword
   );
   const dispatch = useDispatch();
@@ -47,7 +47,7 @@ const ForgotPasswordPage = () => {
         )}
 
         {/* Error Notification */}
-        {error && (
+        {!success && (
           <div className="my-4">
             <Alert
               showIcon

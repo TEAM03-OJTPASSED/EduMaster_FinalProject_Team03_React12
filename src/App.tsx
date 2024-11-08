@@ -20,13 +20,11 @@ import PendingCourseList from "./pages/AdminDashboard/monitors/pending_course/Pe
 import PendingSessionList from "./pages/AdminDashboard/monitors/pending_course/PendingSessionList";
 import PendingLessonList from "./pages/AdminDashboard/monitors/pending_course/PendingLessonList";
 import BlogManagement from "./pages/AdminDashboard/BlogManagement";
-import CourseLog from "./pages/AdminDashboard/CourseLog";
 import PurchaseLog from "./pages/AdminDashboard/PurchaseLog";
 import AdminPayout from "./pages/AdminDashboard/payout/AdminPayout";
 import InstructorLayout from "./defaultLayout/InstructorLayout";
 import InstructorContent from "./pages/InstructorDashboard/InstructorContent";
 import InstructorPayout from "./pages/InstructorDashboard/instructor-management/payout/InstructorPayout";
-import InstructorLearning from "./pages/InstructorDashboard/instructor-management/InstructorLearning";
 import InstructorCourses from "./pages/InstructorDashboard/instructor-monitor/InstructorCourses";
 import InstructorCourseList from "./pages/InstructorDashboard/instructor-monitor/InstructorCourseList";
 import IntructorSessionList from "./pages/InstructorDashboard/instructor-monitor/InstructorSessionList";
@@ -49,7 +47,6 @@ import FAQsPage from "./pages/FAQPage";
 import ErrorPage from "./pages/ErrorPage";
 import ContactPage from "./pages/ContactPage";
 import CartPage from "./pages/cart/CartPage";
-import CheckoutPage from "./pages/checkout/CheckoutPage";
 import Firebase from "./pages/Firebase";
 import BlogDetailPage from "./pages/BlogDetailPage";
 import StudentContent from "./pages/StudentDashboard/StudentContent";
@@ -73,16 +70,18 @@ import StudentSubscriptions from "./pages/StudentDashboard/StudentSubscriptions"
 import StudentOrderHistory from "./pages/StudentDashboard/StudentOrderHistory";
 import VerifySuccessToken from "./pages/AuthPage/VerifyToken";
 import { gapi } from "gapi-script";
+import CourseLogPage from "./pages/AdminDashboard/CourseLog";
 
 function App() {
   useEffect(() => {
     const init = () => {
       gapi.client.init({
-        clientId:"67368420889-utrdru1873d1pudjah97ihj32vvfire8.apps.googleusercontent.com",
-        scope:"profile email"
+        clientId:
+          "67368420889-utrdru1873d1pudjah97ihj32vvfire8.apps.googleusercontent.com",
+        scope: "",
       });
     };
-    gapi.load("client:auth2",init)
+    gapi.load("client:auth2", init);
   }, []);
   return (
     <BrowserRouter>
@@ -119,7 +118,7 @@ function App() {
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/faqs" element={<FAQsPage />} />
               <Route path="/*" element={<ErrorPage />} />
-              <Route path="cart" element={<CartPage />} />
+              <Route path="cart/:status" element={<CartPage />} />
               <Route path="/blog/:id" element={<BlogDetailPage />} />
               <Route path="/profile/:id" element={<ProfilePage />} />
 
@@ -127,17 +126,6 @@ function App() {
               <Route path="/firebase" element={<Firebase />} />
 
               <Route path="/learn/:id" element={<LearnCoursePage />} />
-
-              <Route
-                path="cart/checkout"
-                element={
-                  <ProtectedRoute
-                    allowedRoles={["student", "instructor", "admin"]}
-                  >
-                    <CheckoutPage />
-                  </ProtectedRoute>
-                }
-              />
             </Route>
 
             {/* Admin Layout */}
@@ -168,6 +156,7 @@ function App() {
                   <Route index element={<CourseLists />} />
                   <Route path="session" element={<SessionList />} />
                   <Route path="lesson" element={<LessonList />} />
+                  <Route path="course-log" element={<CourseLogPage />} />
                 </Route>
                 <Route path="pending-courses" element={<PendingCourse />}>
                   <Route index element={<PendingCourseList />} />
@@ -175,7 +164,6 @@ function App() {
                   <Route path="lesson" element={<PendingLessonList />} />
                 </Route>
                 <Route path="blog" element={<BlogManagement />} />
-                <Route path="course-log" element={<CourseLog />} />
                 <Route path="purchase-log" element={<PurchaseLog />} />
                 <Route path="settings" element={<AdminSetting />}>
                   <Route index element={<AdminProfile />} />
@@ -213,7 +201,6 @@ function App() {
                   path="salesHistory"
                   element={<InstructorSalesHistory />}
                 />
-                <Route path="my-learning" element={<InstructorLearning />} />
                 <Route path="my-courses" element={<InstructorCourses />}>
                   <Route index element={<InstructorCourseList />} />
                   <Route path="session" element={<IntructorSessionList />} />
