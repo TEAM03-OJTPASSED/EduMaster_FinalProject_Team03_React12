@@ -7,11 +7,14 @@ type Props = {
   isPurchased: boolean;
   id: string;
 };
+
 export const Banner = ({ id, course, isPurchased }: Props) => {
   const totalLessons = course.session_list.reduce((sum, session) => {
     return sum + session.lesson_list.length;
   }, 0);
-const navigate = useCustomNavigate()
+
+  const navigate = useCustomNavigate();
+
   return (
     <div className="font-exo flex flex-col bg-orange-50 px-20 lg:-mx-40 -mx-24 pb-10">
       <div className="flex gap-8 pt-10">
@@ -24,11 +27,10 @@ const navigate = useCustomNavigate()
           </div>
           <div className="text-lg">{course.description}</div>
           <div className="text-lg cursor-pointer">
-          <div className="text-lg cursor-pointer">
             Instructor:{" "}
             <span
               className="px-2 underline"
-              onClick={() => {navigate(`/profile/${course.instructor_id}`)}}
+              onClick={() => navigate(`/profile/${course.instructor_id}`)}
             >
               {course.instructor_name}
             </span>
