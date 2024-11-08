@@ -13,10 +13,6 @@ const items: MenuProps["items"] = [
     label: "Lesson",
     key: "Lesson",
   },
-  {
-    label: "Course log",
-    key: "course-log",
-  },
 ];
 
 const AllCourse = () => {
@@ -31,9 +27,6 @@ const AllCourse = () => {
         break;
       case "Lesson":
         navigate("/dashboard/admin/all-courses/lesson");
-        break;
-      case "course-log":
-        navigate("/dashboard/admin/all-courses/course-log");
         break;
       default:
         break;

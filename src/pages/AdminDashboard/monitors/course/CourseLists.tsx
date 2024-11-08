@@ -1,75 +1,67 @@
 import React, { useEffect, useState } from "react";
-import { Table, Input, Card, Tag, TableProps, Button, Modal } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
-// import StatusFilter from "../../../../components/StatusFilter";
-import {
-  Course,
-  GetCourses,
-  CourseStatusEnum,
-} from "../../../../models/Course.model";
+import { Table, Card, Tag, Button, Modal } from "antd";
+import { Course, GetCourses, CourseStatusEnum } from "../../../../models/Course.model";
 import CourseService from "../../../../services/course.service";
-import { useDebouncedSearch } from "../../../../hooks/useSearch";
-import dayjs from "dayjs";
-const CourseLogModal = React.lazy(
-  () => import("../../../../components/CourseLogModal")
-);
 
-// utils function to filter courses by status
-const getStatusFilterText = (status: CourseStatusEnum) => {
-  switch (status) {
-    case CourseStatusEnum.NEW:
-      return "New";
-    case CourseStatusEnum.WAITING_APPROVE:
-      return "Waiting Approve";
-    case CourseStatusEnum.APPROVE:
-      return "Approved";
-    case CourseStatusEnum.REJECT:
-      return "Rejected";
-    case CourseStatusEnum.ACTIVE:
-      return "Active";
-    case CourseStatusEnum.INACTIVE:
-      return "Inactive";
-    default:
-      return "Unknown";
-  }
+import dayjs from "dayjs";
+import GlobalSearchUnit from "../../../../components/GlobalSearchUnit";
+import { statusFormatter } from "../../../../utils/statusFormatter";
+import CategoryService from "../../../../services/category.service";
+import { Category, GetCategories } from "../../../../models/Category.model";
+import { capitalizeFirstLetter } from "../../../../utils/capitalize";
+
+const CourseLogModal = React.lazy(() => import("../../../../components/CourseLogModal"));
+
+const initialCoursesParams: GetCourses = {
+  pageInfo: { pageNum: 1, pageSize: 10 },
+  searchCondition: { keyword: "", is_deleted: false, category_id: "", status: "" },
 };
 
+const initialCategoriesParams: GetCategories = {
+  pageInfo: { pageNum: 1, pageSize: 100 },
+  searchCondition: { keyword: "", is_deleted: false },
+};
+
+// Utility function to get status text
+
+
 const CourseLists: React.FC = () => {
-  // const [statusFilter, setStatusFilter] = useState<string>();
-  const [searchText, setSearchText] = useState("");
+
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const [courses, setCourses] = useState<Course[]>([]);
-  const filteredData = useDebouncedSearch(courses, searchText, 300, [
-    "name",
-    "category_id",
-  ]);
-  // open log
+  const [listCategories, setListCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(false);
   const [isOpenLog, setIsOpenLog] = useState(false);
   const [currentCourse, setCurrentCourse] = useState<Course>({} as Course);
+  const [searchParams, setSearchParams] = useState<GetCourses>(initialCoursesParams);
 
-  //
+
+  
+  const statuses = Object.values(CourseStatusEnum);
 
   const fetchCourses = async () => {
-    const searchParams: GetCourses = {
-      searchCondition: {
-        keyword: searchText,
-        is_deleted: false,
-      },
-      pageInfo: { pageNum, pageSize },
-    };
-
+    setLoading(true);
     try {
       const response = await CourseService.getCourses(searchParams);
-      const responseData = response.data?.pageData;
-      const flattenedUsers: Course[] = Array.isArray(responseData)
-        ? responseData.flat() // Dùng flat() để chuyển thành User[]
-        : [];
-      setCourses(flattenedUsers);
+      const responseData = response.data?.pageData || [];
+      setCourses(responseData);
       setTotal(response.data?.pageInfo?.totalItems ?? 0);
     } catch (err) {
-      console.error("Error fetching users:", err);
+      console.error("Error fetching courses:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCategories = async () => {
+    setLoading(true);
+    try {
+      const response = await CategoryService.getCategories(initialCategoriesParams);
+      setListCategories(response?.data?.pageData ?? []);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -83,16 +75,29 @@ const CourseLists: React.FC = () => {
     setCurrentCourse(item);
   };
 
+  const handleSearch = (values: Record<string, any>) => {
+    setSearchParams((prev) => ({
+      ...prev,
+      searchCondition: {
+        ...prev.searchCondition,
+        category_id: values.category_id,
+        keyword: values.keyword,
+        status: values.status,
+      },
+    }));
+  };
+
   useEffect(() => {
     fetchCourses();
-  }, [pageNum, pageSize]);
+    fetchCategories();
+  }, [pageNum, pageSize, searchParams]);
 
-  const columns: TableProps<Course>["columns"] = [
+  const columns = [
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      width:250
+      width: 250,
     },
     {
       title: "Category Name",
@@ -103,28 +108,20 @@ const CourseLists: React.FC = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      filters: Object.values(CourseStatusEnum).map((status) => ({
-        text: getStatusFilterText(status),
-        value: status,
-      })),
-      onFilter: (value, record) => record.status === value,
       render: (status: CourseStatusEnum) => {
-        switch (status) {
-          case CourseStatusEnum.NEW:
-            return <Tag color="green">New</Tag>;
-          case CourseStatusEnum.WAITING_APPROVE:
-            return <Tag color="red">Waiting Approve</Tag>;
-          case CourseStatusEnum.APPROVE:
-            return <Tag color="yellow">Approved</Tag>;
-          case CourseStatusEnum.REJECT:
-            return <Tag color="orange">Rejected</Tag>;
-          case CourseStatusEnum.ACTIVE:
-            return <Tag color="blue">Active</Tag>;
-          case CourseStatusEnum.INACTIVE:
-            return <Tag color="gray">Inactive</Tag>;
-          default:
-            return <Tag color="gray">Unknown</Tag>;
-        }
+        const statusColors = {
+          [CourseStatusEnum.NEW]: "green",
+          [CourseStatusEnum.WAITING_APPROVE]: "red",
+          [CourseStatusEnum.APPROVE]: "yellow",
+          [CourseStatusEnum.REJECT]: "yellow",
+          [CourseStatusEnum.ACTIVE]: "yellow",
+          [CourseStatusEnum.INACTIVE]: "yellow",
+        };
+        return (
+          <Tag color={statusColors[status] || "gray"}>
+            {capitalizeFirstLetter(status)}
+          </Tag>
+        );
       },
     },
     {
@@ -136,95 +133,63 @@ const CourseLists: React.FC = () => {
       title: "Discount",
       dataIndex: "discount",
       key: "discount",
-      render: (discount: number) => {
-        return (
-          <div>
-            <span className="text-red-500"> {discount}%</span>
-          </div>
-        );
-      },
+      render: (discount: number) => <span className="text-red-500">{discount}%</span>,
     },
     {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
-      render: (createdAt: string) => {
-        return dayjs(createdAt).format("DD-MM-YYYY");
-      },
+      render: (createdAt: string) => dayjs(createdAt).format("DD-MM-YYYY"),
     },
     {
       title: "Course Log",
       key: "course_log",
-      render: (record: Course) => {
-        return (
-          <Button
-            color="primary"
-            variant="solid"
-            onClick={() => handleViewLog(record)}
-          >
-            View Log
-          </Button>
-        );
-      },
+      render: (record: Course) => (
+        <Button type="primary" onClick={() => handleViewLog(record)}>
+          View Log
+        </Button>
+      ),
     },
   ];
-
-  // const statuses = [
-  //   CourseStatusEnum.ACTIVE,
-  //   CourseStatusEnum.APPROVE,
-  //   CourseStatusEnum.INACTIVE,
-  //   CourseStatusEnum.NEW,
-  //   CourseStatusEnum.REJECT,
-  //   CourseStatusEnum.WAITING_APPROVE,
-  // ];
-
-  // const handleStatusChange = (value: string | undefined) => {
-  //   setStatusFilter(value);
-  // };
 
   return (
     <div>
       <Card>
         <h3 className="text-2xl my-5">Course Management</h3>
-        <div className="flex flex-wrap items-center mb-4">
-          <Input
-            placeholder="Search By Course Name"
-            prefix={<SearchOutlined />}
-            className="w-full md:w-1/3 mb-2 md:mb-0"
-            onChange={(e) => setSearchText(e.target.value)}
-            value={searchText}
-          />
-          {/* <StatusFilter
-          statuses={statuses}
-          selectedStatus={statusFilter}
-          onStatusChange={handleStatusChange}
-        /> */}
-        </div>
+        <GlobalSearchUnit 
+          placeholder="Search By Course Name"
+          selectFields={[
+            {
+              name: "status",
+              options: statuses.map((status) => ({ label: statusFormatter(status), value: status })),
+              placeholder: "Filter by Status",
+            },
+            {
+              name: "category_id",
+              options: listCategories.map((category) => ({ label: category.name, value: category._id })),
+              placeholder: "Filter by Category",
+            },
+          ]}
+          onSubmit={handleSearch}
+        />
+        
         <Table
-          dataSource={filteredData}
+          dataSource={courses}
           columns={columns}
-          pagination={{
-            current: pageNum,
-            pageSize,
-            total,
-            showSizeChanger: true,
-          }}
+          pagination={{ current: pageNum, pageSize, total, showSizeChanger: true }}
           onChange={handleTableChange}
           rowKey="_id"
           bordered
-          // loading={loading}
-          style={{ borderRadius: "8px" }}
+          loading={loading}
           scroll={{ x: "max-content" }}
         />
       </Card>
+
       <Modal
         open={isOpenLog}
         width={1000}
         closable
-        onCancel={() => {
-          setIsOpenLog(false);
-          setCurrentCourse({} as Course);
-        }}
+        onCancel={() => setIsOpenLog(false)}
         footer={null}
       >
         <CourseLogModal course_id={currentCourse._id} />

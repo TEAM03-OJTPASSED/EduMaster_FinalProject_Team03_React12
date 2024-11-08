@@ -70,7 +70,6 @@ import StudentSubscriptions from "./pages/StudentDashboard/StudentSubscriptions"
 import StudentOrderHistory from "./pages/StudentDashboard/StudentOrderHistory";
 import VerifySuccessToken from "./pages/AuthPage/VerifyToken";
 import { gapi } from "gapi-script";
-import CourseLogPage from "./pages/AdminDashboard/CourseLog";
 
 function App() {
   useEffect(() => {
@@ -156,7 +155,6 @@ function App() {
                   <Route index element={<CourseLists />} />
                   <Route path="session" element={<SessionList />} />
                   <Route path="lesson" element={<LessonList />} />
-                  <Route path="course-log" element={<CourseLogPage />} />
                 </Route>
                 <Route path="pending-courses" element={<PendingCourse />}>
                   <Route index element={<PendingCourseList />} />
