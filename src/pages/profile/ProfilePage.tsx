@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   Avatar,
@@ -19,61 +19,75 @@ import {
 } from "@ant-design/icons";
 import DynamicBreadcrumb from "../../components/Breadcrumb/Breadcrumb";
 import { useCustomNavigate } from "../../hooks/customNavigate";
+import { User } from "../../models/UserModel";
+import { useParams } from "react-router-dom";
+import { UserService } from "../../services/user.service";
+import { Course, GetCourses } from "../../models/Course.model";
+import ClientService from "../../services/client.service";
 
 const { Title, Paragraph, Text } = Typography;
 const { TabPane } = Tabs;
 
-interface Course {
-  id: string;
-  title: string;
-  description: string;
-  students: number;
-  rating: number;
-  category: string;
-  subcategory: string;
-}
-
 const ProfilePage: React.FC = () => {
+  const { id } = useParams();
+  const [userData, setUserData] = useState<User>({} as User);
+  const [userCourse, setUserCourse] = useState<Course[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await UserService.getUser(id as string);
+      setUserData(res?.data as User);
+    };
+    fetchData();
+  }, [id]);
+
+  useEffect(() => {
+    const fetchCourseById = async () => {
+      const searchParam: GetCourses = {
+        searchCondition: {
+          keyword: "",
+          category_id: "",
+          user_id: id,
+          is_deleted: false,
+        },
+        pageInfo: {
+          pageNum: 1,
+          pageSize: 10,
+        },
+      };
+      const res = await ClientService.getCourses(searchParam);
+      setUserCourse(res.data?.pageData as Course[]);
+    };
+    fetchCourseById();
+  }, [id]);
+
   const instructorInfo = {
-    name: "Prof. Edu Master",
-    title: "Senior Data Science Instructor",
-    email: "edumaster@university.edu",
-    avatar: "/placeholder.svg?height=200&width=200",
-    coverPhoto: "/placeholder.svg?height=300&width=1000",
-    bio: `Dr. Edu Master is a distinguished professor of Data Science and Machine Learning with over 15 years of experience in both academia and industry. She holds a Ph.D. in Computer Science from Stanford University and has previously worked as a Senior Data Scientist at Google and Facebook.
-
-    Her research focuses on developing novel machine learning algorithms for big data analytics, with a particular emphasis on applications in healthcare and finance. Dr. Master has published over 50 papers in top-tier conferences and journals, and her work has been cited more than 10,000 times.
-
-    As an educator, Dr. Master is passionate about making complex concepts accessible to students of all backgrounds. She has developed and taught numerous courses in data science, machine learning, and artificial intelligence, both online and in traditional classroom settings. Her teaching philosophy emphasizes hands-on learning and real-world applications, ensuring that students not only grasp theoretical concepts but also gain practical skills highly valued in the industry.
-
-    Dr. Master is a recipient of the National Science Foundation CAREER Award and has been recognized as one of the "Top 50 Women in Tech" by Forbes. She regularly speaks at international conferences and has given invited talks at institutions around the world.
-
-    In addition to her academic work, Dr. Master serves as an advisor to several tech startups and is actively involved in initiatives to promote diversity in STEM fields.`,
+    name: userData.name,
+    bank_information: userData.bank_account_name,
+    bank_account_no: userData.bank_account_no,
+    bank_name: userData.bank_name,
+    email: userData.email,
+    role: userData.role,
+    avatar: userData?.avatar_url,
+    coverPhoto: userData?.avatar_url,
+    phone: userData.phone_number,
+    bio: userData.description,
     coursesCreated: 15,
     totalStudents: 50000,
     teachingHours: 5000,
-    courses: [
-      {
-        id: "DS101",
-        title: "Introduction to Data Science",
-        description:
-          "A comprehensive introduction to the field of data science, covering statistical analysis, machine learning, and data visualization.",
-        students: 15000,
-        rating: 4.8,
-        category: "Data Science",
-        subcategory: "Beginner",
-      },
-      {
-        id: "ML201",
-        title: "Advanced Machine Learning",
-        description:
-          "An in-depth exploration of advanced machine learning techniques, including deep learning and reinforcement learning.",
-        students: 8000,
-        rating: 4.9,
-        category: "Machine Learning",
-        subcategory: "Advanced",
-      },
-    ],
+    courses: userCourse,
+    // [
+    //   {
+    //     id: "DS101",
+    //     title: "Introduction to Data Science",
+    //     description:
+    //       "A comprehensive introduction to the field of data science, covering statistical analysis, machine learning, and data visualization.",
+    //     students: 15000,
+    //     rating: 4.8,
+    //     category: "Data Science",
+    //     subcategory: "Beginner",
+    //   },
+    // ]
   };
 
   const navigate = useCustomNavigate();
@@ -86,7 +100,7 @@ const ProfilePage: React.FC = () => {
           <div style={{ height: 200 }} className="w-full absolute">
             <img
               alt="Cover"
-              src={"https://picsum.photos/500"}
+              src={instructorInfo.avatar}
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
           </div>
@@ -95,7 +109,7 @@ const ProfilePage: React.FC = () => {
             className="z-50"
           >
             <Avatar
-              src={"https://picsum.photos/200"}
+              src={instructorInfo.avatar}
               size={160}
               style={{ border: "4px solid #fff" }}
               className="ml-4"
@@ -104,7 +118,16 @@ const ProfilePage: React.FC = () => {
               <Title level={2} style={{ marginBottom: 0 }}>
                 {instructorInfo.name}
               </Title>
-              <Text type="secondary">{instructorInfo.title}</Text>
+              <div className="gap-3 flex">
+                <Text type="secondary">{instructorInfo.role}</Text>
+              </div>
+              <div className="gap-3 flex">
+                <Text type="secondary">{instructorInfo.bank_information}</Text>
+
+                <Text type="secondary">{instructorInfo.bank_account_no}</Text>
+
+                <Text type="secondary">{instructorInfo.bank_name}</Text>
+              </div>
             </div>
           </div>
 
@@ -117,6 +140,7 @@ const ProfilePage: React.FC = () => {
               <Paragraph className="text-base ">{instructorInfo.bio}</Paragraph>
               <Title level={4}>Contact</Title>
               <Paragraph>Email: {instructorInfo.email}</Paragraph>
+              <Paragraph>Phone: {instructorInfo.phone}</Paragraph>
             </TabPane>
 
             <TabPane tab="Courses" key="2">
@@ -125,21 +149,20 @@ const ProfilePage: React.FC = () => {
                 dataSource={instructorInfo.courses}
                 renderItem={(course: Course) => (
                   <List.Item
-                    key={course.id}
+                    key={course._id}
                     extra={
                       <div>
                         <Statistic
-                          title="Students"
-                          value={course.students}
+                          title="Course Name"
+                          value={course.name}
                           prefix={<UserOutlined />}
                           className="font-exo"
                         />
                         <Statistic
                           title="Rating"
-                          value={course.rating}
+                          value={course.average_rating}
                           prefix={<StarFilled />}
                           className="font-exo"
-
                         />
                       </div>
                     }
@@ -148,24 +171,24 @@ const ProfilePage: React.FC = () => {
                       title={
                         <a
                           onClick={() =>
-                            navigate(`/course-detail/${course.id}`, true)
+                            navigate(`/course-detail/${course._id}`, true)
                           }
                         >
-                          {course.title}
+                          {course.name}
                         </a>
                       }
                       description={course.description}
                     />
                     <div className="flex justify-between items-center ">
-                    <Tag color="orange">{course.id}</Tag>
-                    <div className="mt-2">
-                      <Tag className="bg-orange-500 font-jost text-white text-base">
-                        {course.category}
-                      </Tag>
-                      <Tag className="bg-gray-500 font-jost text-white ml-2 text-base">
-                        {course.subcategory}
-                      </Tag>
-                    </div>
+                      <Tag color="orange">{course._id}</Tag>
+                      <div className="mt-2">
+                        <Tag className="bg-orange-500 font-jost text-white text-base">
+                          {course.category_name}
+                        </Tag>
+                        <Tag className="bg-gray-500 font-jost text-white ml-2 text-base">
+                          {course.full_time}
+                        </Tag>
+                      </div>
                     </div>
                   </List.Item>
                 )}

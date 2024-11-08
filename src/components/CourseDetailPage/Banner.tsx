@@ -1,3 +1,4 @@
+import { useCustomNavigate } from "../../hooks/customNavigate";
 import { Course } from "../../models/Course.model";
 import { CourseSummary } from "./CourseSummary";
 
@@ -6,16 +7,11 @@ type Props = {
   isPurchased: boolean;
   id: string;
 };
-export const Banner = ({
-  id,
-  course,
-  isPurchased,
-}: Props) => {
-
+export const Banner = ({ id, course, isPurchased }: Props) => {
   const totalLessons = course.session_list.reduce((sum, session) => {
     return sum + session.lesson_list.length;
   }, 0);
-
+const navigate = useCustomNavigate()
   return (
     <div className="font-exo flex flex-col bg-orange-50 px-20 lg:-mx-40 -mx-24 pb-10">
       <div className="flex gap-8 pt-10">
@@ -23,13 +19,16 @@ export const Banner = ({
           <div className="bg-orange-500 text-white font-bold px-4 py-2 rounded-lg">
             {course.category_name}
           </div>
-          <div className="font-jost text-5xl font-bold text-gradient">{course.name}</div>
+          <div className="font-jost text-5xl font-bold text-gradient">
+            {course.name}
+          </div>
           <div className="text-lg">{course.description}</div>
-          <div className="text-lg">
+          <div className="text-lg cursor-pointer">
+          <div className="text-lg cursor-pointer">
             Instructor:{" "}
             <span
               className="px-2 underline"
-              onClick={() => alert("Instructor clicked")}
+              onClick={() => {navigate(`/profile/${course.instructor_id}`)}}
             >
               {course.instructor_name}
             </span>
@@ -84,7 +83,7 @@ export const Banner = ({
           student={course.enrolled}
           level={course.level}
           lessons={totalLessons}
-          quizzes={0}   
+          quizzes={0}
         />
       </div>
     </div>

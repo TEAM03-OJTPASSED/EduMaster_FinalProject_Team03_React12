@@ -14,7 +14,7 @@ export interface Payout {
   instructor_email: string;
 }
 
-interface Transaction {
+export interface Transaction {
   price: number;
   discount: number;
   price_paid: number;
@@ -32,10 +32,10 @@ export enum PayoutStatusEnum {
 
 export interface CreatePayout {
   instructor_id: string;
-  transactions: transaction_id[];
+  transactions: {purchase_id:string}[]
 }
 
-type transaction_id = string;
+
 
 export interface GetPayoutRequest {
   searchCondition: {

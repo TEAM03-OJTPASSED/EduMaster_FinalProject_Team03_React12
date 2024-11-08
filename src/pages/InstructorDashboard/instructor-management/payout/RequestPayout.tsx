@@ -1,16 +1,14 @@
-import { Card, Input, Table, Tag, TableProps, Checkbox, Button, Modal} from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import { Card, Input, Table, Tag, TableProps, Checkbox, Button, Modal } from "antd";
+import { SearchOutlined, SendOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import PayoutService from "../../../../services/payout.service";
-import { GetPayoutRequest, Payout, PayoutStatusEnum } from "../../../../models/Payout.model";
+import { GetPayoutRequest, Payout, PayoutStatusEnum, Transaction } from "../../../../models/Payout.model";
 
 const RequestPayout = () => {
-  
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]); 
-  const [isModalVisible, setIsModalVisible] = useState(false); 
-  const [payouts, setPayouts] = useState<Payout[]>([]); 
-
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [payouts, setPayouts] = useState<Payout[]>([]);
 
   const initialParams: GetPayoutRequest = {
     searchCondition: {
@@ -24,21 +22,36 @@ const RequestPayout = () => {
       pageSize: 10,
     },
   };
-  
-  
-
 
   useEffect(() => {
     const fetchPayouts = async () => {
-        const response = await PayoutService.getPayout(initialParams);
-        const payouts = response.data?.pageData || [];
-        setPayouts(payouts)
+      const response = await PayoutService.getPayout(initialParams);
+      const payouts = response.data?.pageData || [];
+      setPayouts(payouts);
     };
 
     fetchPayouts();
   }, []);
 
+  const handleSelect = (key: React.Key) => {
+    const newSelectedRowKeys = selectedRowKeys.includes(key)
+      ? selectedRowKeys.filter((k) => k !== key)
+      : [...selectedRowKeys, key];
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
 
+  const handleCreate = async () => {
+    setIsModalVisible(true);
+  };
+
+  const handleUpdate = async () => {
+    console.log("Update payouts:", selectedRowKeys);
+  };
+
+  const handleSendToAdmin = async (payout: Payout) => {
+    console.log("Sending payout to admin:", payout);
+    // Add logic here to handle payout request to admin
+  };
 
   const columns: TableProps<Payout>["columns"] = [
     {
@@ -63,36 +76,33 @@ const RequestPayout = () => {
       key: "status",
       filters: [
         { text: PayoutStatusEnum.NEW, value: PayoutStatusEnum.NEW },
-        { text: PayoutStatusEnum.REQUEST_PAYOUT, value: PayoutStatusEnum.REQUEST_PAYOUT},
+        { text: PayoutStatusEnum.REQUEST_PAYOUT, value: PayoutStatusEnum.REQUEST_PAYOUT },
       ],
       onFilter: (value: any, record: any) => record.status === value,
       render: (status: PayoutStatusEnum) => {
-        switch (status) {
-          case PayoutStatusEnum.NEW:
-            return <Tag color="blue">{PayoutStatusEnum.NEW}</Tag>;
-          case PayoutStatusEnum.REQUEST_PAYOUT:
-            return <Tag color="yellow">{PayoutStatusEnum.REQUEST_PAYOUT}</Tag>;
-          case PayoutStatusEnum.COMPLETED:
-            return <Tag color="green">{PayoutStatusEnum.COMPLETED}</Tag>;
-          case PayoutStatusEnum.REJECTED:
-            return <Tag color="red">{PayoutStatusEnum.REJECTED}</Tag>;
-          default:
-            return <Tag color="gray">Unknown</Tag>;
-        }
+        const statusColors = {
+          [PayoutStatusEnum.NEW]: "blue",
+          [PayoutStatusEnum.REQUEST_PAYOUT]: "yellow",
+          [PayoutStatusEnum.COMPLETED]: "green",
+          [PayoutStatusEnum.REJECTED]: "red",
+        };
+        return <Tag color={statusColors[status] || "gray"}>{status}</Tag>;
       },
     },
     {
       title: "Created at",
       dataIndex: "created_at",
       key: "created_at",
-      render: (created_at) => {
-        return <div>{dayjs(created_at).format("DD/MM/YYYY")}</div>;
-      },
+      render: (created_at) => dayjs(created_at).format("DD/MM/YYYY"),
     },
     {
       title: "Transaction ID",
-      dataIndex: "transaction_id",
-      key: "transaction_id",
+      dataIndex: "transactions",
+      key: "transactions",
+      render: (transactions:Transaction[]) =>
+        transactions.map((transaction, index) => (
+          <span key={index}>{transaction.purchase_id},</span>
+        )),
     },
     {
       title: "Balance Origin",
@@ -109,51 +119,30 @@ const RequestPayout = () => {
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
     },
-    
+    {
+      title: "Action",
+      key: "action",
+      render: (record: Payout) => (
+        <Button
+          type="text"
+          icon={<SendOutlined style={{ color: "blue" }} />}
+          onClick={() => handleSendToAdmin(record)}
+          title="Send to admin for approval"
+        />
+        
+      ),
+    },
   ];
-
-  const handleSelect = (key: React.Key) => {
-    const newSelectedRowKeys = selectedRowKeys.includes(key)
-      ? selectedRowKeys.filter((k) => k !== key)
-      : [...selectedRowKeys, key];
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
-
-  const handleCreate = async () => {
-    
-    console.log("Create new payout");
-    setIsModalVisible(true);
-  };
-
-  const handleUpdate = async () => {
-    
-    console.log("Update payouts:", selectedRowKeys);
-    
-  };
-
 
   return (
     <Card>
-      <div className="flex">
-        <h3 className="text-2xl my-5">Payout Management</h3>
-      </div>
+      <h3 className="text-2xl my-5">Payout Management</h3>
       <Input
         placeholder="Search By Payout Number"
         prefix={<SearchOutlined />}
         style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
       />
-      <Button
-        type="primary"
-        onClick={handleCreate}
-        style={{ marginBottom: "20px", marginRight: "10px" }}
-      >
-        Create Payout
-      </Button>
-      <Button
-        type="default"
-        onClick={handleUpdate}
-        disabled={selectedRowKeys.length === 0}
-      >
+      <Button type="default" onClick={handleUpdate} disabled={selectedRowKeys.length === 0}>
         Update Selected
       </Button>
       <Table
@@ -171,7 +160,6 @@ const RequestPayout = () => {
         onOk={() => setIsModalVisible(false)}
         onCancel={() => setIsModalVisible(false)}
       >
-        
         <p>Form to create a payout will go here.</p>
       </Modal>
     </Card>
@@ -179,3 +167,4 @@ const RequestPayout = () => {
 };
 
 export default RequestPayout;
+ 

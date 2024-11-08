@@ -4,7 +4,6 @@ import { PlusOutlined } from "@ant-design/icons";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { API_UPLOAD_FILE } from "../constants/upload";
-import FormItem from "antd/es/form/FormItem";
 
 interface UserProfileFormProps {
   currentUser: UserProfile;
