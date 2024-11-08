@@ -16,6 +16,32 @@ import CourseService from "../../../services/course.service";
 import { handleNotify } from "../../../utils/handleNotify";
 import GlobalSearchUnit from "../../../components/GlobalSearchUnit";
 
+
+const initialCoursesParams: GetCourses = {
+  pageInfo: {
+    pageNum: 1,
+    pageSize: 100,
+  },
+  searchCondition: {
+    keyword: "",
+    is_deleted: false,
+    category_id: "",
+  }
+}
+
+const initialSessionsParams: GetSessions = {
+  pageInfo: {
+    pageNum: 1,
+    pageSize: 10,
+  },
+  searchCondition: {
+    keyword: "",
+    is_deleted: false,
+    is_position_order: true,
+    course_id: "",
+  }
+}
+
 const InstructorSessionList = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
@@ -23,6 +49,7 @@ const InstructorSessionList = () => {
   const [listCourses, setListCourses] = useState<Course[]>([]);
   const [listSessions, setListSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(false);
+  const [searchParams, setSearchParams] = useState<GetSessions>(initialSessionsParams)
 
   const showModal = (session: Session) => {
     setSelectedSession(null); // Reset the selected session first
@@ -40,34 +67,6 @@ const InstructorSessionList = () => {
     setSelectedSession(null); // Reset selected session when closing
   };
 
- 
-
-
-  const initialCoursesParams: GetCourses = {
-    pageInfo: {
-      pageNum: 1,
-      pageSize: 100,
-    },
-    searchCondition: {
-      keyword: "",
-      is_deleted: false,
-      category_id: "",
-    }
-  }
-
-  const initialSessionsParams: GetSessions = {
-    pageInfo: {
-      pageNum: 1,
-      pageSize: 10,
-    },
-    searchCondition: {
-      keyword: "",
-      is_deleted: false,
-      is_position_order: true,
-      course_id: "",
-    }
-  }
-
   const fetchCourses = async () => {
     setLoading(true);
     try {
@@ -81,7 +80,7 @@ const InstructorSessionList = () => {
   const fetchSessions = async () => {
     setLoading(true); 
     try {
-      const response = await SessionService.getSessions(initialSessionsParams);
+      const response = await SessionService.getSessions(searchParams);
       setListSessions(response?.data?.pageData ?? []);
     } finally {
       setLoading(false); 
@@ -137,11 +136,27 @@ const InstructorSessionList = () => {
     }
   }
 
+  const handleSearch = (values: Record<string, any>) => {
+    console.log(values)
+    setSearchParams({
+      pageInfo: searchParams.pageInfo,
+      searchCondition: {
+        ...searchParams.searchCondition, // Spread existing searchCondition fields
+        course_id: values.course_id,
+        keyword: values.keyword,
+      }
+    });
+  };
+
 
   useEffect(() => {
-        fetchCourses(); // Call the async function
-        fetchSessions(); // Call the async function
+    fetchCourses(); // Call the async function
+    fetchSessions(); // Call the async function
   },[]);
+
+  useEffect(() => {
+    fetchSessions();
+  },[searchParams]); //update based on search params
 
   // filter sessions usefx
   // useEffect(() => {
@@ -208,6 +223,7 @@ const InstructorSessionList = () => {
       <h3 className="text-2xl my-5">Session Management</h3>
       <div className="flex justify-between overflow-hidden">
           <GlobalSearchUnit 
+          onSubmit={handleSearch}
           placeholder="Search By Session Name"
           selectFields={[
             {

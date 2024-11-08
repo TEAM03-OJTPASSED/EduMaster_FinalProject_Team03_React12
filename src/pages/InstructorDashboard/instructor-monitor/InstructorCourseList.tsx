@@ -23,6 +23,33 @@ import { CourseStatusToggle } from "../../../components/StatusToggle";
 import GlobalSearchUnit from "../../../components/GlobalSearchUnit";
 import { statusFormatter } from "../../../utils/statusFormatter";
 
+
+const initialCoursesParams: GetCourses = {
+  pageInfo: {
+    pageNum: 1,
+    pageSize: 10,
+  },
+  searchCondition: {
+    keyword: "",
+    is_deleted: false,
+    category_id: "",
+    status: "",
+  },
+};
+
+const initialCategoriesParams: GetCategories = {
+  pageInfo: {
+    pageNum: 1,
+    pageSize: 100,
+  },
+  searchCondition: {
+    keyword: "",
+    is_deleted: false,
+  },
+};
+
+
+
 const InstructorCourseList: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
@@ -30,6 +57,7 @@ const InstructorCourseList: React.FC = () => {
   const [listCourses, setListCourses] = useState<Course[]>([]);
   const [listCategories, setListCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
+  const [searchParams, setSearchParams] = useState<GetCourses>(initialCoursesParams)
 
   const showModal = async (course: Course) => {
     setSelectedCourse(null); // Reset the selected course first
@@ -52,33 +80,11 @@ const InstructorCourseList: React.FC = () => {
 
 
 
-  const initialCoursesParams: GetCourses = {
-    pageInfo: {
-      pageNum: 1,
-      pageSize: 10,
-    },
-    searchCondition: {
-      keyword: "",
-      is_deleted: false,
-      category_id: "",
-    },
-  };
-
-  const initialCategoriesParams: GetCategories = {
-    pageInfo: {
-      pageNum: 1,
-      pageSize: 100,
-    },
-    searchCondition: {
-      keyword: "",
-      is_deleted: false,
-    },
-  };
-
+  
   const fetchCourses = async () => {
     setLoading(true);
     try {
-      const response = await CourseService.getCourses(initialCoursesParams);
+      const response = await CourseService.getCourses(searchParams);
       setListCourses(response?.data?.pageData ?? []);
     } finally {
       setLoading(false);
@@ -96,6 +102,19 @@ const InstructorCourseList: React.FC = () => {
       setLoading(false);
     }
   };
+
+  const handleSearch = (values: Record<string, any>) => {
+    setSearchParams({
+      pageInfo: searchParams.pageInfo,
+      searchCondition: {
+        ...searchParams.searchCondition, // Spread existing searchCondition fields
+        category_id: values.category_id,
+        keyword: values.keyword,
+        status: values.status
+      }
+    });
+  };
+  
 
   const handleCreateCourse = async (values: CourseRequest) => {
     const { price, discount, video_url, image_url, ...otherValues } = values;
@@ -163,7 +182,7 @@ const InstructorCourseList: React.FC = () => {
   useEffect(() => {
     fetchCourses();
     fetchCategories();
-  }, []);
+  }, [searchParams]);
 
   const handleSendToAdmin = async (course: Course) => {
     console.log("Sending course to admin:", course);
@@ -350,8 +369,13 @@ const InstructorCourseList: React.FC = () => {
                 name: "status",
                 options: statuses.map((status) => ({label: statusFormatter(status), value: status})),
                 placeholder: "Filter by Status"
+              },{
+                name: "category_id",
+                options: listCategories.map((category) => ({label: category.name, value: category._id})),
+                placeholder: "Filter by Category"
               }
             ]}
+            onSubmit={handleSearch}
         />
         <div>
           <Button
