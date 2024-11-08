@@ -1,17 +1,20 @@
-import { useEffect, useState } from "react";
 import { Button, Card, Input, Modal, Table, Select, Tag } from "antd";
 import { SearchOutlined, PlusCircleOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
+import { useEffect, useState } from "react";
 import CreateBlog from "./blog/CreateBlog";
-import DeleteBlog from "./blog/DeleteBlog"; 
+import DeleteBlog from "./blog/DeleteBlog";
 import { Blog } from "../../models/Blog.model";
 import { BlogSearchParams } from "../../models/SearchInfo.model";
 import BlogService from "../../services/blog.service";
+import EditBlog from "./blog/EditBlog";
 
 const BlogManagement = () => {
   const [isModalCreateVisible, setIsModalCreateVisible] = useState(false);
-  const [isModalDeleteVisible, setIsModalDeleteVisible] = useState(false); // State for delete modal
-  const [deleteId, setDeleteId] = useState<string | null>(null); // ID of the blog to delete
+  const [isModalDeleteVisible, setIsModalDeleteVisible] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [isModalEditVisible, setIsModalEditVisible] = useState(false);
+  const [editBlogData, setEditBlogData] = useState<Blog | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [fetchedBlogs, setFetchedBlogs] = useState<Blog[]>([]);
   const [blogs, setBlogs] = useState<Blog[]>([]);
@@ -30,13 +33,14 @@ const BlogManagement = () => {
         },
       };
       const res = await BlogService.getBlogs(searchParams);
-      console.log("Blog:", res.data?.pageData)
       const pageData = res.data?.pageData ?? [];
       setFetchedBlogs(pageData);
       setBlogs(pageData);
-    } finally {
+    } catch (error) {
+      console.error("Error fetching blogs:", error);
     }
   };
+
   useEffect(() => {
     fetchBlogs();
   }, []);
@@ -48,23 +52,19 @@ const BlogManagement = () => {
     setBlogs(filteredBlogs);
   }, [selectedCategories, fetchedBlogs]);
 
-  const showModalCreate = () => {
-    setIsModalCreateVisible(true);
-  };
+  const showModalCreate = () => setIsModalCreateVisible(true);
 
-  const handleSelectChange = (values: string[]) => {
-    setSelectedCategories(values);
-  };
+  const handleSelectChange = (values: string[]) => setSelectedCategories(values);
 
   const onSuccess = () => {
-    setIsModalCreateVisible(false); // Close modal after creation
-    fetchBlogs(); // Refetch blogs
+    setIsModalCreateVisible(false);
+    fetchBlogs();
   };
 
   const handleCancel = () => {
     setIsModalCreateVisible(false);
-    setIsModalDeleteVisible(false); // Close delete modal
-    setDeleteId(null); // Reset delete ID
+    setIsModalDeleteVisible(false);
+    setDeleteId(null);
   };
 
   const showModalDelete = (id: string) => {
@@ -72,8 +72,9 @@ const BlogManagement = () => {
     setIsModalDeleteVisible(true);
   };
 
-  const showModalEdit = (record: any) => {
-    console.log("Edit record ID: ", record);
+  const showModalEdit = (blogData: Blog) => {
+    setEditBlogData(blogData);
+    setIsModalEditVisible(true);
   };
 
   const columns = [
@@ -127,12 +128,12 @@ const BlogManagement = () => {
           <Button
             type="text"
             icon={<DeleteOutlined style={{ color: "red" }} />}
-            onClick={() => showModalDelete(record._id)} 
+            onClick={() => showModalDelete(record._id)}
           />
           <Button
             type="text"
             icon={<EditOutlined style={{ color: "blue" }} />}
-            onClick={() => showModalEdit(record)}
+            onClick={() => showModalEdit(record)} // Pass full record
           />
         </>
       ),
@@ -160,14 +161,11 @@ const BlogManagement = () => {
           onChange={handleSelectChange}
           className="w-full md:w-1/4 mb-2 md:mb-0 md:ml-3"
           style={{ minWidth: '200px' }}
-        >
-          
-        </Select>
+        />
         <Button
           onClick={showModalCreate}
           icon={<PlusCircleOutlined />}
           shape="round"
-          variant="solid"
           type="primary"
           className="w-full md:w-auto ml-0 md:ml-auto"
         >
@@ -184,11 +182,31 @@ const BlogManagement = () => {
         scroll={{ x: true }}
       />
 
+      {isModalEditVisible && editBlogData && (
+        <Modal
+          title="Edit Blog"
+          visible={isModalEditVisible}
+          onCancel={() => setIsModalEditVisible(false)}
+          width="80%"
+          style={{ top: 20 }}
+          bodyStyle={{ height: "68vh", padding: 0 }}
+          footer={null}
+        >
+          <EditBlog
+            initialValues={editBlogData} // Pass the full blog data for editing
+            onSuccess={() => {
+              setIsModalEditVisible(false);
+              fetchBlogs();
+            }}
+          />
+        </Modal>
+      )}
+
       {isModalDeleteVisible && deleteId && (
         <DeleteBlog
           id={deleteId}
-          onSuccess={fetchBlogs} // Refresh the blog list after deletion
-          onCancel={handleCancel} // Close the delete modal
+          onSuccess={fetchBlogs}
+          onCancel={handleCancel}
         />
       )}
 

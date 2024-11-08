@@ -31,16 +31,17 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ currentUser, onSave }
   useEffect(() => {
     if (currentUser) {
       form.setFieldsValue({
-        avatar_url: currentUser.avatar_url
-          ? [
-            {
-              uid: "-1",
-              url: currentUser.avatar_url,
-              name: "avatar.jpg",
-              status: "done",
-            },
-          ]
-          : [],
+        // avatar_url: currentUser.avatar_url
+        //   ? [
+        //     {
+        //       uid: "-1",
+        //       url: currentUser.avatar_url,
+        //       name: "avatar.jpg",
+        //       status: "done",
+        //     },
+        //   ]
+        //   : [],
+
         name: currentUser.name || "",
         phone_number: currentUser.phone_number || "",
         bank_account_no: currentUser.bank_account_no || "",
@@ -50,6 +51,16 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ currentUser, onSave }
         bank_account_name: currentUser.bank_account_name || "",
         video_url: currentUser.video_url || "",
       });
+      setImageFileList(currentUser.avatar_url
+        ? [
+          {
+            uid: "-1",
+            url: currentUser.avatar_url,
+            name: "avatar.jpg",
+            status: "done",
+          },
+        ]
+        : [])
     }
   }, [currentUser, form]);
 
@@ -88,6 +99,13 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ currentUser, onSave }
       "bank_account_name",
       "video_url",
     ]);
+    if (!formValues.avatar_url && currentUser.avatar_url) {
+      formValues.avatar_url = currentUser.avatar_url;
+    }
+    if (!formValues.video_url && currentUser.video_url) {
+      formValues.video_url = currentUser.video_url;
+    }
+
     console.log("form values:", formValues);
     onSave(formValues);
   };
@@ -98,23 +116,7 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ currentUser, onSave }
         <Col span={12}>
           <Row gutter={16} align="middle">
             <Col>
-              <FormItem label="Current Avatar">
-                <Upload
-                  listType="picture-card"
-                  fileList={[
-                    {
-                      uid: "-1",
-                      name: "current_avatar.jpg",
-                      status: "done",
-                      url: typeof currentUser.avatar_url === "string" ? currentUser.avatar_url : "placeholder_image_url",
-                    },
-                  ]}
-                  showUploadList={{ showRemoveIcon: false }}
-                />
-              </FormItem>
-            </Col>
-            <Col>
-              <Form.Item label="New Avatar" name="avatar_url">
+              <Form.Item label="Avatar" name="avatar_url">
                 <Upload
                   action={API_UPLOAD_FILE}
                   listType="picture-card"
@@ -122,12 +124,12 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ currentUser, onSave }
                   fileList={imageFileList}
                   maxCount={1}
                 >
-                  {imageFileList.length < 1 && (
-                    <button style={{ border: 0, background: "none" }} type="button">
-                      <PlusOutlined />
-                      <div>Upload</div>
-                    </button>
-                  )}
+                  {imageFileList.length >= 1 ? (
+                    null
+                  ) : <button style={{ border: 0, background: "none" }} type="button">
+                    <PlusOutlined />
+                    <div>Upload</div>
+                  </button>}
                 </Upload>
               </Form.Item>
             </Col>
@@ -135,25 +137,49 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({ currentUser, onSave }
         </Col>
         <Col span={12}>
           <Form.Item label="Video" name="video_url">
-            <Upload
-              action={API_UPLOAD_FILE}
-              listType="picture-card"
-              accept="video/*"
-              onChange={handleVideoChange}
-              fileList={videoFileList}
-              maxCount={1}
-            >
-              {videoFileList.length < 1 && (
-                <button style={{ border: 0, background: "none" }} type="button">
-                  <PlusOutlined />
-                  <div>Upload</div>
-                </button>
-              )}
-            </Upload>
+            <Row gutter={16} align="middle">
+              <Col>
+                <Upload
+                  action={API_UPLOAD_FILE}
+                  listType="picture-card"
+                  accept="video/*"
+                  onChange={handleVideoChange}
+                  fileList={videoFileList}
+                  maxCount={1}
+                >
+                  {videoFileList.length < 1 && (
+                    <button style={{ border: 0, background: "none" }} type="button">
+                      <PlusOutlined />
+                      <div>Upload</div>
+                    </button>
+                  )}
+                </Upload>
+              </Col>
+              <Col>
+                {(videoFileList.length > 0 && videoFileList[0].status === "done" && form.getFieldValue("video_url")) ? (
+                  <video
+                    src={form.getFieldValue("video_url")} // URL từ Cloudinary
+                    width={200}
+                    height={150}
+                    controls
+                    style={{ marginLeft: "8px" }}
+                  />
+                ) : (
+                  currentUser.video_url && (
+                    <video
+                      src={currentUser.video_url} // URL hiện có nếu không upload video mới
+                      width={200}
+                      height={150}
+                      controls
+                      style={{ marginLeft: "8px" }}
+                    />
+                  )
+                )}
+              </Col>
+            </Row>
           </Form.Item>
         </Col>
       </Row>
-
 
       <Row gutter={16}>
         <Col span={12}>
