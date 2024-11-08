@@ -394,3 +394,22 @@ h2.ant-typography {
 img {
   image-rendering: -webkit-optimize-contrast;
 }
+
+/* Example CSS to add fade effect and sliding transition */
+.transition-all {
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+/* Ensure navbar is hidden but still occupying space when not visible */
+.opacity-0 {
+  opacity: 0;
+  visibility: hidden; /* Prevent interaction when not visible */
+  transform: translateY(-100%); /* Move navbar offscreen when hidden */
+}
+
+/* Ensure navbar is visible and in place when showing */
+.opacity-100 {
+  opacity: 1;
+  visibility: visible; /* Make the navbar visible */
+  transform: translateY(0); /* Bring navbar to its original position */
+}

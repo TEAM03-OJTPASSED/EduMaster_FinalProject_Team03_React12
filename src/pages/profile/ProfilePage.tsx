@@ -25,6 +25,7 @@ import { useParams } from "react-router-dom";
 import { UserService } from "../../services/user.service";
 import { Course, GetCourses } from "../../models/Course.model";
 import ClientService from "../../services/client.service";
+import dayjs from "dayjs";
 
 const { Title, Paragraph, Text } = Typography;
 const { TabPane } = Tabs;
@@ -35,6 +36,8 @@ const ProfilePage: React.FC = () => {
   const [userCourse, setUserCourse] = useState<Course[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalImage, setModalImage] = useState("");
+  const [totalStudents, setTotalStudents] = useState(0);
+  const [totalMinutes, setTotalMinutes] = useState(0);
 
   const showModal = (image: string) => {
     setModalImage(image);
@@ -68,11 +71,24 @@ const ProfilePage: React.FC = () => {
         },
       };
       const res = await ClientService.getCourses(searchParam);
+      const courses = res.data?.pageData as Course[];
       setUserCourse(res.data?.pageData as Course[]);
+      setUserCourse(courses);
+      // Calculate total students and total minutes
+      const students = courses.reduce(
+        (acc, course) => acc + course.enrolled,
+        0
+      );
+      const minutes = courses.reduce(
+        (acc, course) => acc + course.full_time,
+        0
+      );
+      setTotalStudents(students);
+      setTotalMinutes(minutes);
     };
+
     fetchCourseById();
   }, [id]);
-
   const instructorInfo = {
     name: userData.name,
     bank_information: userData.bank_account_name,
@@ -84,9 +100,9 @@ const ProfilePage: React.FC = () => {
     coverPhoto: userData?.avatar_url,
     phone: userData.phone_number,
     bio: userData.description,
-    coursesCreated: 15,
-    totalStudents: 50000,
-    teachingHours: 5000,
+    coursesCreated: userCourse.length,
+    totalStudents,
+    teachingHours: totalMinutes,
     courses: userCourse,
   };
 
@@ -108,20 +124,29 @@ const ProfilePage: React.FC = () => {
             <Avatar
               src={instructorInfo.avatar}
               size={160}
-              className="ml-4 border-4 border-white cursor-pointer"
+              className="ml-4 border-4 border-white cursor-pointer mb-24"
               onClick={() => showModal(instructorInfo.avatar as string)}
             />
             <div className="ml-5">
               <Title level={2} className="mb-0">
                 {instructorInfo.name}
               </Title>
-              <div className="flex gap-3">
-                <Text type="secondary">{instructorInfo.role}</Text>
+              <div>
+                Role:
+                <Text type="secondary"> {instructorInfo.role}</Text>
               </div>
-              <div className="flex gap-3">
-                <Text type="secondary">{instructorInfo.bank_information}</Text>
-                <Text type="secondary">{instructorInfo.bank_account_no}</Text>
-                <Text type="secondary">{instructorInfo.bank_name}</Text>
+
+              <div>
+                Bank name:
+                <Text type="secondary"> {instructorInfo.bank_name}</Text>
+              </div>
+              <div>
+                Bank no:
+                <Text type="secondary"> {instructorInfo.bank_account_no}</Text>
+              </div>
+              <div>
+                Bank account name:
+                <Text type="secondary"> {instructorInfo.bank_name}</Text>
               </div>
             </div>
           </div>
@@ -166,7 +191,10 @@ const ProfilePage: React.FC = () => {
                         description={course.description}
                       />
                       <div className="flex gap-2 mt-2">
-                        <Tag color="orange">{course.created_at}</Tag>
+                        <Tag color="orange">
+                          Created at:{" "}
+                          {dayjs(course.created_at).format("DD/MM/YYYY")}
+                        </Tag>
                         <Tag color="green">Level: {course.level}</Tag>
                         <Tag className="bg-orange-500 text-white font-jost">
                           {course.category_name}
@@ -213,7 +241,7 @@ const ProfilePage: React.FC = () => {
                 </Col>
                 <Col span={8}>
                   <Statistic
-                    title="Teaching Hours"
+                    title="Teaching Minutes"
                     value={instructorInfo.teachingHours}
                     prefix={<ClockCircleOutlined />}
                   />
