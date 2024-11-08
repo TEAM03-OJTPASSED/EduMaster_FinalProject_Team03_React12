@@ -1,4 +1,3 @@
-import { message } from "antd";
 import USER_API from "../constants/api/user";
 import {
   previewProfileFulfilled,
@@ -19,6 +18,7 @@ import {
 } from "../models/UserModel";
 import { ApiResponse, APIResponseData } from "../models/ApiReponse.model";
 import { UserSearchParams } from "../models/SearchInfo.model";
+import { handleNotify } from "../utils/handleNotify";
 const BASE_URL = "/api/users";
 
 export const UserService = {
@@ -34,44 +34,44 @@ export const UserService = {
   createUser(param: User): Promise<ApiResponse<User>> {
     return postRequest<User>(USER_API.CREATE_USER, param)
       .then((response) => {
-        message.success("User updated successfully!");
+        handleNotify("User created successfully!", "");
         return response;
       })
       .catch((error) => {
-        message.error("Failed to update user.");
+        handleNotify("Failed to update user", error.message, "error");
         throw error;
       });
   },
   updateUser(userId: string, param: User): Promise<ApiResponse<User>> {
     return putRequest<User>(USER_API.UPDATE_USER(userId), param)
       .then((response) => {
-        message.success("User updated successfully!");
+        handleNotify("User updated successfully!", "");
         return response;
       })
       .catch((error) => {
-        message.error("Failed to update user.");
+        handleNotify("Failed to update user", error.message, "error");
         throw error;
       });
   },
   deleteUser(userId: string): Promise<ApiResponse<User>> {
     return deleteRequest<User>(USER_API.DELETE_USER(userId))
       .then((response) => {
-        message.success("User deleted successfully!");
+        handleNotify("User deleted successfully!", "");
         return response;
       })
       .catch((error) => {
-        message.error("Failed to delete user.");
+        handleNotify("Failed to delete user", error.message, "error");
         throw error;
       });
   },
   changeRole(params: ChangeUserRoleParams): Promise<ApiResponse<User>> {
     return putRequest<User>(USER_API.CHANGE_ROLE, params)
       .then((response) => {
-        message.success("User role changed successfully!");
+        handleNotify("User role changed successfully!", "");
         return response;
       })
       .catch((error) => {
-        message.error("Failed to change user role.");
+        handleNotify("Failed to change user role.", error.message, "error");
         throw error;
       });
   },
@@ -79,11 +79,11 @@ export const UserService = {
   changeStatus(params: ChangeUserStatusParams): Promise<ApiResponse<User>> {
     return putRequest(USER_API.CHANGE_STATUS, params)
       .then((response) => {
-        message.success("Status updated successfully!");
+        handleNotify("Status updated successfully!", "");
         return response as ApiResponse<User>;
       })
       .catch((error) => {
-        message.error("Failed to update status.");
+        handleNotify("Failed to update status.", error.message, "error");
         throw error;
       });
   },
@@ -123,15 +123,15 @@ export const updatedUser = async (userId: string, userData: any) => {
   try {
     const response = await putRequest(`${BASE_URL}/${userId}`, userData);
     if (response && response.success) {
-      message.success("User updated successfully");
+      handleNotify("User updated successfully", "");
       return response.data; // Trả về dữ liệu người dùng đã được cập nhật
     } else {
-      message.error("Failed to update user"); // Hiển thị thông báo lỗi
+      handleNotify("Error", response.message || "Failed to update user"); // Hiển thị thông báo lỗi
       return null; // Trả về null khi không thành công
     }
   } catch (error: any) {
     console.error("Error updating user:", error);
-    message.error("An error occurred while updating the user."); // Thông báo lỗi chung
+    handleNotify("An error occurred while updating the user.", error.message, "error"); // Thông báo lỗi chung
     return null; // Đảm bảo trả về null trong trường hợp có lỗi
   }
 };
@@ -143,9 +143,9 @@ export const changeRole = async (userId: string, role: string) => {
       role,
     });
     if (response.success) {
-      message.success("User updated successfully");
+      handleNotify("User updated successfully", "");
     } else {
-      message.error("Failed to update user"); // Hiển thị thông báo lỗi
+      handleNotify("Error", response.message || "Failed to update user", "error"); // Hiển thị thông báo lỗi
     }
   } catch (error) {
     console.error("Error changing user role:", error);
@@ -162,9 +162,9 @@ export const changePassword = async (user_id: string,
       new_password: new_password
     });
     if (response.success) {
-      message.success("User password updated successfully");
+      handleNotify("User password updated successfully", "");
     } else {
-      message.error("Failed to update password");
+      handleNotify("Error", response.message || "Failed to update password", "error");
     }
   } catch (error) {
     console.error("Error changing user password:", error);
@@ -193,10 +193,10 @@ export const deleteUser = async (userId: string) => {
     const response = await deleteRequest(`${BASE_URL}/${userId}`);
     if (response.success) {
       console.log("User deleted successfully");
-      message.success("User deleted successfully");
+      handleNotify("User deleted successfully", "");
       return true;
     } else {
-      throw new Error("Failed to delete user");
+      handleNotify("Error", response.message || "Failed to update password", "error");
     }
   } catch (error) {
     console.error("Error deleting user:", error);

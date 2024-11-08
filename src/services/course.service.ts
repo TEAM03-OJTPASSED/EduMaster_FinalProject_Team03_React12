@@ -23,7 +23,7 @@ const CourseService = {
   getCourses(
     params: GetCourses
   ): Promise<ApiResponse<APIResponseData<Course>>> {
-    return postRequest(COURSE_API.GET_COURSES, params);
+    return postRequest(COURSE_API.GET_COURSES, params, false);
   },
 
   getCourse(courseId: string): Promise<ApiResponse<Course>> {

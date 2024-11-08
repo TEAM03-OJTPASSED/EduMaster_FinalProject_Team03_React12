@@ -17,6 +17,45 @@ import LessonService from "../../../services/lesson.service";
 import { handleNotify } from "../../../utils/handleNotify";
 import GlobalSearchUnit from "../../../components/GlobalSearchUnit";
 
+
+const initialCoursesParams: GetCourses = {
+  pageInfo: {
+    pageNum: 1,
+    pageSize: 100,
+  },
+  searchCondition: {
+    keyword: "",
+    is_deleted: false,
+    category_id: "",
+  }
+};
+
+const initialSessionsParams: GetSessions = {
+  pageInfo: {
+    pageNum: 1,
+    pageSize: 10,
+  },
+  searchCondition: {
+    keyword: "",
+    is_deleted: false,
+    is_position_order: true,
+    course_id: "",
+  }
+};
+
+const initialLessonsParams: GetLessons = {
+  pageInfo: {
+    pageNum: 1,
+    pageSize: 10,
+  },
+  searchCondition: {
+    keyword: "",
+    is_deleted: false,
+    course_id: "",
+    is_position_order: false
+  }
+};
+
 const InstructorLessonList = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalCreateVisible, setIsModalCreateVisible] = useState(false);
@@ -27,6 +66,7 @@ const InstructorLessonList = () => {
   const [listSessions, setListSessions] = useState<Session[]>([]);
   const [listLessons, setListLessons] = useState<Lesson[]>([]);
   const [loading, setLoading] = useState(false);
+  const [searchParams, setSearchParams] = useState<GetLessons>(initialLessonsParams)
 
   const showModal = (lesson: Lesson) => {
     setSelectedLesson(lesson);
@@ -47,59 +87,13 @@ const InstructorLessonList = () => {
     resetModalState();
   };
 
-  const initialCoursesParams: GetCourses = {
-    pageInfo: {
-      pageNum: 1,
-      pageSize: 100,
-    },
-    searchCondition: {
-      keyword: "",
-      is_deleted: false,
-      category_id: "",
-    }
-  };
 
-  const initialSessionsParams: GetSessions = {
-    pageInfo: {
-      pageNum: 1,
-      pageSize: 10,
-    },
-    searchCondition: {
-      keyword: "",
-      is_deleted: false,
-      is_position_order: true,
-      course_id: "",
-    }
-  };
-
-  const initialLessonsParams: GetLessons = {
-    pageInfo: {
-      pageNum: 1,
-      pageSize: 10,
-    },
-    searchCondition: {
-      keyword: "",
-      is_deleted: false,
-      course_id: "",
-      is_position_order: false
-    }
-  };
 
   const fetchCourses = async () => {
     setLoading(true);
     try {
       const response = await CourseService.getCourses(initialCoursesParams);
       setListCourses(response?.data?.pageData ?? []);
-    } finally {
-      setLoading(false); 
-    }
-  };
-
-  const fetchLessons = async () => {
-    setLoading(true); 
-    try {
-      const response = await LessonService.getLessons(initialLessonsParams);
-      setListLessons(response?.data?.pageData ?? []);
     } finally {
       setLoading(false); 
     }
@@ -114,6 +108,19 @@ const InstructorLessonList = () => {
       setLoading(false); 
     }
   };
+
+
+  const fetchLessons = async () => {
+    setLoading(true); 
+    try {
+      const response = await LessonService.getLessons(searchParams);
+      setListLessons(response?.data?.pageData ?? []);
+    } finally {
+      setLoading(false); 
+    }
+  };
+
+  
 
   const handleCreateLesson = async (values: LessonRequest) => {
     const { position_order, full_time, image_url, video_url, ...otherValues } = values;
@@ -170,8 +177,11 @@ const InstructorLessonList = () => {
   useEffect(() => {
     fetchCourses();
     fetchSessions();
-    fetchLessons();
   }, []);
+
+  useEffect(() => {
+    fetchLessons();
+  }, [searchParams]);
 
   const columns: TableProps<Lesson>["columns"] = [
     {
@@ -230,6 +240,20 @@ const InstructorLessonList = () => {
     },
   ];
 
+  const handleSearch = (values: Record<string, any>) => {
+    setSearchParams({
+      pageInfo: searchParams.pageInfo,
+      searchCondition: {
+        ...searchParams.searchCondition, // Spread existing searchCondition fields
+        course_id: values.course_id,
+        session_id: values.session_id,
+        keyword: values.keyword,
+
+      }
+    });
+  };
+
+
   // const handleCourseChange = (courseId: string) => {
   //   setSelectedCourse(courseId);
   //   setSelectedSession(undefined);
@@ -245,7 +269,9 @@ const InstructorLessonList = () => {
       <div className="flex justify-between">
         <div className="flex justify-between gap-4 mb-5 overflow-hidden">
           <GlobalSearchUnit 
+            onSubmit={handleSearch}
             placeholder="Search by Lesson Name"
+            isDependentSelect={true}
             selectFields={[
               {
                 name: "course_id",
@@ -261,7 +287,10 @@ const InstructorLessonList = () => {
                 options: listSessions.map(session => ({
                   value: session._id,
                   label: session.name,
-                }))
+                  dependence: session.course_id,
+                })),
+                dependenceName: "course_id",
+
               },
 
             ]}
