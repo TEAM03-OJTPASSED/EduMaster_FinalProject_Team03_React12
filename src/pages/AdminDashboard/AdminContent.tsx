@@ -15,6 +15,11 @@ import {
 } from "../../models/Payout.model";
 import PayoutService from "../../services/payout.service";
 import dayjs from "dayjs";
+import { UserService } from "../../services/user.service";
+import BlogService from "../../services/blog.service";
+import CourseService from "../../services/course.service";
+import CategoryService from "../../services/category.service";
+import PurchaseService from "../../services/purchase.service";
 
 const cardStyle = {
   borderRadius: "8px",
@@ -23,11 +28,86 @@ const cardStyle = {
 };
 
 const AdminContent = () => {
-  const [setPayout] = useState<Payout[]>([]);
+  const [_payout, setPayout] = useState<Payout[]>([]);
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const [transactions, setTransactions] = useState<any[]>([]);
+
+  const [counts, setCounts] = useState({
+    blogs: 0,
+    categories: 0,
+    courses: 0,
+    users: 0,
+    totalPaid: 0,
+  });
+
+  const defaultPayload = {
+    searchCondition: {
+      keyword: "",
+      role: "",
+      status: true,
+      is_verified: true,
+      is_delete: false,
+    },
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 10,
+    },
+  };
+
+  const fetchCounts = async () => {
+    try {
+      const [usersRes, blogsRes, coursesRes, categoriesRes, purchaseRes] =
+        await Promise.all([
+          UserService.getUsers(defaultPayload),
+          BlogService.getBlogs(defaultPayload),
+
+          CourseService.getCourses({
+            ...defaultPayload,
+            searchCondition: {
+              ...defaultPayload.searchCondition,
+              is_deleted: false,
+              status: "",
+              category_id: "",
+            },
+          }),
+          CategoryService.getCategories({
+            ...defaultPayload,
+            searchCondition: {
+              ...defaultPayload.searchCondition,
+              is_deleted: false,
+            },
+          }),
+          PurchaseService.getPurchases({
+            ...defaultPayload,
+            searchCondition: {
+              ...defaultPayload.searchCondition,
+              is_delete: false,
+              status: "",
+            },
+          }),
+        ]);
+
+      const totalPaid =
+        purchaseRes.data?.pageData?.reduce(
+          (sum, purchase) => sum + purchase.price_paid,
+          0
+        ) || 0;
+
+      setCounts({
+        categories: categoriesRes.data?.pageInfo?.totalItems || 0,
+        blogs: blogsRes.data?.pageInfo?.totalItems || 0,
+        courses: coursesRes.data?.pageInfo?.totalItems || 0,
+        users: usersRes.data?.pageInfo?.totalItems || 0,
+        totalPaid,
+      });
+
+      console.log(totalPaid);
+    } catch (err) {
+      console.error("Error fetching counts:", err);
+    }
+  };
 
   const fetchPayout = async () => {
     const searchParams: GetPayoutRequest = {
@@ -45,7 +125,6 @@ const AdminContent = () => {
       const responseData = response.data?.pageData;
 
       if (Array.isArray(responseData)) {
-        // Kết hợp thông tin transactions và instructor_name
         const transactionsWithInstructorInfo = responseData.flatMap(
           (payout) =>
             payout.transactions?.map((transaction) => ({
@@ -75,6 +154,7 @@ const AdminContent = () => {
   };
 
   useEffect(() => {
+    fetchCounts();
     fetchPayout();
     // }, [pageNum, pageSize, searchText, activeTabKey]);
   }, [pageNum, pageSize]);
@@ -156,7 +236,7 @@ const AdminContent = () => {
                   Total Balance
                 </h2>
                 <p style={{ fontWeight: "bold", fontSize: "24px", margin: 0 }}>
-                  3249
+                  {counts.totalPaid}
                 </p>
               </div>
             </div>
@@ -194,7 +274,7 @@ const AdminContent = () => {
                   Total Categories
                 </h2>
                 <p style={{ fontWeight: "bold", fontSize: "24px", margin: 0 }}>
-                  3
+                  {counts.categories}
                 </p>
               </div>
             </div>
@@ -234,7 +314,7 @@ const AdminContent = () => {
                   Total Courses
                 </h2>
                 <p style={{ fontWeight: "bold", fontSize: "24px", margin: 0 }}>
-                  249
+                  {counts.courses}
                 </p>
               </div>
             </div>
@@ -272,7 +352,7 @@ const AdminContent = () => {
                   Total Users
                 </h2>
                 <p style={{ fontWeight: "bold", fontSize: "24px", margin: 0 }}>
-                  249
+                  {counts.users}
                 </p>
               </div>
             </div>
@@ -312,7 +392,7 @@ const AdminContent = () => {
                   Total Blogs
                 </h2>
                 <p style={{ fontWeight: "bold", fontSize: "24px", margin: 0 }}>
-                  249
+                  {counts.blogs}
                 </p>
               </div>
             </div>

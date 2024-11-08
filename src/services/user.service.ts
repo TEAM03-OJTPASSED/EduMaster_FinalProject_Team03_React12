@@ -131,7 +131,11 @@ export const updatedUser = async (userId: string, userData: any) => {
     }
   } catch (error: any) {
     console.error("Error updating user:", error);
-    handleNotify("An error occurred while updating the user.", error.message, "error"); // Thông báo lỗi chung
+    handleNotify(
+      "An error occurred while updating the user.",
+      error.message,
+      "error"
+    ); // Thông báo lỗi chung
     return null; // Đảm bảo trả về null trong trường hợp có lỗi
   }
 };
@@ -145,32 +149,42 @@ export const changeRole = async (userId: string, role: string) => {
     if (response.success) {
       handleNotify("User updated successfully", "");
     } else {
-      handleNotify("Error", response.message || "Failed to update user", "error"); // Hiển thị thông báo lỗi
+      handleNotify(
+        "Error",
+        response.message || "Failed to update user",
+        "error"
+      ); // Hiển thị thông báo lỗi
     }
   } catch (error) {
     console.error("Error changing user role:", error);
     throw error; // Ném lỗi để xử lý ở nơi gọi
   }
 };
-export const changePassword = async (user_id: string,
+export const changePassword = async (
+  user_id: string,
   old_password: string,
-  new_password: string) => {
+  new_password: string
+) => {
   try {
     const response = await putRequest(`${BASE_URL}/change-password`, {
       user_id: user_id,
       old_password: old_password,
-      new_password: new_password
+      new_password: new_password,
     });
     if (response.success) {
       handleNotify("User password updated successfully", "");
     } else {
-      handleNotify("Error", response.message || "Failed to update password", "error");
+      handleNotify(
+        "Error",
+        response.message || "Failed to update password",
+        "error"
+      );
     }
   } catch (error) {
     console.error("Error changing user password:", error);
-    throw error; 
+    throw error;
   }
-}
+};
 export const changeStatus = async (userId: string, status: boolean) => {
   try {
     const response = await putRequest(`${BASE_URL}/change-status`, {
@@ -196,7 +210,11 @@ export const deleteUser = async (userId: string) => {
       handleNotify("User deleted successfully", "");
       return true;
     } else {
-      handleNotify("Error", response.message || "Failed to update password", "error");
+      handleNotify(
+        "Error",
+        response.message || "Failed to update password",
+        "error"
+      );
     }
   } catch (error) {
     console.error("Error deleting user:", error);

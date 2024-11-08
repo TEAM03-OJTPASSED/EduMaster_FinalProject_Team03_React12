@@ -27,8 +27,10 @@ const CategoryManagement = () => {
   const [pageSize, setPageSize] = useState(10);
   const [categories, setCategories] = useState<Category[]>([]);
   const [total, setTotal] = useState(0);
-  const filteredData = useDebouncedSearch(categories, searchText, 300, ["name", "parent_category_id"]);
-
+  const filteredData = useDebouncedSearch(categories, searchText, 300, [
+    "name",
+    "parent_category_id",
+  ]);
 
   const fetchCategories = async () => {
     const searchParams: GetCategories = {
@@ -47,6 +49,7 @@ const CategoryManagement = () => {
         ? responseData.flat() // Dùng flat() để chuyển thành User[]
         : [];
       setCategories(flattenedUsers);
+      console.log(responseData);
       setTotal(response.data?.pageInfo?.totalItems ?? 0);
     } catch (err) {
       console.error("Error fetching users:", err);
@@ -142,7 +145,7 @@ const CategoryManagement = () => {
           />
         </Space>
       ),
-    }
+    },
   ];
 
   return (
