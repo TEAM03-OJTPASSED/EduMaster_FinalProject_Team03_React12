@@ -29,7 +29,7 @@ export const register = async (
     const res = await postRequest("/api/users", formData);
     console.log("res", res.data);
     dispatch(registerFulfilled());
-    handleNotify("success", )
+    handleNotify("success", "Please check your email")
   } catch (error) {
     console.log(error);
     dispatch(registerRejected());
