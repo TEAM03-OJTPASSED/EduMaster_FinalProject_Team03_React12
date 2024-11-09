@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Table,
-  Input,
-  Card,
-  Tag,
-  Button,
-  Modal,
-  message,
-  Space,
-} from "antd";
+import { Table, Input, Card, Tag, Button, Modal, message, Space } from "antd";
 import {
   Course,
   CourseStatusEnum,
@@ -20,6 +11,10 @@ import { PageInfo } from "../../../../models/SearchInfo.model";
 import { Category, GetCategories } from "../../../../models/Category.model";
 import CategoryService from "../../../../services/category.service";
 import GlobalSearchUnit from "../../../../components/GlobalSearchUnit";
+import {
+  CheckOutlined,
+  CloseOutlined,
+} from "@ant-design/icons";
 
 const PendingCourseList: React.FC = () => {
   // State variables
@@ -29,7 +24,9 @@ const PendingCourseList: React.FC = () => {
   const [reasonVisible, setReasonVisible] = useState<boolean>(false);
   const [currentCourse, setCurrentCourse] = useState<Course>({} as Course);
   const [coursePendingList, setCoursePendingList] = useState<Course[]>([]);
-  const [currentCourses, setCurrentCourses] = useState<PageInfo>({} as PageInfo);
+  const [currentCourses, setCurrentCourses] = useState<PageInfo>(
+    {} as PageInfo
+  );
   const [courseSearchParam, setCourseSearchParam] = useState<GetCourses>({
     searchCondition: {
       keyword: "",
@@ -50,7 +47,6 @@ const PendingCourseList: React.FC = () => {
       const res = await CourseService.getCourses(courseSearchParam);
       setCoursePendingList(res?.data?.pageData as Course[]);
       setCurrentCourses(res?.data?.pageInfo as PageInfo);
-   
     } finally {
       setLoading(false);
     }
@@ -131,21 +127,19 @@ const PendingCourseList: React.FC = () => {
     {
       title: "Actions",
       key: "action",
-      render: (_, record: Course) => (
+      render: (record: Course) => (
         <Space size="middle">
           <Button
             type="text"
+            icon={<CheckOutlined />}
             onClick={() => handleUpdateStatus(CourseStatusEnum.APPROVE, record)}
-          >
-            Approve
-          </Button>
+          />
           <Button
             className="text-red-600"
+            icon={<CloseOutlined />}
             type="text"
             onClick={() => handleShowReason(record)}
-          >
-            Reject
-          </Button>
+          />
         </Space>
       ),
     },

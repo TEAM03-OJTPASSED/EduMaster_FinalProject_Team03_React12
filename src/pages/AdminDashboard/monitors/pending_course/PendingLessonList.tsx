@@ -116,22 +116,13 @@ const PendingLessonList = () => {
       key: "user_name",
     },
     {
-      title: "Image",
-      dataIndex: "image_url",
-      key: "image_url",
-      render: (image_url, record) => (
-        <div>
-          <img src={image_url} alt={record.name} style={{ maxWidth: "100px", maxHeight: "100px" }} />
-        </div>
-      ),
-    },
-    {
       title: "Media",
       dataIndex: "video_url",
       key: "video_url",
       render: (video_url) => (
         <div className="h-full w-full md:w-[200px]">
-          <video className="w-[200px] 2h-auto" src={video_url} controls>
+          <video className="w-[200px] 2h-auto" controls>
+          <source src={video_url} />
             Your browser does not support the video tag.
           </video>
         </div>
