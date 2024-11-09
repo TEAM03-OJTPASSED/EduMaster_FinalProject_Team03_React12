@@ -6,6 +6,7 @@ import {
 import { Session } from "./Session.model";
 
 export interface Course  {
+  _id: string;
   name: string;
   category_id: string;
   description: string;

@@ -3,15 +3,22 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import {
   Button,
+  Checkbox,
   Form,
   FormProps,
   Input,
+  Radio,
   Select,
+  Tooltip,
   Upload,
   UploadFile,
   UploadProps,
 } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import {
+  PlusOutlined,
+  MinusCircleOutlined,
+  QuestionCircleOutlined,
+} from "@ant-design/icons";
 import { Lesson, LessonTypeEnum } from "../../../../models/Lesson.model";
 import { Session } from "../../../../models/Session.model";
 import { Course } from "../../../../models/Course.model";
@@ -35,7 +42,9 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
 }) => {
   const [imageFileList, setImageFileList] = useState<UploadFile[]>([]);
   const [videoFileList, setVideoFileList] = useState<UploadFile[]>([]);
-  const [visibility, setVisibility] = useState<"text" | "image" | "video">();
+  const [visibility, setVisibility] = useState<
+    "reading" | "video" | "assignment"
+  >();
   const [form] = Form.useForm<Lesson>();
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | undefined>(
     initialValues?.video_url
@@ -48,18 +57,6 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
         ...initialValues,
         description: initialValues?.description,
       });
-      setImageFileList(
-        initialValues?.image_url
-          ? [
-              {
-                uid: "-1",
-                name: "image.png",
-                status: "done",
-                url: initialValues.image_url,
-              },
-            ]
-          : []
-      );
       setVideoFileList(
         initialValues?.video_url
           ? [
@@ -75,18 +72,6 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
       setVideoPreviewUrl(initialValues?.video_url);
     }
   }, [initialValues, form, mode]);
-
-  const handleImageChange: UploadProps["onChange"] = ({
-    fileList: newFileList,
-  }) => {
-    setImageFileList(newFileList || []);
-    if (newFileList.length > 0 && newFileList[0].status === "done") {
-      const uploadedImageUrl = newFileList[0].response?.secure_url;
-      form.setFieldsValue({ image_url: uploadedImageUrl });
-    } else {
-      form.setFieldsValue({ image_url: "" });
-    }
-  };
 
   const handleVideoChange: UploadProps["onChange"] = ({
     fileList: newFileList,
@@ -117,18 +102,16 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
 
   const handleLessonType = () => {
     const lessonType = form.getFieldValue("lesson_type") as LessonTypeEnum;
-    if (lessonType === LessonTypeEnum.IMAGE) {
+    if (lessonType === LessonTypeEnum.READING) {
       form.setFieldsValue({ video_url: "" });
       setVideoPreviewUrl(undefined);
-      setVisibility("image");
-    } else if (lessonType === LessonTypeEnum.TEXT) {
-      form.setFieldsValue({ image_url: "" });
+      setVisibility("reading");
+    } else if (lessonType === LessonTypeEnum.ASSIGNMENT) {
       form.setFieldsValue({ video_url: "" });
       setImageFileList([]);
       setVideoPreviewUrl(undefined);
-      setVisibility("text");
+      setVisibility("assignment");
     } else if (lessonType === LessonTypeEnum.VIDEO) {
-      form.setFieldsValue({ image_url: "" });
       setImageFileList([]);
       setVisibility("video");
     }
@@ -140,6 +123,126 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
     }
   }, [handleCourseChange, initialValues]);
 
+  //Huko additional code
+  const { Option } = Select;
+
+  const [questions, setQuestions] = useState<
+    {
+      id: number;
+      type: string;
+      question: string;
+      options: string[];
+      correctAnswers: any[];
+    }[]
+  >([
+    {
+      id: 1,
+      type: "single_choice",
+      question: "",
+      options: ["", ""],
+      correctAnswers: [],
+    },
+  ]);
+
+  const addQuestion = () => {
+    setQuestions([
+      ...questions,
+      {
+        id: questions.length + 1,
+        type: "single_choice",
+        question: "",
+        options: ["", ""],
+        correctAnswers: [],
+      },
+    ]);
+  };
+
+  const removeQuestion = (id) => {
+    setQuestions(questions.filter((q) => q.id !== id));
+  };
+
+  const handleQuestionChange = (id, value) => {
+    setQuestions(
+      questions.map((q) => (q.id === id ? { ...q, question: value } : q))
+    );
+  };
+
+  const handleTypeChange = (id, value) => {
+    setQuestions(
+      questions.map((q) => {
+        if (q.id === id) {
+          const correctAnswers =
+            value === "single_choice" && q.correctAnswers.length > 0
+              ? [q.correctAnswers[0]]
+              : q.correctAnswers;
+          return { ...q, type: value, correctAnswers };
+        }
+        return q;
+      })
+    );
+  };
+
+  const handleOptionChange = (questionId, optionIndex, value) => {
+    setQuestions(
+      questions.map((q) =>
+        q.id === questionId
+          ? {
+              ...q,
+              options: q.options.map((opt, idx) =>
+                idx === optionIndex ? value : opt
+              ),
+              correctAnswers: q.correctAnswers.map((ans) =>
+                ans === q.options[optionIndex] ? value : ans
+              ),
+            }
+          : q
+      )
+    );
+  };
+
+  const addOption = (questionId) => {
+    setQuestions(
+      questions.map((q) =>
+        q.id === questionId ? { ...q, options: [...q.options, ""] } : q
+      )
+    );
+  };
+
+  const removeOption = (questionId, optionIndex) => {
+    setQuestions(
+      questions.map((q) =>
+        q.id === questionId
+          ? {
+              ...q,
+              options: q.options.filter((_, idx) => idx !== optionIndex),
+            }
+          : q
+      )
+    );
+  };
+
+  const handleCorrectAnswerChange = (questionId, optionValue) => {
+    setQuestions(
+      questions.map((q) => {
+        if (q.id === questionId) {
+          if (q.type === "single_choice") {
+            return { ...q, correctAnswers: [optionValue] };
+          } else {
+            const newCorrectAnswers = q.correctAnswers.includes(optionValue)
+              ? q.correctAnswers.filter((val) => val !== optionValue)
+              : [...q.correctAnswers, optionValue];
+            return { ...q, correctAnswers: newCorrectAnswers };
+          }
+        }
+        return q;
+      })
+    );
+  };
+
+  const handleConsoleLog = () => {
+    console.log("Current Questions State:", questions);
+  };
+  // Huko additional code
   return (
     <Form
       form={form}
@@ -197,8 +300,8 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
             placeholder="Lesson Type"
             options={[
               { label: "Video", value: LessonTypeEnum.VIDEO },
-              { label: "Image", value: LessonTypeEnum.IMAGE },
-              { label: "Text", value: LessonTypeEnum.TEXT },
+              { label: "Reading", value: LessonTypeEnum.READING },
+              { label: "Assignment", value: LessonTypeEnum.ASSIGNMENT },
             ]}
           />
         </Form.Item>
@@ -240,49 +343,26 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
 
       {/* Right Column - Content and Media - Scrollable */}
       <div className="lg:w-3/5 h-full overflow-y-auto">
-        <div className="space-y-4 pr-4"> {/* Added padding-right for scrollbar */}
-          <Form.Item
-            label="Content"
-            name="description"
-            rules={[{ required: true, message: "Please input description" }]}
-          >
-            <CKEditor
-              editor={ClassicEditor}
-              data={form.getFieldValue("description") || ""}
-              onChange={(_, editor) =>
-                form.setFieldsValue({ description: editor.getData() })
-              }
-            />
-          </Form.Item>
-
+        <div className="space-y-4 pr-4">
+          {visibility === LessonTypeEnum.READING && (
+            <Form.Item
+              label="Content"
+              name="description"
+              rules={[{ required: true, message: "Please input description" }]}
+            >
+              <CKEditor
+                editor={ClassicEditor}
+                data={form.getFieldValue("description") || ""}
+                onChange={(_, editor) =>
+                  form.setFieldsValue({ description: editor.getData() })
+                }
+              />
+            </Form.Item>
+          )}
           <div className="flex justify-around">
-            {visibility === LessonTypeEnum.IMAGE && (
-              <Form.Item 
-                label="Lesson Image" 
-                name="image_url"
-                rules={[{ required: true, message: "Please input image" }]}
-              >
-                <Upload
-                  action="https://api.cloudinary.com/v1_1/dz2dv8lk4/upload?upload_preset=edumaster1"
-                  accept="image/*"
-                  listType="picture-card"
-                  fileList={imageFileList}
-                  onChange={handleImageChange}
-                  maxCount={1}
-                >
-                  {imageFileList.length >= 1 ? null : (
-                    <div>
-                      <PlusOutlined className="h-5 w-5" />
-                      <div>Upload</div>
-                    </div>
-                  )}
-                </Upload>
-              </Form.Item>
-            )}
-
             {visibility === LessonTypeEnum.VIDEO && (
-              <Form.Item 
-                label="Lesson Video" 
+              <Form.Item
+                label="Lesson Video"
                 name="video_url"
                 rules={[{ required: true, message: "Please input video" }]}
               >
@@ -303,17 +383,124 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
                     )}
                   </Upload>
                 </div>
+                {videoPreviewUrl && (
+                  <video
+                    src={videoPreviewUrl}
+                    controls
+                    className="w-full rounded-lg"
+                  />
+                )}
               </Form.Item>
             )}
+            {visibility === LessonTypeEnum.ASSIGNMENT && (
+              <div className="h-[70vh] w-full overflow-y-scroll">
+                <Form>
+                  <div>
+                    <div className="text-center text-xl font-bold">
+                      Assignment Creator
+                    </div>
+                    {questions.map((q) => (
+                      <div key={q.id} className="mb-4">
+                        <div>Question {q.id}</div>
+                        <div className="flex gap-2">
+                          <Input
+                            placeholder="Enter your question"
+                            value={q.question}
+                            onChange={(e) =>
+                              handleQuestionChange(q.id, e.target.value)
+                            }
+                            className="w-4/5 mb-2"
+                          />
+                          <Select
+                            value={q.type}
+                            onChange={(value) => handleTypeChange(q.id, value)}
+                            className="w-1/5 mb-2"
+                          >
+                            <Option value="single_choice">Single Choice</Option>
+                            <Option value="multiple_choice">
+                              Multiple Choice
+                            </Option>
+                          </Select>
+                        </div>
+                        <div className="flex gap-3">
+                          <Tooltip title="Correct Answer">
+                            <QuestionCircleOutlined className="text-md" />
+                          </Tooltip>
+                          <div>Answer</div>
+                        </div>
+                        {q.options.map((option, idx) => (
+                          <div key={idx} className="flex items-center mb-2">
+                            {q.type === "single_choice" ? (
+                              <Radio
+                                checked={q.correctAnswers.includes(option)}
+                                onChange={() =>
+                                  handleCorrectAnswerChange(q.id, option)
+                                }
+                              />
+                            ) : (
+                              <Checkbox
+                                checked={q.correctAnswers.includes(option)}
+                                onChange={() =>
+                                  handleCorrectAnswerChange(q.id, option)
+                                }
+                                className="mr-2"
+                              />
+                            )}
+                            <Input
+                              placeholder={`Option ${idx + 1}`}
+                              value={option}
+                              onChange={(e) =>
+                                handleOptionChange(q.id, idx, e.target.value)
+                              }
+                              className="mr-2"
+                            />
+                            {q.options.length > 2 && (
+                              <Button
+                                danger
+                                onClick={() => removeOption(q.id, idx)}
+                                icon={<MinusCircleOutlined />}
+                              />
+                            )}
+                          </div>
+                        ))}
+                        <Button
+                          type="dashed"
+                          onClick={() => addOption(q.id)}
+                          icon={<PlusOutlined />}
+                          className="w-full mb-2"
+                        >
+                          Add Option
+                        </Button>
+                        <Button
+                          danger
+                          onClick={() => removeQuestion(q.id)}
+                          icon={<MinusCircleOutlined />}
+                          className="w-full"
+                        >
+                          Remove Question
+                        </Button>
+                      </div>
+                    ))}
+                    <Button
+                      type="dashed"
+                      onClick={addQuestion}
+                      icon={<PlusOutlined />}
+                      className="w-full"
+                    >
+                      Add Question
+                    </Button>
+                    <Button
+                      type="primary"
+                      className="w-full mt-4"
+                      onClick={() => handleConsoleLog()}
+                    >
+                      Submit
+                    </Button>
+                  </div>
+                </Form>
+              </div>
+            )}
           </div>
-
-          {videoPreviewUrl && (
-            <video
-              src={videoPreviewUrl}
-              controls
-              className="w-full rounded-lg"
-            />
-          )}
         </div>
       </div>
     </Form>
