@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Table, Button, Input, Space, Card, Modal, message, Spin, FormProps } from "antd";
+import { Table, Button, Input, Space, Card, Modal, message, Spin, FormProps, Tooltip } from "antd";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 
 import { previewInstructor, UserService } from "../../services/user.service";
@@ -114,19 +114,23 @@ const RequestUser = () => {
       key: "action",
       render: (record: any) => (
         <Space size="middle">
+        <Tooltip title="Accept">
           <Button
             type="text"
             className="text-green-600"
             icon={<CheckOutlined />}
             onClick={() => handleSubmitPreview("approve", record)}
           />
+        </Tooltip>
+        <Tooltip title="Reject">
           <Button
             className="text-red-600"
             type="text"
             icon={<CloseOutlined />}
             onClick={() => handleShowReason(record)}
           />
-        </Space>
+        </Tooltip>
+      </Space>
       ),
     },
   ];

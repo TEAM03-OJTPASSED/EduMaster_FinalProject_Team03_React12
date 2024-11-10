@@ -42,6 +42,7 @@ export interface GetPayoutRequest {
     payout_no?: string;
     instructor_id?: string;
     status?: PayoutStatusEnum;
+    is_instructor:boolean;
     is_delete: boolean;
   };
   pageInfo: {
