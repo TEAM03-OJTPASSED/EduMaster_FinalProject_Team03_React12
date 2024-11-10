@@ -182,6 +182,10 @@ const InstructorSalesHistory = () => {
                 placeholder: "Filter by Status"
               }
             ]}
+            onSubmit={(values) => {
+              
+              console.log("Submitted values:", values);
+            }}
         />
 
         <Button

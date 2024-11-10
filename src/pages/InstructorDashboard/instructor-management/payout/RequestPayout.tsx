@@ -1,4 +1,4 @@
-import { Card, Input, Table, Tag, TableProps, Checkbox, Button, Modal } from "antd";
+import { Card, Input, Table, Tag, TableProps, Checkbox, Button, Modal, message } from "antd";
 import { SearchOutlined, SendOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
@@ -15,6 +15,7 @@ const RequestPayout = () => {
       payout_no: "",
       instructor_id: "",
       status: PayoutStatusEnum.NEW,
+      is_instructor: true,
       is_delete: false,
     },
     pageInfo: {
@@ -23,13 +24,13 @@ const RequestPayout = () => {
     },
   };
 
-  useEffect(() => {
-    const fetchPayouts = async () => {
-      const response = await PayoutService.getPayout(initialParams);
-      const payouts = response.data?.pageData || [];
-      setPayouts(payouts);
-    };
+  const fetchPayouts = async () => {
+    const response = await PayoutService.getPayout(initialParams);
+    const payouts = response.data?.pageData || [];
+    setPayouts(payouts);
+  };
 
+  useEffect(() => {
     fetchPayouts();
   }, []);
 
@@ -40,18 +41,24 @@ const RequestPayout = () => {
     setSelectedRowKeys(newSelectedRowKeys);
   };
 
-  const handleCreate = async () => {
-    setIsModalVisible(true);
-  };
-
   const handleUpdate = async () => {
     console.log("Update payouts:", selectedRowKeys);
   };
 
   const handleSendToAdmin = async (payout: Payout) => {
-    console.log("Sending payout to admin:", payout);
-    // Add logic here to handle payout request to admin
+    const params = {
+      status: PayoutStatusEnum.REQUEST_PAYOUT,
+      comment: "Request payout by instructor", 
+    };
+    try {
+      await PayoutService.updatePayoutStatus(payout.payout_no, params);
+      message.success("Payout request has been sent to admin.");
+      fetchPayouts(); 
+    } catch (error) {
+      message.error("Request sent failed.");
+    }
   };
+  
 
   const columns: TableProps<Payout>["columns"] = [
     {
@@ -99,7 +106,7 @@ const RequestPayout = () => {
       title: "Transaction ID",
       dataIndex: "transactions",
       key: "transactions",
-      render: (transactions:Transaction[]) =>
+      render: (transactions: Transaction[]) =>
         transactions.map((transaction, index) => (
           <span key={index}>{transaction.purchase_id},</span>
         )),
@@ -129,7 +136,6 @@ const RequestPayout = () => {
           onClick={() => handleSendToAdmin(record)}
           title="Send to admin for approval"
         />
-        
       ),
     },
   ];
@@ -167,4 +173,3 @@ const RequestPayout = () => {
 };
 
 export default RequestPayout;
- 
