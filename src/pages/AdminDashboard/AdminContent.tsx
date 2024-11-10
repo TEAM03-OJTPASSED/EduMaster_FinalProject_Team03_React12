@@ -115,6 +115,7 @@ const AdminContent = () => {
         payout_no: "",
         instructor_id: "",
         status: PayoutStatusEnum.COMPLETED && PayoutStatusEnum.NEW,
+        is_instructor:false,
         is_delete: false,
       },
       pageInfo: { pageNum, pageSize },

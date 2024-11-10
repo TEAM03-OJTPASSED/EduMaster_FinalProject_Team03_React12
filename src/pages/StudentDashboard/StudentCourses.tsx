@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Input, Card, Button, Tabs } from "antd";
+import { Table, Card, Button, Tabs, FormProps } from "antd";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import { useCustomNavigate } from "../../hooks/customNavigate";
 import {
@@ -13,7 +13,6 @@ import GlobalSearchUnit from "../../components/GlobalSearchUnit";
 const InstructorCourseList: React.FC = () => {
   const navigate = useCustomNavigate();
   const [carts, setCarts] = useState<Cart[]>([]);
-
   const initialCartSearchParams: SearchCartByStatus = {
     pageInfo: {
       pageNum: 1,
@@ -24,16 +23,21 @@ const InstructorCourseList: React.FC = () => {
       is_deleted: false,
     },
   };
+
+  const [cartSearchParams, setCartSearchParams] = useState<SearchCartByStatus>(
+    initialCartSearchParams
+  );
+
   const fetchCart = async () => {
     const response = await CartService.getCartsByStatus(
-      initialCartSearchParams
+      cartSearchParams
     );
     setCarts(response?.data?.pageData as Cart[]);
   };
 
   useEffect(() => {
     fetchCart();
-  }, []);
+  }, [cartSearchParams]);
 
   // Navigate to course details page
   const handleViewCourse = (courseId: string) => {
@@ -99,13 +103,25 @@ const InstructorCourseList: React.FC = () => {
     },
   ];
 
+  const handleSearch: FormProps["onFinish"] = (values) => {
+    setCartSearchParams((prev) => ({
+      ...prev,
+      searchCondition: {
+        ...prev.searchCondition,
+        keyword: values.keyword,
+      },
+    }));
+  };
+
   return (
     <Card>
       <h3 className="text-2xl my-5">My Learning</h3>
 
       <div>
-        <GlobalSearchUnit placeholder="Search by Course Name"/>
-
+        <GlobalSearchUnit
+          placeholder="Search by Course Name"
+          onSubmit={handleSearch}
+        />
       </div>
 
       <Tabs>
@@ -114,9 +130,9 @@ const InstructorCourseList: React.FC = () => {
             dataSource={carts}
             columns={columns}
             pagination={{ pageSize: 5 }}
-            rowKey="id"
+            rowKey={(record) => record._id}
             bordered
-            scroll={{ x: true }} // Enables horizontal scrolling if columns overflow
+            scroll={{ x: true }} 
           />
         </Tabs.TabPane>
       </Tabs>
