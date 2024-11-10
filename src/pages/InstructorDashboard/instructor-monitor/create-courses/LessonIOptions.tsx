@@ -22,6 +22,8 @@ import {
 import { Lesson, LessonTypeEnum } from "../../../../models/Lesson.model";
 import { Session } from "../../../../models/Session.model";
 import { Course } from "../../../../models/Course.model";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 type LessonOptionsProps = {
   initialValues?: Lesson;
@@ -392,25 +394,15 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
                 )}
               </Form.Item>
             )}
+
             {visibility === LessonTypeEnum.ASSIGNMENT && (
               <div className="h-[70vh] w-full overflow-y-scroll">
                 <Form>
-                  <div>
-                    <div className="text-center text-xl font-bold">
-                      Assignment Creator
-                    </div>
-                    {questions.map((q) => (
+                  {questions.map((q) => (
+                    <div>
                       <div key={q.id} className="mb-4">
-                        <div>Question {q.id}</div>
-                        <div className="flex gap-2">
-                          <Input
-                            placeholder="Enter your question"
-                            value={q.question}
-                            onChange={(e) =>
-                              handleQuestionChange(q.id, e.target.value)
-                            }
-                            className="w-4/5 mb-2"
-                          />
+                        <div className="flex justify-between items-center">
+                          <div className="text-lg">Question {q.id}</div>
                           <Select
                             value={q.type}
                             onChange={(value) => handleTypeChange(q.id, value)}
@@ -421,6 +413,17 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
                               Multiple Choice
                             </Option>
                           </Select>
+                        </div>
+                        <div className="flex gap-2">
+                          <div className="w-full mb-2">
+                            <ReactQuill
+                              value={q.question}
+                              onChange={(content) =>
+                                handleQuestionChange(q.id, content)
+                              }
+                              placeholder="Enter your question"
+                            />
+                          </div>
                         </div>
                         <div className="flex gap-3">
                           <Tooltip title="Correct Answer">
@@ -452,13 +455,13 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
                               onChange={(e) =>
                                 handleOptionChange(q.id, idx, e.target.value)
                               }
-                              className="mr-2"
                             />
                             {q.options.length > 2 && (
                               <Button
                                 danger
                                 onClick={() => removeOption(q.id, idx)}
                                 icon={<MinusCircleOutlined />}
+                                className="ml-2"
                               />
                             )}
                           </div>
@@ -480,23 +483,23 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
                           Remove Question
                         </Button>
                       </div>
-                    ))}
-                    <Button
-                      type="dashed"
-                      onClick={addQuestion}
-                      icon={<PlusOutlined />}
-                      className="w-full"
-                    >
-                      Add Question
-                    </Button>
-                    <Button
-                      type="primary"
-                      className="w-full mt-4"
-                      onClick={() => handleConsoleLog()}
-                    >
-                      Submit
-                    </Button>
-                  </div>
+                    </div>
+                  ))}
+                  <Button
+                    type="dashed"
+                    onClick={addQuestion}
+                    icon={<PlusOutlined />}
+                    className="w-full"
+                  >
+                    Add Question
+                  </Button>
+                  <Button
+                    type="primary"
+                    className="w-full mt-4"
+                    onClick={() => handleConsoleLog()}
+                  >
+                    Submit
+                  </Button>
                 </Form>
               </div>
             )}

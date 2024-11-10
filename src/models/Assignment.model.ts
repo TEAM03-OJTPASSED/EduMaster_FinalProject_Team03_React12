@@ -7,5 +7,5 @@ export interface Assignment {
   created_at: Date;
   updated_at: Date;
   is_deleted: boolean;
-question_list: Question[];
+  question_list: Question[];
 }
