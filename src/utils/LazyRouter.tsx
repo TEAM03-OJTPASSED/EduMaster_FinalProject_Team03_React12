@@ -35,9 +35,7 @@ export const PendingLessonList = React.lazy(
 export const BlogManagement = React.lazy(
   () => import("../pages/AdminDashboard/BlogManagement")
 );
-export const CourseLog = React.lazy(
-  () => import("../pages/AdminDashboard/CourseLog")
-);
+
 export const PurchaseLog = React.lazy(
   () => import("../pages/AdminDashboard/PurchaseLog")
 );

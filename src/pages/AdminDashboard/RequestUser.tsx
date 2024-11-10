@@ -15,7 +15,7 @@ const initializeSearchParam: UserSearchParams = {
     role: "instructor",
     status: true,
     is_delete: false,
-    is_verified: true,
+    is_verified: false,
   },
   pageInfo: { pageNum: 1, pageSize: 10 },
 };

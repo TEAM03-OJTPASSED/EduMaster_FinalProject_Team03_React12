@@ -77,7 +77,7 @@ const AdminRejectedPayout = () => {
   const [currentRequestPayouts, setCurrentRequestPayouts] = useState<PageInfo>(
     {} as PageInfo
   );
-  const [searchRequestPayoutParam, setRequestPayoutParam] =
+  const [searchRequestPayoutParam, setSearchRequestPayoutParam] =
     useState<GetPayoutRequest>({
       searchCondition: {
         payout_no: "",
@@ -109,7 +109,7 @@ const AdminRejectedPayout = () => {
   const handleSearch = (values: Record<string, any>) => {
     console.log("request payout", values);
 
-    setRequestPayoutParam((prev) => ({
+    setSearchRequestPayoutParam((prev) => ({
       ...prev,
       searchCondition: {
         ...prev.searchCondition,
@@ -140,7 +140,7 @@ const AdminRejectedPayout = () => {
             pageSize: currentRequestPayouts.pageSize,
             total: currentRequestPayouts.totalItems,
             onChange: (pageNum, pageSize) => {
-              setRequestPayoutParam((prev) => ({
+              setSearchRequestPayoutParam((prev) => ({
                 ...prev,
                 pageInfo: { pageNum, pageSize },
               }));

@@ -50,17 +50,6 @@ const RejectPayoutModal: React.FC<RejectPayoutModalProps> = ({
         autoComplete="off"
       >
         <Form.Item
-          label="Email"
-          name="email"
-          rules={[
-            { required: true, message: "Please enter your email" },
-            { type: "email", message: "Please enter a valid email" },
-          ]}
-        >
-          <Input placeholder="Enter your email" />
-        </Form.Item>
-
-        <Form.Item
           label="Reason"
           name="message"
           rules={[
@@ -77,9 +66,6 @@ const RejectPayoutModal: React.FC<RejectPayoutModalProps> = ({
         <Form.Item style={{ textAlign: "right", marginTop: "20px" }}>
           <Button onClick={handleCancel} style={{ marginRight: "10px" }}>
             Cancel
-          </Button>
-          <Button type="primary" htmlType="submit">
-            Send Email
           </Button>
         </Form.Item>
       </Form>

@@ -1,31 +1,47 @@
-import { Card, Table, TableProps, Button, Space, Modal, Tooltip } from "antd";
+import {
+  Card,
+  Table,
+  TableProps,
+  Button,
+  Space,
+  Modal,
+  Tooltip,
+  Input,
+  message,
+  Spin,
+} from "antd";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
-import RejectPayoutModal from "./RejectPayoutModal";
 import {
   GetPayoutRequest,
   Payout,
   PayoutStatusEnum,
+  UpdateStatusPayoutRequest,
 } from "../../../models/Payout.model";
 import PayoutService from "../../../services/payout.service";
 import { PageInfo } from "../../../models/SearchInfo.model";
 import GlobalSearchUnit from "../../../components/GlobalSearchUnit";
-const TransactionListModal =  React.lazy(()=> import ("../../../components/TransactionListModal"))
+const TransactionListModal = React.lazy(
+  () => import("../../../components/TransactionListModal")
+);
 
 const AdminRequestPayout = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+ 
   const [isOpenTransaction, setIsOpenTransaction] = useState(false);
   const [currentRequestPayout, setCurrentRequestPayout] = useState<Payout>(
     {} as Payout
   );
-  
+
+  const [reasonVisible, setReasonVisible] = useState(false);
+  const [reason, setReason] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [requestPayoutList, setRequestPayoutList] = useState<Payout[]>();
   const [currentRequestPayouts, setCurrentRequestPayouts] = useState<PageInfo>(
     {} as PageInfo
   );
-  const [searchRequestPayoutParam, setRequestPayoutParam] =
+  const [searchRequestPayoutParam, setSearchRequestPayoutParam] =
     useState<GetPayoutRequest>({
       searchCondition: {
         payout_no: "",
@@ -55,23 +71,15 @@ const AdminRequestPayout = () => {
     fetchDataRequestPayout();
   }, [searchRequestPayoutParam]);
 
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-
   const handleViewTransaction = (item: Payout) => {
     setIsOpenTransaction(true);
     setCurrentRequestPayout(item);
   };
 
+  const handleShowReason = (record: any) => {
+    setCurrentRequestPayout(record);
+    setReasonVisible(true);
+  };
   const columns: TableProps<Payout>["columns"] = [
     {
       title: "Payout No",
@@ -111,7 +119,7 @@ const AdminRequestPayout = () => {
       title: "View Transaction",
       dataIndex: "view_transaction",
       key: "view_transaction",
-    
+
       render: (_, record: Payout) => {
         return (
           <div>
@@ -119,7 +127,7 @@ const AdminRequestPayout = () => {
               type="primary"
               onClick={() => handleViewTransaction(record)}
             >
-              View 
+              View
             </Button>
           </div>
         );
@@ -128,29 +136,25 @@ const AdminRequestPayout = () => {
     {
       title: "Actions",
       key: "action",
-      render: (_, record: Payout) => (
+      render: (record: Payout) => (
         <Space size="middle">
-          <Tooltip title="Accept">
-            <Button
-              type="text"
-              className="text-green-600"
-              icon={<CheckOutlined />}
-            ></Button>
-          </Tooltip>
-          <Tooltip title="Reject">
-            <Button
-              className="text-red-600"
-              type="text"
-              icon={<CloseOutlined />}
-              onClick={showModal}
-            ></Button>
-          </Tooltip>
-          <RejectPayoutModal
-            isOpen={isModalOpen}
-            handleOk={handleOk}
-            handleCancel={handleCancel}
+        <Tooltip title="Accept">
+          <Button
+            type="text"
+            className="text-green-600"
+            icon={<CheckOutlined />}
+            onClick={() => handleSubmitPreview(PayoutStatusEnum.COMPLETED, record)}
           />
-        </Space>
+        </Tooltip>
+        <Tooltip title="Reject">
+          <Button
+            className="text-red-600"
+            type="text"
+            icon={<CloseOutlined />}
+            onClick={() => handleShowReason(record)}
+          />
+        </Tooltip>
+      </Space>
       ),
     },
   ];
@@ -158,13 +162,27 @@ const AdminRequestPayout = () => {
   const handleSearch = (values: Record<string, any>) => {
     console.log("request payout", values);
 
-    setRequestPayoutParam((prev) => ({
+    setSearchRequestPayoutParam((prev) => ({
       ...prev,
       searchCondition: {
         ...prev.searchCondition,
         payout_no: values.keyword,
       },
     }));
+  };
+
+  const handleSubmitPreview = async (
+    status: PayoutStatusEnum,
+    record: Payout
+  ) => {
+    const formPreview: UpdateStatusPayoutRequest = {
+      status,
+      comment: reason,
+    };
+    await PayoutService.updatePayoutStatus(record._id, formPreview);
+    message.success("Submit preview successfully");
+    setReasonVisible(false);
+    console.log(formPreview);
   };
 
   return (
@@ -187,7 +205,7 @@ const AdminRequestPayout = () => {
             pageSize: currentRequestPayouts.pageSize,
             total: currentRequestPayouts.totalItems,
             onChange: (pageNum, pageSize) => {
-              setRequestPayoutParam((prev) => ({
+              setSearchRequestPayoutParam((prev) => ({
                 ...prev,
                 pageInfo: { pageNum, pageSize },
               }));
@@ -208,6 +226,29 @@ const AdminRequestPayout = () => {
         footer={null}
       >
         <TransactionListModal item={currentRequestPayout} />
+      </Modal>
+      <Modal
+        title="Reject Reason"
+        open={reasonVisible}
+        onCancel={() => setReasonVisible(false)}
+        footer={[
+          <Button
+            color="primary"
+            key="submit"
+            variant="solid"
+            htmlType="submit"
+            onClick={() => handleSubmitPreview(PayoutStatusEnum.REJECTED, currentRequestPayout)}
+          >
+            {loading ? <Spin /> : <span>Submit</span>}
+          </Button>,
+        ]}
+      >
+        <Input.TextArea
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+          style={{ height: "100px" }}
+          placeholder="Comment here..."
+        />
       </Modal>
     </>
   );
