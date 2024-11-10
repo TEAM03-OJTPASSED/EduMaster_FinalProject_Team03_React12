@@ -73,6 +73,7 @@ const RequestUser = () => {
     }
     console.log(formPreview);
   };
+  
   const handleSearch: FormProps["onFinish"] = (values) => {
     setSearchParams((prev) => ({
       ...prev,
@@ -142,8 +143,9 @@ const RequestUser = () => {
           <h3 className="text-2xl my-5">Request Instructor Management</h3>
         </div>
         <GlobalSearchUnit
-          placeholder="Search By Course Name"
+          placeholder="Search By User Name"
           onSubmit={handleSearch}
+
         />
         <Table
           dataSource={users}

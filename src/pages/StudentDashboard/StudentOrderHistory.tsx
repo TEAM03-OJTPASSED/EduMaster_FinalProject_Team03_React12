@@ -1,25 +1,48 @@
 import { useEffect, useState } from "react";
-import { Card, Input, Table, Button, Modal } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import { Card, Table, Button, Modal } from "antd";
 
 import { GetPurchases, Purchase } from "../../models/Purchase.model";
 import { PageInfo } from "../../models/SearchInfo.model";
 import PurchaseService from "../../services/purchase.service";
-import useDebounce from "../../hooks/useDebounce";
+import GlobalSearchUnit from "../../components/GlobalSearchUnit";
+
+const initializeSearchParam: GetPurchases = {
+    searchCondition: {
+      purchase_no: "",
+      cart_no: "",
+      course_id: "",
+      status: "",
+      is_delete: false,
+    },
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 5,
+    },
+ }
+
+
 
 // Define columns for the Purchase Log table 
 const StudentOrderHistory = () => {
-  const [searchText, setSearchText] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCart, setSelectedCart] = useState<Purchase | null>(null);
-  const searchDebounce = useDebounce(searchText, 2000);
   const [purchaseLogList, setPurchaseLogList] = useState<Purchase[]>([]);
   const [currentPurchase, setCurrentPurchase] = useState<PageInfo>(
     {} as PageInfo
   );
+  const [purchaseLogSearchParam, setPurchaseLogSearchParam] = useState<GetPurchases>(initializeSearchParam);
 
-  const handleSearch = (event: any) => {
-    setSearchText(event.target.value);
+
+
+
+  const handleSearch = (values: Record<string, any>) => {
+    setPurchaseLogSearchParam((prev) => ({
+      ...prev,
+      searchCondition: {
+        ...prev.searchCondition,
+        purchase_no: values.keyword,
+      },
+    }));
   };
 
   const showDetails = (cart: Purchase) => {
@@ -31,30 +54,7 @@ const StudentOrderHistory = () => {
     setIsModalVisible(false);
     setSelectedCart(null);
   };
-  const [purchaseLogSearchParam, setPurchaseLogSearchParam] =
-    useState<GetPurchases>({
-      searchCondition: {
-        purchase_no: "",
-        cart_no: "",
-        course_id: "",
-        status: "",
-        is_delete: false,
-      },
-      pageInfo: {
-        pageNum: 1,
-        pageSize: 5,
-      },
-    });
-  useEffect(() => {
-    setPurchaseLogSearchParam((prev) => ({
-      ...prev,
-      searchCondition: {
-        ...prev.searchCondition,
-        purchase_no: searchDebounce,
-        course_name: searchDebounce,
-      },
-    }));
-  }, [searchDebounce]);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -125,12 +125,7 @@ const StudentOrderHistory = () => {
   return (
     <Card>
       <h3 className="text-2xl my-5">Orders History</h3>
-      <Input
-        placeholder="Search By Course Name"
-        prefix={<SearchOutlined />}
-        style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
-        value={searchText}
-        onChange={handleSearch}
+      <GlobalSearchUnit placeholder="Search by purchase" onSubmit={handleSearch}
       />
       <Table
         dataSource={purchaseLogList}
