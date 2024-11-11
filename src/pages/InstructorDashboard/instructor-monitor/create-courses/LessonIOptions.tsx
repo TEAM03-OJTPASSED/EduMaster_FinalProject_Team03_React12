@@ -257,13 +257,32 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
   const handleConsoleLog = () => {
     console.log(JSON.stringify(questions));
   };
+
+  const onFinish = (values: {
+    lesson_type: LessonTypeEnum;
+    assignment: string;
+    name: string;
+  }) => {
+    if (values.lesson_type === LessonTypeEnum.ASSIGNMENT) {
+      const sanitizedQuestions = questions.map(({ _id, ...rest }) => rest);
+      values.assignment = JSON.stringify({
+        name: values.name,
+        question_list: sanitizedQuestions,
+      });
+    }
+    console.log("Form Values:", values);
+    if (onFinished) {
+      onFinished(values);
+    }
+  };
+
   // Huko additional code
   return (
     <Form
       form={form}
       layout="vertical"
       initialValues={initialValues}
-      onFinish={onFinished}
+      onFinish={onFinish}
       className="flex flex-col lg:flex-row gap-6 lg:min-h-[calc(100vh-360px)]" // Adjust the 120px based on your header/footer
     >
       {/* Left Column - Basic Course Info - Static */}
@@ -315,10 +334,10 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
             defaultValue={LessonTypeEnum.READING}
             placeholder="Lesson Type"
             options={[
-              { label: "Video", value: LessonTypeEnum.VIDEO },
               { label: "Reading", value: LessonTypeEnum.READING },
-              { label: "Assignment", value: LessonTypeEnum.ASSIGNMENT },
+              { label: "Video", value: LessonTypeEnum.VIDEO },
               { label: "Image", value: LessonTypeEnum.IMAGE },
+              { label: "Assignment", value: LessonTypeEnum.ASSIGNMENT },
             ]}
           />
         </Form.Item>
@@ -473,7 +492,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
 
             {visibility === LessonTypeEnum.ASSIGNMENT && (
               <div className="h-[70vh] w-full overflow-y-scroll">
-                <Form>
+                <Form.Item name="assignment">
                   {questions.map((q) => (
                     <div>
                       <div key={q._id} className="mb-4">
@@ -576,7 +595,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
                   >
                     Submit
                   </Button>
-                </Form>
+                </Form.Item>
               </div>
             )}
           </div>

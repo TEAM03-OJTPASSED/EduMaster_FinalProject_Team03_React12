@@ -123,13 +123,14 @@ const InstructorLessonList = () => {
   
 
   const handleCreateLesson = async (values: LessonRequest) => {
-    const { position_order, full_time, image_url, video_url, ...otherValues } = values;
+    const { position_order, full_time, image_url, video_url, assignment, ...otherValues } = values;
     const numericValues = {
       ...otherValues,
       position_order: position_order ? Number(position_order) : 0,
       full_time: full_time ? Number(full_time) : 0,
       video_url: video_url || "",
       image_url: image_url || "",
+      assignment: assignment || "",
     };
   
     setLoading(true);

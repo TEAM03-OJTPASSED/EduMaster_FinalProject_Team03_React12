@@ -10,7 +10,7 @@ export interface Lesson {
   lesson_type: string;
   description: string;
   video_url: string;
-  assignment: Assignment;
+  assignment: string;
   full_time: number;
   position_order: number;
   is_deleted: boolean;
@@ -29,6 +29,8 @@ export interface LessonRequest {
   lesson_type: string;
   description: string;
   video_url: string;
+  image_url: string;
+  assignment: string;
   full_time: number;
   position_order: number;
 }
