@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Card, Input, Table, TableProps, Tag } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import PayoutService from "../../../../services/payout.service";
-import { GetPayoutRequest, Payout, PayoutStatusEnum } from "../../../../models/Payout.model";
+import { GetPayoutRequest, Payout, PayoutStatusEnum, Transaction } from "../../../../models/Payout.model";
 
 const CompletedPayout: React.FC = () => {
  
@@ -55,8 +55,12 @@ const CompletedPayout: React.FC = () => {
     },
     {
       title: "Transaction ID",
-      dataIndex: "transaction_id",
-      key: "transaction_id",
+      dataIndex: "transactions",
+      key: "transactions",
+      render: (transactions: Transaction[]) =>
+        transactions.map((transaction) => (
+          <span key={transaction.purchase_id}>{transaction.purchase_id},</span>
+        )),
     },
     {
       title: "Balance Origin",

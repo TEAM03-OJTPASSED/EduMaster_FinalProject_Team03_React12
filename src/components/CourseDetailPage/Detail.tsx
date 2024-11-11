@@ -12,70 +12,14 @@ type Props = {
   course?: Course;
   session?: Session;
 };
-type Review = {
-  _id: string;
-  user_id: string;
-  course_id: string;
-  comment: string;
-  rating: number;
-  is_deleted: boolean;
-  created_at: string;
-  updated_at: string;
-  __v: number;
-};
-const sampleReviews: Review[] = [
-  {
-    _id: "6680e264e19995122837e322",
-    user_id: "6680d54954c31267eb217f55",
-    course_id: "667ecee48039581edcd01af5",
-    comment: "Course is very good!",
-    rating: 3,
-    is_deleted: false,
-    created_at: "2024-06-30T04:43:16.652Z",
-    updated_at: "2024-06-30T05:05:21.619Z",
-    __v: 0,
-  },
-  {
-    _id: "6680e264e19995122837e323",
-    user_id: "6680d54954c31267eb217f56",
-    course_id: "667ecee48039581edcd01af6",
-    comment: "Excellent course!",
-    rating: 5,
-    is_deleted: false,
-    created_at: "2024-06-30T04:43:16.652Z",
-    updated_at: "2024-06-30T05:05:21.619Z",
-    __v: 0,
-  },
-  {
-    _id: "6680e264e19995122837e324",
-    user_id: "6680d54954c31267eb217f57",
-    course_id: "667ecee48039581edcd01af7",
-    comment: "Not bad, but could be better.",
-    rating: 2,
-    is_deleted: false,
-    created_at: "2024-06-30T04:43:16.652Z",
-    updated_at: "2024-06-30T05:05:21.619Z",
-    __v: 0,
-  },
-  {
-    _id: "6680e264e19995122837e323",
-    user_id: "6680d54954c31267eb217f57",
-    course_id: "667ecee48039581edcd01af7",
-    comment: "Not bad, but could be better.",
-    rating: 2,
-    is_deleted: false,
-    created_at: "2024-06-30T04:43:16.652Z",
-    updated_at: "2024-06-30T05:05:21.619Z",
-    __v: 0,
-  },
-];
+
 export const Detail = ({ isEnrolled, course, session }: Props) => {
   const [expandedSession, setExpandedSession] = useState<number | null>(null);
 
   const toggleSession = (index: number) => {
     setExpandedSession(expandedSession === index ? null : index);
   };
-  console.log("Session in detail: ", session);
+  
   return isEnrolled && course ? (
     <div className="font-exo flex mt-12">
       <div className="w-2/3">
@@ -86,7 +30,7 @@ export const Detail = ({ isEnrolled, course, session }: Props) => {
             dangerouslySetInnerHTML={{ __html: course.content }}
           />
           <div className="text-xl font-bold pb-2 pt-4">Skill set</div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {course.tag &&
               course.tag.map((tag, index) => (
                 <div
@@ -169,7 +113,7 @@ export const Detail = ({ isEnrolled, course, session }: Props) => {
           </div>
           <div>
             <div className="text-xl font-bold pb-2 pt-4">Comment</div>
-            <Reviews items={sampleReviews} label={false} />
+            <Reviews label={false} courseId={course._id} />
           </div>
         </div>
       </div>

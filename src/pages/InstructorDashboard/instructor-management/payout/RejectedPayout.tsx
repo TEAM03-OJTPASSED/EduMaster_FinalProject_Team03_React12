@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Card, Input, Table, TableProps, Tag } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import PayoutService from "../../../../services/payout.service"; 
-import { GetPayoutRequest, Payout, PayoutStatusEnum } from "../../../../models/Payout.model"; 
+import { GetPayoutRequest, Payout, PayoutStatusEnum, Transaction } from "../../../../models/Payout.model"; 
 
 const RejectedPayout: React.FC = () => {
   
@@ -53,8 +53,19 @@ const RejectedPayout: React.FC = () => {
     },
     {
       title: "Transaction ID",
-      dataIndex: "transaction_id",
-      key: "transaction_id",
+      dataIndex: "transactions",
+      key: "transactions",
+      render: (transactions: Transaction[]) =>
+        transactions.map((transaction) => (
+          <span key={transaction.purchase_id}>{transaction.purchase_id},</span>
+        )),
+    },
+    {
+      title: "Timestamp",
+      dataIndex: "updated_at",
+      key: "balance_instructor_received",
+      render: (date: string) => new Date(date).toLocaleString(),
+
     },
     {
       title: "Balance Origin",
@@ -85,6 +96,7 @@ const RejectedPayout: React.FC = () => {
         onChange={(e) => setSearchKeyword(e.target.value)}
       />
       <Table
+        className="min-w-full"
         dataSource={filteredPayouts.filter((payout) => payout.payout_no.includes(searchKeyword))}
         columns={columns}
         pagination={{ pageSize: 5 }}

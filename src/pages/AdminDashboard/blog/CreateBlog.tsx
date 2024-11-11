@@ -117,13 +117,14 @@ const CreateBlog: React.FC<BlogFormProps> = ({ initialValues, onSuccess }) => {
           />
         </Form.Item>
 
-        <Form.Item label="Title Image" name="image_url">
+        <Form.Item label="Title Image" name="image_url"  rules={[{ required: true, message: "Please upload the blog image!" }]}>
           <Upload
             action={API_UPLOAD_FILE}
             listType="picture-card"
             onChange={handleImageChange}
             fileList={fileList}
             maxCount={1}
+            
           >
             {fileList.length < 1 && (
               <button style={{ border: 0, background: "none" }} type="button">

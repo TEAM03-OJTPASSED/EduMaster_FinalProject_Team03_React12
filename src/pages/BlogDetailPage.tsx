@@ -2,29 +2,20 @@ import { useParams } from "react-router-dom";
 import { BlogHeader } from "../components/BlogDetailPage/Header";
 import { TagList } from "../components/BlogDetailPage/TagList";
 import { RecentBlog } from "../components/BlogDetailPage/RecentBlog";
-import { Comment } from "../components/BlogDetailPage/Comment";
-import { LeaveAComment } from "../components/LeaveAComment";
+// import { Comment } from "../components/BlogDetailPage/Comment";
+// import { LeaveAComment } from "../components/LeaveAComment";
 import { Blog } from "../models/Blog.model";
 import { useEffect, useState } from "react";
 import BlogDetailSkeleton from "../components/Blogs/BlogDetailSkeleton";
 import ClientService from "../services/client.service";
 import parse from "html-react-parser";
 import dayjs from "dayjs";
-
-// Sample comments data
-const comments = [
-  {
-    avatar: "https://picsum.photos/seed/picsum/200/300",
-    name: "John Doe",
-    date: "2024-07-18T04:16:27.274Z",
-    content: "Great blog",
-  },
-  // ... other comments
-];
+import { GetBlogsClient } from "../models/Client.model";
 
 const BlogDetailPage = () => {
   const { id } = useParams();
   const [blog, setBlog] = useState<Blog>();
+  const [allBlogs, setAllBlogs] = useState<Blog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -33,7 +24,6 @@ const BlogDetailPage = () => {
         try {
           setIsLoading(true);
           const response = await ClientService.getBlogDetail(id);
-          console.log("data", response);
           if (response.data) {
             setBlog(response.data);
           }
@@ -44,9 +34,34 @@ const BlogDetailPage = () => {
         }
       }
     };
-
+    window.scrollTo(0, 0);
     fetchBlogs();
   }, [id]);
+
+  const blogsParams: GetBlogsClient = {
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 10,
+    },
+    searchCondition: {
+      keyword: "",
+      is_deleted: false,
+      category_id: "",
+    },
+  };
+
+  useEffect(() => {
+    const fetchAllBlogs = async () => {
+      try {
+        const response = await ClientService.getBlogs(blogsParams);
+        setAllBlogs(response?.data?.pageData ?? []);
+      } catch (error) {
+        console.error("Error fetching blogs:", error);
+      }
+    };
+
+    fetchAllBlogs();
+  }, []);
 
   if (isLoading) {
     return <BlogDetailSkeleton />;
@@ -76,6 +91,12 @@ const BlogDetailPage = () => {
     });
   };
 
+  // Sort blogs by created_at in descending order and get the top 2
+  const recentBlogs = allBlogs
+    .slice()
+    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    .slice(0, 2);
+
   return (
     <div className="font-exo flex mt-6">
       <div className="w-3/4">
@@ -83,9 +104,8 @@ const BlogDetailPage = () => {
           title={blog.name}
           date={dayjs(blog.created_at).format("DD/MM/YYYY")}
           creator={blog.user_name}
-          comments={comments.length}
         />
-        <div className="w-full ">
+        <div className="w-full">
           {blog.image_url && (
             <img
               src={blog.image_url}
@@ -96,23 +116,21 @@ const BlogDetailPage = () => {
           {renderContent(blog.content)}
         </div>
         <TagList tags={blog.tags || []} />
-        <div>
+        <div className="mb-20">
           <h2 className="text-lg font-semibold mt-8">Recent Blogs</h2>
           <div className="flex gap-4">
-            <RecentBlog category="Java" title="New Blog Java 1" />
-            <RecentBlog category="Java" title="New Blog Java 2" />
+            {recentBlogs.map((recentBlog) => (
+              <RecentBlog
+                key={recentBlog._id}
+                blog_id={recentBlog._id}
+                name={recentBlog.name}
+                created_at={recentBlog.created_at}
+                user_name={recentBlog.user_name}
+                description={recentBlog.description}
+              />
+            ))}
           </div>
         </div>
-        <div>
-          <h2 className="text-lg font-semibold mt-8">Comment</h2>
-          <div>
-            {comments.length === 0
-              ? "No comment"
-              : `${comments.length} comments`}
-          </div>
-          <Comment items={comments} />
-        </div>
-        <LeaveAComment />
       </div>
       <div className="w-1/4"></div>
     </div>
