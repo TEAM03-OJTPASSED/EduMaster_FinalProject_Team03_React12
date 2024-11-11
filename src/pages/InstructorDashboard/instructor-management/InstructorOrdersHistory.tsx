@@ -1,31 +1,34 @@
 import { useEffect, useState } from "react";
 import { Button, Card, Table, Tag, Checkbox, Modal } from "antd";
 import PurchaseService from "../../../services/purchase.service";
-import { Purchase, PurchaseStatusEnum } from "../../../models/Purchase.model"; 
+import { GetPurchases, Purchase, PurchaseStatusEnum } from "../../../models/Purchase.model"; 
 import GlobalSearchUnit from "../../../components/GlobalSearchUnit";
 import { statusFormatter } from "../../../utils/statusFormatter";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import PayoutService from "../../../services/payout.service";
 import { CreatePayout } from "../../../models/Payout.model";
 import { handleNotify } from "../../../utils/handleNotify";
+import EmptyData from "../../../components/Empty Data/EmptyData";
 
 
-
+const initialParams: GetPurchases = {
+  searchCondition: {
+    purchase_no: "",
+    cart_no: "",
+    course_id: "",
+  },
+  pageInfo: {
+    pageNum: 1,
+    pageSize: 10,
+  },
+};
 
 const InstructorSalesHistory = () => {
   const [salesHistory, setSalesHistory] = useState<Purchase[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Purchase | null>(null); // Thêm state cho đơn hàng được chọn
-
-  useEffect(() => {
-    const fetchSalesHistory = async () => {
-      const response = await PurchaseService.getPurchasesInstructor(initialParams);
-      setSalesHistory(response.data?.pageData || []);
-    };
-
-    fetchSalesHistory();
-  }, []);
+  const [searchParams, setSearchParams] = useState<GetPurchases>(initialParams)
 
 
   const handleSelect = (key: React.Key) => {
@@ -141,30 +144,29 @@ const InstructorSalesHistory = () => {
     },
   ];
 
-
-
-
-  const initialParams = {
-    searchCondition: {
-      purchase_no: "",
-      cart_no: "",
-      course_id: "",
-    },
-    pageInfo: {
-      pageNum: 1,
-      pageSize: 10,
-    },
+  const fetchSalesHistory = async () => {
+    const response = await PurchaseService.getPurchasesInstructor(searchParams);
+    setSalesHistory(response.data?.pageData || []); 
   };
 
+
   useEffect(() => {
-    const fetchSalesHistory = async () => {
-        const response = await PurchaseService.getPurchasesInstructor(initialParams);
-        setSalesHistory(response.data?.pageData || []); 
-    };
-
     fetchSalesHistory();
-  }, []);
+  }, [searchParams]);
 
+  const handleSearch = (values: Record<string, any>) => {
+    console.log(values)
+    setSearchParams({
+      pageInfo: searchParams.pageInfo,
+      searchCondition: {
+        ...searchParams.searchCondition,
+        purchase_no: values.keyword,
+        status: values.status
+      }
+    });
+  };
+
+  
 
   
 
@@ -182,10 +184,7 @@ const InstructorSalesHistory = () => {
                 placeholder: "Filter by Status"
               }
             ]}
-            onSubmit={(values) => {
-              
-              console.log("Submitted values:", values);
-            }}
+            onSubmit={handleSearch}
         />
 
         <Button
@@ -208,6 +207,7 @@ const InstructorSalesHistory = () => {
         bordered
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
+        locale={{emptyText: <EmptyData message="No orders found" description="No orders found for the given search parameters"/>}}
       />
 
       {/* Modal for showing detailed information */}

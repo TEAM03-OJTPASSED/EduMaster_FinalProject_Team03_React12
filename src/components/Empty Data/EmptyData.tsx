@@ -1,4 +1,3 @@
-import { InboxOutlined } from "@ant-design/icons";
 import { Empty } from "antd";
 
 interface EmptyDataProps {
