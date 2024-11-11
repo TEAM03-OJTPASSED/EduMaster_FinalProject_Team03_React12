@@ -1,17 +1,5 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
-import {
-  Table,
-  Input,
-  Card,
-  Tag,
-  TableProps,
-  Button,
-  Modal,
-  message,
-  Space,
-  Select,
-} from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import React, { useEffect, useState } from "react";
+import { Table, Input, Card, Tag, Button, Modal, message, Space } from "antd";
 import {
   Course,
   CourseStatusEnum,
@@ -20,25 +8,21 @@ import {
 } from "../../../../models/Course.model";
 import CourseService from "../../../../services/course.service";
 import { PageInfo } from "../../../../models/SearchInfo.model";
-import useDebounce from "../../../../hooks/useDebounce";
 import { Category, GetCategories } from "../../../../models/Category.model";
 import CategoryService from "../../../../services/category.service";
-
+import GlobalSearchUnit from "../../../../components/GlobalSearchUnit";
+import {
+  CheckOutlined,
+  CloseOutlined,
+} from "@ant-design/icons";
 
 const PendingCourseList: React.FC = () => {
-  const [searchText, setSearchText] = useState<string>("");
-  const searchDebounce = useDebounce(searchText, 2000);
-
-  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
-  };
-
-  // Status and category filters
+  // State variables
+  const [loading, setLoading] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState<Category[]>([]);
   const [reasonReject, setReasonReject] = useState<string>("");
   const [reasonVisible, setReasonVisible] = useState<boolean>(false);
   const [currentCourse, setCurrentCourse] = useState<Course>({} as Course);
-
   const [coursePendingList, setCoursePendingList] = useState<Course[]>([]);
   const [currentCourses, setCurrentCourses] = useState<PageInfo>(
     {} as PageInfo
@@ -56,24 +40,21 @@ const PendingCourseList: React.FC = () => {
     },
   });
 
-  useEffect(() => {
-    setCourseSearchParam((prev) => ({
-      ...prev,
-      searchCondition: { ...prev.searchCondition, keyword: searchDebounce },
-    }));
-  }, [searchDebounce]);
-
-  useEffect(() => {
-    const fetchData = async () => {
+  // Fetch data functions
+  const fetchDataCourse = async () => {
+    setLoading(true);
+    try {
       const res = await CourseService.getCourses(courseSearchParam);
       setCoursePendingList(res?.data?.pageData as Course[]);
       setCurrentCourses(res?.data?.pageInfo as PageInfo);
-    };
-    fetchData();
-  }, [courseSearchParam]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  useEffect(() => {
-    const fetchCategories = async () => {
+  const fetchCategories = async () => {
+    setLoading(true);
+    try {
       const categorySearchParam: GetCategories = {
         searchCondition: {
           keyword: "",
@@ -81,23 +62,24 @@ const PendingCourseList: React.FC = () => {
         },
         pageInfo: {
           pageNum: 1,
-          pageSize: 10,
+          pageSize: 100,
         },
       };
       const res = await CategoryService.getCategories(categorySearchParam);
       setCategoryFilter(res?.data?.pageData as Category[]);
-    };
-    fetchCategories();
-  }, []);
-
-  const handleCategoryChange = (value: string) => {
-    setCourseSearchParam((prev) => ({
-      ...prev,
-      searchCondition: { ...prev.searchCondition, category_id: value },
-    }));
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const columns: TableProps<Course>["columns"] = [
+  // Fetch data on initial load and when courseSearchParam changes
+  useEffect(() => {
+    fetchDataCourse();
+    fetchCategories();
+  }, [courseSearchParam]);
+
+  // Table columns definition
+  const columns = [
     {
       title: "Name",
       dataIndex: "name",
@@ -145,31 +127,44 @@ const PendingCourseList: React.FC = () => {
     {
       title: "Actions",
       key: "action",
-      render: (_, record: Course) => (
+      render: (record: Course) => (
         <Space size="middle">
           <Button
             type="text"
+            icon={<CheckOutlined />}
             onClick={() => handleUpdateStatus(CourseStatusEnum.APPROVE, record)}
-          >
-            Approve
-          </Button>
+          />
           <Button
             className="text-red-600"
+            icon={<CloseOutlined />}
             type="text"
             onClick={() => handleShowReason(record)}
-          >
-            Reject
-          </Button>
+          />
         </Space>
       ),
     },
   ];
 
+  // Handle modal display
   const handleShowReason = (record: Course) => {
     setCurrentCourse(record);
     setReasonVisible(true);
   };
 
+  // Handle search filter submission
+  const handleSearch = (values: Record<string, any>) => {
+    setCourseSearchParam((prev) => ({
+      ...prev,
+      searchCondition: {
+        ...prev.searchCondition,
+        category_id: values.category_id,
+        keyword: values.keyword,
+        status: "waiting_approve",
+      },
+    }));
+  };
+
+  // Handle course status update
   const handleUpdateStatus = async (
     status: CourseStatusEnum,
     course: Course
@@ -182,6 +177,7 @@ const PendingCourseList: React.FC = () => {
     await CourseService.updateCourseStatus(formAction);
     message.success("Status updated successfully");
     setReasonVisible(false);
+    setReasonReject(""); // Reset the reason when the modal closes
   };
 
   return (
@@ -189,21 +185,19 @@ const PendingCourseList: React.FC = () => {
       <Card>
         <h3 className="text-2xl my-5">Approve Courses</h3>
         <div>
-          <Input
+          <GlobalSearchUnit
             placeholder="Search By Course Name"
-            prefix={<SearchOutlined />}
-            style={{ marginBottom: "20px", borderRadius: "4px" }}
-            className="w-full md:w-1/4"
-            onChange={handleSearchChange}
-          />
-          <Select
-            onChange={handleCategoryChange}
-            placeholder="Select a category"
-            className="w-full md:w-1/4 ml-0 md:ml-3 mb-2 md:mb-0"
-            options={categoryFilter.map((item: Category) => ({
-              label: item.name,
-              value: item._id,  
-            }))}
+            selectFields={[
+              {
+                name: "category_id",
+                options: categoryFilter.map((category) => ({
+                  label: category.name,
+                  value: category._id,
+                })),
+                placeholder: "Filter by Category",
+              },
+            ]}
+            onSubmit={handleSearch}
           />
         </div>
         <Table
@@ -224,6 +218,7 @@ const PendingCourseList: React.FC = () => {
           bordered
           style={{ borderRadius: "8px" }}
           scroll={{ x: true }}
+          loading={loading}
         />
       </Card>
       <Modal

@@ -8,24 +8,24 @@ const GeneralLayout = () => {
   const [isNavbarVisible, setIsNavbarVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
-  // Handle scroll event to show/hide navbar with slide and fade effect
-  const handleScroll = () => {
-    if (typeof window !== "undefined") {
-      if (window.scrollY > lastScrollY) {
-        setIsNavbarVisible(false); // Scrolling down
-      } else {
-        setIsNavbarVisible(true); // Scrolling up
-      }
-      setLastScrollY(window.scrollY);
-    }
-  };
+  // // Handle scroll event to show/hide navbar with slide and fade effect
+  // const handleScroll = () => {
+  //   if (typeof window !== "undefined") {
+  //     if (window.scrollY > lastScrollY) {
+  //       setIsNavbarVisible(false); // Scrolling down
+  //     } else {
+  //       setIsNavbarVisible(true); // Scrolling up
+  //     }
+  //     setLastScrollY(window.scrollY);
+  //   }
+  // };
 
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [lastScrollY]);
+  // useEffect(() => {
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => {
+  //     window.removeEventListener("scroll", handleScroll);
+  //   };
+  // }, [lastScrollY]);
 
   return (
     <div className="div">

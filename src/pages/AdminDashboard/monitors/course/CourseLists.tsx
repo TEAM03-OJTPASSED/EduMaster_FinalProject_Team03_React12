@@ -22,7 +22,7 @@ const initialCategoriesParams: GetCategories = {
   searchCondition: { keyword: "", is_deleted: false },
 };
 
-// Utility function to get status text
+
 
 
 const CourseLists: React.FC = () => {

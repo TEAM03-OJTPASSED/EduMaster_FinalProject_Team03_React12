@@ -1,11 +1,15 @@
-import { Col, Divider, Row, Card, Table } from "antd";
+import { Col, Divider, Row, Card, Table, Typography } from "antd";
 import {
   WalletOutlined,
   DashboardOutlined,
   UserOutlined,
   SnippetsOutlined,
 } from "@ant-design/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import CourseService from "../../services/course.service";
+import PayoutService from "../../services/payout.service";
+import { Payout, PayoutStatusEnum } from "../../models/Payout.model";
+import dayjs from "dayjs";
 
 const cardStyle = {
   borderRadius: "8px",
@@ -14,42 +18,162 @@ const cardStyle = {
 };
 
 const InstructorContent = () => {
-  const [dataSource] = useState([{
-    key: "1",
-    number: "Nguyễn Văn A",
-    amount: "a@example.com",
-    date: "2023-01-15",
-  },
-  {
-    key: "2",
-    number: "Nguyễn Văn A",
-    amount: "a@example.com",
-    date: "2023-01-15",
-  },
-  {
-    key: "3",
-    number: "Nguyễn Văn A",
-    amount: "a@example.com",
-    date: "2023-01-15",
-  },
-]);
-const columns = [
-  {
-    title: "Payout Number",
-    dataIndex: "number",
-    key: "number",
-  },
-  {
-    title: "	Amount",
-    dataIndex: "amount",
-    key: "amount",
-  },
-  {
-    title: "Date",
-    dataIndex: "date",
-    key: "date",
-  },
-]
+  const [_payout, setPayout] = useState<Payout[]>([]);
+  const [transactions, setTransactions] = useState<any[]>([]);
+  const [pageNum, setPageNum] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
+  const [totalBalanceInstructorReceived, setTotalBalanceInstructorReceived] =
+    useState(0); // State để lưu tổng số tiền
+
+  const [counts, setCounts] = useState({
+    courses: 0,
+    // subcribers: 0,
+  });
+
+  const defaultPayload = {
+    searchCondition: {
+      keyword: "",
+      role: "",
+      status: true,
+      is_verified: true,
+      is_delete: false,
+    },
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 10,
+    },
+  };
+
+  const fetchCounts = async () => {
+    try {
+      const [coursesRes] = await Promise.all([
+        CourseService.getCourses({
+          ...defaultPayload,
+          searchCondition: {
+            ...defaultPayload.searchCondition,
+            is_deleted: false,
+            status: "",
+            category_id: "",
+          },
+        }),
+      ]);
+
+      // Tính tổng số học viên (enrolled) của tất cả khóa học
+      // const totalEnrolled =
+      //   coursesRes.data?.pageData?.reduce(
+      //     (sum, course) => sum + (course.enrolled || 0),
+      //     0
+      //   ) || 0;
+
+      setCounts({
+        courses: coursesRes.data?.pageInfo?.totalItems || 0,
+        // subcribers: totalEnrolled,
+      });
+    } catch (err) {
+      console.error("Error fetching counts:", err);
+    }
+  };
+
+  const handleTableChange = (pagination: any) => {
+    setPageNum(pagination.current);
+    setPageSize(pagination.pageSize);
+  };
+
+  const fetchPayout = async () => {
+    const statuses = [PayoutStatusEnum.NEW, PayoutStatusEnum.COMPLETED];
+    const searchParams = {
+      searchCondition: {
+        payout_no: "",
+        instructor_id: "",
+        is_instructor: false,
+        is_delete: false,
+      },
+      pageInfo: { pageNum, pageSize },
+    };
+
+    try {
+      const responses = await Promise.all(
+        statuses.map((status) =>
+          PayoutService.getPayout({
+            ...searchParams,
+            searchCondition: { ...searchParams.searchCondition, status },
+          })
+        )
+      );
+
+      const responseData = responses.flatMap(
+        (response) => response.data?.pageData || []
+      );
+      setTransactions(
+        responseData.flatMap(
+          (payout) =>
+            payout.transactions?.map((transaction) => ({
+              ...transaction,
+              instructor_name: payout.instructor_name,
+              payout_no: payout.payout_no,
+            })) || []
+        )
+      );
+      setTotalBalanceInstructorReceived(
+        responseData.reduce(
+          (sum, payout) => sum + (payout.balance_instructor_received || 0),
+          0
+        )
+      );
+
+      setPayout(responseData);
+      setTotal(
+        responses.reduce(
+          (sum, response) => sum + (response.data?.pageInfo?.totalItems || 0),
+          0
+        )
+      );
+    } catch (err) {
+      console.error("Error fetching users:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchCounts();
+    fetchPayout();
+  }, [pageNum, pageSize]);
+
+  const columns = [
+    {
+      title: "Payout Number",
+      dataIndex: "payout_no",
+      key: "payout_no",
+    },
+    {
+      title: "Amount",
+      dataIndex: "price",
+      key: "price",
+      render: (amount: number) => (
+        <Typography.Text style={{ color: "#16DBAA", fontWeight: 500 }}>
+          ${amount}
+        </Typography.Text>
+      ),
+    },
+    {
+      title: "Name",
+      dataIndex: "instructor_name",
+      key: "instructor_name",
+      render: (instructorName: string) => (
+        <Typography.Text style={{ color: "#4a5568" }}>
+          {instructorName}
+        </Typography.Text>
+      ),
+    },
+    {
+      title: "Created At",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (createdAt: string) => {
+        return dayjs(createdAt).format("DD-MM-YYYY");
+      },
+    },
+  ];
 
   return (
     <div>
@@ -92,7 +216,7 @@ const columns = [
                   Total Balance
                 </h2>
                 <p style={{ fontWeight: "bold", fontSize: "24px", margin: 0 }}>
-                  3249{" "}
+                  {totalBalanceInstructorReceived.toFixed(2)}$
                 </p>
               </div>
             </div>
@@ -116,7 +240,9 @@ const columns = [
                     display: "inline-block",
                   }}
                 >
-                  <SnippetsOutlined style={{ fontSize: "24px", color: "#fff" }} />
+                  <SnippetsOutlined
+                    style={{ fontSize: "24px", color: "#fff" }}
+                  />
                 </div>
               </div>
               <div style={{ flex: 1, textAlign: "right" }}>
@@ -130,7 +256,7 @@ const columns = [
                   Total Courses
                 </h2>
                 <p style={{ fontWeight: "bold", fontSize: "24px", margin: 0 }}>
-                  249{" "}
+                  {counts.courses}
                 </p>
               </div>
             </div>
@@ -174,19 +300,25 @@ const columns = [
             </div>
           </Card>
         </Col>
-        </Row>
-        <Divider orientation="left">
+      </Row>
+      <Divider orientation="left">
         <span style={{ fontSize: "18px" }}>Latest Transactions</span>
       </Divider>
       <Table
-          dataSource={dataSource}
-          columns={columns}
-          pagination={{ pageSize: 5 }}
-          rowKey="key"
-          bordered
-          style={{ borderRadius: "8px" }}
-          scroll={{ x: true }} // Thêm scroll cho bảng
-        />
+        dataSource={transactions}
+        columns={columns}
+        pagination={{
+          current: pageNum,
+          pageSize,
+          total,
+          showSizeChanger: true,
+        }}
+        onChange={handleTableChange}
+        rowKey="_id"
+        bordered
+        style={{ borderRadius: "8px" }}
+        scroll={{ x: true }} // Thêm scroll cho bảng
+      />
     </div>
   );
 };

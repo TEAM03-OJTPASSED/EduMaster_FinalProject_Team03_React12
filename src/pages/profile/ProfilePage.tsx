@@ -11,6 +11,7 @@ import {
   List,
   Tag,
   Modal,
+  Skeleton,
 } from "antd";
 import {
   BookOutlined,
@@ -26,6 +27,7 @@ import { UserService } from "../../services/user.service";
 import { Course, GetCourses } from "../../models/Course.model";
 import ClientService from "../../services/client.service";
 import dayjs from "dayjs";
+import { renderContent } from "../../utils/renderContent";
 
 const { Title, Paragraph, Text } = Typography;
 const { TabPane } = Tabs;
@@ -38,6 +40,8 @@ const ProfilePage: React.FC = () => {
   const [modalImage, setModalImage] = useState("");
   const [totalStudents, setTotalStudents] = useState(0);
   const [totalMinutes, setTotalMinutes] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [coursesLoading, setCoursesLoading] = useState(true);
 
   const showModal = (image: string) => {
     setModalImage(image);
@@ -50,14 +54,19 @@ const ProfilePage: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await UserService.getUser(id as string);
-      setUserData(res?.data as User);
+      try {
+        const res = await UserService.getUser(id as string);
+        setUserData(res?.data as User);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchData();
   }, [id]);
 
-  useEffect(() => {
-    const fetchCourseById = async () => {
+  const fetchCourseById = async () => {
+    console.log("im fetching")
+    try {
       const searchParam: GetCourses = {
         searchCondition: {
           keyword: "",
@@ -72,23 +81,24 @@ const ProfilePage: React.FC = () => {
       };
       const res = await ClientService.getCourses(searchParam);
       const courses = res.data?.pageData as Course[];
-      setUserCourse(res.data?.pageData as Course[]);
       setUserCourse(courses);
-      // Calculate total students and total minutes
-      const students = courses.reduce(
-        (acc, course) => acc + course.enrolled,
-        0
-      );
-      const minutes = courses.reduce(
-        (acc, course) => acc + course.full_time,
-        0
-      );
+      const students = courses.reduce((acc, course) => acc + course.enrolled, 0);
+      const minutes = courses.reduce((acc, course) => acc + course.full_time, 0);
       setTotalStudents(students);
       setTotalMinutes(minutes);
-    };
+    } finally {
+      setCoursesLoading(false);
+    }
+  };
 
-    fetchCourseById();
-  }, [id]);
+  const handleTabChange = (activeKey: string) => {
+    if (activeKey === "2" && userCourse.length === 0) {
+      fetchCourseById();
+    }
+  };
+
+  
+
   const instructorInfo = {
     name: userData.name,
     bank_information: userData.bank_account_name,
@@ -108,48 +118,180 @@ const ProfilePage: React.FC = () => {
 
   const navigate = useCustomNavigate();
 
+  const ProfileHeader = () => (
+    loading ? (
+      <div className="flex items-end mt-32 z-50 md:mt-48 lg:mt-56">
+        <Skeleton.Avatar active size={160} className="ml-4 mb-24" />
+        <div className="ml-5 flex-1">
+          <Skeleton active paragraph={{ rows: 4 }} />
+        </div>
+      </div>
+    ) : (
+      <div className="flex items-end mt-32 z-50 md:mt-48 lg:mt-56">
+        <Avatar
+          src={instructorInfo.avatar}
+          size={160}
+          className="ml-4 border-4 border-white cursor-pointer mb-24"
+          onClick={() => showModal(instructorInfo.avatar as string)}
+        />
+        <div className="ml-5">
+          <Title level={2} className="mb-0">
+            {instructorInfo.name}
+          </Title>
+          <div>
+            Role:
+            <Text type="secondary"> {instructorInfo.role}</Text>
+          </div>
+          <div>
+            Bank name:
+            <Text type="secondary"> {instructorInfo.bank_name}</Text>
+          </div>
+          <div>
+            Bank no:
+            <Text type="secondary"> {instructorInfo.bank_account_no}</Text>
+          </div>
+          <div>
+            Bank account name:
+            <Text type="secondary"> {instructorInfo.bank_name}</Text>
+          </div>
+        </div>
+      </div>
+    )
+  );
+
+  const AboutTab = () => (
+    loading ? (
+      <Skeleton active paragraph={{ rows: 4 }} />
+    ) : (
+      <>
+        <Paragraph className="text-base">{renderContent(instructorInfo.bio ?? "")}</Paragraph>
+        <Title level={4}>Contact</Title>
+        <Paragraph>Email: {instructorInfo.email}</Paragraph>
+        <Paragraph>Phone: {instructorInfo.phone}</Paragraph>
+      </>
+    )
+  );
+
+  const CoursesTab = () => (
+    coursesLoading ? (
+      <List
+        itemLayout="vertical"
+        dataSource={[1, 2, 3]} // Dummy data for loading state
+        renderItem={() => (
+          <List.Item>
+            <Skeleton active avatar paragraph={{ rows: 3 }} />
+          </List.Item>
+        )}
+      />
+    ) : (
+      <List
+        itemLayout="vertical"
+        dataSource={instructorInfo.courses}
+        renderItem={(course: Course) => (
+          <List.Item
+            key={course._id}
+            className="flex justify-between items-center p-5 border-b border-gray-200"
+          >
+            <div className="flex-1">
+              <List.Item.Meta
+                title={
+                  <a onClick={() => navigate(`/course/${course._id}`, true)}>
+                    {course.name}
+                  </a>
+                }
+                description={course.description}
+              />
+              <div className="flex gap-2 mt-2">
+                <Tag color="orange">
+                  Created at: {dayjs(course.created_at).format("DD/MM/YYYY")}
+                </Tag>
+                <Tag color="green">Level: {course.level}</Tag>
+                <Tag className="bg-orange-500 text-white font-jost">
+                  {course.category_name}
+                </Tag>
+                <Tag className="bg-gray-500 text-white font-jost">
+                  {course.full_time} minutes
+                </Tag>
+              </div>
+            </div>
+            <div className="text-right min-w-[150px] pr-5 md:pr-6">
+              <Statistic
+                title="Enrolled"
+                value={course.enrolled}
+                prefix={<UserOutlined />}
+                className="font-exo"
+              />
+              <Statistic
+                title="Rating"
+                value={course.average_rating}
+                prefix={<StarFilled />}
+                className="font-exo"
+              />
+            </div>
+          </List.Item>
+        )}
+      />
+    )
+  );
+
+  const StatsTab = () => (
+    loading ? (
+      <Skeleton active paragraph={{ rows: 4 }} />
+    ) : (
+      <>
+        <Row gutter={16}>
+          <Col span={8}>
+            <Statistic
+              title="Courses Created"
+              value={instructorInfo.coursesCreated}
+              prefix={<BookOutlined />}
+            />
+          </Col>
+          <Col span={8}>
+            <Statistic
+              title="Total Students"
+              value={instructorInfo.totalStudents}
+              prefix={<UserOutlined />}
+            />
+          </Col>
+          <Col span={8}>
+            <Statistic
+              title="Teaching Minutes"
+              value={instructorInfo.teachingHours}
+              prefix={<ClockCircleOutlined />}
+            />
+          </Col>
+        </Row>
+        <Title level={4} className="mt-6">
+          Average Course Rating
+        </Title>
+        <Progress
+          percent={92}
+          status="active"
+          format={(percent) => `${percent ?? 0 / 20} / 5`}
+        />
+      </>
+    )
+  );
+
   return (
-    <main className="mt-2 min-h-screen">
+    <main className="mt-2 min-h-screen pb-40">
       <div className="p-4 pb-0">
         <DynamicBreadcrumb />
         <Card className="relative custom-card">
           <div className="w-full absolute h-48 sm:h-60 md:h-72 lg:h-80">
-            <img
-              alt="Cover"
-              src={instructorInfo.avatar}
-              className="w-full h-full object-cover"
-            />
+            {loading ? (
+              ""
+            ) : (
+              <img
+                alt="Cover"
+                src={instructorInfo.avatar}
+                className="w-full h-full object-cover"
+              />
+            )}
           </div>
-          <div className="flex items-end mt-32 z-50 md:mt-48 lg:mt-56">
-            <Avatar
-              src={instructorInfo.avatar}
-              size={160}
-              className="ml-4 border-4 border-white cursor-pointer mb-24"
-              onClick={() => showModal(instructorInfo.avatar as string)}
-            />
-            <div className="ml-5">
-              <Title level={2} className="mb-0">
-                {instructorInfo.name}
-              </Title>
-              <div>
-                Role:
-                <Text type="secondary"> {instructorInfo.role}</Text>
-              </div>
-
-              <div>
-                Bank name:
-                <Text type="secondary"> {instructorInfo.bank_name}</Text>
-              </div>
-              <div>
-                Bank no:
-                <Text type="secondary"> {instructorInfo.bank_account_no}</Text>
-              </div>
-              <div>
-                Bank account name:
-                <Text type="secondary"> {instructorInfo.bank_name}</Text>
-              </div>
-            </div>
-          </div>
+          
+          <ProfileHeader />
 
           <Modal
             visible={isModalVisible}
@@ -160,101 +302,17 @@ const ProfilePage: React.FC = () => {
             <img alt="Enlarged" src={modalImage} className="w-full" />
           </Modal>
 
-          <Tabs defaultActiveKey="1" className="mt-6 custom-tabs font-exo">
+          <Tabs defaultActiveKey="1" className="mt-6 custom-tabs font-exo" onChange={handleTabChange}>
             <TabPane tab="About" key="1">
-              <Paragraph className="text-base">{instructorInfo.bio}</Paragraph>
-              <Title level={4}>Contact</Title>
-              <Paragraph>Email: {instructorInfo.email}</Paragraph>
-              <Paragraph>Phone: {instructorInfo.phone}</Paragraph>
+              <AboutTab />
             </TabPane>
 
             <TabPane tab="Courses" key="2">
-              <List
-                itemLayout="vertical"
-                dataSource={instructorInfo.courses}
-                renderItem={(course: Course) => (
-                  <List.Item
-                    key={course._id}
-                    className="flex justify-between items-center p-5 border-b border-gray-200"
-                  >
-                    <div className="flex-1">
-                      <List.Item.Meta
-                        title={
-                          <a
-                            onClick={() =>
-                              navigate(`/course/${course._id}`, true)
-                            }
-                          >
-                            {course.name}
-                          </a>
-                        }
-                        description={course.description}
-                      />
-                      <div className="flex gap-2 mt-2">
-                        <Tag color="orange">
-                          Created at:{" "}
-                          {dayjs(course.created_at).format("DD/MM/YYYY")}
-                        </Tag>
-                        <Tag color="green">Level: {course.level}</Tag>
-                        <Tag className="bg-orange-500 text-white font-jost">
-                          {course.category_name}
-                        </Tag>
-                        <Tag className="bg-gray-500 text-white font-jost">
-                          {course.full_time} minutes
-                        </Tag>
-                      </div>
-                    </div>
-                    <div className="text-right min-w-[150px] pr-5 md:pr-6">
-                      <Statistic
-                        title="Enrolled"
-                        value={course.enrolled}
-                        prefix={<UserOutlined />}
-                        className="font-exo"
-                      />
-                      <Statistic
-                        title="Rating"
-                        value={course.average_rating}
-                        prefix={<StarFilled />}
-                        className="font-exo"
-                      />
-                    </div>
-                  </List.Item>
-                )}
-              />
+              <CoursesTab />
             </TabPane>
 
             <TabPane tab="Stats" key="3">
-              <Row gutter={16}>
-                <Col span={8}>
-                  <Statistic
-                    title="Courses Created"
-                    value={instructorInfo.coursesCreated}
-                    prefix={<BookOutlined />}
-                  />
-                </Col>
-                <Col span={8}>
-                  <Statistic
-                    title="Total Students"
-                    value={instructorInfo.totalStudents}
-                    prefix={<UserOutlined />}
-                  />
-                </Col>
-                <Col span={8}>
-                  <Statistic
-                    title="Teaching Minutes"
-                    value={instructorInfo.teachingHours}
-                    prefix={<ClockCircleOutlined />}
-                  />
-                </Col>
-              </Row>
-              <Title level={4} className="mt-6">
-                Average Course Rating
-              </Title>
-              <Progress
-                percent={92}
-                status="active"
-                format={(percent) => `${percent ?? 0 / 20} / 5`}
-              />
+              <StatsTab />
             </TabPane>
           </Tabs>
         </Card>
