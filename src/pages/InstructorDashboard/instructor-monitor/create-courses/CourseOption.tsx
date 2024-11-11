@@ -16,7 +16,7 @@ import {
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
-import { API_UPLOAD_FILE } from "../../../../constants/upload";
+import { API_UPLOAD_FILE } from "../../../../constants/api/upload";
 import { Course } from "../../../../models/Course.model";
 import { Category } from "../../../../models/Category.model";
 
@@ -42,9 +42,6 @@ const CourseOption: React.FC<CourseInformationProps> = ({
   const [imageFileList, setImageFileList] = useState<UploadFile[]>([]);
   const [videoFileList, setVideoFileList] = useState<UploadFile[]>([]);
 
-
-
-
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | undefined>(
     initializeValue?.video_url
   );
@@ -57,13 +54,8 @@ const CourseOption: React.FC<CourseInformationProps> = ({
 
   const [form] = Form.useForm<Course>();
 
-  
-
-
-
   useEffect(() => {
     if (initializeValue && mode === "update") {
-     
       setImageFileList(
         initializeValue?.image_url
           ? [
@@ -91,12 +83,14 @@ const CourseOption: React.FC<CourseInformationProps> = ({
     }
   }, [initializeValue, form, mode]);
 
-  const handleImageChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
+  const handleImageChange: UploadProps["onChange"] = ({
+    fileList: newFileList,
+  }) => {
     setImageFileList(newFileList || []);
-    
-    const isUploading = newFileList.some(file => file.status === "uploading");
+
+    const isUploading = newFileList.some((file) => file.status === "uploading");
     setToggleDisable(isUploading);
-  
+
     if (newFileList.length > 0 && newFileList[0].status === "done") {
       const uploadedImageUrl = newFileList[0].response?.secure_url;
       form.setFieldsValue({ image_url: uploadedImageUrl });
@@ -104,7 +98,6 @@ const CourseOption: React.FC<CourseInformationProps> = ({
       form.setFieldsValue({ image_url: "" });
     }
   };
-  
 
   const handleVideoChange: UploadProps["onChange"] = ({
     fileList: newFileList,
@@ -181,9 +174,13 @@ const CourseOption: React.FC<CourseInformationProps> = ({
           placeholder="Course description"
         />
       </Form.Item>
-      <Form.Item label="Content" name="content"
-                rules={[{ required: true, message: "Please fill in the course content" }]}
->
+      <Form.Item
+        label="Content"
+        name="content"
+        rules={[
+          { required: true, message: "Please fill in the course content" },
+        ]}
+      >
         <CKEditor
           editor={ClassicEditor}
           data={form.getFieldValue("content") || ""}
@@ -194,11 +191,12 @@ const CourseOption: React.FC<CourseInformationProps> = ({
       </Form.Item>
       <Row gutter={16}>
         <Col span={12}>
-          <Form.Item label="Course Image" name="image_url"
-          rules={[{ required: true, message: "Please upload an image" }]}
->
+          <Form.Item
+            label="Course Image"
+            name="image_url"
+            rules={[{ required: true, message: "Please upload an image" }]}
+          >
             <Upload
-            
               action={API_UPLOAD_FILE}
               accept="image/*"
               listType="picture-card"
@@ -216,9 +214,11 @@ const CourseOption: React.FC<CourseInformationProps> = ({
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item label="Course Video" name="video_url"
-                    rules={[{ required: true, message: "Please upload a demo video" }]}
->
+          <Form.Item
+            label="Course Video"
+            name="video_url"
+            rules={[{ required: true, message: "Please upload a demo video" }]}
+          >
             <Upload
               action={API_UPLOAD_FILE}
               accept="video/*"
@@ -245,11 +245,8 @@ const CourseOption: React.FC<CourseInformationProps> = ({
         </Col>
       </Row>
       {/* Course Type Price */}
-      <Form.Item
-        label="Course Price"  required
-        >
+      <Form.Item label="Course Price" required>
         <Radio.Group onChange={handleSelectPrice} value={SelectPriceType}>
-
           <Radio value="Free"> Free </Radio>
           <Radio value="Paid"> Paid </Radio>
         </Radio.Group>
@@ -258,12 +255,18 @@ const CourseOption: React.FC<CourseInformationProps> = ({
       {/* hidden when type free */}
       {SelectPriceType === "Free" && (
         <div>
-          <Form.Item name="price" hidden
-          normalize={(value) => (value ? Number(value) : value)}>
+          <Form.Item
+            name="price"
+            hidden
+            normalize={(value) => (value ? Number(value) : value)}
+          >
             <Input type="number" value={0} />
           </Form.Item>
-          <Form.Item name="discount" hidden
-          normalize={(value) => (value ? Number(value) : value)}>
+          <Form.Item
+            name="discount"
+            hidden
+            normalize={(value) => (value ? Number(value) : value)}
+          >
             <Input type="number" value={0} />
           </Form.Item>
         </div>

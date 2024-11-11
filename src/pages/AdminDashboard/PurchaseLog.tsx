@@ -1,11 +1,12 @@
 import {  useEffect, useState } from "react";
-import { Card, FormProps, Table, Tag } from "antd";
+import { Card, FormProps, Table, Tag, Tooltip } from "antd";
 
 import { GetPurchases, Purchase, PurchaseStatusEnum } from "../../models/Purchase.model";
 import PurchaseService from "../../services/purchase.service";
 import { PageInfo } from "../../models/SearchInfo.model";
 import GlobalSearchUnit from "../../components/GlobalSearchUnit";
 import { statusFormatter } from "../../utils/statusFormatter";
+import { ellipsisText } from "../../utils/ellipsisText";
 
 const statuses = Object.values(PurchaseStatusEnum);
 const columns = [
@@ -18,6 +19,9 @@ const columns = [
     title: "Course Name",
     dataIndex: "course_name",
     key: "course_name",
+    render: (course_name: string) => {
+      return <Tooltip title={course_name}>{ellipsisText(course_name, 50)}</Tooltip>
+    },
   },
   {
     title: "Status",
@@ -30,7 +34,7 @@ const columns = [
             ? "green"
             : status === "request_paid"
             ? "orange"
-            : "red" // Màu cho trạng thái khác (Refunded)
+            : "red" 
         }
       >
         {status}

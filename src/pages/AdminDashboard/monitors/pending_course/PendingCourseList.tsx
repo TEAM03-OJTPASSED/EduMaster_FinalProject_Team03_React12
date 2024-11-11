@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Table, Input, Card, Tag, Button, Modal, message, Space } from "antd";
+import {
+  Table,
+  Input,
+  Card,
+  Tag,
+  Button,
+  Modal,
+  message,
+  Space,
+  Tooltip,
+} from "antd";
 import {
   Course,
   CourseStatusEnum,
@@ -11,10 +21,8 @@ import { PageInfo } from "../../../../models/SearchInfo.model";
 import { Category, GetCategories } from "../../../../models/Category.model";
 import CategoryService from "../../../../services/category.service";
 import GlobalSearchUnit from "../../../../components/GlobalSearchUnit";
-import {
-  CheckOutlined,
-  CloseOutlined,
-} from "@ant-design/icons";
+import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
+import { ellipsisText } from "../../../../utils/ellipsisText";
 
 const PendingCourseList: React.FC = () => {
   // State variables
@@ -84,6 +92,13 @@ const PendingCourseList: React.FC = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      render: (course_name: string) => {
+        return (
+          <div>
+            <Tooltip title={course_name}>{ellipsisText(course_name, 50)}</Tooltip>
+          </div>
+        );
+      },
     },
     {
       title: "Category Name",
