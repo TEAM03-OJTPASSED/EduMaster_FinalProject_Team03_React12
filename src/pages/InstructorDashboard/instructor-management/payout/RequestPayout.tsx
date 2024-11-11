@@ -1,15 +1,15 @@
-import { Card, Input, Table, Tag, TableProps, Checkbox, Button, Modal } from "antd";
-import { SearchOutlined, SendOutlined } from "@ant-design/icons";
+import { Card, Table, Tag, TableProps, Button } from "antd";
+import { SendOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import PayoutService from "../../../../services/payout.service";
 import { GetPayoutRequest, Payout, PayoutStatusEnum, Transaction } from "../../../../models/Payout.model";
 import { handleNotify } from "../../../../utils/handleNotify";
+import EmptyData from "../../../../components/Empty Data/EmptyData";
 
 const RequestPayout = () => {
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [payouts, setPayouts] = useState<Payout[]>([]);
+  const [newPayouts, setNewPayouts] = useState<Payout[]>([]);
 
   const initialParams: GetPayoutRequest = {
     searchCondition: {
@@ -30,44 +30,38 @@ const RequestPayout = () => {
     setPayouts(payouts);
   };
 
+  const fetchRequestPayouts = async () => {
+    const requestParams: GetPayoutRequest = {
+      ...initialParams,
+      searchCondition: {
+        ...initialParams.searchCondition,
+        status: PayoutStatusEnum.NEW,
+      },
+    };
+    const response = await PayoutService.getPayout(requestParams);
+    const payouts = response.data?.pageData || [];
+    setNewPayouts(payouts);
+  };
+
   useEffect(() => {
     fetchPayouts();
+    fetchRequestPayouts();
   }, []);
 
-  const handleSelect = (key: React.Key) => {
-    const newSelectedRowKeys = selectedRowKeys.includes(key)
-      ? selectedRowKeys.filter((k) => k !== key)
-      : [...selectedRowKeys, key];
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
 
-  const handleUpdate = async () => {
-    console.log("Update payouts:", selectedRowKeys);
-  };
 
   const handleSendToAdmin = async (payout: Payout) => {
     const params = {
       status: PayoutStatusEnum.REQUEST_PAYOUT,
-      comment: "Request payout by instructor", 
+      comment: "Request payout by instructor",
     };
-      await PayoutService.updatePayoutStatus(payout._id, params);
-      handleNotify("Payout Sent For Request", "Payout request has been sent to admin.");
-      fetchPayouts(); 
+    await PayoutService.updatePayoutStatus(payout._id, params);
+    handleNotify("Payout Sent For Request", "Payout request has been sent to admin.");
+    fetchPayouts();
+    fetchRequestPayouts();
   };
-  
 
-  const columns: TableProps<Payout>["columns"] = [
-    {
-      title: "Select",
-      dataIndex: "select",
-      key: "select",
-      render: (_, record) => (
-        <Checkbox
-          checked={selectedRowKeys.includes(record.payout_no)}
-          onChange={() => handleSelect(record.payout_no)}
-        />
-      ),
-    },
+  const baseColumns = [
     {
       title: "Payout No",
       dataIndex: "payout_no",
@@ -122,6 +116,18 @@ const RequestPayout = () => {
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
     },
+  ];
+
+  const newPayoutsLocale = {
+    emptyText: <EmptyData description="New payouts will appear here when they're ready for processing" message="No new payouts to process"/>
+  };
+
+  const allPayoutsLocale = {
+    emptyText: <EmptyData description="Previous payouts will be displayed here" message="No payout history found" />
+  };
+
+  const newPayoutsColumns: TableProps<Payout>["columns"] = [
+    ...baseColumns,
     {
       title: "Action",
       key: "action",
@@ -138,34 +144,35 @@ const RequestPayout = () => {
 
   return (
     <Card>
-      <h3 className="text-2xl my-5">Payout Management</h3>
-      <Input
-        placeholder="Search By Payout Number"
-        prefix={<SearchOutlined />}
-        style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
-      />
-      <Button type="default" onClick={handleUpdate} disabled={selectedRowKeys.length === 0}>
-        Update Selected
-      </Button>
+      <h3 className="text-2xl my-5">Manage Payouts</h3>
       <Table
-        dataSource={payouts}
-        columns={columns}
+        dataSource={newPayouts}
+        columns={newPayoutsColumns}
         pagination={{ pageSize: 5 }}
         rowKey="payout_no"
         bordered
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
+        locale={newPayoutsLocale}
+      
       />
-      <Modal
-        title="Create Payout"
-        visible={isModalVisible}
-        onOk={() => setIsModalVisible(false)}
-        onCancel={() => setIsModalVisible(false)}
-      >
-        <p>Form to create a payout will go here.</p>
-      </Modal>
+      <h3 className="text-2xl my-5">All Payouts</h3>
+      <Table
+        dataSource={payouts}
+        columns={baseColumns}
+        pagination={{ pageSize: 5 }}
+        rowKey="payout_no"
+        bordered
+        style={{ borderRadius: "8px" }}
+        scroll={{ x: true }}
+        locale={allPayoutsLocale}
+      />
     </Card>
   );
 };
 
 export default RequestPayout;
+
+
+
+
