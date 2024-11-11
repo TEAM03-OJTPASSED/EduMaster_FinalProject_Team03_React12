@@ -1,12 +1,13 @@
-import { Table, Card, TableProps } from "antd";
+import { Table, Card, TableProps, Tooltip } from "antd";
 import dayjs from "dayjs";
 import { PageInfo } from "../../../../models/SearchInfo.model";
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { GetSessions, Session } from "../../../../models/Session.model";
 import SessionService from "../../../../services/session.service";
 import { Course, GetCourses } from "../../../../models/Course.model";
 import CourseService from "../../../../services/course.service";
 import GlobalSearchUnit from "../../../../components/GlobalSearchUnit";
+import { ellipsisText } from "../../../../utils/ellipsisText";
 
 const initialCoursesParams: GetCourses = {
   pageInfo: {
@@ -17,12 +18,10 @@ const initialCoursesParams: GetCourses = {
     keyword: "",
     is_deleted: false,
     category_id: "",
-  }
+  },
 };
 
 const PendingSessionList = () => {
-
-
   const [sessionPendingList, setSessionPendingList] = useState<Session[]>([]);
   const [loading, setLoading] = useState(false);
   const [listCourses, setListCourses] = useState<Course[]>([]);
@@ -38,7 +37,7 @@ const PendingSessionList = () => {
     },
     pageInfo: {
       pageNum: 1,
-      pageSize: 5,
+      pageSize: 8,
     },
   });
   const fetchCourses = async () => {
@@ -51,7 +50,6 @@ const PendingSessionList = () => {
     }
   };
 
-
   useEffect(() => {
     const fetchData = async () => {
       const res = await SessionService.getSessions(sessionSearchParam);
@@ -59,9 +57,8 @@ const PendingSessionList = () => {
       setCurrentSession(res?.data?.pageInfo as PageInfo);
     };
     fetchData();
-    fetchCourses()
+    fetchCourses();
   }, [sessionSearchParam]);
-
 
   const handleSearch = (values: Record<string, any>) => {
     setSessionSearchParam({
@@ -70,10 +67,9 @@ const PendingSessionList = () => {
         ...sessionSearchParam.searchCondition,
         course_id: values.course_id || "",
         keyword: values.keyword || "",
-      }
+      },
     });
   };
-
 
   const columns: TableProps<Session>["columns"] = [
     {
@@ -85,11 +81,16 @@ const PendingSessionList = () => {
       title: "Course Name",
       dataIndex: "course_name",
       key: "course_name",
+      width: 400,
+      render: (course_name: string) => {
+        return <Tooltip title={course_name}>{ellipsisText(course_name, 50)}</Tooltip>
+      },
     },
     {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
+      align:"center",
       render: (created_at) => {
         return <div>{dayjs(created_at).format("DD/MM/YYYY")}</div>;
       },
@@ -98,6 +99,7 @@ const PendingSessionList = () => {
       title: "Position Order",
       dataIndex: "position_order",
       key: "position_order",
+      align:"center",
       render: (is_deleted) => {
         return <div className="text-red-600">{is_deleted}</div>;
       },
@@ -114,9 +116,12 @@ const PendingSessionList = () => {
           selectFields={[
             {
               name: "course_id",
-              options: listCourses.map((course) => ({ label: course.name, value: course._id })),
+              options: listCourses.map((course) => ({
+                label: course.name,
+                value: course._id,
+              })),
               placeholder: "Filter by Course",
-            }
+            },
           ]}
         />
       </div>

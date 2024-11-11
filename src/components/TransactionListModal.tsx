@@ -12,26 +12,25 @@ const TransactionListModal: React.FC<TransactionListModalType> = ({ item }) => {
       title: "Transaction ID",
       dataIndex: "_id",
       key: "_id",
+      align: "center",
     },
     {
       title: "Price",
       dataIndex: "price",
       key: "price",
+      align: "center",
     },
     {
       title: "Price paid",
       dataIndex: "price_paid",
       key: "price_paid",
+      align: "center",
     },
     {
       title: "Discount",
       dataIndex: "discount",
       key: "discount",
-    },
-    {
-      title: "Purchase ID",
-      dataIndex: "purchase_id",
-      key: "purchase_id",
+      align: "center",
     },
     {
       title: "Create at",
@@ -40,6 +39,7 @@ const TransactionListModal: React.FC<TransactionListModalType> = ({ item }) => {
       render: (created_at: string) => {
         return <div>{dayjs(created_at).format("DD/MM/YYYY HH:mm")}</div>;
       },
+      align: "center",
     },
   ];
   return (

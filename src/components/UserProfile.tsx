@@ -12,7 +12,7 @@ import {
 import { PlusOutlined } from "@ant-design/icons";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import { API_UPLOAD_FILE } from "../constants/upload";
+import { API_UPLOAD_FILE } from "../constants/api/upload";
 
 interface UserProfileFormProps {
   currentUser: UserProfile;

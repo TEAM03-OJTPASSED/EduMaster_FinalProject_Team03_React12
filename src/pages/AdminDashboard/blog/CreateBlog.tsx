@@ -6,7 +6,7 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { BlogRequest } from "../../../models/Blog.model";
 import BlogService from "../../../services/blog.service";
-import { API_UPLOAD_FILE } from "../../../constants/upload";
+import { API_UPLOAD_FILE } from "../../../constants/api/upload";
 
 type BlogFormProps = {
   initialValues?: BlogRequest;
@@ -16,7 +16,9 @@ type BlogFormProps = {
 const CreateBlog: React.FC<BlogFormProps> = ({ initialValues, onSuccess }) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [form] = Form.useForm<BlogRequest>();
-  const [tagOptions, setTagOptions] = useState<{ value: string; label: string }[]>([]);
+  const [tagOptions, setTagOptions] = useState<
+    { value: string; label: string }[]
+  >([]);
 
   useEffect(() => {
     if (initialValues) {
@@ -33,7 +35,9 @@ const CreateBlog: React.FC<BlogFormProps> = ({ initialValues, onSuccess }) => {
     }
   }, [initialValues, form]);
 
-  const handleImageChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
+  const handleImageChange: UploadProps["onChange"] = ({
+    fileList: newFileList,
+  }) => {
     setFileList(newFileList);
 
     if (newFileList.length > 0 && newFileList[0].status === "done") {
@@ -46,7 +50,10 @@ const CreateBlog: React.FC<BlogFormProps> = ({ initialValues, onSuccess }) => {
   };
 
   const handleTagsChange = (value: string[]) => {
-    const uniqueOptions = Array.from(new Set(value)).map((item) => ({ value: item, label: item }));
+    const uniqueOptions = Array.from(new Set(value)).map((item) => ({
+      value: item,
+      label: item,
+    }));
     setTagOptions(uniqueOptions);
     form.setFieldsValue({ tags: value });
   };
@@ -69,10 +76,20 @@ const CreateBlog: React.FC<BlogFormProps> = ({ initialValues, onSuccess }) => {
   };
 
   return (
-    <Form form={form} name="create-blog" onFinish={onFinish} layout="vertical" style={{ display: "flex", height: "100%" }}>
+    <Form
+      form={form}
+      name="create-blog"
+      onFinish={onFinish}
+      layout="vertical"
+      style={{ display: "flex", height: "100%" }}
+    >
       {/* Left Section */}
       <div style={{ flex: 1, paddingRight: "16px", overflowY: "auto" }}>
-        <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please enter the blog name!" }]}>
+        <Form.Item
+          label="Name"
+          name="name"
+          rules={[{ required: true, message: "Please enter the blog name!" }]}
+        >
           <Input placeholder="Enter blog name" />
         </Form.Item>
 
@@ -86,17 +103,28 @@ const CreateBlog: React.FC<BlogFormProps> = ({ initialValues, onSuccess }) => {
           />
         </Form.Item>
 
-        <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please enter the blog description!" }]}>
-          <Input.TextArea placeholder="Enter blog description" maxLength={200} rows={2} />
+        <Form.Item
+          label="Description"
+          name="description"
+          rules={[
+            { required: true, message: "Please enter the blog description!" },
+          ]}
+        >
+          <Input.TextArea
+            placeholder="Enter blog description"
+            maxLength={200}
+            rows={2}
+          />
         </Form.Item>
 
-        <Form.Item label="Title Image" name="image_url">
+        <Form.Item label="Title Image" name="image_url"  rules={[{ required: true, message: "Please upload the blog image!" }]}>
           <Upload
             action={API_UPLOAD_FILE}
             listType="picture-card"
             onChange={handleImageChange}
             fileList={fileList}
             maxCount={1}
+            
           >
             {fileList.length < 1 && (
               <button style={{ border: 0, background: "none" }} type="button">
@@ -116,7 +144,13 @@ const CreateBlog: React.FC<BlogFormProps> = ({ initialValues, onSuccess }) => {
 
       {/* CKEditor Section */}
       <div style={{ flex: 1, paddingLeft: "16px", overflowY: "auto" }}>
-        <Form.Item label="Content" name="content" rules={[{ required: true, message: "Please enter the blog content!" }]}>
+        <Form.Item
+          label="Content"
+          name="content"
+          rules={[
+            { required: true, message: "Please enter the blog content!" },
+          ]}
+        >
           <CKEditor
             editor={ClassicEditor}
             data={form.getFieldValue("content") || ""}
@@ -129,7 +163,6 @@ const CreateBlog: React.FC<BlogFormProps> = ({ initialValues, onSuccess }) => {
             }}
           />
         </Form.Item>
-        
       </div>
     </Form>
   );
