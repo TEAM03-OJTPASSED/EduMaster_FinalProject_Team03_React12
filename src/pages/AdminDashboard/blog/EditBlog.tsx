@@ -59,9 +59,11 @@ const EditBlog: React.FC<EditBlogProps> = ({ initialValues, onSuccess }) => {
     };
 
     const onFinish = async (values: BlogEditRequest) => {
+        console.log("Edit values:", values)
         try {
             if (initialValues?._id) {
-                const response = await BlogService.updateBlog(initialValues._id, values);
+                const updatedValues = { ...values, user_id: initialValues.user_id };
+                const response = await BlogService.updateBlog(initialValues._id, updatedValues);
                 if (response?.success && onSuccess) {
                     message.success("Blog updated successfully");
                     onSuccess();
