@@ -76,3 +76,11 @@ export interface BlogSearchParams {
   searchCondition: BlogSearchCondition;
   pageInfo: PageInfo;
 }
+
+export interface ReviewSearchCondition {
+  course_id?: string;
+  rating?: number;
+  is_instructor?: boolean;
+  is_rating_order?: boolean;
+  is_deleted?: boolean
+}

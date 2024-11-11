@@ -3,7 +3,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { message, notification } from 'antd';
 import { Course } from '../../models/Course.model';
 import CartService from '../../services/cart.service';
-import { CartStatusEnum, SearchCartByStatus } from '../../models/Cart.model';
+import { Cart, CartStatusEnum, SearchCartByStatus } from '../../models/Cart.model';
 
 interface CartState {
   cartCount: number;
@@ -64,7 +64,7 @@ export const fetchCartCount = createAsyncThunk(
       };
 
       const response = await CartService.getCartsAmount(initialCartSearchParams);
-      return response.data?.pageData.length || 0;
+      return (response.data?.pageData as Cart[]).length || 0;
     
   }
 );

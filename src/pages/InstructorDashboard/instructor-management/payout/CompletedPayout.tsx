@@ -2,18 +2,19 @@ import React, { useEffect, useState } from "react";
 import { Card, Input, Table, TableProps, Tag } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import PayoutService from "../../../../services/payout.service";
-import { Payout, PayoutStatusEnum } from "../../../../models/Payout.model";
+import { GetPayoutRequest, Payout, PayoutStatusEnum, Transaction } from "../../../../models/Payout.model";
 
 const CompletedPayout: React.FC = () => {
  
   const [filteredPayouts, setFilteredPayouts] = useState<Payout[]>([]);
   const [searchKeyword, setSearchKeyword] = useState<string>("");
 
-  const initialParams = {
+  const initialParams : GetPayoutRequest = {
     searchCondition: {
       payout_no: "",
       instructor_id: "",
       status: PayoutStatusEnum.COMPLETED,
+      is_instructor:true,
       is_delete: false,
     },
     pageInfo: {
@@ -54,8 +55,12 @@ const CompletedPayout: React.FC = () => {
     },
     {
       title: "Transaction ID",
-      dataIndex: "transaction_id",
-      key: "transaction_id",
+      dataIndex: "transactions",
+      key: "transactions",
+      render: (transactions: Transaction[]) =>
+        transactions.map((transaction) => (
+          <span key={transaction.purchase_id}>{transaction.purchase_id},</span>
+        )),
     },
     {
       title: "Balance Origin",
