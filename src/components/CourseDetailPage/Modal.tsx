@@ -34,7 +34,7 @@ export const DetailModal = ({ course, isPurchased }: Props) => {
   return (
     <>
       {showCourseInfo ? (
-        <div className={`fixed z-10 w-1/3 px-8 right-0 top-20 ${animateClass} `}>
+        <div className={`fixed z-10 mt-16 w-1/3 px-8 right-0 top-8 ${animateClass} `}>
           <div className="relative h-[20vh] bg-orange-200 rounded-t-lg">
             <div className="absolute bg-orange-500 text-white m-4 px-2 py-1 rounded">
               {course.category_name}

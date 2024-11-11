@@ -28,6 +28,12 @@ import { Course, GetCourses } from "../../models/Course.model";
 import ClientService from "../../services/client.service";
 import dayjs from "dayjs";
 import { renderContent } from "../../utils/renderContent";
+import { capitalize } from "lodash";
+import SubscribeButton from "../../components/SubscribeButton";
+// import { handleNotify } from "../../utils/handleNotify";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store/store";
+// import { authorize } from "../../utils/authorize";
 
 const { Title, Paragraph, Text } = Typography;
 const { TabPane } = Tabs;
@@ -42,6 +48,9 @@ const ProfilePage: React.FC = () => {
   const [totalMinutes, setTotalMinutes] = useState(0);
   const [loading, setLoading] = useState(true);
   const [coursesLoading, setCoursesLoading] = useState(true);
+  const { currentUser } = useSelector((state: RootState) => state.auth.login);
+
+
 
   const showModal = (image: string) => {
     setModalImage(image);
@@ -96,6 +105,12 @@ const ProfilePage: React.FC = () => {
       fetchCourseById();
     }
   };
+  
+  // const handleSubscription = () => {
+  //   if (authorize(currentUser.role)) return true
+
+
+  // }
 
   
 
@@ -114,46 +129,39 @@ const ProfilePage: React.FC = () => {
     totalStudents,
     teachingHours: totalMinutes,
     courses: userCourse,
+    _id: userData._id,
   };
 
   const navigate = useCustomNavigate();
 
   const ProfileHeader = () => (
     loading ? (
-      <div className="flex items-end mt-32 z-50 md:mt-48 lg:mt-56">
+      <div className="flex items-end mt-32 z-10">
         <Skeleton.Avatar active size={160} className="ml-4 mb-24" />
         <div className="ml-5 flex-1">
           <Skeleton active paragraph={{ rows: 4 }} />
         </div>
       </div>
     ) : (
-      <div className="flex items-end mt-32 z-50 md:mt-48 lg:mt-56">
+      <div className="flex items-end mt-32 z-10 relative">
         <Avatar
           src={instructorInfo.avatar}
           size={160}
-          className="ml-4 border-4 border-white cursor-pointer mb-24"
+          className="ml-4 border-4 border-white cursor-pointer mb-6"
           onClick={() => showModal(instructorInfo.avatar as string)}
         />
-        <div className="ml-5">
-          <Title level={2} className="mb-0">
+        <div className="ml-5 ">
+          <Title level={2} className="p-0 !mb-0">
             {instructorInfo.name}
           </Title>
-          <div>
-            Role:
-            <Text type="secondary"> {instructorInfo.role}</Text>
+          <div>   
+            <Text type="secondary"> {capitalize(instructorInfo.role)}</Text>
           </div>
-          <div>
-            Bank name:
-            <Text type="secondary"> {instructorInfo.bank_name}</Text>
-          </div>
-          <div>
-            Bank no:
-            <Text type="secondary"> {instructorInfo.bank_account_no}</Text>
-          </div>
-          <div>
-            Bank account name:
-            <Text type="secondary"> {instructorInfo.bank_name}</Text>
-          </div>
+          
+        </div>
+        <div className="flex flex-col items-center ml-auto h-14">
+          <SubscribeButton instructorName={instructorInfo.name} instructorId={instructorInfo._id} userRole={currentUser.role}/>
+          
         </div>
       </div>
     )
@@ -275,11 +283,11 @@ const ProfilePage: React.FC = () => {
   );
 
   return (
-    <main className="mt-2 min-h-screen pb-40">
+    <main className="mt-2 min-h-screen pb-40 z-0">
       <div className="p-4 pb-0">
         <DynamicBreadcrumb />
         <Card className="relative custom-card">
-          <div className="w-full absolute h-48 sm:h-60 md:h-72 lg:h-80">
+          <div className="w-full absolute h-48 sm:h-60 lg:h-60">
             {loading ? (
               ""
             ) : (

@@ -106,6 +106,20 @@ h3 {
   font-family: "Jost", sans-serif !important;
 }
 
+.hover-btn.ant-btn-variant-solid {
+  color: white !important;
+  background-color: black !important;
+  font-family: "Jost", sans-serif !important;
+}
+
+.hover-btn.ant-btn-variant-solid:hover {
+  color: white !important;
+  background-color: #2f2f2f !important;
+  font-family: "Jost", sans-serif !important;
+}
+
+
+
 .ant-btn-variant-solid:hover {
   background-color: var(--color-primary-pressed) !important;
   font-family: "Jost", sans-serif !important;
@@ -120,6 +134,8 @@ h3 {
     --color-neutral-white-grey
   ) !important; /* Màu nền khi click */
 }
+
+
 
 .dropdown-menu-button {
   background-color: transparent; /* Màu nền mặc định */
@@ -395,21 +411,25 @@ img {
   image-rendering: -webkit-optimize-contrast;
 }
 
-/* Example CSS to add fade effect and sliding transition */
-.transition-all {
-  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+
+@keyframes spinOnce {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-/* Ensure navbar is hidden but still occupying space when not visible */
-.opacity-0 {
-  opacity: 0;
-  visibility: hidden; /* Prevent interaction when not visible */
-  transform: translateY(-100%); /* Move navbar offscreen when hidden */
+.animate-spin-once {
+  animation: spinOnce 0.6s ease-in-out;
 }
 
-/* Ensure navbar is visible and in place when showing */
-.opacity-100 {
-  opacity: 1;
-  visibility: visible; /* Make the navbar visible */
-  transform: translateY(0); /* Bring navbar to its original position */
+
+.subscribed {
+  margin: 0 0.75rem; /* mx-3 */
+}
+
+.not-subscribed {
+  margin: 0 1.5rem; /* mx-6 */
 }
