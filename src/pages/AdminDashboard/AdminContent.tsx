@@ -8,11 +8,7 @@ import {
   CommentOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
-import {
-  GetPayoutRequest,
-  Payout,
-  PayoutStatusEnum,
-} from "../../models/Payout.model";
+import { Payout, PayoutStatusEnum } from "../../models/Payout.model";
 import PayoutService from "../../services/payout.service";
 import dayjs from "dayjs";
 import { UserService } from "../../services/user.service";
@@ -29,10 +25,10 @@ const cardStyle = {
 
 const AdminContent = () => {
   const [_payout, setPayout] = useState<Payout[]>([]);
+  const [transactions, setTransactions] = useState<any[]>([]);
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
-  const [transactions, setTransactions] = useState<any[]>([]);
 
   const [counts, setCounts] = useState({
     blogs: 0,
@@ -110,40 +106,48 @@ const AdminContent = () => {
   };
 
   const fetchPayout = async () => {
-    const searchParams: GetPayoutRequest = {
+    const statuses = [PayoutStatusEnum.NEW, PayoutStatusEnum.COMPLETED];
+    const searchParams = {
       searchCondition: {
         payout_no: "",
         instructor_id: "",
-        status: PayoutStatusEnum.COMPLETED && PayoutStatusEnum.NEW,
-        is_instructor:false,
+        is_instructor: false,
         is_delete: false,
       },
       pageInfo: { pageNum, pageSize },
     };
 
     try {
-      const response = await PayoutService.getPayout(searchParams);
-      const responseData = response.data?.pageData;
+      const responses = await Promise.all(
+        statuses.map((status) =>
+          PayoutService.getPayout({
+            ...searchParams,
+            searchCondition: { ...searchParams.searchCondition, status },
+          })
+        )
+      );
 
-      if (Array.isArray(responseData)) {
-        const transactionsWithInstructorInfo = responseData.flatMap(
+      const responseData = responses.flatMap(
+        (response) => response.data?.pageData || []
+      );
+      setTransactions(
+        responseData.flatMap(
           (payout) =>
             payout.transactions?.map((transaction) => ({
               ...transaction,
-              instructor_name: payout.instructor_name, // Gắn instructor_name từ payout
-              payout_no: payout.payout_no, // Gắn instructor_name từ payout
-              // price: payout.price, // Gắn giá từ payout nếu cần
+              instructor_name: payout.instructor_name,
+              payout_no: payout.payout_no,
             })) || []
-        );
+        )
+      );
 
-        setTransactions(transactionsWithInstructorInfo);
-      }
-
-      const flattenedUsers: Payout[] = Array.isArray(responseData)
-        ? responseData.flat()
-        : [];
-      setPayout(flattenedUsers);
-      setTotal(response.data?.pageInfo?.totalItems ?? 0);
+      setPayout(responseData);
+      setTotal(
+        responses.reduce(
+          (sum, response) => sum + (response.data?.pageInfo?.totalItems || 0),
+          0
+        )
+      );
     } catch (err) {
       console.error("Error fetching users:", err);
     }
@@ -237,7 +241,7 @@ const AdminContent = () => {
                   Total Balance
                 </h2>
                 <p style={{ fontWeight: "bold", fontSize: "24px", margin: 0 }}>
-                  {counts.totalPaid}
+                  {counts.totalPaid.toFixed(2)}$
                 </p>
               </div>
             </div>
