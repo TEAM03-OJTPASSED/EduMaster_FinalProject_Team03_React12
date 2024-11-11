@@ -35,7 +35,7 @@ const BlogDetailPage = () => {
           const response = await ClientService.getBlogDetail(id);
           console.log("data", response);
           if (response.data) {
-            setBlog(response.data); 
+            setBlog(response.data);
           }
         } catch (error) {
           console.error("Error fetching blog:", error);
@@ -85,7 +85,14 @@ const BlogDetailPage = () => {
           creator={blog.user_name}
           comments={comments.length}
         />
-        <div className="w-full">
+        <div className="w-full ">
+          {blog.image_url && (
+            <img
+              src={blog.image_url}
+              alt={blog.name}
+              className="w-96 h-96 mb-4"
+            />
+          )}
           {renderContent(blog.content)}
         </div>
         <TagList tags={blog.tags || []} />

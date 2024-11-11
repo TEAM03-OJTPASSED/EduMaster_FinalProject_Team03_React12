@@ -5,15 +5,12 @@
 @tailwind components;
 @tailwind utilities;
 
-
 .font-jost {
   font-family: "Jost", sans-serif;
 }
 .font-exo {
   font-family: "Exo", sans-serif;
 }
-
-
 
 :root {
   --primary-color: #c5c7c9; /* Màu chính */
@@ -106,12 +103,12 @@ h3 {
   color: white !important;
   border: var(--color-primary-default) !important;
   background-color: var(--color-primary-default) !important;
-  font-family: 'Jost',sans-serif !important;
+  font-family: "Jost", sans-serif !important;
 }
 
 .ant-btn-variant-solid:hover {
   background-color: var(--color-primary-pressed) !important;
-  font-family: 'Jost',sans-serif !important;
+  font-family: "Jost", sans-serif !important;
 }
 
 .view-button.ant-btn-variant-solid:hover {
@@ -247,7 +244,6 @@ h3 {
   animation-delay: 3s; /* Pause for 5 seconds before the next shake */
 }
 
-
 .custom-checkbox .ant-checkbox-inner {
   border-color: black !important;
 }
@@ -261,30 +257,26 @@ h3 {
   display: inline-block;
 }
 
-.ant-card-body{
+.ant-card-body {
   padding: 16px !important;
-  overflow: hidden !important
+  overflow: hidden !important;
 }
-
 
 .custom-tabs .ant-tabs-nav .ant-tabs-tab:hover {
-  color: #f97316;  
+  color: #f97316;
 }
-
 
 .custom-tabs .ant-tabs-nav .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
   color: #f97316;
 }
 
 .custom-tabs .ant-tabs-ink-bar {
-  background: #f97316;  
-
+  background: #f97316;
 }
 
 .custom-tabs .ant-tabs-tab {
   transition: color 0.3s;
-  font-size: 1rem;  
-
+  font-size: 1rem;
 }
 
 .custom-card {
@@ -301,11 +293,11 @@ h3 {
 }
 
 .ant-typography {
-  font-family: 'Jost', sans-serif !important;
+  font-family: "Jost", sans-serif !important;
 }
 
 h2.ant-typography {
-  font-family: 'Exo', sans-serif !important;
+  font-family: "Exo", sans-serif !important;
 }
 
 @keyframes float-in {
@@ -338,7 +330,6 @@ h2.ant-typography {
   animation: float-out 0.5s ease-out backwards;
 }
 
-
 .text-gradient {
   background: linear-gradient(to right, #ff7e5f, #feb47b);
   background-clip: text;
@@ -355,11 +346,12 @@ h2.ant-typography {
   height: 32px;
   position: relative;
   border-radius: 50%;
-  color: #FF3D00;
+  color: #ff3d00;
   animation: fill 1s ease-in infinite alternate;
 }
-.loader::before , .loader::after {
-  content: '';
+.loader::before,
+.loader::after {
+  content: "";
   position: absolute;
   height: 100%;
   width: 100%;
@@ -376,8 +368,12 @@ h2.ant-typography {
 }
 
 @keyframes fill {
- 0% {  box-shadow: 0 0 0 2px inset }
- 100%{ box-shadow: 0 0 0 10px inset }
+  0% {
+    box-shadow: 0 0 0 2px inset;
+  }
+  100% {
+    box-shadow: 0 0 0 10px inset;
+  }
 }
 
 .ck-editor__editable {
@@ -394,4 +390,26 @@ h2.ant-typography {
   color: inherit;
   padding: inherit;
   font-size: inherit;
+}
+img {
+  image-rendering: -webkit-optimize-contrast;
+}
+
+/* Example CSS to add fade effect and sliding transition */
+.transition-all {
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+/* Ensure navbar is hidden but still occupying space when not visible */
+.opacity-0 {
+  opacity: 0;
+  visibility: hidden; /* Prevent interaction when not visible */
+  transform: translateY(-100%); /* Move navbar offscreen when hidden */
+}
+
+/* Ensure navbar is visible and in place when showing */
+.opacity-100 {
+  opacity: 1;
+  visibility: visible; /* Make the navbar visible */
+  transform: translateY(0); /* Bring navbar to its original position */
 }

@@ -45,7 +45,7 @@ export interface PurchaseSearchCondition {
 export interface UserSearchCondition {
   keyword?: string;
   role?: string;
-  status?: boolean;
+  status: boolean | string;
   is_verified?: boolean;
   is_delete?: boolean;
 }

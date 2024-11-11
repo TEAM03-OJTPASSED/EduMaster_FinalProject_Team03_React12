@@ -1,21 +1,31 @@
-import { Table, Input, Card, TableProps } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import { Table, Card, TableProps } from "antd";
 import dayjs from "dayjs";
 import { PageInfo } from "../../../../models/SearchInfo.model";
-import { ChangeEvent, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { GetSessions, Session } from "../../../../models/Session.model";
 import SessionService from "../../../../services/session.service";
-import useDebounce from "../../../../hooks/useDebounce";
+import { Course, GetCourses } from "../../../../models/Course.model";
+import CourseService from "../../../../services/course.service";
+import GlobalSearchUnit from "../../../../components/GlobalSearchUnit";
+
+const initialCoursesParams: GetCourses = {
+  pageInfo: {
+    pageNum: 1,
+    pageSize: 100,
+  },
+  searchCondition: {
+    keyword: "",
+    is_deleted: false,
+    category_id: "",
+  }
+};
 
 const PendingSessionList = () => {
-  const [searchText, setSearchText] = useState<string>("");
-  const searchDebounce = useDebounce(searchText, 2000);
 
-  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
-  };
 
   const [sessionPendingList, setSessionPendingList] = useState<Session[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [listCourses, setListCourses] = useState<Course[]>([]);
   const [currentSession, setCurrentSession] = useState<PageInfo>(
     {} as PageInfo
   );
@@ -31,14 +41,16 @@ const PendingSessionList = () => {
       pageSize: 5,
     },
   });
+  const fetchCourses = async () => {
+    setLoading(true);
+    try {
+      const response = await CourseService.getCourses(initialCoursesParams);
+      setListCourses(response.data?.pageData as Course[]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  useEffect(() => {
-    // Update sessionSearchParam when searchDebounce changes
-    setSessionSearchParam((prev) => ({
-      ...prev,
-      searchCondition: { ...prev.searchCondition, keyword: searchDebounce },
-    }));
-  }, [searchDebounce]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,7 +59,21 @@ const PendingSessionList = () => {
       setCurrentSession(res?.data?.pageInfo as PageInfo);
     };
     fetchData();
+    fetchCourses()
   }, [sessionSearchParam]);
+
+
+  const handleSearch = (values: Record<string, any>) => {
+    setSessionSearchParam({
+      ...sessionSearchParam,
+      searchCondition: {
+        ...sessionSearchParam.searchCondition,
+        course_id: values.course_id || "",
+        keyword: values.keyword || "",
+      }
+    });
+  };
+
 
   const columns: TableProps<Session>["columns"] = [
     {
@@ -81,12 +107,17 @@ const PendingSessionList = () => {
   return (
     <Card>
       <h3 className="text-2xl my-5">Session Management</h3>
-      <div className="flex flex-wrap items-center mb-4">
-        <Input
+      <div className="flex justify-between overflow-hidden">
+        <GlobalSearchUnit
+          onSubmit={handleSearch}
           placeholder="Search By Session Name"
-          prefix={<SearchOutlined />}
-          style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
-          onChange={handleSearchChange}
+          selectFields={[
+            {
+              name: "course_id",
+              options: listCourses.map((course) => ({ label: course.name, value: course._id })),
+              placeholder: "Filter by Course",
+            }
+          ]}
         />
       </div>
       <Table
@@ -107,6 +138,7 @@ const PendingSessionList = () => {
         bordered
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
+        loading={loading}
       />
     </Card>
   );
