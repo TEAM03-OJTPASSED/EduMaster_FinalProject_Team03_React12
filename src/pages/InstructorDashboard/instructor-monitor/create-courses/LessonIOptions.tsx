@@ -46,8 +46,8 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
   const [imageFileList, setImageFileList] = useState<UploadFile[]>([]);
   const [videoFileList, setVideoFileList] = useState<UploadFile[]>([]);
   const [visibility, setVisibility] = useState<
-    "reading" | "video" | "assignment"
-  >();
+    "reading" | "video" | "assignment" | "image"
+  >("reading");
   const [form] = Form.useForm<Lesson>();
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | undefined>(
     initialValues?.video_url
@@ -117,6 +117,9 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
     } else if (lessonType === LessonTypeEnum.VIDEO) {
       setImageFileList([]);
       setVisibility("video");
+    } else if (lessonType === LessonTypeEnum.IMAGE) {
+      setImageFileList([]);
+      setVisibility("image");
     }
   };
 
@@ -309,11 +312,13 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
         >
           <Select
             onChange={() => handleLessonType()}
+            defaultValue={LessonTypeEnum.READING}
             placeholder="Lesson Type"
             options={[
               { label: "Video", value: LessonTypeEnum.VIDEO },
               { label: "Reading", value: LessonTypeEnum.READING },
               { label: "Assignment", value: LessonTypeEnum.ASSIGNMENT },
+              { label: "Image", value: LessonTypeEnum.IMAGE },
             ]}
           />
         </Form.Item>
@@ -371,23 +376,39 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
               />
             </Form.Item>
           )}
-          <div className="flex justify-around">
-            {visibility === LessonTypeEnum.VIDEO && (
+
+          {visibility === LessonTypeEnum.IMAGE && (
+            <div>
               <Form.Item
-                label="Lesson Video"
-                name="video_url"
-                rules={[{ required: true, message: "Please input video" }]}
+                label="Content"
+                name="description"
+                rules={[
+                  { required: true, message: "Please input description" },
+                ]}
+              >
+                <CKEditor
+                  editor={ClassicEditor}
+                  data={form.getFieldValue("description") || ""}
+                  onChange={(_, editor) =>
+                    form.setFieldsValue({ description: editor.getData() })
+                  }
+                />
+              </Form.Item>
+              <Form.Item
+                label="Lesson Image"
+                name="image_url"
+                rules={[{ required: true, message: "Please input image" }]}
               >
                 <div className="space-y-4">
                   <Upload
                     action="https://api.cloudinary.com/v1_1/dz2dv8lk4/upload?upload_preset=edumaster1"
-                    accept="video/*"
+                    accept="image/*"
                     listType="picture-card"
-                    fileList={videoFileList}
-                    onChange={handleVideoChange}
+                    fileList={imageFileList}
+                    onChange={({ fileList }) => setImageFileList(fileList)}
                     maxCount={1}
                   >
-                    {videoFileList.length >= 1 ? null : (
+                    {imageFileList.length >= 1 ? null : (
                       <div>
                         <PlusOutlined className="h-5 w-5" />
                         <div>Upload</div>
@@ -395,14 +416,59 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
                     )}
                   </Upload>
                 </div>
-                {videoPreviewUrl && (
-                  <video
-                    src={videoPreviewUrl}
-                    controls
-                    className="w-full rounded-lg"
-                  />
-                )}
               </Form.Item>
+            </div>
+          )}
+
+          <div className="flex justify-around">
+            {visibility === LessonTypeEnum.VIDEO && (
+              <div>
+                <Form.Item
+                  label="Content"
+                  name="description"
+                  rules={[
+                    { required: true, message: "Please input description" },
+                  ]}
+                >
+                  <CKEditor
+                    editor={ClassicEditor}
+                    data={form.getFieldValue("description") || ""}
+                    onChange={(_, editor) =>
+                      form.setFieldsValue({ description: editor.getData() })
+                    }
+                  />
+                </Form.Item>
+                <Form.Item
+                  label="Lesson Video"
+                  name="video_url"
+                  rules={[{ required: true, message: "Please input video" }]}
+                >
+                  <div className="space-y-4">
+                    <Upload
+                      action="https://api.cloudinary.com/v1_1/dz2dv8lk4/upload?upload_preset=edumaster1"
+                      accept="video/*"
+                      listType="picture-card"
+                      fileList={videoFileList}
+                      onChange={handleVideoChange}
+                      maxCount={1}
+                    >
+                      {videoFileList.length >= 1 ? null : (
+                        <div>
+                          <PlusOutlined className="h-5 w-5" />
+                          <div>Upload</div>
+                        </div>
+                      )}
+                    </Upload>
+                  </div>
+                  {videoPreviewUrl && (
+                    <video
+                      src={videoPreviewUrl}
+                      controls
+                      className="w-full rounded-lg"
+                    />
+                  )}
+                </Form.Item>
+              </div>
             )}
 
             {visibility === LessonTypeEnum.ASSIGNMENT && (

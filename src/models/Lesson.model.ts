@@ -41,5 +41,6 @@ export interface GetLessons {
 export enum LessonTypeEnum {
   READING = "reading",
   VIDEO = "video",
+  IMAGE = "image",
   ASSIGNMENT = "assignment",
 }
