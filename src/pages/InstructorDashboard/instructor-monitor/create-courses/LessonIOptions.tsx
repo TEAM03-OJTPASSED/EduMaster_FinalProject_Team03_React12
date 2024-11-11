@@ -24,6 +24,7 @@ import { Session } from "../../../../models/Session.model";
 import { Course } from "../../../../models/Course.model";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { Question } from "../../../../models/Question.model";
 
 type LessonOptionsProps = {
   initialValues?: Lesson;
@@ -127,22 +128,14 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
 
   //Huko additional code
   const { Option } = Select;
-
-  const [questions, setQuestions] = useState<
+  const [questions, setQuestions] = useState<Question[]>([
     {
-      id: number;
-      type: string;
-      question: string;
-      options: string[];
-      correctAnswers: any[];
-    }[]
-  >([
-    {
-      id: 1,
-      type: "single_choice",
+      _id: "1",
+      question_type: "single_choice",
       question: "",
-      options: ["", ""],
-      correctAnswers: [],
+      answer: ["", ""],
+      correct_answer: [],
+      is_deleted: false,
     },
   ]);
 
@@ -150,51 +143,56 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
     setQuestions([
       ...questions,
       {
-        id: questions.length + 1,
-        type: "single_choice",
+        _id: (questions.length + 1).toString(),
+        question_type: "single_choice",
         question: "",
-        options: ["", ""],
-        correctAnswers: [],
+        answer: ["", ""],
+        correct_answer: [],
+        is_deleted: false,
       },
     ]);
   };
 
-  const removeQuestion = (id) => {
-    setQuestions(questions.filter((q) => q.id !== id));
+  const removeQuestion = (_id: string) => {
+    setQuestions(questions.filter((q) => q._id !== _id));
   };
 
-  const handleQuestionChange = (id, value) => {
+  const handleQuestionChange = (_id: string, value: string) => {
     setQuestions(
-      questions.map((q) => (q.id === id ? { ...q, question: value } : q))
+      questions.map((q) => (q._id === _id ? { ...q, question: value } : q))
     );
   };
 
-  const handleTypeChange = (id, value) => {
-    setQuestions(
-      questions.map((q) => {
-        if (q.id === id) {
-          const correctAnswers =
-            value === "single_choice" && q.correctAnswers.length > 0
-              ? [q.correctAnswers[0]]
-              : q.correctAnswers;
-          return { ...q, type: value, correctAnswers };
+  const handleTypeChange = (questionId: string, newType: string) => {
+    setQuestions((prevQuestions) =>
+      prevQuestions.map((q) => {
+        if (q._id === questionId) {
+          return {
+            ...q,
+            question_type: newType,
+            correct_answer: newType === "single_choice" ? [] : q.correct_answer,
+          };
         }
         return q;
       })
     );
   };
 
-  const handleOptionChange = (questionId, optionIndex, value) => {
+  const handleOptionChange = (
+    _id: string,
+    optionIndex: number,
+    value: string
+  ) => {
     setQuestions(
       questions.map((q) =>
-        q.id === questionId
+        q._id === _id
           ? {
               ...q,
-              options: q.options.map((opt, idx) =>
+              answer: q.answer.map((opt, idx) =>
                 idx === optionIndex ? value : opt
               ),
-              correctAnswers: q.correctAnswers.map((ans) =>
-                ans === q.options[optionIndex] ? value : ans
+              correct_answer: q.correct_answer.map((answer) =>
+                answer === q.answer[optionIndex] ? value : answer
               ),
             }
           : q
@@ -202,38 +200,50 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
     );
   };
 
-  const addOption = (questionId) => {
+  const addOption = (_id: string) => {
     setQuestions(
       questions.map((q) =>
-        q.id === questionId ? { ...q, options: [...q.options, ""] } : q
+        q._id === _id ? { ...q, answer: [...q.answer, ""] } : q
       )
     );
   };
 
-  const removeOption = (questionId, optionIndex) => {
+  const removeOption = (_id: string, optionIndex: number) => {
     setQuestions(
       questions.map((q) =>
-        q.id === questionId
+        q._id === _id
           ? {
               ...q,
-              options: q.options.filter((_, idx) => idx !== optionIndex),
+              answer: q.answer.filter((_, idx) => idx !== optionIndex),
+              correct_answer: q.correct_answer.filter(
+                (answer) => answer !== q.answer[optionIndex]
+              ),
             }
           : q
       )
     );
   };
 
-  const handleCorrectAnswerChange = (questionId, optionValue) => {
-    setQuestions(
-      questions.map((q) => {
-        if (q.id === questionId) {
-          if (q.type === "single_choice") {
-            return { ...q, correctAnswers: [optionValue] };
+  const handleCorrectAnswerChange = (
+    questionId: string,
+    selectedOption: string
+  ) => {
+    setQuestions((prevQuestions) =>
+      prevQuestions.map((q) => {
+        if (q._id === questionId) {
+          if (q.question_type === "single_choice") {
+            return {
+              ...q,
+              correct_answer: [selectedOption],
+            };
           } else {
-            const newCorrectAnswers = q.correctAnswers.includes(optionValue)
-              ? q.correctAnswers.filter((val) => val !== optionValue)
-              : [...q.correctAnswers, optionValue];
-            return { ...q, correctAnswers: newCorrectAnswers };
+            const isSelected = q.correct_answer.includes(selectedOption);
+            return {
+              ...q,
+              correct_answer: isSelected
+                ? q.correct_answer.filter((option) => option !== selectedOption)
+                : [...q.correct_answer, selectedOption],
+            };
           }
         }
         return q;
@@ -242,7 +252,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
   };
 
   const handleConsoleLog = () => {
-    console.log("Current Questions State:", questions);
+    console.log(JSON.stringify(questions));
   };
   // Huko additional code
   return (
@@ -400,13 +410,13 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
                 <Form>
                   {questions.map((q) => (
                     <div>
-                      <div key={q.id} className="mb-4">
+                      <div key={q._id} className="mb-4">
                         <div className="flex justify-between items-center">
-                          <div className="text-lg">Question {q.id}</div>
+                          <div className="text-lg">Question {q._id}</div>
                           <Select
-                            value={q.type}
-                            onChange={(value) => handleTypeChange(q.id, value)}
-                            className="w-1/5 mb-2"
+                            value={q.question_type}
+                            onChange={(value) => handleTypeChange(q._id, value)}
+                            className="w-1/4 mb-2"
                           >
                             <Option value="single_choice">Single Choice</Option>
                             <Option value="multiple_choice">
@@ -419,7 +429,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
                             <ReactQuill
                               value={q.question}
                               onChange={(content) =>
-                                handleQuestionChange(q.id, content)
+                                handleQuestionChange(q._id, content)
                               }
                               placeholder="Enter your question"
                             />
@@ -431,20 +441,20 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
                           </Tooltip>
                           <div>Answer</div>
                         </div>
-                        {q.options.map((option, idx) => (
+                        {q.answer.map((option, idx) => (
                           <div key={idx} className="flex items-center mb-2">
-                            {q.type === "single_choice" ? (
+                            {q.question_type === "single_choice" ? (
                               <Radio
-                                checked={q.correctAnswers.includes(option)}
+                                checked={q.correct_answer.includes(option)}
                                 onChange={() =>
-                                  handleCorrectAnswerChange(q.id, option)
+                                  handleCorrectAnswerChange(q._id, option)
                                 }
                               />
                             ) : (
                               <Checkbox
-                                checked={q.correctAnswers.includes(option)}
+                                checked={q.correct_answer.includes(option)}
                                 onChange={() =>
-                                  handleCorrectAnswerChange(q.id, option)
+                                  handleCorrectAnswerChange(q._id, option)
                                 }
                                 className="mr-2"
                               />
@@ -453,22 +463,22 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
                               placeholder={`Option ${idx + 1}`}
                               value={option}
                               onChange={(e) =>
-                                handleOptionChange(q.id, idx, e.target.value)
+                                handleOptionChange(q._id, idx, e.target.value)
                               }
+                              className="mr-2"
                             />
-                            {q.options.length > 2 && (
+                            {q.answer.length > 2 && (
                               <Button
                                 danger
-                                onClick={() => removeOption(q.id, idx)}
+                                onClick={() => removeOption(q._id, idx)}
                                 icon={<MinusCircleOutlined />}
-                                className="ml-2"
                               />
                             )}
                           </div>
                         ))}
                         <Button
                           type="dashed"
-                          onClick={() => addOption(q.id)}
+                          onClick={() => addOption(q._id)}
                           icon={<PlusOutlined />}
                           className="w-full mb-2"
                         >
@@ -476,7 +486,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
                         </Button>
                         <Button
                           danger
-                          onClick={() => removeQuestion(q.id)}
+                          onClick={() => removeQuestion(q._id)}
                           icon={<MinusCircleOutlined />}
                           className="w-full"
                         >
