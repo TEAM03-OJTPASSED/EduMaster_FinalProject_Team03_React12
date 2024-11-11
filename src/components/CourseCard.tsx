@@ -61,9 +61,9 @@ const CourseCard: React.FC<{
           }`}
         >
           <div className="flex-grow">
-            <p className="text-gray-500 text-sm mb-2">
+            <a className="text-gray-500 text-sm mb-2" href={`profile/${course.instructor_id}`}            >
               by {course.instructor_name}
-            </p>
+            </a>
             <h2 className="text-base font-semibold mb-4 overflow-ellipsis overflow-hidden whitespace-nowrap transition group-hover:text-[#FFAB2D]">
               {course.name}
             </h2>
