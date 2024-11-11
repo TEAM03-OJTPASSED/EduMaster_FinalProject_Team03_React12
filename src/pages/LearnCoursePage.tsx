@@ -14,9 +14,11 @@ const token = localStorage.getItem("token");
 const fetchCourse = async (courseId: string) => {
   try {
     const response = await axios.get(
-      `https://edumaster-api-dev.vercel.app/api/client/course/${courseId}`,
+      // `https://edumaster-api-dev.vercel.app/api/client/course/${courseId}`,
+      `http://localhost:3000/api/client/course/${courseId}`,
       token ? { headers: { Authorization: `Bearer ${token}` } } : {}
     );
+    console.log("Response:", response.data);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.status === 500) {
@@ -118,11 +120,11 @@ const LearnCoursePage = () => {
           lesson.is_completed ? "Mark as Completed" : "Mark as Incomplete"
         );
         // Update the lesson's is_completed status in the state
-        setSession((prevSessions :any) => {
+        setSession((prevSessions: Session[] | null) => {
           if (!prevSessions) return null;
-          return prevSessions?.map((sessionItem:any) => ({
+          return prevSessions?.map((sessionItem: Session) => ({
             ...sessionItem,
-            lesson_list: sessionItem.lesson_list.map((lessonItem:any) =>
+            lesson_list: sessionItem.lesson_list.map((lessonItem: Lesson) =>
               lessonItem._id === lesson._id
                 ? { ...lessonItem, is_completed: !lesson.is_completed }
                 : lessonItem
@@ -203,7 +205,7 @@ const LearnCoursePage = () => {
   }
 
   return (
-    <div className="fixed top-0 left-0 z-50 bg-white w-full">
+    <div className="fixed top-0 left-0 z-50 bg-white w-full h-[100vh]">
       <Navbar />
       <div className="flex">
         <div className="w-1/3 p-4 h-[88vh] overflow-y-scroll">
@@ -238,7 +240,7 @@ const LearnCoursePage = () => {
                         }`}
                       >
                         <div>
-                          <div className="flex gap-2 items-center">
+                          <div className="flex gap-2">
                             <div className="w-1/10">
                               {lessonItem.is_completed ? (
                                 <MdOutlineTaskAlt className="w-6 h-6 text-green-500" />
@@ -247,7 +249,7 @@ const LearnCoursePage = () => {
                                   {lessonItem.lesson_type === "video" && (
                                     <MdOutlinePlayCircle className="w-6 h-6" />
                                   )}
-                                  {lessonItem.lesson_type === "text" && (
+                                  {lessonItem.lesson_type === "reading" && (
                                     <FiBookOpen className="w-6 h-6" />
                                   )}
                                 </div>
@@ -288,6 +290,11 @@ const LearnCoursePage = () => {
                       />
                     </div>
                   ))
+                ) : selectedLesson.lesson_type === "assignment" ? (
+                  <div className="w-full">
+                    <h2>Assignment</h2>
+                    <p>{selectedLesson.assignment.name}</p>
+                  </div>
                 ) : (
                   <div
                     className="w-full"

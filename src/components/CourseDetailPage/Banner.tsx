@@ -17,7 +17,7 @@ export const Banner = ({ id, course, isPurchased }: Props) => {
 
   return (
     <div className="font-exo flex flex-col bg-orange-50 px-20 lg:-mx-40 -mx-24 pb-10">
-      <div className="flex gap-8 pt-10">
+      <div className="flex flex-col gap-8 pt-10">
         <div className="lg:w-2/3 flex flex-col gap-4 items-start">
           <div className="bg-orange-500 text-white font-bold px-4 py-2 rounded-lg">
             {course.category_name}
