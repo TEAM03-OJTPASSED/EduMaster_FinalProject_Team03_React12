@@ -15,7 +15,9 @@ import { UserService } from "../../services/user.service";
 import BlogService from "../../services/blog.service";
 import CourseService from "../../services/course.service";
 import CategoryService from "../../services/category.service";
-import PurchaseService from "../../services/purchase.service";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store/store";
+import { User } from "../../models/UserModel";
 
 const cardStyle = {
   borderRadius: "8px",
@@ -29,13 +31,14 @@ const AdminContent = () => {
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
+  const { currentUser } = useSelector((state: RootState) => state.auth.login);
 
   const [counts, setCounts] = useState({
     blogs: 0,
     categories: 0,
     courses: 0,
     users: 0,
-    totalPaid: 0,
+    totalBalance: 0,
   });
 
   const defaultPayload = {
@@ -54,7 +57,7 @@ const AdminContent = () => {
 
   const fetchCounts = async () => {
     try {
-      const [usersRes, blogsRes, coursesRes, categoriesRes, purchaseRes] =
+      const [usersRes, blogsRes, coursesRes, categoriesRes, totalBalanceRes] =
         await Promise.all([
           UserService.getUsers(defaultPayload),
           BlogService.getBlogs(defaultPayload),
@@ -75,31 +78,19 @@ const AdminContent = () => {
               is_deleted: false,
             },
           }),
-          PurchaseService.getPurchases({
-            ...defaultPayload,
-            searchCondition: {
-              ...defaultPayload.searchCondition,
-              is_delete: false,
-              status: "",
-            },
-          }),
-        ]);
 
-      const totalPaid =
-        purchaseRes.data?.pageData?.reduce(
-          (sum, purchase) => sum + purchase.price_paid,
-          0
-        ) || 0;
+          UserService.getUser(currentUser._id),
+        ]);
+      const user = totalBalanceRes?.data as User;
+      const userBalance = user?.balance_total || 0;
 
       setCounts({
         categories: categoriesRes.data?.pageInfo?.totalItems || 0,
         blogs: blogsRes.data?.pageInfo?.totalItems || 0,
         courses: coursesRes.data?.pageInfo?.totalItems || 0,
         users: usersRes.data?.pageInfo?.totalItems || 0,
-        totalPaid,
+        totalBalance: userBalance,
       });
-
-      console.log(totalPaid);
     } catch (err) {
       console.error("Error fetching counts:", err);
     }
@@ -241,7 +232,7 @@ const AdminContent = () => {
                   Total Balance
                 </h2>
                 <p style={{ fontWeight: "bold", fontSize: "24px", margin: 0 }}>
-                  {counts.totalPaid.toFixed(2)}$
+                  {counts.totalBalance}$
                 </p>
               </div>
             </div>

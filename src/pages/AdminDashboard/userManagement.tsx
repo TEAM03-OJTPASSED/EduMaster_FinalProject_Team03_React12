@@ -13,7 +13,7 @@ import DeleteUserModal from "../../components/Admin/AdminModals/DeleteUserModal"
 import { UserSearchParams } from "../../models/SearchInfo.model";
 import { User } from "../../models/UserModel";
 import { UserService } from "../../services/user.service";
-import { useDebouncedSearch } from "../../hooks/useSearch";
+import GlobalSearchUnit from "../../components/GlobalSearchUnit";
 
 const { Option } = Select;
 
@@ -28,16 +28,13 @@ const UserManagement: React.FC = () => {
   const [total, setTotal] = useState(0);
   const [activeTabKey, setActiveTabKey] = useState("active");
   const [searchText, setSearchText] = useState("");
-  const filteredData = useDebouncedSearch(users, searchText, 300, [
-    "name",
-    "email",
-  ]);
+  const [role, setRole] = useState<string | undefined>(undefined);
 
   const fetchUsers = async () => {
     const searchParams: UserSearchParams = {
       searchCondition: {
         keyword: searchText,
-        role: "",
+        role: role,
         status: activeTabKey === "active",
         is_delete: false,
         is_verified: true,
@@ -58,7 +55,14 @@ const UserManagement: React.FC = () => {
     }
   };
 
+  const handleSearchSubmit = (values: Record<string, unknown>) => {
+    setSearchText(values.keyword as string);
+    setRole(values.role as string);
+    fetchUsers();
+  };
+
   const handleEdit = (record: User) => {
+    console.log(record._id);
     setCurrentUser(record);
     setEditVisible(true);
   };
@@ -88,7 +92,7 @@ const UserManagement: React.FC = () => {
   useEffect(() => {
     fetchUsers();
     // }, [pageNum, pageSize, searchText, activeTabKey]);
-  }, [pageNum, pageSize, activeTabKey]);
+  }, [pageNum, pageSize, activeTabKey, role]);
 
   const columns = [
     {
@@ -161,6 +165,12 @@ const UserManagement: React.FC = () => {
     },
   ];
 
+  const roles = [
+    { value: "admin", label: "Admin" },
+    { value: "instructor", label: "Instructor" },
+    { value: "student", label: "Student" },
+  ];
+
   return (
     <div>
       <Card>
@@ -174,13 +184,24 @@ const UserManagement: React.FC = () => {
             children: (
               <>
                 <div className="flex items-center justify-between mb-4">
-                  <Input
+                  <GlobalSearchUnit
+                    placeholder="Search By Course Name"
+                    selectFields={[
+                      {
+                        name: "role",
+                        options: roles,
+                        placeholder: "Filter by Role",
+                      },
+                    ]}
+                    onSubmit={handleSearchSubmit}
+                  />
+                  {/* <Input
                     placeholder="Search By User Name"
                     prefix={<SearchOutlined />}
                     className="w-full md:w-1/3"
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)} // Update searchText on input change
-                  />
+                  /> */}
                   <Button
                     type="primary"
                     onClick={() => setCreateVisible(true)}
@@ -190,7 +211,7 @@ const UserManagement: React.FC = () => {
                   </Button>
                 </div>
                 <Table
-                  dataSource={filteredData}
+                  dataSource={users}
                   columns={columns}
                   pagination={{
                     current: pageNum,

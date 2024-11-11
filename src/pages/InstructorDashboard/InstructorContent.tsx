@@ -5,17 +5,70 @@ import {
   UserOutlined,
   SnippetsOutlined,
 } from "@ant-design/icons";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import CourseService from "../../services/course.service";
 import PayoutService from "../../services/payout.service";
 import { Payout, PayoutStatusEnum } from "../../models/Payout.model";
 import dayjs from "dayjs";
+import { RootState } from "../../redux/store/store";
+import { UserService } from "../../services/user.service";
+import { User } from "../../models/UserModel";
+import { useSelector } from "react-redux";
 
-const cardStyle = {
-  borderRadius: "8px",
-  boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
-  margin: "8px 0",
-};
+// Tạo một component Card để tái sử dụng
+
+interface InfoCardProps {
+  title: string;
+  value: string | number;
+  icon: React.ReactNode;
+  gradient: string;
+  color: string;
+}
+
+const InfoCard: React.FC<InfoCardProps> = ({
+  title,
+  value,
+  icon,
+  gradient,
+  color,
+}) => (
+  <Col className="gutter-row" xs={24} sm={12} md={8} lg={6}>
+    <Card
+      style={{
+        borderRadius: "8px",
+        boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
+        margin: "8px 0",
+        background: gradient,
+        borderBottom: `4px solid ${color}`,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <div style={{ marginRight: "16px" }}>
+          <div
+            style={{
+              backgroundColor: color,
+              borderRadius: "50%",
+              padding: "20px",
+              display: "inline-block",
+            }}
+          >
+            {icon}
+          </div>
+        </div>
+        <div style={{ flex: 1, textAlign: "right" }}>
+          <h2
+            style={{ fontWeight: "bold", fontSize: "15px", color: "#4a5568" }}
+          >
+            {title}
+          </h2>
+          <p style={{ fontWeight: "bold", fontSize: "24px", margin: 0 }}>
+            {value}
+          </p>
+        </div>
+      </div>
+    </Card>
+  </Col>
+);
 
 const InstructorContent = () => {
   const [_payout, setPayout] = useState<Payout[]>([]);
@@ -23,13 +76,8 @@ const InstructorContent = () => {
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
-  const [totalBalanceInstructorReceived, setTotalBalanceInstructorReceived] =
-    useState(0); // State để lưu tổng số tiền
-
-  const [counts, setCounts] = useState({
-    courses: 0,
-    // subcribers: 0,
-  });
+  const { currentUser } = useSelector((state: RootState) => state.auth.login);
+  const [counts, setCounts] = useState({ courses: 0, totalBalance: 0 });
 
   const defaultPayload = {
     searchCondition: {
@@ -45,9 +93,10 @@ const InstructorContent = () => {
     },
   };
 
-  const fetchCounts = async () => {
+  // Tách fetchCounts vào hook useCallback để giảm re-fetch
+  const fetchCounts = useCallback(async () => {
     try {
-      const [coursesRes] = await Promise.all([
+      const [coursesRes, totalBalanceRes] = await Promise.all([
         CourseService.getCourses({
           ...defaultPayload,
           searchCondition: {
@@ -57,30 +106,21 @@ const InstructorContent = () => {
             category_id: "",
           },
         }),
+        UserService.getUser(currentUser._id),
       ]);
-
-      // Tính tổng số học viên (enrolled) của tất cả khóa học
-      // const totalEnrolled =
-      //   coursesRes.data?.pageData?.reduce(
-      //     (sum, course) => sum + (course.enrolled || 0),
-      //     0
-      //   ) || 0;
-
+      const user = totalBalanceRes?.data as User;
+      const userBalance = user?.balance_total || 0;
       setCounts({
         courses: coursesRes.data?.pageInfo?.totalItems || 0,
-        // subcribers: totalEnrolled,
+        totalBalance: userBalance,
       });
     } catch (err) {
       console.error("Error fetching counts:", err);
     }
-  };
+  }, [currentUser._id]);
 
-  const handleTableChange = (pagination: any) => {
-    setPageNum(pagination.current);
-    setPageSize(pagination.pageSize);
-  };
-
-  const fetchPayout = async () => {
+  // Tránh tái tạo fetchPayout mỗi lần render
+  const fetchPayout = useCallback(async () => {
     const statuses = [PayoutStatusEnum.NEW, PayoutStatusEnum.COMPLETED];
     const searchParams = {
       searchCondition: {
@@ -115,13 +155,6 @@ const InstructorContent = () => {
             })) || []
         )
       );
-      setTotalBalanceInstructorReceived(
-        responseData.reduce(
-          (sum, payout) => sum + (payout.balance_instructor_received || 0),
-          0
-        )
-      );
-
       setPayout(responseData);
       setTotal(
         responses.reduce(
@@ -132,12 +165,17 @@ const InstructorContent = () => {
     } catch (err) {
       console.error("Error fetching users:", err);
     }
-  };
+  }, [pageNum, pageSize]);
 
   useEffect(() => {
     fetchCounts();
     fetchPayout();
-  }, [pageNum, pageSize]);
+  }, [fetchCounts, fetchPayout]);
+
+  const handleTableChange = (pagination: any) => {
+    setPageNum(pagination.current);
+    setPageSize(pagination.pageSize);
+  };
 
   const columns = [
     {
@@ -184,122 +222,29 @@ const InstructorContent = () => {
         <span style={{ fontSize: "18px" }}>Instructor Dashboard</span>
       </Divider>
       <Row gutter={16}>
-        <Col className="gutter-row" xs={24} sm={12} md={8} lg={6}>
-          <Card
-            style={{
-              ...cardStyle,
-              background: "linear-gradient(to bottom, #c6f6d5, #f0fff4)",
-              borderBottom: "4px solid #38a169",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div style={{ marginRight: "16px" }}>
-                <div
-                  style={{
-                    backgroundColor: "#38a169",
-                    borderRadius: "50%",
-                    padding: "20px",
-                    display: "inline-block",
-                  }}
-                >
-                  <WalletOutlined style={{ fontSize: "24px", color: "#fff" }} />
-                </div>
-              </div>
-              <div style={{ flex: 1, textAlign: "right" }}>
-                <h2
-                  style={{
-                    fontWeight: "bold",
-                    fontSize: "15px",
-                    color: "#4a5568",
-                  }}
-                >
-                  Total Balance
-                </h2>
-                <p style={{ fontWeight: "bold", fontSize: "24px", margin: 0 }}>
-                  {totalBalanceInstructorReceived.toFixed(2)}$
-                </p>
-              </div>
-            </div>
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} md={8} lg={6}>
-          <Card
-            style={{
-              ...cardStyle,
-              background: "linear-gradient(to bottom, #bee3f8, #ebf8ff)",
-              borderBottom: "4px solid #4299e1",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div style={{ marginRight: "16px" }}>
-                <div
-                  style={{
-                    backgroundColor: "#4299e1",
-                    borderRadius: "50%",
-                    padding: "20px",
-                    display: "inline-block",
-                  }}
-                >
-                  <SnippetsOutlined
-                    style={{ fontSize: "24px", color: "#fff" }}
-                  />
-                </div>
-              </div>
-              <div style={{ flex: 1, textAlign: "right" }}>
-                <h2
-                  style={{
-                    fontWeight: "bold",
-                    fontSize: "15px",
-                    color: "#4a5568",
-                  }}
-                >
-                  Total Courses
-                </h2>
-                <p style={{ fontWeight: "bold", fontSize: "24px", margin: 0 }}>
-                  {counts.courses}
-                </p>
-              </div>
-            </div>
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} md={8} lg={6}>
-          <Card
-            style={{
-              ...cardStyle,
-              background: "linear-gradient(to bottom, #fed7e2, #fff5f7)",
-              borderBottom: "4px solid #d53f8c",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div style={{ marginRight: "16px" }}>
-                <div
-                  style={{
-                    backgroundColor: "#d53f8c",
-                    borderRadius: "50%",
-                    padding: "20px",
-                    display: "inline-block",
-                  }}
-                >
-                  <UserOutlined style={{ fontSize: "24px", color: "#fff" }} />
-                </div>
-              </div>
-              <div style={{ flex: 1, textAlign: "right" }}>
-                <h2
-                  style={{
-                    fontWeight: "bold",
-                    fontSize: "15px",
-                    color: "#4a5568",
-                  }}
-                >
-                  Total Subscribers
-                </h2>
-                <p style={{ fontWeight: "bold", fontSize: "24px", margin: 0 }}>
-                  249{" "}
-                </p>
-              </div>
-            </div>
-          </Card>
-        </Col>
+        <InfoCard
+          title="Total Balance"
+          value={`${counts.totalBalance}$`}
+          icon={<WalletOutlined style={{ fontSize: "24px", color: "#fff" }} />}
+          gradient="linear-gradient(to bottom, #c6f6d5, #f0fff4)"
+          color="#38a169"
+        />
+        <InfoCard
+          title="Total Courses"
+          value={counts.courses}
+          icon={
+            <SnippetsOutlined style={{ fontSize: "24px", color: "#fff" }} />
+          }
+          gradient="linear-gradient(to bottom, #bee3f8, #ebf8ff)"
+          color="#4299e1"
+        />
+        <InfoCard
+          title="Total Subscribers"
+          value={249}
+          icon={<UserOutlined style={{ fontSize: "24px", color: "#fff" }} />}
+          gradient="linear-gradient(to bottom, #fed7e2, #fff5f7)"
+          color="#d53f8c"
+        />
       </Row>
       <Divider orientation="left">
         <span style={{ fontSize: "18px" }}>Latest Transactions</span>
@@ -317,7 +262,7 @@ const InstructorContent = () => {
         rowKey="_id"
         bordered
         style={{ borderRadius: "8px" }}
-        scroll={{ x: true }} // Thêm scroll cho bảng
+        scroll={{ x: true }}
       />
     </div>
   );
