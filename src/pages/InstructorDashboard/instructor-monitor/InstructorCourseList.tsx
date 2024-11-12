@@ -78,9 +78,6 @@ const InstructorCourseList: React.FC = () => {
     setSelectedCourse(null); // Reset selected course when closing
   };
 
-
-
-  
   const fetchCourses = async () => {
     setLoading(true);
     try {
@@ -114,7 +111,7 @@ const InstructorCourseList: React.FC = () => {
       }
     });
   };
-  
+
 
   const handleCreateCourse = async (values: CourseRequest) => {
     const { price, discount, video_url, image_url, ...otherValues } = values;
@@ -338,7 +335,7 @@ const InstructorCourseList: React.FC = () => {
               }
               title={
                 record.status !== CourseStatusEnum.NEW &&
-                record.status !== CourseStatusEnum.REJECT
+                  record.status !== CourseStatusEnum.REJECT
                   ? "Can only send NEW or REJECT courses"
                   : "Send to admin for approval"
               }
@@ -357,25 +354,25 @@ const InstructorCourseList: React.FC = () => {
     CourseStatusEnum.REJECT,
     CourseStatusEnum.WAITING_APPROVE,
   ];
-  
+
   return (
     <Card>
       <h3 className="text-2xl my-5">Course Management</h3>
       <div className="flex justify-between">
-        <GlobalSearchUnit 
-            placeholder="Search By Course Name"
-            selectFields={[
-              {
-                name: "status",
-                options: statuses.map((status) => ({label: statusFormatter(status), value: status})),
-                placeholder: "Filter by Status"
-              },{
-                name: "category_id",
-                options: listCategories.map((category) => ({label: category.name, value: category._id})),
-                placeholder: "Filter by Category"
-              }
-            ]}
-            onSubmit={handleSearch}
+        <GlobalSearchUnit
+          placeholder="Search By Course Name"
+          selectFields={[
+            {
+              name: "status",
+              options: statuses.map((status) => ({ label: statusFormatter(status), value: status })),
+              placeholder: "Filter by Status"
+            }, {
+              name: "category_id",
+              options: listCategories.map((category) => ({ label: category.name, value: category._id })),
+              placeholder: "Filter by Category"
+            }
+          ]}
+          onSubmit={handleSearch}
         />
         <div>
           <Button
@@ -408,11 +405,11 @@ const InstructorCourseList: React.FC = () => {
         footer={null}
         width={1000}
         forceRender
-        destroyOnClose={true} 
+        destroyOnClose={true}
       >
         {selectedCourse && (
           <CourseOption
-            key={selectedCourse._id} 
+            key={selectedCourse._id}
             categories={listCategories}
             initializeValue={selectedCourse}
             mode="update"
