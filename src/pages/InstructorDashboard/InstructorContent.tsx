@@ -71,7 +71,6 @@ const InfoCard: React.FC<InfoCardProps> = ({
 );
 
 const InstructorContent = () => {
-  const [_payout, setPayout] = useState<Payout[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -155,7 +154,6 @@ const InstructorContent = () => {
             })) || []
         )
       );
-      setPayout(responseData);
       setTotal(
         responses.reduce(
           (sum, response) => sum + (response.data?.pageInfo?.totalItems || 0),

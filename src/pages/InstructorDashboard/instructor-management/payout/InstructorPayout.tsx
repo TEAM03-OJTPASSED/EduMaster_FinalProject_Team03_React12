@@ -7,6 +7,10 @@ const items: MenuProps["items"] = [
     key: "Request Payout",
   },
   {
+    label: "Awaiting Payout",
+    key: "Awaiting Payout",
+  },
+  {
     label: "Completed Payout",
     key: "Completed Payout",
   },
@@ -32,12 +36,15 @@ const InstructorPayout = () => {
       case "Request Payout":
         naviagte("/dashboard/instructor/payout", {state: {status: ["Request Payout", "New"]} });
         break;
+      case "Awaiting Payout":
+        naviagte("awaiting-payout", {state: {status: ["request_payout", "Awaiting Payout"]} });
+        break; 
       case "Completed Payout":
         naviagte("completed-payout", {state: {status: "Completed"} });
         break;
       case "Rejected Payout":
         naviagte("rejected-payout", {state: {status: "Rejected"} });
-        break;
+        break;      
       default:
         break;
     }

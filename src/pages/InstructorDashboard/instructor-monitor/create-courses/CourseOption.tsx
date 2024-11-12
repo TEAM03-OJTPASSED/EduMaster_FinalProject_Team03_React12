@@ -23,7 +23,7 @@ import { Category } from "../../../../models/Category.model";
 type CourseInformationProps = {
   initializeValue?: Course;
   mode: "create" | "update";
-  isLoading: boolean;
+  isLoading?: boolean;
   onFinished: FormProps["onFinish"];
   categories: Category[];
 };
@@ -36,7 +36,6 @@ const CourseOption: React.FC<CourseInformationProps> = ({
   initializeValue,
   mode,
   onFinished,
-  isLoading,
   categories,
 }) => {
   const [imageFileList, setImageFileList] = useState<UploadFile[]>([]);
@@ -296,7 +295,6 @@ const CourseOption: React.FC<CourseInformationProps> = ({
       {/* Button Submit */}
       <Form.Item>
         <Button
-          loading={isLoading}
           className="w-full"
           variant="solid"
           color="primary"

@@ -48,7 +48,6 @@ const InstructorSessionList = () => {
   const [isModalCreateVisible, setIsModalCreateVisible] = useState(false);
   const [listCourses, setListCourses] = useState<Course[]>([]);
   const [listSessions, setListSessions] = useState<Session[]>([]);
-  const [loading, setLoading] = useState(false);
   const [searchParams, setSearchParams] = useState<GetSessions>(initialSessionsParams)
 
   const showModal = (session: Session) => {
@@ -68,23 +67,17 @@ const InstructorSessionList = () => {
   };
 
   const fetchCourses = async () => {
-    setLoading(true);
-    try {
+    
+    
       const response = await CourseService.getCourses(initialCoursesParams);
       setListCourses(response?.data?.pageData ?? []);
-    } finally {
-      setLoading(false); 
-    }
   };
 
   const fetchSessions = async () => {
-    setLoading(true); 
-    try {
+     
+    
       const response = await SessionService.getSessions(searchParams);
       setListSessions(response?.data?.pageData ?? []);
-    } finally {
-      setLoading(false); 
-    }
   };
 
   const handleCreateSession = async (values: SessionRequest) => {
@@ -94,23 +87,20 @@ const InstructorSessionList = () => {
       position_order: position_order ? Number(position_order) : 0,
     };
   
-    setLoading(true);
-    try {
+    
+    
       const response = await SessionService.createSession(numericValues);
       if (response.success) {
         handleCancel(); // Close modal if successful
         handleNotify("Session Created Successfully", "The session has been created successfully.");
         await fetchSessions(); // Refresh the course list
       }
-    } finally {
-      setLoading(false); // Ensures loading is set to false regardless of success/failure
-    }
   };
 
 
   const handleUpdateSession = async (updatedSession: SessionRequest) => {
-    setLoading(true);
-    try {
+    
+    
       if (selectedSession) {
         const response = await SessionService.updateSession(selectedSession._id, updatedSession);
         if (response.success) {
@@ -118,22 +108,16 @@ const InstructorSessionList = () => {
           await fetchSessions(); // Refresh the course list
         }
       }
-    } finally {
-      setLoading(false); 
-    }
   }
 
   const handleDeleteSession = async (sessionId: string) => {
-    setLoading(true);
-    try {
+    
+    
       const response = await SessionService.deleteSession(sessionId);
       if (response.success) {
         handleNotify("Session Deleted Successfully", "The Session has been deleted successfully.");
         await fetchSessions(); // Refresh the course list
       }
-    } finally {
-      setLoading(false); // Ensures loading is set to false regardless of success/failure
-    }
   }
 
   const handleSearch = (values: Record<string, any>) => {
@@ -187,11 +171,19 @@ const InstructorSessionList = () => {
       title: "Course Name",
       dataIndex: "course_name",
       key: "course_name",
+      ellipsis: true,
+      render: (text:string) => (
+        <span style={{ maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-block' }}>
+          {text}
+        </span>
+      ),
+
     },
     {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
+      ellipsis: true,
       render: (record: Session) => {
         return <div>{dayjs(record._id).format("DD/MM/YYYY")}</div>;
       },
@@ -272,7 +264,6 @@ const InstructorSessionList = () => {
         bordered
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
-        loading={loading}
       />
 
       {/* update */}
@@ -288,7 +279,6 @@ const InstructorSessionList = () => {
         {selectedSession && (
           <SessionOptions
             key={selectedSession._id}
-            isLoading={loading}
             listCourses={listCourses}
             initialState={selectedSession}
             mode="update"
@@ -312,7 +302,6 @@ const InstructorSessionList = () => {
           listCourses={listCourses}
           mode="create"
           onFinish={handleCreateSession}
-          isLoading={loading}
         />
       </Modal>
     </Card>

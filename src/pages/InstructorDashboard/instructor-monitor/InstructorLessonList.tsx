@@ -8,7 +8,11 @@ import {
 
 import dayjs from "dayjs";
 import LessonIOptions from "./create-courses/LessonIOptions";
-import { GetLessons, Lesson, LessonRequest } from "../../../models/Lesson.model";
+import {
+  GetLessons,
+  Lesson,
+  LessonRequest,
+} from "../../../models/Lesson.model";
 import CourseService from "../../../services/course.service";
 import SessionService from "../../../services/session.service";
 import { Course, GetCourses } from "../../../models/Course.model";
@@ -16,7 +20,6 @@ import { GetSessions, Session } from "../../../models/Session.model";
 import LessonService from "../../../services/lesson.service";
 import { handleNotify } from "../../../utils/handleNotify";
 import GlobalSearchUnit from "../../../components/GlobalSearchUnit";
-
 
 const initialCoursesParams: GetCourses = {
   pageInfo: {
@@ -27,7 +30,7 @@ const initialCoursesParams: GetCourses = {
     keyword: "",
     is_deleted: false,
     category_id: "",
-  }
+  },
 };
 
 const initialSessionsParams: GetSessions = {
@@ -40,7 +43,7 @@ const initialSessionsParams: GetSessions = {
     is_deleted: false,
     is_position_order: true,
     course_id: "",
-  }
+  },
 };
 
 const initialLessonsParams: GetLessons = {
@@ -52,8 +55,8 @@ const initialLessonsParams: GetLessons = {
     keyword: "",
     is_deleted: false,
     course_id: "",
-    is_position_order: false
-  }
+    is_position_order: false,
+  },
 };
 
 const InstructorLessonList = () => {
@@ -65,16 +68,20 @@ const InstructorLessonList = () => {
   const [listCourses, setListCourses] = useState<Course[]>([]);
   const [listSessions, setListSessions] = useState<Session[]>([]);
   const [listLessons, setListLessons] = useState<Lesson[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [searchParams, setSearchParams] = useState<GetLessons>(initialLessonsParams)
+  const [searchParams, setSearchParams] =
+    useState<GetLessons>(initialLessonsParams);
 
   const showModal = (lesson: Lesson) => {
     setSelectedLesson(lesson);
+    fetchCourses()
+    fetchLessons()
     setIsModalVisible(true);
   };
 
   const showCreateModal = () => {
     setIsModalCreateVisible(true);
+    fetchCourses()
+    fetchLessons()
   };
 
   const resetModalState = () => {
@@ -87,43 +94,30 @@ const InstructorLessonList = () => {
     resetModalState();
   };
 
-
-
   const fetchCourses = async () => {
-    setLoading(true);
-    try {
-      const response = await CourseService.getCourses(initialCoursesParams);
-      setListCourses(response?.data?.pageData ?? []);
-    } finally {
-      setLoading(false); 
-    }
+    const response = await CourseService.getCourses(initialCoursesParams);
+    setListCourses(response?.data?.pageData ?? []);
   };
 
   const fetchSessions = async () => {
-    setLoading(true); 
-    try {
-      const response = await SessionService.getSessions(initialSessionsParams);
-      setListSessions(response?.data?.pageData ?? []);
-    } finally {
-      setLoading(false); 
-    }
+    const response = await SessionService.getSessions(initialSessionsParams);
+    setListSessions(response?.data?.pageData ?? []);
   };
-
 
   const fetchLessons = async () => {
-    setLoading(true); 
-    try {
-      const response = await LessonService.getLessons(searchParams);
-      setListLessons(response?.data?.pageData ?? []);
-    } finally {
-      setLoading(false); 
-    }
+    const response = await LessonService.getLessons(searchParams);
+    setListLessons(response?.data?.pageData ?? []);
   };
 
-  
-
   const handleCreateLesson = async (values: LessonRequest) => {
-    const { position_order, full_time, image_url, video_url, assignment, ...otherValues } = values;
+    const {
+      position_order,
+      full_time,
+      image_url,
+      video_url,
+      assignment,
+      ...otherValues
+    } = values;
     const numericValues = {
       ...otherValues,
       position_order: position_order ? Number(position_order) : 0,
@@ -132,53 +126,50 @@ const InstructorLessonList = () => {
       image_url: image_url || "",
       assignment: assignment || "",
     };
-  
-    setLoading(true);
-    try {
-      const response = await LessonService.createLesson(numericValues);
-      if (response.success) {
-        resetModalState();
-        handleNotify("Lesson Created Successfully", "The lesson has been created successfully.");
-        await fetchLessons();
-      }
-    } finally {
-      setLoading(false);
+
+    const response = await LessonService.createLesson(numericValues);
+    if (response.success) {
+      resetModalState();
+      handleNotify(
+        "Lesson Created Successfully",
+        "The lesson has been created successfully."
+      );
+      await fetchLessons();
     }
   };
 
   const handleUpdateLesson = async (updatedLesson: LessonRequest) => {
-    setLoading(true);
-    try {
-      if (selectedLesson) {
-        const response = await LessonService.updateLesson(selectedLesson._id, updatedLesson);
-        if (response.success) {
-          resetModalState();
-          handleNotify("Lesson Updated Successfully", "The lesson has been updated successfully.");
-          await fetchLessons();
-        }
+    if (selectedLesson) {
+      const response = await LessonService.updateLesson(
+        selectedLesson._id,
+        updatedLesson
+      );
+      if (response.success) {
+        resetModalState();
+        handleNotify(
+          "Lesson Updated Successfully",
+          "The lesson has been updated successfully."
+        );
+        await fetchLessons();
       }
-    } finally {
-      setLoading(false); 
     }
   };
 
   const handleDeleteLesson = async (lessonId: string) => {
-    setLoading(true);
-    try {
-      const response = await LessonService.deleteLesson(lessonId);
-      if (response.success) {
-        handleNotify("Lesson Deleted Successfully", "The lesson has been deleted successfully.");
-        await fetchLessons();
-      }
-    } finally {
-      setLoading(false);
+    const response = await LessonService.deleteLesson(lessonId);
+    if (response.success) {
+      handleNotify(
+        "Lesson Deleted Successfully",
+        "The lesson has been deleted successfully."
+      );
+      await fetchLessons();
     }
   };
 
   useEffect(() => {
-    fetchCourses();
     fetchSessions();
-  }, []);
+    fetchCourses();
+  }, [searchParams]);
 
   useEffect(() => {
     fetchLessons();
@@ -249,11 +240,9 @@ const InstructorLessonList = () => {
         course_id: values.course_id,
         session_id: values.session_id,
         keyword: values.keyword,
-
-      }
+      },
     });
   };
-
 
   // const handleCourseChange = (courseId: string) => {
   //   setSelectedCourse(courseId);
@@ -269,35 +258,33 @@ const InstructorLessonList = () => {
       <h3 className="text-2xl my-5">Lesson Management</h3>
       <div className="flex justify-between">
         <div className="flex justify-between gap-4 mb-5 overflow-hidden">
-          <GlobalSearchUnit 
+          <GlobalSearchUnit
             onSubmit={handleSearch}
             placeholder="Search by Lesson Name"
             isDependentSelect={true}
             selectFields={[
               {
                 name: "course_id",
-                placeholder:"Filter by Course",
-                options: listCourses.map(course => ({
+                placeholder: "Filter by Course",
+                options: listCourses.map((course) => ({
                   value: course._id,
                   label: course.name,
-                }))
+                })),
+                // onClick: () => fetchCourses()
               },
               {
                 name: "session_id",
-                placeholder:"Filter by Session",
-                options: listSessions.map(session => ({
+                placeholder: "Filter by Session",
+                options: listSessions.map((session) => ({
                   value: session._id,
                   label: session.name,
                   dependence: session.course_id,
                 })),
                 dependenceName: "course_id",
-
+                // onClick: () => fetchCourses()
               },
-
             ]}
           />
-
-
 
           {/* <Input
             placeholder="Search By Lesson Name"
@@ -356,7 +343,6 @@ const InstructorLessonList = () => {
         bordered
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
-        loading={loading}
       />
 
       <Modal
@@ -372,7 +358,6 @@ const InstructorLessonList = () => {
           <LessonIOptions
             listCourses={listCourses}
             listSessions={listSessions}
-            isLoading={loading}
             onFinished={handleUpdateLesson}
             mode="update"
             initialValues={selectedLesson}
@@ -382,7 +367,6 @@ const InstructorLessonList = () => {
 
       <Modal
         title={<h1 className="text-lg">Lesson Details</h1>}
-        
         open={isModalCreateVisible}
         onCancel={handleCancel}
         footer={null}
@@ -390,13 +374,10 @@ const InstructorLessonList = () => {
         width={1200}
         className="min-h-800"
         destroyOnClose={true}
-
-        
       >
         <LessonIOptions
           onFinished={handleCreateLesson}
           mode="create"
-          isLoading={loading}
           listCourses={listCourses}
           listSessions={listSessions}
         />

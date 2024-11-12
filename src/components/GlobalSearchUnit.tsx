@@ -9,6 +9,7 @@ export interface SelectField {
   options: Array<{ value: string; label: string; dependence?: string }>;
   placeholder?: string;
   dependenceName?: string; // Name of the dependence Select field
+  // onClick?: () => void;
 }
 
 interface GlobalSearchUnitProps {
@@ -91,6 +92,7 @@ const SelectFields = ({
         field.dependenceName ? (
           <Form.Item key={field.name} name={field.name}>
             <Select
+              // onClick={() => field.onClick && field.onClick()}
               disabled={trackFormFields?.[field.dependenceName] === undefined}
               allowClear
               placeholder={field.placeholder ?? `Select ${field.name}`}
@@ -120,6 +122,7 @@ const SelectFields = ({
         ) : (
           <Form.Item key={field.name} name={field.name}>
             <Select
+              // onClick={() => field.onClick && field.onClick()}
               allowClear
               placeholder={field.placeholder ?? `Select ${field.name}`}
               className="custom-selector w-full max-w-60"

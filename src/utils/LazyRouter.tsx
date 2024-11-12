@@ -149,3 +149,8 @@ export const PayoutManagement = React.lazy(
   () => import("../pages/AdminDashboard/payoutManagement")
 );
 export const LearnCourse = React.lazy(() => import("../pages/LearnCoursePage"));
+
+export const AwaitingPayout = React.lazy(() => import("../pages/InstructorDashboard/instructor-management/payout/AwaitingPayout"));
+
+
+
