@@ -4,10 +4,12 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import {
   Button,
   Checkbox,
+  Col,
   Form,
   FormProps,
   Input,
   Radio,
+  Row,
   Select,
   Tooltip,
   Upload,
@@ -25,6 +27,10 @@ import { Course } from "../../../../models/Course.model";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { Question } from "../../../../models/Question.model";
+import ReactPlayer from "react-player";
+import { API_UPLOAD_FILE } from "../../../../constants/api/upload";
+import { handleNotify } from "../../../../utils/handleNotify";
+import { uploadCustomRequest } from "../../../../utils/uploadCustomReuquest";
 
 type LessonOptionsProps = {
   initialValues?: Lesson;
@@ -32,6 +38,7 @@ type LessonOptionsProps = {
   onFinished: FormProps["onFinish"];
   listSessions: Session[];
   listCourses: Course[];
+  onCourseChange: (value: string) => void;
 };
 
 const LessonIOptions: React.FC<LessonOptionsProps> = ({
@@ -40,6 +47,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
   onFinished,
   listCourses,
   listSessions,
+  onCourseChange
 }) => {
   const [imageFileList, setImageFileList] = useState<UploadFile[]>([]);
   const [videoFileList, setVideoFileList] = useState<UploadFile[]>([]);
@@ -50,7 +58,6 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | undefined>(
     initialValues?.video_url
   );
-  const [filteredSessions, setFilteredSessions] = useState<Session[]>([]);
 
   useEffect(() => {
     if (mode === "update") {
@@ -93,12 +100,9 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
       form.setFieldsValue({
         session_id: initialValues?.session_id ?? undefined,
       }); // Reset session selection
-      const filtered = listSessions.filter(
-        (session) => session.course_id === courseId
-      );
-      setFilteredSessions(filtered);
+      onCourseChange(courseId);
     },
-    [form, listSessions, setFilteredSessions, initialValues]
+    [form, listSessions, initialValues]
   );
 
   const handleLessonType = () => {
@@ -252,9 +256,9 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
     );
   };
 
-  const handleConsoleLog = () => {
-    console.log(JSON.stringify(questions));
-  };
+  // const handleConsoleLog = () => {
+  //   console.log(JSON.stringify(questions));
+  // };
 
   const onFinish = (values: {
     lesson_type: LessonTypeEnum;
@@ -268,11 +272,12 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
         question_list: sanitizedQuestions,
       });
     }
-    console.log("Form Values:", values);
     if (onFinished) {
       onFinished(values);
     }
   };
+
+
 
   // Huko additional code
   return (
@@ -315,12 +320,15 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
         >
           <Select
             placeholder="Select Session"
-            options={filteredSessions.map((session) => ({
+            options={listSessions.map((session) => ({
               label: session.name,
               value: session._id,
             }))}
+            disabled={!form.getFieldValue("course_id")}
+
           />
         </Form.Item>
+        {/* {(form.getFieldValue("course_id")).toString()} */}
 
         <Form.Item
           label="Lesson Type"
@@ -335,7 +343,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
               { label: "Reading", value: LessonTypeEnum.READING },
               { label: "Video", value: LessonTypeEnum.VIDEO },
               { label: "Image", value: LessonTypeEnum.IMAGE },
-              { label: "Assignment", value: LessonTypeEnum.ASSIGNMENT },
+              //{ label: "Assignment", value: LessonTypeEnum.ASSIGNMENT },
             ]}
           />
         </Form.Item>
@@ -417,12 +425,14 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
               >
                 <div className="space-y-4">
                   <Upload
+                    customRequest={uploadCustomRequest}
                     action="https://api.cloudinary.com/v1_1/dz2dv8lk4/upload?upload_preset=edumaster1"
                     accept="image/*"
                     listType="picture-card"
                     fileList={imageFileList}
                     onChange={({ fileList }) => setImageFileList(fileList)}
                     maxCount={1}
+                    
                   >
                     {imageFileList.length >= 1 ? null : (
                       <div>
@@ -454,36 +464,56 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
                     }
                   />
                 </Form.Item>
-                <Form.Item
-                  label="Lesson Video"
-                  name="video_url"
-                  rules={[{ required: true, message: "Please input video" }]}
-                >
-                  <div className="space-y-4">
-                    <Upload
-                      action="https://api.cloudinary.com/v1_1/dz2dv8lk4/upload?upload_preset=edumaster1"
-                      accept="video/*"
-                      listType="picture-card"
-                      fileList={videoFileList}
-                      onChange={handleVideoChange}
-                      maxCount={1}
+                <Col span={12}>
+                  <Form.Item
+                    label="Lesson Video"
+                    name="video_url"
+                    rules={[{ required: true, message: "Please input video" }]}
+                  >
+                    <Row gutter={16} align="middle">
+                      <Col span={8}>
+                        <Upload
+                          action={API_UPLOAD_FILE}
+                          customRequest={uploadCustomRequest}
+                          accept="video/*"
+                          listType="picture-card"
+                          fileList={videoFileList}
+                          onChange={handleVideoChange}
+                          maxCount={1}
+                          showUploadList
+                          beforeUpload={(file) => {
+                        const isSupportedFormat = ["video/mp4", "video/webm", "video/ogg", "video/mov"].includes(file.type);
+                        if (!isSupportedFormat) {
+                          handleNotify("File format not supported","You can only upload MP4, WebM, MOV or OGG video files!", 'error');
+                        }
+                        return isSupportedFormat || Upload.LIST_IGNORE; 
+                      }}
                     >
-                      {videoFileList.length >= 1 ? null : (
-                        <div>
-                          <PlusOutlined className="h-5 w-5" />
-                          <div>Upload</div>
-                        </div>
-                      )}
-                    </Upload>
-                  </div>
-                  {videoPreviewUrl && (
-                    <video
-                      src={videoPreviewUrl}
-                      controls
-                      className="w-full rounded-lg"
-                    />
-                  )}
-                </Form.Item>
+                          {videoFileList.length >= 1 ? null : (
+                            <div>
+                              <PlusOutlined className="h-5 w-5" />
+                              <div>Upload</div>
+                            </div>
+                          )}
+                        </Upload>
+                      </Col>
+
+                      <Col span={16}>
+                        {videoPreviewUrl && (
+                          <div style={{ width: "100%", overflow: "hidden" }}>
+                            <ReactPlayer
+                              url={videoPreviewUrl}
+                              width="100%"
+                              height="auto" // Adjusts height to maintain aspect ratio
+                              controls
+                              style={{ maxWidth: "400px" }} // Limit max width
+                            />
+                          </div>
+                        )}
+                      </Col>
+                    </Row>
+                  </Form.Item>
+                </Col>
               </div>
             )}
 
@@ -491,8 +521,8 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
               <div className="h-[70vh] w-full overflow-y-scroll">
                 <Form.Item name="assignment">
                   {questions.map((q) => (
-                    <div>
-                      <div key={q._id} className="mb-4">
+                    <div key={q._id}>
+                      <div className="mb-4">
                         <div className="flex justify-between items-center">
                           <div className="text-lg">Question {q._id}</div>
                           <Select
@@ -584,13 +614,6 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
                     className="w-full"
                   >
                     Add Question
-                  </Button>
-                  <Button
-                    type="primary"
-                    className="w-full mt-4"
-                    onClick={() => handleConsoleLog()}
-                  >
-                    Submit
                   </Button>
                 </Form.Item>
               </div>

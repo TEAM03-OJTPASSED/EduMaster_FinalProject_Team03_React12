@@ -1,11 +1,10 @@
-import { Button, Card, Input, Modal, Table, Tag } from "antd";
+import { Button, Card, Input, Modal, Table, Select, Tag } from "antd";
 import {
+  SearchOutlined,
   PlusCircleOutlined,
   DeleteOutlined,
   EditOutlined,
-  SearchOutlined,
 } from "@ant-design/icons";
-import _ from "lodash";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import CreateBlog from "./blog/CreateBlog";
@@ -33,19 +32,33 @@ const BlogManagement = () => {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isModalEditVisible, setIsModalEditVisible] = useState(false);
   const [editBlogData, setEditBlogData] = useState<Blog | null>(null);
+  const [fetchedBlogs, setFetchedBlogs] = useState<Blog[]>([]);
   const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [filteredBlogs, setFilteredBlogs] = useState<Blog[]>([]);
-  const [searchParams] = useState<BlogSearchParams>(initialBlogsParams);
-  const [searchText, setSearchText] = useState<string>("");
+  const [searchText, setSearchText] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
 
+  // Fetch blogs initially
   const fetchBlogs = async () => {
+    setLoading(true);
     try {
+      const searchParams: BlogSearchParams = {
+        searchCondition: {
+          is_delete: false,
+        },
+        pageInfo: {
+          pageNum: 1,
+          pageSize: 100,
+        },
+      };
       const res = await BlogService.getBlogs(searchParams);
       const pageData = res.data?.pageData ?? [];
       setBlogs(pageData);
       setFilteredBlogs(pageData);
     } catch (error) {
       console.error("Error fetching blogs:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -53,27 +66,39 @@ const BlogManagement = () => {
     fetchBlogs();
   }, [searchParams]);
 
+  // Open the Create Blog Modal
+  const showModalCreate = () => setIsModalCreateVisible(true);
+
   const handleSearch = () => {
-    const filtered = blogs.filter((blog) =>
-      blog.name.toLowerCase().includes(searchText.toLowerCase())
-    );
-    setFilteredBlogs(filtered);
+    setLoading(true);
+    const lowerCaseTags = selectedTags.map((tag) => tag.toLowerCase());
+
+    setTimeout(() => {
+      const filteredBlogs = fetchedBlogs.filter((blog) => {
+        const blogTagsLowercase = blog.tags.map((tag) => tag.toLowerCase());
+        const nameMatch = blog.name
+          .toLowerCase()
+          .includes(searchText.toLowerCase());
+
+        const tagsMatch =
+          lowerCaseTags.length === 0 ||
+          lowerCaseTags.every((tag) => blogTagsLowercase.includes(tag));
+
+        return nameMatch && tagsMatch;
+      });
+
+      setBlogs(filteredBlogs);
+      setLoading(false);
+    }, 300);
   };
 
-  const showModalCreate = () => setIsModalCreateVisible(true);
-  const onSuccess = () => {
-    setIsModalCreateVisible(false);
-    fetchBlogs();
-  };
-  const handleCancel = () => {
-    setIsModalCreateVisible(false);
-    setIsModalDeleteVisible(false);
-    setDeleteId(null);
-  };
+  // Open the Delete Blog Modal
   const showModalDelete = (id: string) => {
     setDeleteId(id);
     setIsModalDeleteVisible(true);
   };
+
+  // Open the Edit Blog Modal
   const showModalEdit = (blogData: Blog) => {
     setEditBlogData(blogData);
     setIsModalEditVisible(true);
@@ -150,30 +175,41 @@ const BlogManagement = () => {
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-2xl my-5">Blog Management</h3>
       </div>
-
-      <div className="flex flex-wrap items-center mb-4">
-        <div className="flex">
+      <div className="flex flex-wrap items-center justify-between mb-4">
+        <div className="flex items-center space-x-3 w-full md:w-auto">
           <Input
-            placeholder="Search by blog name"
+            placeholder="Search By Blog Name"
+            prefix={<SearchOutlined />}
+            className="rounded w-full ml-0 md:w-1/3"
+            style={{ minWidth: "350px" }}
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
-            onPressEnter={handleSearch}
-            style={{ marginRight: 8 }}
+          />
+          <Select
+            mode="tags"
+            placeholder="Search by Tags"
+            value={selectedTags}
+            onChange={(value) => setSelectedTags(value)}
+            className="w-full ml-0 md:w-1/4"
+            style={{ minWidth: "300px" }}
           />
           <Button
-            type="primary"
-            icon={<SearchOutlined />}
             onClick={handleSearch}
+            icon={<SearchOutlined />}
+            shape="round"
+            type="primary"
+            className="w-full md:w-auto"
           >
             Search
           </Button>
         </div>
+
         <Button
           onClick={showModalCreate}
           icon={<PlusCircleOutlined />}
           shape="round"
           type="primary"
-          className="w-full md:w-auto ml-0 md:ml-auto"
+          className="w-full md:w-auto mt-2 md:mt-0"
         >
           Add New Blog
         </Button>
@@ -186,6 +222,7 @@ const BlogManagement = () => {
         rowKey="_id"
         bordered
         scroll={{ x: true }}
+        loading={loading}
       />
 
       {isModalEditVisible && editBlogData && (
@@ -212,20 +249,25 @@ const BlogManagement = () => {
         <DeleteBlog
           id={deleteId}
           onSuccess={fetchBlogs}
-          onCancel={handleCancel}
+          onCancel={() => setIsModalDeleteVisible(false)}
         />
       )}
 
       <Modal
         title="Create Blog"
         open={isModalCreateVisible}
-        onCancel={handleCancel}
+        onCancel={() => setIsModalCreateVisible(false)}
         width="80%"
         style={{ top: 20 }}
         styles={{ body: { height: "68vh", padding: 0 } }}
         footer={null}
       >
-        <CreateBlog onSuccess={onSuccess} />
+        <CreateBlog
+          onSuccess={() => {
+            setIsModalCreateVisible(false);
+            fetchBlogs();
+          }}
+        />
       </Modal>
     </Card>
   );

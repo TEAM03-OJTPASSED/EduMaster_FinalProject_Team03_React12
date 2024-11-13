@@ -8,14 +8,14 @@ import ReactPlayer from "react-player";
 import { MdOutlinePlayCircle, MdOutlineTaskAlt } from "react-icons/md";
 import { FiBookOpen } from "react-icons/fi";
 import Navbar from "../components/Navbar";
+import LessonIOptions from "./InstructorDashboard/instructor-monitor/create-courses/LessonIOptions";
 
 const token = localStorage.getItem("token");
 
 const fetchCourse = async (courseId: string) => {
   try {
     const response = await axios.get(
-      // `https://edumaster-api-dev.vercel.app/api/client/course/${courseId}`,
-      `http://localhost:3000/api/client/course/${courseId}`,
+      `https://edumaster-api-dev.vercel.app/api/client/course/${courseId}`,
       token ? { headers: { Authorization: `Bearer ${token}` } } : {}
     );
     console.log("Response:", response.data);
@@ -34,7 +34,6 @@ const LearnCoursePage = () => {
   const [returnCode, setReturnCode] = useState<number | null>(0);
   const [course, setCourse] = useState<Course | null>(null);
   const [session, setSession] = useState<Session[] | null>(null);
-  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [buttonText, setButtonText] = useState("");
   const [loading, setLoading] = useState(false);
   const [countdown, setCountDown] = useState(5);
@@ -59,18 +58,6 @@ const LearnCoursePage = () => {
       if (data) {
         setCourse(data.data);
         setSession(data.data.session_list || []);
-        if (data.session_list && data.session_list.length > 0) {
-          const firstSession = data.session_list[0];
-          if (firstSession.lesson_list && firstSession.lesson_list.length > 0) {
-            setSelectedLesson(firstSession.lesson_list[0]);
-          }
-          setExpandedSessions({ 0: true });
-          setButtonText(
-            firstSession.lesson_list[0].is_completed
-              ? "Mark as Incomplete"
-              : "Mark as Completed"
-          );
-        }
       }
       if (data === "Forbidden") {
         setReturnCode(403);
@@ -82,9 +69,11 @@ const LearnCoursePage = () => {
     console.log("Course:", course);
   }, []);
 
+  const sessionIndex = sessionStorage.getItem("sessionIndex");
+
   const [expandedSessions, setExpandedSessions] = useState<{
     [key: number]: boolean;
-  }>({});
+  }>(sessionIndex ? { [parseInt(sessionIndex)]: true } : {});
 
   const toggleSession = (index: number) => {
     setExpandedSessions((prev) => ({
@@ -93,10 +82,25 @@ const LearnCoursePage = () => {
     }));
   };
 
+  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
+  useEffect(() => {
+    const lessonIndex = sessionStorage.getItem("lessonIndex");
+    if (lessonIndex) {
+      const lesson = JSON.parse(lessonIndex);
+      setSelectedLesson({
+        ...lesson,
+        is_completed: lesson.is_completed || false,
+      });
+      setButtonText(
+        lesson.is_completed ? "Go To Next Item" : "Mark as Completed"
+      );
+    }
+  }, []);
+
   const selectLesson = (lesson: Lesson) => {
     setSelectedLesson(lesson);
     setButtonText(
-      lesson.is_completed ? "Mark as Incomplete" : "Mark as Completed"
+      lesson.is_completed ? "Go To Next Item" : "Mark as Completed"
     );
   };
 
@@ -117,7 +121,7 @@ const LearnCoursePage = () => {
       );
       if (response.data.success) {
         setButtonText(
-          lesson.is_completed ? "Mark as Completed" : "Mark as Incomplete"
+          lesson.is_completed ? "Mark as Completed" : "Go To Next Item"
         );
         // Update the lesson's is_completed status in the state
         setSession((prevSessions: Session[] | null) => {
@@ -138,8 +142,6 @@ const LearnCoursePage = () => {
       setLoading(false);
     }
   };
-
-  //http://localhost:5173/learn/6713859755b6534784014184\
 
   if ((!course || !session) && returnCode !== 403) {
     return (
@@ -203,7 +205,6 @@ const LearnCoursePage = () => {
       </div>
     );
   }
-
   return (
     <div className="fixed top-0 left-0 z-50 bg-white w-full h-[100vh]">
       <Navbar />
@@ -293,7 +294,7 @@ const LearnCoursePage = () => {
                 ) : selectedLesson.lesson_type === "assignment" ? (
                   <div className="w-full">
                     <h2>Assignment</h2>
-                    <p>{selectedLesson.assignment.name}</p>
+                    <p>{selectedLesson.assignment}</p>
                   </div>
                 ) : (
                   <div
@@ -312,6 +313,11 @@ const LearnCoursePage = () => {
                 >
                   {loading ? "Loading..." : buttonText}
                 </button>
+                {selectedLesson.is_completed && (
+                  <div className="text-orange-500 font-bold text-lg">
+                    ✔ Completed
+                  </div>
+                )}
               </div>
             </div>
           )}

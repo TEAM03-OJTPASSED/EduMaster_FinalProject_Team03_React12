@@ -76,10 +76,11 @@ const InstructorSalesHistory = () => {
         dataIndex: "select",
         key: "select",
         fixed: true,
-        render: (_: any, record: any) => (
+        render: (_: any, record: Purchase) => (
           <Checkbox
             checked={selectedRowKeys.includes(record.purchase_no)}
             onChange={() => handleSelect(record.purchase_no)}
+            disabled={record.status !== PurchaseStatusEnum.NEW }
           />
         ),
       },
@@ -121,9 +122,9 @@ const InstructorSalesHistory = () => {
           color={
             status === "Completed"
               ? "green"
-              : status === "Pending"
+              : status === PurchaseStatusEnum.REQUEST_PAID
               ? "orange"
-              : "red" // Màu cho trạng thái khác (Refunded)
+              : "blue" // Màu cho trạng thái khác (Refunded)
           }
         >
           {status}
@@ -206,7 +207,6 @@ const InstructorSalesHistory = () => {
           variant="solid"
           color="primary"
           disabled={selectedRowKeys.length === 0}
-          className="items-center"
         >
           Create Payout
         </Button>

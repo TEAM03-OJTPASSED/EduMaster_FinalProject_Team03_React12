@@ -7,9 +7,7 @@ import {
   MoneyCollectOutlined,
   BookOutlined,
   ShoppingCartOutlined,
-  StarOutlined,
   UserOutlined,
-  WalletOutlined,
   HistoryOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
@@ -72,26 +70,12 @@ const menuItems = [
     path: "/dashboard/instructor/subscription",
   },
   {
-    key: "top-up",
-    icon: <WalletOutlined />,
-    title: "Top Up",
-    label: "Top Up",
-    path: "/dashboard/instructor/top-up",
-  },
-  {
     key: "settings",
     icon: <SettingOutlined />,
     title: "Settings",
     label: "Settings",
     path: "/dashboard/instructor/settings",
-  },
-  {
-    key: "6",
-    icon: <StarOutlined />,
-    title: "Review",
-    label: "Review",
-    path: "/dashboard/instructor/review",
-  },
+  }
 ];
 
 const InstructorSidebar: React.FC<{ onMenuClick?: () => void }> = ({

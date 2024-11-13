@@ -9,7 +9,7 @@ export interface SelectField {
   options: Array<{ value: string; label: string; dependence?: string }>;
   placeholder?: string;
   dependenceName?: string; // Name of the dependence Select field
-  // onClick?: () => void;
+  onChange?: (value:string) => void;
 }
 
 interface GlobalSearchUnitProps {
@@ -95,23 +95,10 @@ const SelectFields = ({
               disabled={trackFormFields?.[field.dependenceName] === undefined}
               allowClear
               placeholder={field.placeholder ?? `Select ${field.name}`}
-              className="custom-selector w-full max-w-60"
+              className="custom-selector min-w-40  max-w-40"
             >
-              {field.options
-                .filter((option) => {
-                  if (
-                    !option.dependence ||
-                    !field.dependenceName ||
-                    !trackFormFields
-                  ) {
-                    return true;
-                  }
-                  const dependentValue = trackFormFields[field.dependenceName];
-                  return (
-                    option.dependence === (dependentValue?.toString() ?? "")
-                  );
-                })
-                .map((option) => (
+              {field.options 
+              .map((option) => (
                   <Option key={option.value} value={option.value}>
                     {option.label}
                   </Option>
@@ -121,11 +108,13 @@ const SelectFields = ({
         ) : (
           <Form.Item key={field.name} name={field.name}>
             <Select
-              // onClick={() => field.onClick && field.onClick()}
               allowClear
               placeholder={field.placeholder ?? `Select ${field.name}`}
-              className="custom-selector w-full max-w-60"
-              onChange={() => trackChange(false)}
+              className="custom-selector   min-w-40  max-w-40"
+              onChange= {(value) => {
+                if (field.onChange && value !== undefined) field.onChange(value); 
+                trackChange(false);
+              }}
               onClear={() => trackChange(true)}
             >
               {field.options.map((option) => (

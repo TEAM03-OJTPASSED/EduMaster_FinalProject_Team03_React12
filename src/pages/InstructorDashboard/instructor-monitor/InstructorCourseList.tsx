@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Table, Card, Tag, Button, Modal } from "antd";
 import {
+  CommentOutlined,
   DeleteOutlined,
   EditOutlined,
   PlusCircleOutlined,
   SendOutlined,
+  StarOutlined,
 } from "@ant-design/icons";
 
 import CourseOption from "./create-courses/CourseOption";
@@ -22,6 +24,9 @@ import { capitalizeFirstLetter } from "../../../utils/capitalize";
 import { CourseStatusToggle } from "../../../components/StatusToggle";
 import GlobalSearchUnit from "../../../components/GlobalSearchUnit";
 import { statusFormatter } from "../../../utils/statusFormatter";
+import ReviewService from "../../../services/review.service";
+import { GetReviews, Review } from "../../../models/Review.model";
+import ReviewModal from "../../../components/Instructor/ReviewModal";
 
 const initialCoursesParams: GetCourses = {
   pageInfo: {
@@ -47,15 +52,39 @@ const initialCategoriesParams: GetCategories = {
   },
 };
 
+const reviewsParam: GetReviews = {
+  pageInfo: {
+    pageNum: 1,
+    pageSize: 100,
+  },
+  searchCondition: {
+    is_deleted: false,
+    is_instructor: true,
+  },
+};
+
 const InstructorCourseList: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalReviewVisible, setIsModalReviewVisible] = useState(false);
+
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [isModalCreateVisible, setIsModalCreateVisible] = useState(false);
   const [listCourses, setListCourses] = useState<Course[]>([]);
   const [listCategories, setListCategories] = useState<Category[]>([]);
+  const [listReviews, setListReviews] = useState<Review[]>([]);
   const [searchParams, setSearchParams] =
     useState<GetCourses>(initialCoursesParams);
   const [totalItems, setTotalItems] = useState<number>();
+
+  const handleSeeReviews = async (course_id: string) => {
+    fetchReviews(course_id);
+    setIsModalReviewVisible(true);
+  };
+
+  const handleCloseReviews = async () => {
+    setListReviews([]);
+    setIsModalReviewVisible(false);
+  };
 
   const showModal = async (course: Course) => {
     setSelectedCourse(null);
@@ -63,7 +92,7 @@ const InstructorCourseList: React.FC = () => {
     if (response.data != undefined) {
       setSelectedCourse(response.data);
       fetchCategories();
-      setIsModalVisible(true);
+      setIsModalReviewVisible(true);
     }
   };
 
@@ -82,6 +111,14 @@ const InstructorCourseList: React.FC = () => {
     const response = await CourseService.getCourses(searchParams);
     setListCourses(response?.data?.pageData ?? []);
     setTotalItems(response?.data?.pageInfo?.totalItems);
+  };
+
+  const fetchReviews = async (course_id: string) => {
+    const response = await ReviewService.getReviews(
+      { ...reviewsParam, searchCondition: { course_id: course_id } },
+      true
+    );
+    setListReviews(response?.data?.pageData ?? []);
   };
 
   const fetchCategories = async () => {
@@ -221,12 +258,6 @@ const InstructorCourseList: React.FC = () => {
       ellipsis: true, // Ensures long text is truncated
     },
     {
-      title: "Content",
-      dataIndex: "content",
-      key: "content",
-      ellipsis: true, // Ensures long text is truncated
-    },
-    {
       title: "Status",
       dataIndex: "status",
       key: "status",
@@ -266,11 +297,13 @@ const InstructorCourseList: React.FC = () => {
           <span>${price.toFixed(2)}</span>
         </div>
       ),
+      align: "right" as const,
     },
     {
       title: "Discount",
       dataIndex: "discount",
       key: "discount",
+      align: "right" as const,
       render: (discount: number) => (
         <div>
           <span className="text-red-500">{discount}%</span>
@@ -308,7 +341,7 @@ const InstructorCourseList: React.FC = () => {
         <div className="flex gap-2">
           <Button
             type="text"
-            icon={<EditOutlined />}
+            icon={<EditOutlined style={{ color: "blue" }} />}
             onClick={() => showModal(record)}
           />
           <Button
@@ -334,6 +367,16 @@ const InstructorCourseList: React.FC = () => {
               }
             />
           )}
+          {record.status !== CourseStatusEnum.NEW &&
+            record.status !== CourseStatusEnum.REJECT &&
+            record.status !== CourseStatusEnum.WAITING_APPROVE && (
+              <Button
+                type="text"
+                icon={<CommentOutlined style={{ color: "orange" }} />}
+                onClick={() => handleSeeReviews(record._id)}
+                title={"See reviews"}
+              />
+            )}
         </div>
       ),
     },
@@ -441,6 +484,12 @@ const InstructorCourseList: React.FC = () => {
           categories={listCategories}
         />
       </Modal>
+
+      <ReviewModal
+        reviews={listReviews}
+        onClose={() => handleCloseReviews()}
+        isOpen={isModalReviewVisible}
+      />
     </Card>
   );
 };

@@ -56,6 +56,7 @@ export const InstructorCourseList = React.lazy(
       "../pages/InstructorDashboard/instructor-monitor/InstructorCourseList"
     )
 );
+
 export const IntructorSessionList = React.lazy(
   () =>
     import(
@@ -150,7 +151,9 @@ export const PayoutManagement = React.lazy(
 );
 export const LearnCourse = React.lazy(() => import("../pages/LearnCoursePage"));
 
-export const AwaitingPayout = React.lazy(() => import("../pages/InstructorDashboard/instructor-management/payout/AwaitingPayout"));
-
-
-
+export const AwaitingPayout = React.lazy(
+  () =>
+    import(
+      "../pages/InstructorDashboard/instructor-management/payout/AwaitingPayout"
+    )
+);

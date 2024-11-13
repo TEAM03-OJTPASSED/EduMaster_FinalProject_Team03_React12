@@ -21,6 +21,8 @@ import { useDispatch, useSelector } from "react-redux";
 // import { loginWithGoogle } from "../../redux/slices/authSlices";
 import { register } from "../../services/auth.service";
 import { RootState } from "../../redux/store/store";
+import { uploadCustomRequest } from "../../utils/uploadCustomReuquest";
+import { beforeUpload } from "../../utils/handleBeforUpload";
 
 export type RegisterType = {
   name: string;
@@ -70,7 +72,11 @@ const SignUppage = () => {
   const handleVideoChange: UploadProps["onChange"] = ({
     fileList: newFileList,
   }) => {
-    setFileListVideo(newFileList || []);
+
+    const filteredFileList = newFileList.filter(
+      (file) => file.type === "video/mp4"
+    );
+    setFileListVideo(filteredFileList);
     if (newFileList.length > 0 && newFileList[0].status === "done") {
       const uploadedVideoUrl = newFileList[0].response.secure_url;
       form.setFieldsValue({ video_url: uploadedVideoUrl });
@@ -207,6 +213,7 @@ const SignUppage = () => {
                         >
                           <Upload
                             accept="image/*"
+                            customRequest={uploadCustomRequest}
                             action={API_UPLOAD_FILE}
                             fileList={fileListImage}
                             listType="picture-card"
@@ -234,11 +241,13 @@ const SignUppage = () => {
                         >
                           <Upload
                             accept="video/*"
+                            customRequest={uploadCustomRequest}
                             action={API_UPLOAD_FILE}
                             fileList={fileListVideo}
                             listType="picture-card"
                             maxCount={1}
                             onChange={handleVideoChange}
+                            beforeUpload={beforeUpload}
                           >
                             {fileListVideo.length >= 1 ? null : (
                               <div>

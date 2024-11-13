@@ -138,7 +138,7 @@ export default function CoursesPage() {
   }, [courses, filters])
 
   return (
-    <main className="mt-2 min-h-screen relative">
+    <main className="mt-2 min-h-screen mb-40 relative">
       <div className="p-4 pb-0">
         <DynamicBreadcrumb />
       </div>

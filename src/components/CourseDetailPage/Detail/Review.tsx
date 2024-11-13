@@ -1,9 +1,9 @@
 import { useState, useMemo, useEffect } from "react";
-import { Pagination, Rate, Dropdown, Menu} from "antd";
+import { Pagination, Rate, Dropdown, Menu, Input, Button, message } from "antd";
 import { EllipsisOutlined } from "@ant-design/icons";
 import { GetReviews, Review } from "../../../models/Review.model";
 import ReviewService from "../../../services/review.service";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 
 type Props = {
   label?: boolean;
@@ -13,11 +13,39 @@ type Props = {
 export const Reviews = ({ label, courseId }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [editingReviewId, setEditingReviewId] = useState<string | null>(null);
+  const [editComment, setEditComment] = useState("");
+  const [editRating, setEditRating] = useState(0);
   const pageSize = 3;
 
-  const handleEdit = (reviewId: string) => {
-    console.log("Edit review:", reviewId);
-    // Add edit functionality here
+  const handleEdit = (reviewId: string, comment: string, rating: number) => {
+    setEditingReviewId(reviewId);
+    setEditComment(comment);
+    setEditRating(rating);
+  };
+
+  const saveEdit = async (reviewId: string) => {
+    const updatedReview = {
+      course_id: courseId,
+      comment: editComment,
+      rating: editRating,
+    };
+
+    try {
+      console.log("data update:", updatedReview);
+      await ReviewService.updateReview(reviewId, updatedReview);
+
+      setReviews((prevReviews) =>
+        prevReviews.map((review) =>
+          review._id === reviewId ? { ...review, ...updatedReview } : review
+        )
+      );
+
+      message.success("Review updated successfully");
+      setEditingReviewId(null);
+    } catch (error) {
+      console.error("Error updating review:", error);
+    }
   };
 
   useEffect(() => {
@@ -47,11 +75,13 @@ export const Reviews = ({ label, courseId }: Props) => {
   }, []);
 
   const handleDelete = async (reviewId: string) => {
-    console.log("Delete review:", reviewId);
     try {
-        await ReviewService.deleteReview(reviewId);
+      await ReviewService.deleteReview(reviewId);
+      setReviews((prevReviews) =>
+        prevReviews.filter((review) => review._id !== reviewId)
+      );
     } catch (error) {
-
+      console.error("Error deleting review:", error);
     }
   };
 
@@ -63,7 +93,10 @@ export const Reviews = ({ label, courseId }: Props) => {
     return reviews.filter((review) => review.course_id === courseId);
   };
 
-  const courseReviews = useMemo(() => getReviewsByCourseId(courseId), [reviews, courseId]);
+  const courseReviews = useMemo(
+    () => getReviewsByCourseId(courseId),
+    [reviews, courseId]
+  );
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
   const currentItems = courseReviews.slice(startIndex, endIndex);
@@ -96,10 +129,11 @@ export const Reviews = ({ label, courseId }: Props) => {
     const isActive = page === currentPage;
     return (
       <button
-        className={`px-4 py-1 rounded-full border ${isActive
-          ? "bg-orange-500 text-white"
-          : "bg-neutral-100 text-black hover:bg-orange-500 hover:text-white border border-gray-300"
-          }`}
+        className={`px-4 py-1 rounded-full border ${
+          isActive
+            ? "bg-orange-500 text-white"
+            : "bg-neutral-100 text-black hover:bg-orange-500 hover:text-white border border-gray-300"
+        }`}
       >
         {page}
       </button>
@@ -120,7 +154,9 @@ export const Reviews = ({ label, courseId }: Props) => {
     return Array.from({ length: 5 }, (_, i) => (
       <svg
         key={i}
-        className={`w-4 h-4 ${i < rating ? "text-orange-500" : "text-gray-300"}`}
+        className={`w-4 h-4 ${
+          i < rating ? "text-orange-500" : "text-gray-300"
+        }`}
         fill="currentColor"
         viewBox="0 0 20 20"
       >
@@ -130,10 +166,16 @@ export const Reviews = ({ label, courseId }: Props) => {
   };
 
   const renderRatingSummary = useMemo(() => {
-    const totalRatings = courseReviews.length;
-    const counts = calculateRatingCounts(courseReviews);
+    const totalRatings = courseReviews?.length;
+    const counts =
+      totalRatings > 0
+        ? calculateRatingCounts(courseReviews)
+        : Array(5).fill(0);
+
     return counts.map((count, index) => {
-      const percentage = ((count / totalRatings) * 100).toFixed(0);
+      const percentage =
+        totalRatings > 0 ? ((count / totalRatings) * 100).toFixed(0) : "0";
+
       return (
         <div key={index} className="flex items-center font-exo text-sm">
           <span className="w-12 flex items-center">
@@ -159,21 +201,35 @@ export const Reviews = ({ label, courseId }: Props) => {
   return (
     <div>
       {label && <div className="font-exo font-bold text-lg">Comment</div>}
-      <div className="flex items-center mb-4">
-        <span className="font-exo font-bold text-5xl mr-2">
-          {averageRating}
-        </span>
-        <div>
-          <div className="flex items-center">
-            {renderStars(Math.round(Number(averageRating)))}
+      {courseReviews.length > 0 && (
+        <div className="flex items-center mb-4">
+          <span className="font-exo font-bold text-5xl mr-2">
+            {averageRating}
+          </span>
+          <div>
+            <div className="flex items-center">
+              {renderStars(Math.round(Number(averageRating) || 0))}
+            </div>
+            <div>based on {courseReviews.length} ratings</div>
           </div>
-          <div>based on {courseReviews.length} ratings</div>
         </div>
+      )}
+
+      <div className="mb-4">
+        {courseReviews && courseReviews.length > 0 ? (
+          renderRatingSummary
+        ) : (
+          <div className="h-20 border border-gray-300 rounded-md flex items-center justify-center">
+            <div className="text-center">Don't have any comment yet</div>
+          </div>
+        )}
       </div>
-      <div className="mb-4">{renderRatingSummary}</div>
 
       {currentItems.map((review) => (
-        <div key={review._id} className="flex gap-5 font-exo p-4 border-t border-gray-300">
+        <div
+          key={review._id}
+          className="flex gap-5 font-exo p-4 border-t border-gray-300"
+        >
           <div className="w-10">
             <img
               className="rounded-full"
@@ -186,43 +242,76 @@ export const Reviews = ({ label, courseId }: Props) => {
               <div className="font-bold">{review.reviewer_name}</div>
               <div className="flex items-center gap-2">
                 <div className="text-sm">
-                  {dayjs(review.created_at).format('DD/MM/YYYY')}
+                  {dayjs(review.created_at).format("DD/MM/YYYY")}
                 </div>
                 <Dropdown
                   overlay={
                     <Menu>
-                      <Menu.Item key="edit" onClick={() => handleEdit(review._id)}>
+                      <Menu.Item
+                        key="edit"
+                        onClick={() =>
+                          handleEdit(review._id, review.comment, review.rating)
+                        }
+                      >
                         Edit
                       </Menu.Item>
-                      <Menu.Item key="delete" danger onClick={() => handleDelete(review._id)}>
+                      <Menu.Item
+                        key="delete"
+                        danger
+                        onClick={() => handleDelete(review._id)}
+                      >
                         Delete
                       </Menu.Item>
                     </Menu>
                   }
-                  trigger={['click']}
+                  trigger={["click"]}
                 >
-                  <EllipsisOutlined className="text-lg cursor-pointer" />
+                  <EllipsisOutlined
+                    style={{ fontSize: "1.25rem", cursor: "pointer" }}
+                  />
                 </Dropdown>
               </div>
             </div>
-
-            <div className="flex items-start mt-1">
-              <Rate disabled defaultValue={review.rating} />
-            </div>
-            <div className="text-sm pt-2">{review.comment}</div>
+            {editingReviewId === review._id ? (
+              <>
+                <Rate value={editRating} onChange={setEditRating} />
+                <Input.TextArea
+                  value={editComment}
+                  onChange={(e) => setEditComment(e.target.value)}
+                  rows={3}
+                />
+                <div style={{ marginTop: 8 }}>
+                  <Button
+                    type="primary"
+                    onClick={() => saveEdit(review._id)}
+                    style={{ marginRight: 8 }}
+                  >
+                    Save
+                  </Button>
+                  <Button onClick={() => setEditingReviewId(null)}>
+                    Cancel
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <>
+                <Rate value={review.rating} disabled />
+                <div className="text-gray-500">{review.comment}</div>
+              </>
+            )}
           </div>
         </div>
       ))}
-      <div className="flex justify-center">
+      {courseReviews?.length > 0 && (
         <Pagination
           current={currentPage}
-          pageSize={pageSize}
-          total={courseReviews.length}
           onChange={handlePageChange}
+          total={courseReviews.length}
+          pageSize={pageSize}
           itemRender={itemRender}
-          className="mt-4"
+          className="flex justify-center my-5"
         />
-      </div>
+      )}
     </div>
   );
 };
