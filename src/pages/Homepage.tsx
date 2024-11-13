@@ -30,14 +30,10 @@ import ClientService from "../services/client.service";
 import { GetBlogsClient, GetCourseClient } from "../models/Client.model";
 import { useEffect, useState } from "react";
 import { addToCart } from "../redux/slices/cartSlice";
-import SubscribeButton from "../components/SubscribeButton";
 import { Blog } from "../models/Blog.model";
+import { Category } from "../models/Category.model";
 
-interface Category {
-  icon: React.ReactNode;
-  title: string;
-  courses: number;
-}
+
 
 // const categories: Category[] = [
 //   {
@@ -125,6 +121,12 @@ const HomePage = () => {
       const response = await ClientService.getCourses(initialCoursesParams);
       setCourses(response?.data?.pageData ?? []);
     };
+
+    const fetchCategories = async () => {
+      const response = await ClientService.getCategories({...initialCoursesParams, pageInfo: { ...initialCoursesParams.pageInfo, pageSize: 16}});
+      setCategories(response?.data?.pageData ?? []);
+    };
+
     const fetchBlogs = async () => {
       const response = await ClientService.getBlogs(initialBlogsParams);
       setBlogs(response?.data?.pageData ?? []);
@@ -132,7 +134,8 @@ const HomePage = () => {
 
     fetchCourses(); // Call the async function
     fetchBlogs()
-    setCategories([]);
+    fetchCategories()
+    
   }, []);
 
   const navigate = useCustomNavigate();

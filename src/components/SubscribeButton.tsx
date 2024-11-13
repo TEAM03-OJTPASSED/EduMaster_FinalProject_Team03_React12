@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Modal } from 'antd';
 import { StarFilled } from '@ant-design/icons';
 import SubscriptionService from '../services/subscription.service';
-import { throttle } from 'lodash';
 import { authorize } from '../utils/authorize';
 
 interface SubscribeButtonProps {
@@ -10,28 +9,17 @@ interface SubscribeButtonProps {
   instructorId: string;
   apiFlag?: boolean;
   userRole: string;
+  initialSubscribedValue?: boolean;
 }
 
-const SubscribeButton: React.FC<SubscribeButtonProps> = React.memo(({ instructorId, instructorName, apiFlag, userRole }) => {
+const SubscribeButton: React.FC<SubscribeButtonProps> = React.memo(({ instructorId, instructorName, userRole, initialSubscribedValue }) => {
   console.log("SubscribeButton rendered");
 
-  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(initialSubscribedValue);
   const [isUnsubscribeModalVisible, setIsUnsubscribeModalVisible] = useState(false);
 
-  const checkSubscribed = throttle(async () => {
-    if (apiFlag) {
-      setIsSubscribed(true)
-      return
-    }
-    const response = await SubscriptionService.checkSubscription("");
-    if (response.data?.pageData) {
-      setIsSubscribed(Boolean(response.data.pageData.find(object => object.instructor_name === instructorName)));
-    }
-  }, 1000);
-
-  useEffect(() => {
-    checkSubscribed();
-  }, []);
+ 
+ 
 
   const subscribe = async () => {
     if  (!authorize(userRole)) return;

@@ -4,6 +4,7 @@ import { message, notification } from 'antd';
 import { Course } from '../../models/Course.model';
 import CartService from '../../services/cart.service';
 import { Cart, CartStatusEnum, SearchCartByStatus } from '../../models/Cart.model';
+import { handleNotify } from '../../utils/handleNotify';
 
 interface CartState {
   cartCount: number;
@@ -34,13 +35,17 @@ export const addToCart = createAsyncThunk(
         return rejectWithValue('User not logged in');
       }
 
-      const response = await CartService.createCart(course._id);
-      if (response) {
-        notification.success({
-          message: 'Course Added to Cart',
-          description: `You have added "${course.name}" to your cart.`,
-        });
-        return response.data;
+      handleNotify("Course Added to Cart",`You have added "${course.name}" to your cart.`)
+      console.log(course._id)
+      const response = await CartService.createCart(course._id)
+  
+      if (!response.success) 
+      {
+        handleNotify(
+          "Error adding item to to cart, please try again.",
+          `You have added "${course.name}" to your cart.`,
+        );
+        return true
       }
     
   }

@@ -37,8 +37,8 @@ const CartPage: React.FC = () => {
     }
   });
 
-  const fetchCart = async () => {
-    setIsLoading(true);
+  const fetchCart = async (refetch?: boolean) => {
+    setIsLoading(!refetch && true);
     try {
       const status = cartStatus as CartStatusEnum;
       const response = await CartService.getCartsByStatus(initialCartSearchParams(status));
@@ -62,11 +62,11 @@ const CartPage: React.FC = () => {
     }
   };
 
-  const handleRemoveCart = async (cartItem: CartItem) => {     
+  const handleRemoveCart = async (cartItem: CartItem) => {    
+    setCarts(carts.filter((cart) => cart._id !== cartItem._id)) 
+    handleNotify("Course Removed", "Check out some others.");
     const response = await CartService.deleteCart(cartItem._id);
-    if (response) handleNotify("Course Removed", "Check out some others.");
-    fetchCart();
-    dispatch(fetchCartCount());
+    if (response) dispatch(fetchCartCount());
   };
 
   const handleRepurchaseCart = async (cartItem: CartItem) => {     
@@ -86,7 +86,7 @@ const CartPage: React.FC = () => {
     if (response) {
       handleNotify("Your order was placed successfully", "Happy studying! A copy of the receipt will be sent to your email shortly.");
       fetchCart();
-      navigate('/');
+      navigate('/cart/completed');
     }
   };
 

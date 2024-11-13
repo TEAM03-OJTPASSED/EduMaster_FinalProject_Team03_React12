@@ -35,6 +35,7 @@ import SubscribeButton from "../../components/SubscribeButton";
 // import { handleNotify } from "../../utils/handleNotify";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
+import SubscriptionService from "../../services/subscription.service";
 // import { authorize } from "../../utils/authorize";
 
 const { Title, Paragraph, Text } = Typography;
@@ -51,6 +52,8 @@ const ProfilePage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [coursesLoading, setCoursesLoading] = useState(true);
   const { currentUser } = useSelector((state: RootState) => state.auth.login);
+  const [isSubscribed, setIsSubscribed] = useState<boolean | undefined>();
+
 
   const showModal = (image: string) => {
     setModalImage(image);
@@ -73,6 +76,20 @@ const ProfilePage: React.FC = () => {
     fetchData();
     fetchCourseById();
   }, [id]);
+
+  useEffect(() => {
+    if (userData.name) {
+      checkSubscribed();
+    } 
+  },[userData])
+
+  const checkSubscribed = async () => {
+    const response = await SubscriptionService.checkSubscription("");
+    if (response.data?.pageData) {
+      setIsSubscribed(Boolean(response.data.pageData.find(object => object.instructor_name === userData.name)));
+      console.log((Boolean(response.data.pageData.find(object => object.instructor_name === userData.name))));
+    }
+  };
 
   const fetchCourseById = async () => {
     try {
@@ -108,6 +125,7 @@ const ProfilePage: React.FC = () => {
     }
   };
 
+
   const handleTabChange = (activeKey: string) => {
     if (activeKey === "2" && userCourse.length === 0) {
       fetchCourseById();
@@ -140,7 +158,7 @@ const ProfilePage: React.FC = () => {
   const navigate = useCustomNavigate();
 
   const ProfileHeader = () =>
-    loading ? (
+    loading || isSubscribed === undefined ? (
       <div className="flex items-end mt-32 z-10">
         <Skeleton.Avatar active size={160} className="ml-4 mb-24" />
         <div className="ml-5 flex-1">
@@ -165,6 +183,7 @@ const ProfilePage: React.FC = () => {
         </div>
         <div className="flex flex-col items-center ml-auto h-14">
           <SubscribeButton
+            initialSubscribedValue={isSubscribed}
             instructorName={instructorInfo.name}
             instructorId={instructorInfo._id}
             userRole={currentUser.role}
@@ -314,7 +333,7 @@ const ProfilePage: React.FC = () => {
         <DynamicBreadcrumb />
         <Card className="relative custom-card">
           <div className="w-full absolute h-48 sm:h-60 lg:h-60">
-            {loading ? (
+            {loading || isSubscribed === undefined ? (
               ""
             ) : (
               <img

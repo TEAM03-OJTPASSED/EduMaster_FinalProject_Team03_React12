@@ -117,7 +117,7 @@ const InstructorCourseList: React.FC = () => {
   };
 
   const fetchReviews = async (course_id:string) => { 
-    const response = await ReviewService.getReviews({...initialCategoriesParams, searchCondition: {course_id: course_id}});
+    const response = await ReviewService.getReviews({...reviewsParam, searchCondition: {course_id: course_id}},true);
     setListReviews(response?.data?.pageData ?? []);
 };
 

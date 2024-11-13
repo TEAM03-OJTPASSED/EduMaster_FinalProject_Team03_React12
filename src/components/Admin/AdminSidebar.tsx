@@ -12,7 +12,6 @@ import {
   BookOutlined,
   HourglassOutlined,
   ShoppingCartOutlined,
-  WalletOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
@@ -85,12 +84,6 @@ const menuItems: MenuItem[] = [
         path: "/dashboard/admin/purchase-log",
       },
     ],
-  },
-  {
-    key: "top-up",
-    icon: <WalletOutlined />,
-    label: "Top Up",
-    path: "/dashboard/admin/top-up",
   },
   {
     key: "settings",

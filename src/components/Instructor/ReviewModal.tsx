@@ -32,6 +32,7 @@ export default function ReviewModal({ isOpen = false, onClose = () => {}, review
       onCancel={onClose}
       footer={null}
       width={600}
+      centered
     >
       <List
         itemLayout="vertical"
