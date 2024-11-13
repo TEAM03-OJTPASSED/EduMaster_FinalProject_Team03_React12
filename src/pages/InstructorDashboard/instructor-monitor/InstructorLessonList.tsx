@@ -187,17 +187,26 @@ const InstructorLessonList = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      ellipsis: true, 
     },
     {
       title: "Session Name",
       dataIndex: "session_name",
       key: "session_name",
+      ellipsis: true, 
+      render: (text:string) => (
+        <span style={{ maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-block' }}>
+          {text}
+        </span>
+      ),
     },
-    {
-      title: "Instructor",
-      dataIndex: "user_name",
-      key: "user_name",
-    },
+    // {
+    //   title: "Instructor",
+    //   dataIndex: "user_name",
+    //   key: "user_name",
+    //   ellipsis: true, 
+
+    // },
     {
       title: "Media",
       dataIndex: "lesson_type",

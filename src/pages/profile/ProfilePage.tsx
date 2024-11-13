@@ -13,6 +13,8 @@ import {
   Modal,
   Skeleton,
 } from "antd";
+import { StarOutlined } from "@ant-design/icons";
+
 import {
   BookOutlined,
   UserOutlined,
@@ -50,8 +52,6 @@ const ProfilePage: React.FC = () => {
   const [coursesLoading, setCoursesLoading] = useState(true);
   const { currentUser } = useSelector((state: RootState) => state.auth.login);
 
-
-
   const showModal = (image: string) => {
     setModalImage(image);
     setIsModalVisible(true);
@@ -71,10 +71,10 @@ const ProfilePage: React.FC = () => {
       }
     };
     fetchData();
+    fetchCourseById();
   }, [id]);
 
   const fetchCourseById = async () => {
-    console.log("im fetching")
     try {
       const searchParam: GetCourses = {
         searchCondition: {
@@ -91,8 +91,16 @@ const ProfilePage: React.FC = () => {
       const res = await ClientService.getCourses(searchParam);
       const courses = res.data?.pageData as Course[];
       setUserCourse(courses);
-      const students = courses.reduce((acc, course) => acc + course.enrolled, 0);
-      const minutes = courses.reduce((acc, course) => acc + course.full_time, 0);
+      const students = courses.reduce(
+        (acc, course) => acc + course.enrolled,
+        0
+      );
+      console.log(students);
+      const minutes = courses.reduce(
+        (acc, course) => acc + course.full_time,
+        0
+      );
+      console.log(minutes);
       setTotalStudents(students);
       setTotalMinutes(minutes);
     } finally {
@@ -105,14 +113,11 @@ const ProfilePage: React.FC = () => {
       fetchCourseById();
     }
   };
-  
+
   // const handleSubscription = () => {
   //   if (authorize(currentUser.role)) return true
 
-
   // }
-
-  
 
   const instructorInfo = {
     name: userData.name,
@@ -134,7 +139,7 @@ const ProfilePage: React.FC = () => {
 
   const navigate = useCustomNavigate();
 
-  const ProfileHeader = () => (
+  const ProfileHeader = () =>
     loading ? (
       <div className="flex items-end mt-32 z-10">
         <Skeleton.Avatar active size={160} className="ml-4 mb-24" />
@@ -154,33 +159,36 @@ const ProfilePage: React.FC = () => {
           <Title level={2} className="p-0 !mb-0">
             {instructorInfo.name}
           </Title>
-          <div>   
+          <div>
             <Text type="secondary"> {capitalize(instructorInfo.role)}</Text>
           </div>
-          
         </div>
         <div className="flex flex-col items-center ml-auto h-14">
-          <SubscribeButton instructorName={instructorInfo.name} instructorId={instructorInfo._id} userRole={currentUser.role}/>
-          
+          <SubscribeButton
+            instructorName={instructorInfo.name}
+            instructorId={instructorInfo._id}
+            userRole={currentUser.role}
+          />
         </div>
       </div>
-    )
-  );
+    );
 
-  const AboutTab = () => (
+  const AboutTab = () =>
     loading ? (
       <Skeleton active paragraph={{ rows: 4 }} />
     ) : (
       <>
-        <Paragraph className="text-base">{renderContent(instructorInfo.bio ?? "")}</Paragraph>
+        <Paragraph className="text-base">
+          {renderContent(instructorInfo.bio ?? "")}
+        </Paragraph>
+        <StatsTab />
         <Title level={4}>Contact</Title>
         <Paragraph>Email: {instructorInfo.email}</Paragraph>
         <Paragraph>Phone: {instructorInfo.phone}</Paragraph>
       </>
-    )
-  );
+    );
 
-  const CoursesTab = () => (
+  const CoursesTab = () =>
     coursesLoading ? (
       <List
         itemLayout="vertical"
@@ -198,7 +206,7 @@ const ProfilePage: React.FC = () => {
         renderItem={(course: Course) => (
           <List.Item
             key={course._id}
-            className="flex justify-between items-center p-5 border-b border-gray-200"
+            className="flex justify-between items-center p-5 border-b border-gray-200 pb-6"
           >
             <div className="flex-1">
               <List.Item.Meta
@@ -209,7 +217,7 @@ const ProfilePage: React.FC = () => {
                 }
                 description={course.description}
               />
-              <div className="flex gap-2 mt-2">
+              <div className="flex flex-wrap gap-2 mt-2 pb-6">
                 <Tag color="orange">
                   Created at: {dayjs(course.created_at).format("DD/MM/YYYY")}
                 </Tag>
@@ -220,29 +228,39 @@ const ProfilePage: React.FC = () => {
                 <Tag className="bg-gray-500 text-white font-jost">
                   {course.full_time} minutes
                 </Tag>
+                <Tag color="blue" className="text-white font-jost">
+                  {course.enrolled} enrolled
+                </Tag>
+                <Tag className="bg-blue-800 text-white font-jost flex items-center">
+                  {renderStars(course.average_rating)}
+                  <span className="ml-2">
+                    {course.average_rating.toFixed(1)} rating
+                  </span>
+                </Tag>
               </div>
-            </div>
-            <div className="text-right min-w-[150px] pr-5 md:pr-6">
-              <Statistic
-                title="Enrolled"
-                value={course.enrolled}
-                prefix={<UserOutlined />}
-                className="font-exo"
-              />
-              <Statistic
-                title="Rating"
-                value={course.average_rating}
-                prefix={<StarFilled />}
-                className="font-exo"
-              />
             </div>
           </List.Item>
         )}
       />
-    )
-  );
+    );
 
-  const StatsTab = () => (
+  // Function to render stars based on rounded average rating
+  const renderStars = (averageRating: number) => {
+    const roundedRating = Math.round(averageRating);
+    return (
+      <>
+        {Array.from({ length: 5 }, (_, index) =>
+          index < roundedRating ? (
+            <StarFilled key={index} className="text-yellow-400" />
+          ) : (
+            <StarOutlined key={index} className="text-gray-300" />
+          )
+        )}
+      </>
+    );
+  };
+
+  const StatsTab = () =>
     loading ? (
       <Skeleton active paragraph={{ rows: 4 }} />
     ) : (
@@ -274,13 +292,21 @@ const ProfilePage: React.FC = () => {
           Average Course Rating
         </Title>
         <Progress
-          percent={92}
+          percent={
+            instructorInfo.courses.length > 0
+              ? (instructorInfo.courses.reduce(
+                  (acc, course) => acc + course.average_rating,
+                  0
+                ) /
+                  instructorInfo.courses.length) *
+                20
+              : 0
+          }
           status="active"
-          format={(percent) => `${percent ?? 0 / 20} / 5`}
+          format={(percent) => `${((percent ?? 0) / 20).toFixed(1)} / 5`}
         />
       </>
-    )
-  );
+    );
 
   return (
     <main className="mt-2 min-h-screen pb-40 z-0">
@@ -298,7 +324,7 @@ const ProfilePage: React.FC = () => {
               />
             )}
           </div>
-          
+
           <ProfileHeader />
 
           <Modal
@@ -310,17 +336,17 @@ const ProfilePage: React.FC = () => {
             <img alt="Enlarged" src={modalImage} className="w-full" />
           </Modal>
 
-          <Tabs defaultActiveKey="1" className="mt-6 custom-tabs font-exo" onChange={handleTabChange}>
+          <Tabs
+            defaultActiveKey="1"
+            className="mt-6 custom-tabs font-exo"
+            onChange={handleTabChange}
+          >
             <TabPane tab="About" key="1">
               <AboutTab />
             </TabPane>
 
             <TabPane tab="Courses" key="2">
               <CoursesTab />
-            </TabPane>
-
-            <TabPane tab="Stats" key="3">
-              <StatsTab />
             </TabPane>
           </Tabs>
         </Card>

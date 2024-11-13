@@ -13,23 +13,16 @@ import { PlusOutlined } from "@ant-design/icons";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { API_UPLOAD_FILE } from "../constants/api/upload";
+import { User } from "../models/UserModel";
+import ReactPlayer from "react-player";
+import { handleNotify } from "../utils/handleNotify";
 
 interface UserProfileFormProps {
-  currentUser: UserProfile;
-  onSave: (values: UserProfile) => void;
+  currentUser: User;
+  onSave: (values: User) => void;
 }
 
-export type UserProfile = {
-  name?: string;
-  email?: string;
-  description?: string;
-  avatar_url?: string | null;
-  video_url?: string;
-  phone_number?: string;
-  bank_name?: string;
-  bank_account_no?: string;
-  bank_account_name?: string;
-};
+
 
 const UserProfileForm: React.FC<UserProfileFormProps> = ({
   currentUser,
@@ -62,6 +55,8 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
         bank_account_name: currentUser.bank_account_name || "",
         video_url: currentUser.video_url || "",
       });
+      console.log(currentUser.video_url)
+
       setImageFileList(
         currentUser.avatar_url
           ? [
@@ -116,12 +111,6 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
       "bank_account_name",
       "video_url",
     ]);
-    if (!formValues.avatar_url && currentUser.avatar_url) {
-      formValues.avatar_url = currentUser.avatar_url;
-    }
-    if (!formValues.video_url && currentUser.video_url) {
-      formValues.video_url = currentUser.video_url;
-    }
 
     console.log("form values:", formValues);
     onSave(formValues);
@@ -171,6 +160,13 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
                   onChange={handleVideoChange}
                   fileList={videoFileList}
                   maxCount={1}
+                  beforeUpload={(file) => {
+                    const isSupportedFormat = ["video/mp4", "video/webm", "video/ogg", "video/mov"].includes(file.type);
+                    if (!isSupportedFormat) {
+                      handleNotify("File format not supported","You can only upload MP4, WebM, MOV or OGG video files!", 'error');
+                    }
+                    return isSupportedFormat || Upload.LIST_IGNORE; 
+                  }}
                 >
                   {videoFileList.length < 1 && (
                     <button
@@ -187,8 +183,8 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
                 {videoFileList.length > 0 &&
                 videoFileList[0].status === "done" &&
                 form.getFieldValue("video_url") ? (
-                  <video
-                    src={form.getFieldValue("video_url")} // URL từ Cloudinary
+                  <ReactPlayer
+                    url={form.getFieldValue("video_url")} // URL từ Cloudinary
                     width={200}
                     height={150}
                     controls
@@ -196,8 +192,8 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
                   />
                 ) : (
                   currentUser.video_url && (
-                    <video
-                      src={currentUser.video_url} // URL hiện có nếu không upload video mới
+                    <ReactPlayer
+                      url={currentUser.video_url} // URL hiện có nếu không upload video mới
                       width={200}
                       height={150}
                       controls

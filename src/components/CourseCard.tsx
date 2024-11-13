@@ -64,9 +64,12 @@ const CourseCard: React.FC<{
             <a className="text-gray-500 text-sm mb-2" href={`profile/${course.instructor_id}`}>
               by {course.instructor_name}
             </a>
-            <h2 className="text-base font-semibold mb-4 overflow-ellipsis overflow-hidden whitespace-nowrap transition group-hover:text-[#FFAB2D]">
+            <h2 className="text-base font-semibold  overflow-ellipsis overflow-hidden whitespace-nowrap transition group-hover:text-[#FFAB2D]">
               {course.name}
             </h2>
+            <p className="text-gray-500 text-sm mb-4">
+              Level {course.level}
+            </p>
           </div>
           <div>
             <div className="grid grid-cols-2 grid-rows-2 gap-2 justify-between text-sm text-gray-500 mb-4">
@@ -79,7 +82,7 @@ const CourseCard: React.FC<{
               </span>
               <span className="flex items-center justify-end text-left">
                 <FaStar className="mr-1 text-yellow-400" size={20} />
-                {course.average_rating}
+                {course.average_rating} ({course.review_count})
               </span>
 
               <span className="flex items-center">
@@ -111,8 +114,8 @@ const CourseCard: React.FC<{
           <div className="w-80 font-jost bg-white p-4 rounded-3xl shadow-lg ">
             <h3 className="text-xl font-semibold mb-2">{course.name}</h3>
             <p className="text-sm text-gray-600 mb-2">
-              Updated{" "}
-              {new Date(course.updated_at).toLocaleDateString() ?? "Recently"}
+              Created at{" "}
+              {new Date(course.created_at).toLocaleDateString() ?? "Recently"}
             </p>
             <p className="text-sm text-gray-700 mb-4">
               {course.description ??

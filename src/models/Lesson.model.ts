@@ -45,3 +45,10 @@ export enum LessonTypeEnum {
   IMAGE = "image",
   ASSIGNMENT = "assignment",
 }
+
+
+export enum LevelsEnum {
+  BEGINNER = "Beginner",
+  INTERMEDIATE = "Intermediate",
+  ADVANCED = "Advanced",
+}

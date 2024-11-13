@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Table, Card, Button, Tabs, FormProps } from "antd";
-import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
+import { ArrowRightOutlined } from "@ant-design/icons";
 import { useCustomNavigate } from "../../hooks/customNavigate";
 import {
   Cart,
@@ -86,19 +86,16 @@ const InstructorCourseList: React.FC = () => {
       key: "action",
       width: 150,
       render: (course: Cart) => (
-        <div>
+       
           <Button
-            type="link"
-            icon={<EyeOutlined />}
+            type="primary"
+            icon={<ArrowRightOutlined />}
             onClick={() => handleViewCourse(course.course_id)}
             style={{ marginRight: 8 }}
           >
-            View
+            Go to Course
           </Button>
-          <Button type="link" icon={<DeleteOutlined />} danger>
-            Unenroll
-          </Button>
-        </div>
+          
       ),
     },
   ];
