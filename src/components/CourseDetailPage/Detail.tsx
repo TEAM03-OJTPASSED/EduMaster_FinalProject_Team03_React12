@@ -7,6 +7,7 @@ import {
 } from "react-icons/md";
 import { Reviews } from "./Detail/Review";
 import { Lesson } from "../../models/Lesson.model";
+import { useCustomNavigate } from "../../hooks/customNavigate";
 
 type Props = {
   isEnrolled: boolean;
@@ -17,6 +18,7 @@ type Props = {
 export const Detail = ({ isEnrolled, course, session }: Props) => {
   const [expandedSession, setExpandedSession] = useState<number | null>(null);
   const [expandedLesson, setExpandedLesson] = useState<number | null>(null);
+  const navigate = useCustomNavigate();
 
   const toggleSession = (index: number) => {
     setExpandedSession(expandedSession === index ? null : index);
@@ -29,7 +31,7 @@ export const Detail = ({ isEnrolled, course, session }: Props) => {
   const handleGoToLesson = (sessionIndex: number, lesson: Lesson) => {
     sessionStorage.setItem("sessionIndex", sessionIndex.toString());
     sessionStorage.setItem("lessonIndex", JSON.stringify(lesson));
-    window.location.href = "/learn/" + course?._id;
+    navigate("/learn/" + course?._id);
   };
 
   return isEnrolled && course ? (
@@ -115,12 +117,15 @@ export const Detail = ({ isEnrolled, course, session }: Props) => {
                                 <div className="w-4/5">
                                   {course.is_purchased && (
                                     <div>
-                                      {lesson.lesson_type
-                                        .charAt(0)
-                                        .toUpperCase() +
-                                        lesson.lesson_type.slice(1)}
-                                      <span className="px-2">•</span>
-                                      {lesson.full_time} minutes
+                                      <div>{lesson.name}</div>
+                                      <div>
+                                        {lesson.lesson_type
+                                          .charAt(0)
+                                          .toUpperCase() +
+                                          lesson.lesson_type.slice(1)}
+                                        <span className="px-2">•</span>
+                                        {lesson.full_time} minutes
+                                      </div>
                                     </div>
                                   )}
                                   {!course.is_purchased && (

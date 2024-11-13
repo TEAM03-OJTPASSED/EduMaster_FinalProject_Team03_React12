@@ -23,6 +23,16 @@ export const Banner = ({ id, course, isPurchased }: Props) => {
     navigate("/cart/new");
   };
 
+  const handleLearn = (course: Course) => {
+    console.log(course.session_list[0].lesson_list[0]);
+    sessionStorage.setItem("sessionIndex", "0");
+    sessionStorage.setItem(
+      "lessonIndex",
+      JSON.stringify(course.session_list[0].lesson_list[0])
+    );
+    navigate(`/learn/${id}`);
+  };
+
   return (
     <div className="font-exo flex flex-col bg-orange-50 px-20 lg:-mx-40 -mx-24 pb-10">
       <div className="flex flex-col gap-8 pt-10">
@@ -47,7 +57,7 @@ export const Banner = ({ id, course, isPurchased }: Props) => {
             <div className="flex items-baseline gap-4">
               <div
                 className="bg-orange-500 text-white text-2xl font-semibold px-8 py-4 rounded cursor-pointer"
-                onClick={() => (window.location.href = `/learn/${id}`)}
+                onClick={() => handleLearn(course)}
               >
                 Learn Now
               </div>
