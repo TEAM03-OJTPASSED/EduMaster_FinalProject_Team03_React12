@@ -270,11 +270,12 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
         question_list: sanitizedQuestions,
       });
     }
-    console.log("Form Values:", values);
     if (onFinished) {
       onFinished(values);
     }
   };
+
+
 
   // Huko additional code
   return (
@@ -337,7 +338,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
               { label: "Reading", value: LessonTypeEnum.READING },
               { label: "Video", value: LessonTypeEnum.VIDEO },
               { label: "Image", value: LessonTypeEnum.IMAGE },
-              { label: "Assignment", value: LessonTypeEnum.ASSIGNMENT },
+              //{ label: "Assignment", value: LessonTypeEnum.ASSIGNMENT },
             ]}
           />
         </Form.Item>
@@ -587,13 +588,6 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
                     className="w-full"
                   >
                     Add Question
-                  </Button>
-                  <Button
-                    type="primary"
-                    className="w-full mt-4"
-                    onClick={() => handleConsoleLog()}
-                  >
-                    Submit
                   </Button>
                 </Form.Item>
               </div>

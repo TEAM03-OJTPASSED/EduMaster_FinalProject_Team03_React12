@@ -1,4 +1,3 @@
-import { Assignment } from "./Assignment.model";
 import { LessonSearchCondition, PageInfo } from "./SearchInfo.model";
 
 export interface Lesson {
@@ -30,7 +29,7 @@ export interface LessonRequest {
   description: string;
   video_url: string;
   image_url: string;
-  assignment: string;
+  assignment?: string;
   full_time: number;
   position_order: number;
 }
