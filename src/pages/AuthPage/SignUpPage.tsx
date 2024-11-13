@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 // import { loginWithGoogle } from "../../redux/slices/authSlices";
 import { register } from "../../services/auth.service";
 import { RootState } from "../../redux/store/store";
+import { uploadCustomRequest } from "../../utils/uploadCustomReuquest";
 
 export type RegisterType = {
   name: string;
@@ -207,6 +208,7 @@ const SignUppage = () => {
                         >
                           <Upload
                             accept="image/*"
+                            customRequest={uploadCustomRequest}
                             action={API_UPLOAD_FILE}
                             fileList={fileListImage}
                             listType="picture-card"
@@ -234,6 +236,7 @@ const SignUppage = () => {
                         >
                           <Upload
                             accept="video/*"
+                            customRequest={uploadCustomRequest}
                             action={API_UPLOAD_FILE}
                             fileList={fileListVideo}
                             listType="picture-card"

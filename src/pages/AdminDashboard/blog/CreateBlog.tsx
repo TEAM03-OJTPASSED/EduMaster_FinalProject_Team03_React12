@@ -7,6 +7,7 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { BlogRequest } from "../../../models/Blog.model";
 import BlogService from "../../../services/blog.service";
 import { API_UPLOAD_FILE } from "../../../constants/api/upload";
+import { uploadCustomRequest } from "../../../utils/uploadCustomReuquest";
 
 type BlogFormProps = {
   initialValues?: BlogRequest;
@@ -120,6 +121,7 @@ const CreateBlog: React.FC<BlogFormProps> = ({ initialValues, onSuccess }) => {
         <Form.Item label="Title Image" name="image_url"  rules={[{ required: true, message: "Please upload the blog image!" }]}>
           <Upload
             action={API_UPLOAD_FILE}
+            customRequest={uploadCustomRequest}
             listType="picture-card"
             onChange={handleImageChange}
             fileList={fileList}
