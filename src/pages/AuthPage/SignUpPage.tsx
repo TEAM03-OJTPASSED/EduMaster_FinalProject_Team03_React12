@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 // import { loginWithGoogle } from "../../redux/slices/authSlices";
 import { register } from "../../services/auth.service";
 import { RootState } from "../../redux/store/store";
+import { beforeUpload } from "../../utils/handleBeforUpload";
 
 export type RegisterType = {
   name: string;
@@ -239,6 +240,7 @@ const SignUppage = () => {
                             listType="picture-card"
                             maxCount={1}
                             onChange={handleVideoChange}
+                            beforeUpload={beforeUpload}
                           >
                             {fileListVideo.length >= 1 ? null : (
                               <div>
