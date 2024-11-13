@@ -1,5 +1,5 @@
 // createCategory.tsx
-import { Modal, Form, Input, Select, FormInstance, Button } from "antd";
+import { Modal, Form, Input, Select, Button } from "antd";
 import { FC } from "react";
 import CategoryService from "../../../services/category.service";
 

@@ -31,7 +31,6 @@ const StudentSubscriptions = () => {
   const {currentUser} = useSelector((state:RootState) => state.auth.login)
   const [subscribers, setSubscribers] = useState<Subscription[]>();
   const [subscriptions, setSubscriptions] = useState<Subscription[]>();
-  const [searchParams, setSearchParams] = useState(initialSubsParam);
 
 
 
@@ -45,19 +44,19 @@ const StudentSubscriptions = () => {
   }, [currentUser]);
 
   const fetchSubscriptions = async () => {
-      const response = await SubscriptionService.getSubscriptions(searchParams);
+      const response = await SubscriptionService.getSubscriptions(initialSubsParam);
       setSubscriptions(response?.data?.pageData ?? []);
   };
 
   const fetchSubscribers = async () => {
-    const response = await SubscriptionService.getSubscribers(searchParams);
+    const response = await SubscriptionService.getSubscribers(initialSubsParam);
     setSubscribers(response?.data?.pageData ?? []);
 };
 
   useEffect(() => {
     fetchSubscriptions();
     if (isInstructor) fetchSubscribers();
-  },[searchParams]);
+  },[initialSubsParam]);
 
   // const handleSearch = (value: string) => {
 

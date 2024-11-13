@@ -1,6 +1,5 @@
 import { MdOutlineLocalPhone, MdOutlineEmail } from "react-icons/md";
 import SessionResponsive from "./SessionResponsive";
-import { Reviews } from "./Detail/Review";
 
 type Course = {
   name: string;
@@ -373,63 +372,63 @@ const sampleLessons: Lesson[] = [
     __v: 0,
   },
 ];
-type Review = {
-  _id: string;
-  user_id: string;
-  course_id: string;
-  comment: string;
-  rating: number;
-  is_deleted: boolean;
-  created_at: string;
-  updated_at: string;
-  __v: number;
-};
-const sampleReviews: Review[] = [
-  {
-    _id: "6680e264e19995122837e322",
-    user_id: "6680d54954c31267eb217f55",
-    course_id: "667ecee48039581edcd01af5",
-    comment: "Course is very good!",
-    rating: 3,
-    is_deleted: false,
-    created_at: "2024-06-30T04:43:16.652Z",
-    updated_at: "2024-06-30T05:05:21.619Z",
-    __v: 0,
-  },
-  {
-    _id: "6680e264e19995122837e323",
-    user_id: "6680d54954c31267eb217f56",
-    course_id: "667ecee48039581edcd01af6",
-    comment: "Excellent course!",
-    rating: 5,
-    is_deleted: false,
-    created_at: "2024-06-30T04:43:16.652Z",
-    updated_at: "2024-06-30T05:05:21.619Z",
-    __v: 0,
-  },
-  {
-    _id: "6680e264e19995122837e324",
-    user_id: "6680d54954c31267eb217f57",
-    course_id: "667ecee48039581edcd01af7",
-    comment: "Not bad, but could be better.",
-    rating: 2,
-    is_deleted: false,
-    created_at: "2024-06-30T04:43:16.652Z",
-    updated_at: "2024-06-30T05:05:21.619Z",
-    __v: 0,
-  },
-  {
-    _id: "6680e264e19995122837e323",
-    user_id: "6680d54954c31267eb217f57",
-    course_id: "667ecee48039581edcd01af7",
-    comment: "Not bad, but could be better.",
-    rating: 2,
-    is_deleted: false,
-    created_at: "2024-06-30T04:43:16.652Z",
-    updated_at: "2024-06-30T05:05:21.619Z",
-    __v: 0,
-  },
-];
+// type Review = {
+//   _id: string;
+//   user_id: string;
+//   course_id: string;
+//   comment: string;
+//   rating: number;
+//   is_deleted: boolean;
+//   created_at: string;
+//   updated_at: string;
+//   __v: number;
+// };
+// const sampleReviews: Review[] = [
+//   {
+//     _id: "6680e264e19995122837e322",
+//     user_id: "6680d54954c31267eb217f55",
+//     course_id: "667ecee48039581edcd01af5",
+//     comment: "Course is very good!",
+//     rating: 3,
+//     is_deleted: false,
+//     created_at: "2024-06-30T04:43:16.652Z",
+//     updated_at: "2024-06-30T05:05:21.619Z",
+//     __v: 0,
+//   },
+//   {
+//     _id: "6680e264e19995122837e323",
+//     user_id: "6680d54954c31267eb217f56",
+//     course_id: "667ecee48039581edcd01af6",
+//     comment: "Excellent course!",
+//     rating: 5,
+//     is_deleted: false,
+//     created_at: "2024-06-30T04:43:16.652Z",
+//     updated_at: "2024-06-30T05:05:21.619Z",
+//     __v: 0,
+//   },
+//   {
+//     _id: "6680e264e19995122837e324",
+//     user_id: "6680d54954c31267eb217f57",
+//     course_id: "667ecee48039581edcd01af7",
+//     comment: "Not bad, but could be better.",
+//     rating: 2,
+//     is_deleted: false,
+//     created_at: "2024-06-30T04:43:16.652Z",
+//     updated_at: "2024-06-30T05:05:21.619Z",
+//     __v: 0,
+//   },
+//   {
+//     _id: "6680e264e19995122837e323",
+//     user_id: "6680d54954c31267eb217f57",
+//     course_id: "667ecee48039581edcd01af7",
+//     comment: "Not bad, but could be better.",
+//     rating: 2,
+//     is_deleted: false,
+//     created_at: "2024-06-30T04:43:16.652Z",
+//     updated_at: "2024-06-30T05:05:21.619Z",
+//     __v: 0,
+//   },
+// ];
 type Props = {
   a?: string;
 };
@@ -475,7 +474,6 @@ export const DetailResponsive = ({ a }: Props) => {
         <div className="font-bold text-xl">Comment</div>
         <div className="flex-grow border-t border-orange-300 ml-2"></div>
       </div>
-      <Reviews items={sampleReviews} label={false} />
     </div>
   );
 };

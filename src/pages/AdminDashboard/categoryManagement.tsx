@@ -61,7 +61,7 @@ const CategoryManagement = () => {
     });
   };
 
-  const handleEdit = (record: User) => {
+  const handleEdit = (record: Category) => {
     setCurrentCategorie(record);
     setEditVisible(true);
   };

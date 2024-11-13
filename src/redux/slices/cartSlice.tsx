@@ -1,6 +1,6 @@
 // cartSlice.ts
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { message, notification } from 'antd';
+import { message } from 'antd';
 import { Course } from '../../models/Course.model';
 import CartService from '../../services/cart.service';
 import { Cart, CartStatusEnum, SearchCartByStatus } from '../../models/Cart.model';

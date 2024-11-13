@@ -1,6 +1,5 @@
 'use client'
 
-import React from 'react'
 import { Modal, List, Rate } from 'antd'
 import { StarFilled } from '@ant-design/icons'
 

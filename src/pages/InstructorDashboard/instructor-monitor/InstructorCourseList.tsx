@@ -6,7 +6,6 @@ import {
   EditOutlined,
   PlusCircleOutlined,
   SendOutlined,
-  StarOutlined,
 } from "@ant-design/icons";
 
 import CourseOption from "./create-courses/CourseOption";

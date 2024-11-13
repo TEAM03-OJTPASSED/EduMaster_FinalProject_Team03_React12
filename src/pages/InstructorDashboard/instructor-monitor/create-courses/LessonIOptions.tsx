@@ -260,11 +260,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
   //   console.log(JSON.stringify(questions));
   // };
 
-  const onFinish = (values: {
-    lesson_type: LessonTypeEnum;
-    assignment: string;
-    name: string;
-  }) => {
+  const onFinish = (values: Lesson) => {
     if (values.lesson_type === LessonTypeEnum.ASSIGNMENT) {
       const sanitizedQuestions = questions.map(({ _id, ...rest }) => rest);
       values.assignment = JSON.stringify({
@@ -281,7 +277,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
 
   // Huko additional code
   return (
-    <Form
+    <Form<Lesson>
       form={form}
       layout="vertical"
       initialValues={initialValues}
