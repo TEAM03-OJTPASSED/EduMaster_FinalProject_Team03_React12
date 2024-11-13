@@ -15,17 +15,6 @@ import BlogService from "../../services/blog.service";
 import EditBlog from "./blog/EditBlog";
 import { ellipsisText } from "../../utils/ellipsisText";
 
-const initialBlogsParams: BlogSearchParams = {
-  searchCondition: {
-    category_id: "",
-    is_delete: false,
-  },
-  pageInfo: {
-    pageNum: 1,
-    pageSize: 10,
-  },
-};
-
 const BlogManagement = () => {
   const [isModalCreateVisible, setIsModalCreateVisible] = useState(false);
   const [isModalDeleteVisible, setIsModalDeleteVisible] = useState(false);
@@ -53,8 +42,8 @@ const BlogManagement = () => {
       };
       const res = await BlogService.getBlogs(searchParams);
       const pageData = res.data?.pageData ?? [];
+      setFetchedBlogs(pageData);
       setBlogs(pageData);
-      setFilteredBlogs(pageData);
     } catch (error) {
       console.error("Error fetching blogs:", error);
     } finally {
@@ -64,7 +53,7 @@ const BlogManagement = () => {
 
   useEffect(() => {
     fetchBlogs();
-  }, [searchParams]);
+  }, []);
 
   // Open the Create Blog Modal
   const showModalCreate = () => setIsModalCreateVisible(true);
@@ -172,7 +161,7 @@ const BlogManagement = () => {
 
   return (
     <Card>
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex">
         <h3 className="text-2xl my-5">Blog Management</h3>
       </div>
       <div className="flex flex-wrap items-center justify-between mb-4">
@@ -216,7 +205,7 @@ const BlogManagement = () => {
       </div>
 
       <Table
-        dataSource={filteredBlogs}
+        dataSource={blogs}
         columns={columns}
         pagination={{ pageSize: 5 }}
         rowKey="_id"
@@ -228,11 +217,11 @@ const BlogManagement = () => {
       {isModalEditVisible && editBlogData && (
         <Modal
           title="Edit Blog"
-          open={isModalEditVisible}
+          visible={isModalEditVisible}
           onCancel={() => setIsModalEditVisible(false)}
           width="80%"
           style={{ top: 20 }}
-          styles={{ body: { height: "68vh", padding: 0 } }}
+          bodyStyle={{ height: "68vh", padding: 0 }}
           footer={null}
         >
           <EditBlog
@@ -259,7 +248,7 @@ const BlogManagement = () => {
         onCancel={() => setIsModalCreateVisible(false)}
         width="80%"
         style={{ top: 20 }}
-        styles={{ body: { height: "68vh", padding: 0 } }}
+        bodyStyle={{ height: "68vh", padding: 0 }}
         footer={null}
       >
         <CreateBlog
