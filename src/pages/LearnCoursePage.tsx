@@ -14,7 +14,6 @@ const token = localStorage.getItem("token");
 const fetchCourse = async (courseId: string) => {
   try {
     const response = await axios.get(
-      // `https://edumaster-api-dev.vercel.app/api/client/course/${courseId}`,
       `http://localhost:3000/api/client/course/${courseId}`,
       token ? { headers: { Authorization: `Bearer ${token}` } } : {}
     );
@@ -34,7 +33,6 @@ const LearnCoursePage = () => {
   const [returnCode, setReturnCode] = useState<number | null>(0);
   const [course, setCourse] = useState<Course | null>(null);
   const [session, setSession] = useState<Session[] | null>(null);
-  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [buttonText, setButtonText] = useState("");
   const [loading, setLoading] = useState(false);
   const [countdown, setCountDown] = useState(5);
@@ -59,18 +57,6 @@ const LearnCoursePage = () => {
       if (data) {
         setCourse(data.data);
         setSession(data.data.session_list || []);
-        if (data.session_list && data.session_list.length > 0) {
-          const firstSession = data.session_list[0];
-          if (firstSession.lesson_list && firstSession.lesson_list.length > 0) {
-            setSelectedLesson(firstSession.lesson_list[0]);
-          }
-          setExpandedSessions({ 0: true });
-          setButtonText(
-            firstSession.lesson_list[0].is_completed
-              ? "Mark as Incomplete"
-              : "Mark as Completed"
-          );
-        }
       }
       if (data === "Forbidden") {
         setReturnCode(403);
@@ -82,9 +68,11 @@ const LearnCoursePage = () => {
     console.log("Course:", course);
   }, []);
 
+  const sessionIndex = sessionStorage.getItem("sessionIndex");
+
   const [expandedSessions, setExpandedSessions] = useState<{
     [key: number]: boolean;
-  }>({});
+  }>(sessionIndex ? { [parseInt(sessionIndex)]: true } : {});
 
   const toggleSession = (index: number) => {
     setExpandedSessions((prev) => ({
@@ -93,6 +81,10 @@ const LearnCoursePage = () => {
     }));
   };
 
+  const lessonIndex = sessionStorage.getItem("lessonIndex");
+  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(
+    JSON.parse(lessonIndex || "null")
+  );
   const selectLesson = (lesson: Lesson) => {
     setSelectedLesson(lesson);
     setButtonText(
@@ -138,8 +130,6 @@ const LearnCoursePage = () => {
       setLoading(false);
     }
   };
-
-  //http://localhost:5173/learn/6713859755b6534784014184\
 
   if ((!course || !session) && returnCode !== 403) {
     return (
@@ -203,7 +193,6 @@ const LearnCoursePage = () => {
       </div>
     );
   }
-
   return (
     <div className="fixed top-0 left-0 z-50 bg-white w-full h-[100vh]">
       <Navbar />
@@ -293,7 +282,7 @@ const LearnCoursePage = () => {
                 ) : selectedLesson.lesson_type === "assignment" ? (
                   <div className="w-full">
                     <h2>Assignment</h2>
-                    <p>{selectedLesson.assignment.name}</p>
+                    <p>{selectedLesson.assignment}</p>
                   </div>
                 ) : (
                   <div
