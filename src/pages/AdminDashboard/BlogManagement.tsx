@@ -1,5 +1,10 @@
 import { Button, Card, Input, Modal, Table, Select, Tag } from "antd";
-import { SearchOutlined, PlusCircleOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import {
+  SearchOutlined,
+  PlusCircleOutlined,
+  DeleteOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import CreateBlog from "./blog/CreateBlog";
@@ -15,16 +20,18 @@ const BlogManagement = () => {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isModalEditVisible, setIsModalEditVisible] = useState(false);
   const [editBlogData, setEditBlogData] = useState<Blog | null>(null);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [fetchedBlogs, setFetchedBlogs] = useState<Blog[]>([]);
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [searchText, setSearchText] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
 
+  // Fetch blogs initially
   const fetchBlogs = async () => {
+    setLoading(true);
     try {
       const searchParams: BlogSearchParams = {
         searchCondition: {
-          category_id: "",
           is_delete: false,
         },
         pageInfo: {
@@ -38,6 +45,8 @@ const BlogManagement = () => {
       setBlogs(pageData);
     } catch (error) {
       console.error("Error fetching blogs:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -45,33 +54,35 @@ const BlogManagement = () => {
     fetchBlogs();
   }, []);
 
-  useEffect(() => {
-    const filteredBlogs = selectedCategories.length
-      ? fetchedBlogs.filter((blog) => selectedCategories.includes(blog.category_id))
-      : fetchedBlogs;
-    setBlogs(filteredBlogs);
-  }, [selectedCategories, fetchedBlogs]);
-
+  // Open the Create Blog Modal
   const showModalCreate = () => setIsModalCreateVisible(true);
 
-  const handleSelectChange = (values: string[]) => setSelectedCategories(values);
-
-  const onSuccess = () => {
-    setIsModalCreateVisible(false);
-    fetchBlogs();
+  const handleSearch = () => {
+    setLoading(true);
+    const lowerCaseTags = selectedTags.map(tag => tag.toLowerCase()); 
+  
+    setTimeout(() => {
+      const filteredBlogs = fetchedBlogs.filter((blog) => {
+        const blogTagsLowercase = blog.tags.map(tag => tag.toLowerCase()); 
+        const nameMatch = blog.name.toLowerCase().includes(searchText.toLowerCase()); 
+  
+        const tagsMatch = lowerCaseTags.length === 0 || lowerCaseTags.every((tag) => blogTagsLowercase.includes(tag));
+  
+        return nameMatch && tagsMatch;
+      });
+  
+      setBlogs(filteredBlogs);
+      setLoading(false);
+    }, 300);
   };
 
-  const handleCancel = () => {
-    setIsModalCreateVisible(false);
-    setIsModalDeleteVisible(false);
-    setDeleteId(null);
-  };
-
+  // Open the Delete Blog Modal
   const showModalDelete = (id: string) => {
     setDeleteId(id);
     setIsModalDeleteVisible(true);
   };
 
+  // Open the Edit Blog Modal
   const showModalEdit = (blogData: Blog) => {
     setEditBlogData(blogData);
     setIsModalEditVisible(true);
@@ -133,7 +144,7 @@ const BlogManagement = () => {
           <Button
             type="text"
             icon={<EditOutlined style={{ color: "blue" }} />}
-            onClick={() => showModalEdit(record)} // Pass full record
+            onClick={() => showModalEdit(record)}
           />
         </>
       ),
@@ -154,14 +165,23 @@ const BlogManagement = () => {
           onChange={(e) => setSearchText(e.target.value)}
         />
         <Select
-          mode="multiple"
-          allowClear
-          placeholder="Select categories"
-          value={selectedCategories}
-          onChange={handleSelectChange}
+          mode="tags" // Allows adding tags by pressing Enter
+          placeholder="Search by Tags"
+          value={selectedTags}
+          onChange={(value) => setSelectedTags(value)} // Update tags state
           className="w-full md:w-1/4 mb-2 md:mb-0 md:ml-3"
-          style={{ minWidth: '200px' }}
+          style={{ minWidth: "200px" }}
         />
+        <Button
+          onClick={handleSearch}
+          icon={<SearchOutlined />}
+          shape="round"
+          type="primary"
+          className="w-full md:w-auto ml-0 md:ml-auto"
+          loading={loading} // Loading state for search button
+        >
+          Search
+        </Button>
         <Button
           onClick={showModalCreate}
           icon={<PlusCircleOutlined />}
@@ -180,6 +200,7 @@ const BlogManagement = () => {
         rowKey="_id"
         bordered
         scroll={{ x: true }}
+        loading={loading}
       />
 
       {isModalEditVisible && editBlogData && (
@@ -193,7 +214,7 @@ const BlogManagement = () => {
           footer={null}
         >
           <EditBlog
-            initialValues={editBlogData} // Pass the full blog data for editing
+            initialValues={editBlogData}
             onSuccess={() => {
               setIsModalEditVisible(false);
               fetchBlogs();
@@ -206,20 +227,25 @@ const BlogManagement = () => {
         <DeleteBlog
           id={deleteId}
           onSuccess={fetchBlogs}
-          onCancel={handleCancel}
+          onCancel={() => setIsModalDeleteVisible(false)}
         />
       )}
 
       <Modal
         title="Create Blog"
         open={isModalCreateVisible}
-        onCancel={handleCancel}
+        onCancel={() => setIsModalCreateVisible(false)}
         width="80%"
         style={{ top: 20 }}
         bodyStyle={{ height: "68vh", padding: 0 }}
         footer={null}
       >
-        <CreateBlog onSuccess={onSuccess} />
+        <CreateBlog
+          onSuccess={() => {
+            setIsModalCreateVisible(false);
+            fetchBlogs();
+          }}
+        />
       </Modal>
     </Card>
   );
