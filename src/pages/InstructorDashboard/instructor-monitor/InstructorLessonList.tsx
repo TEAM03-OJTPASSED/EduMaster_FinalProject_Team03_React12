@@ -73,15 +73,15 @@ const InstructorLessonList = () => {
 
   const showModal = (lesson: Lesson) => {
     setSelectedLesson(lesson);
-    fetchCourses()
-    fetchLessons()
+    fetchCourses();
+    fetchLessons();
     setIsModalVisible(true);
   };
 
   const showCreateModal = () => {
     setIsModalCreateVisible(true);
-    fetchCourses()
-    fetchLessons()
+    fetchCourses();
+    fetchLessons();
   };
 
   const resetModalState = () => {
@@ -118,7 +118,7 @@ const InstructorLessonList = () => {
       assignment,
       ...otherValues
     } = values;
-    const numericValues = {
+    const numericValues: LessonRequest = {
       ...otherValues,
       position_order: position_order ? Number(position_order) : 0,
       full_time: full_time ? Number(full_time) : 0,
@@ -127,14 +127,21 @@ const InstructorLessonList = () => {
       assignment: assignment || "",
     };
 
-    const response = await LessonService.createLesson(numericValues);
-    if (response.success) {
-      resetModalState();
-      handleNotify(
-        "Lesson Created Successfully",
-        "The lesson has been created successfully."
-      );
-      await fetchLessons();
+    if (numericValues.assignment === "") {
+      delete numericValues.assignment;
+    }
+
+    try {
+      const response = await LessonService.createLesson(numericValues);
+      if (response.success) {
+        resetModalState();
+        handleNotify(
+          "Lesson Created Successfully",
+          "The lesson has been created successfully."
+        );
+        await fetchLessons();
+      }
+    } finally {
     }
   };
 

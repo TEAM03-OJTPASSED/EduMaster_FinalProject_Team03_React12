@@ -4,10 +4,12 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import {
   Button,
   Checkbox,
+  Col,
   Form,
   FormProps,
   Input,
   Radio,
+  Row,
   Select,
   Tooltip,
   Upload,
@@ -268,11 +270,12 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
         question_list: sanitizedQuestions,
       });
     }
-    console.log("Form Values:", values);
     if (onFinished) {
       onFinished(values);
     }
   };
+
+
 
   // Huko additional code
   return (
@@ -335,7 +338,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
               { label: "Reading", value: LessonTypeEnum.READING },
               { label: "Video", value: LessonTypeEnum.VIDEO },
               { label: "Image", value: LessonTypeEnum.IMAGE },
-              { label: "Assignment", value: LessonTypeEnum.ASSIGNMENT },
+              //{ label: "Assignment", value: LessonTypeEnum.ASSIGNMENT },
             ]}
           />
         </Form.Item>
@@ -454,36 +457,47 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
                     }
                   />
                 </Form.Item>
-                <Form.Item
-                  label="Lesson Video"
-                  name="video_url"
-                  rules={[{ required: true, message: "Please input video" }]}
-                >
-                  <div className="space-y-4">
-                    <Upload
-                      action="https://api.cloudinary.com/v1_1/dz2dv8lk4/upload?upload_preset=edumaster1"
-                      accept="video/*"
-                      listType="picture-card"
-                      fileList={videoFileList}
-                      onChange={handleVideoChange}
-                      maxCount={1}
-                    >
-                      {videoFileList.length >= 1 ? null : (
-                        <div>
-                          <PlusOutlined className="h-5 w-5" />
-                          <div>Upload</div>
-                        </div>
-                      )}
-                    </Upload>
-                  </div>
-                  {videoPreviewUrl && (
-                    <video
-                      src={videoPreviewUrl}
-                      controls
-                      className="w-full rounded-lg"
-                    />
-                  )}
-                </Form.Item>
+                <Col span={12}>
+                  <Form.Item
+                    label="Lesson Video"
+                    name="video_url"
+                    rules={[{ required: true, message: "Please input video" }]}
+                  >
+                    <Row gutter={16} align="middle">
+                      <Col span={8}>
+                        <Upload
+                          action="https://api.cloudinary.com/v1_1/dz2dv8lk4/upload?upload_preset=edumaster1"
+                          accept="video/*"
+                          listType="picture-card"
+                          fileList={videoFileList}
+                          onChange={handleVideoChange}
+                          maxCount={1}
+                        >
+                          {videoFileList.length >= 1 ? null : (
+                            <div>
+                              <PlusOutlined className="h-5 w-5" />
+                              <div>Upload</div>
+                            </div>
+                          )}
+                        </Upload>
+                      </Col>
+
+                      <Col span={16}>
+                        {videoPreviewUrl && (
+                          <div style={{ width: "100%", overflow: "hidden" }}>
+                            <video
+                              src={videoPreviewUrl}
+                              width="100%"
+                              height="auto" // Adjusts height to maintain aspect ratio
+                              controls
+                              style={{ maxWidth: "400px" }} // Limit max width
+                            />
+                          </div>
+                        )}
+                      </Col>
+                    </Row>
+                  </Form.Item>
+                </Col>
               </div>
             )}
 
@@ -584,13 +598,6 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
                     className="w-full"
                   >
                     Add Question
-                  </Button>
-                  <Button
-                    type="primary"
-                    className="w-full mt-4"
-                    onClick={() => handleConsoleLog()}
-                  >
-                    Submit
                   </Button>
                 </Form.Item>
               </div>
