@@ -72,7 +72,11 @@ const SignUppage = () => {
   const handleVideoChange: UploadProps["onChange"] = ({
     fileList: newFileList,
   }) => {
-    setFileListVideo(newFileList || []);
+
+    const filteredFileList = newFileList.filter(
+      (file) => file.type === "video/mp4"
+    );
+    setFileListVideo(filteredFileList);
     if (newFileList.length > 0 && newFileList[0].status === "done") {
       const uploadedVideoUrl = newFileList[0].response.secure_url;
       form.setFieldsValue({ video_url: uploadedVideoUrl });
