@@ -9,6 +9,7 @@ import BlogService from "../../../services/blog.service";
 import { API_UPLOAD_FILE } from "../../../constants/api/upload";
 
 import { uploadPlugin } from "../../../components/UploadImageInCKE";
+import { uploadCustomRequest } from "../../../utils/uploadCustomReuquest";
 
 type BlogFormProps = {
   initialValues?: BlogRequest;
