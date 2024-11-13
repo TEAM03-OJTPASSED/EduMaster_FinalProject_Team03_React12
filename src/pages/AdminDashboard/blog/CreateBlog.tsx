@@ -7,6 +7,7 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { BlogRequest } from "../../../models/Blog.model";
 import BlogService from "../../../services/blog.service";
 import { API_UPLOAD_FILE } from "../../../constants/api/upload";
+import { uploadPlugin } from "../../../components/UploadImageInCKE";
 
 type BlogFormProps = {
   initialValues?: BlogRequest;
@@ -61,6 +62,7 @@ const CreateBlog: React.FC<BlogFormProps> = ({ initialValues, onSuccess }) => {
   const onFinish = async (values: BlogRequest) => {
     try {
       const response = await BlogService.createBlog(values);
+      console.log("Create blog data:", values);
       if (response?.success && onSuccess) {
         message.success("Blog created successfully");
         onSuccess();
@@ -117,14 +119,17 @@ const CreateBlog: React.FC<BlogFormProps> = ({ initialValues, onSuccess }) => {
           />
         </Form.Item>
 
-        <Form.Item label="Title Image" name="image_url"  rules={[{ required: true, message: "Please upload the blog image!" }]}>
+        <Form.Item
+          label="Title Image"
+          name="image_url"
+          rules={[{ required: true, message: "Please upload the blog image!" }]}
+        >
           <Upload
             action={API_UPLOAD_FILE}
             listType="picture-card"
             onChange={handleImageChange}
             fileList={fileList}
             maxCount={1}
-            
           >
             {fileList.length < 1 && (
               <button style={{ border: 0, background: "none" }} type="button">
@@ -154,12 +159,13 @@ const CreateBlog: React.FC<BlogFormProps> = ({ initialValues, onSuccess }) => {
           <CKEditor
             editor={ClassicEditor}
             data={form.getFieldValue("content") || ""}
-            onChange={(_, editor) => {
+            onChange={(event, editor) => {
               const data = editor.getData();
+              console.log({ event, editor, data });
               form.setFieldsValue({ content: data });
             }}
             config={{
-              placeholder: "Enter blog content...",
+              extraPlugins: [uploadPlugin],
             }}
           />
         </Form.Item>
