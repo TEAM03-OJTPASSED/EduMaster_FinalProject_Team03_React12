@@ -8,13 +8,14 @@ import ReactPlayer from "react-player";
 import { MdOutlinePlayCircle, MdOutlineTaskAlt } from "react-icons/md";
 import { FiBookOpen } from "react-icons/fi";
 import Navbar from "../components/Navbar";
+import LessonIOptions from "./InstructorDashboard/instructor-monitor/create-courses/LessonIOptions";
 
 const token = localStorage.getItem("token");
 
 const fetchCourse = async (courseId: string) => {
   try {
     const response = await axios.get(
-      `http://localhost:3000/api/client/course/${courseId}`,
+      `https://edumaster-api-dev.vercel.app/api/client/course/${courseId}`,
       token ? { headers: { Authorization: `Bearer ${token}` } } : {}
     );
     console.log("Response:", response.data);
@@ -81,14 +82,25 @@ const LearnCoursePage = () => {
     }));
   };
 
-  const lessonIndex = sessionStorage.getItem("lessonIndex");
-  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(
-    JSON.parse(lessonIndex || "null")
-  );
+  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
+  useEffect(() => {
+    const lessonIndex = sessionStorage.getItem("lessonIndex");
+    if (lessonIndex) {
+      const lesson = JSON.parse(lessonIndex);
+      setSelectedLesson({
+        ...lesson,
+        is_completed: lesson.is_completed || false,
+      });
+      setButtonText(
+        lesson.is_completed ? "Go To Next Item" : "Mark as Completed"
+      );
+    }
+  }, []);
+
   const selectLesson = (lesson: Lesson) => {
     setSelectedLesson(lesson);
     setButtonText(
-      lesson.is_completed ? "Mark as Incomplete" : "Mark as Completed"
+      lesson.is_completed ? "Go To Next Item" : "Mark as Completed"
     );
   };
 
@@ -109,7 +121,7 @@ const LearnCoursePage = () => {
       );
       if (response.data.success) {
         setButtonText(
-          lesson.is_completed ? "Mark as Completed" : "Mark as Incomplete"
+          lesson.is_completed ? "Mark as Completed" : "Go To Next Item"
         );
         // Update the lesson's is_completed status in the state
         setSession((prevSessions: Session[] | null) => {
@@ -301,6 +313,11 @@ const LearnCoursePage = () => {
                 >
                   {loading ? "Loading..." : buttonText}
                 </button>
+                {selectedLesson.is_completed && (
+                  <div className="text-orange-500 font-bold text-lg">
+                    ✔ Completed
+                  </div>
+                )}
               </div>
             </div>
           )}
