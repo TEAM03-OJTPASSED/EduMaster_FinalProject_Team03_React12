@@ -68,17 +68,20 @@ const InstructorLessonList = () => {
   const [listCourses, setListCourses] = useState<Course[]>([]);
   const [listSessions, setListSessions] = useState<Session[]>([]);
   const [listLessons, setListLessons] = useState<Lesson[]>([]);
-  const [loading, setLoading] = useState(false);
   const [searchParams, setSearchParams] =
     useState<GetLessons>(initialLessonsParams);
 
   const showModal = (lesson: Lesson) => {
     setSelectedLesson(lesson);
+    fetchCourses();
+    fetchLessons();
     setIsModalVisible(true);
   };
 
   const showCreateModal = () => {
     setIsModalCreateVisible(true);
+    fetchCourses();
+    fetchLessons();
   };
 
   const resetModalState = () => {
@@ -92,33 +95,18 @@ const InstructorLessonList = () => {
   };
 
   const fetchCourses = async () => {
-    setLoading(true);
-    try {
-      const response = await CourseService.getCourses(initialCoursesParams);
-      setListCourses(response?.data?.pageData ?? []);
-    } finally {
-      setLoading(false);
-    }
+    const response = await CourseService.getCourses(initialCoursesParams);
+    setListCourses(response?.data?.pageData ?? []);
   };
 
   const fetchSessions = async () => {
-    setLoading(true);
-    try {
-      const response = await SessionService.getSessions(initialSessionsParams);
-      setListSessions(response?.data?.pageData ?? []);
-    } finally {
-      setLoading(false);
-    }
+    const response = await SessionService.getSessions(initialSessionsParams);
+    setListSessions(response?.data?.pageData ?? []);
   };
 
   const fetchLessons = async () => {
-    setLoading(true);
-    try {
-      const response = await LessonService.getLessons(searchParams);
-      setListLessons(response?.data?.pageData ?? []);
-    } finally {
-      setLoading(false);
-    }
+    const response = await LessonService.getLessons(searchParams);
+    setListLessons(response?.data?.pageData ?? []);
   };
 
   const handleCreateLesson = async (values: LessonRequest) => {
@@ -143,7 +131,6 @@ const InstructorLessonList = () => {
       delete numericValues.assignment;
     }
 
-    setLoading(true);
     try {
       const response = await LessonService.createLesson(numericValues);
       if (response.success) {
@@ -155,52 +142,41 @@ const InstructorLessonList = () => {
         await fetchLessons();
       }
     } finally {
-      setLoading(false);
     }
   };
 
   const handleUpdateLesson = async (updatedLesson: LessonRequest) => {
-    setLoading(true);
-    try {
-      if (selectedLesson) {
-        const response = await LessonService.updateLesson(
-          selectedLesson._id,
-          updatedLesson
+    if (selectedLesson) {
+      const response = await LessonService.updateLesson(
+        selectedLesson._id,
+        updatedLesson
+      );
+      if (response.success) {
+        resetModalState();
+        handleNotify(
+          "Lesson Updated Successfully",
+          "The lesson has been updated successfully."
         );
-        if (response.success) {
-          resetModalState();
-          handleNotify(
-            "Lesson Updated Successfully",
-            "The lesson has been updated successfully."
-          );
-          await fetchLessons();
-        }
+        await fetchLessons();
       }
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleDeleteLesson = async (lessonId: string) => {
-    setLoading(true);
-    try {
-      const response = await LessonService.deleteLesson(lessonId);
-      if (response.success) {
-        handleNotify(
-          "Lesson Deleted Successfully",
-          "The lesson has been deleted successfully."
-        );
-        await fetchLessons();
-      }
-    } finally {
-      setLoading(false);
+    const response = await LessonService.deleteLesson(lessonId);
+    if (response.success) {
+      handleNotify(
+        "Lesson Deleted Successfully",
+        "The lesson has been deleted successfully."
+      );
+      await fetchLessons();
     }
   };
 
   useEffect(() => {
-    fetchCourses();
     fetchSessions();
-  }, []);
+    fetchCourses();
+  }, [searchParams]);
 
   useEffect(() => {
     fetchLessons();
@@ -301,6 +277,7 @@ const InstructorLessonList = () => {
                   value: course._id,
                   label: course.name,
                 })),
+                // onClick: () => fetchCourses()
               },
               {
                 name: "session_id",
@@ -311,6 +288,7 @@ const InstructorLessonList = () => {
                   dependence: session.course_id,
                 })),
                 dependenceName: "course_id",
+                // onClick: () => fetchCourses()
               },
             ]}
           />
@@ -372,7 +350,6 @@ const InstructorLessonList = () => {
         bordered
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
-        loading={loading}
       />
 
       <Modal
@@ -388,7 +365,6 @@ const InstructorLessonList = () => {
           <LessonIOptions
             listCourses={listCourses}
             listSessions={listSessions}
-            isLoading={loading}
             onFinished={handleUpdateLesson}
             mode="update"
             initialValues={selectedLesson}
@@ -409,7 +385,6 @@ const InstructorLessonList = () => {
         <LessonIOptions
           onFinished={handleCreateLesson}
           mode="create"
-          isLoading={loading}
           listCourses={listCourses}
           listSessions={listSessions}
         />

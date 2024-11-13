@@ -32,7 +32,6 @@ type LessonOptionsProps = {
   onFinished: FormProps["onFinish"];
   listSessions: Session[];
   listCourses: Course[];
-  isLoading: boolean;
 };
 
 const LessonIOptions: React.FC<LessonOptionsProps> = ({
@@ -41,7 +40,6 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
   onFinished,
   listCourses,
   listSessions,
-  isLoading,
 }) => {
   const [imageFileList, setImageFileList] = useState<UploadFile[]>([]);
   const [videoFileList, setVideoFileList] = useState<UploadFile[]>([]);
@@ -371,7 +369,6 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
             variant="solid"
             color="primary"
             htmlType="submit"
-            loading={isLoading}
           >
             {mode === "create" ? "Create" : "Update"}
           </Button>

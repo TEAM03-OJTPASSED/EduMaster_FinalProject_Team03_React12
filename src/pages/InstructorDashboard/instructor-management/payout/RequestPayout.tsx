@@ -1,14 +1,13 @@
 import { Card, Table, Tag, TableProps, Button } from "antd";
 import { SendOutlined } from "@ant-design/icons";
-import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import PayoutService from "../../../../services/payout.service";
-import { GetPayoutRequest, Payout, PayoutStatusEnum, Transaction } from "../../../../models/Payout.model";
+import { GetPayoutRequest, Payout, PayoutStatusEnum } from "../../../../models/Payout.model";
 import { handleNotify } from "../../../../utils/handleNotify";
 import EmptyData from "../../../../components/Empty Data/EmptyData";
+import { moneyFormatter } from "../../../../utils/moneyFormatter";
 
 const RequestPayout = () => {
-  const [payouts, setPayouts] = useState<Payout[]>([]);
   const [newPayouts, setNewPayouts] = useState<Payout[]>([]);
 
   const initialParams: GetPayoutRequest = {
@@ -24,11 +23,6 @@ const RequestPayout = () => {
     },
   };
 
-  const fetchPayouts = async () => {
-    const response = await PayoutService.getPayout(initialParams);
-    const payouts = response.data?.pageData || [];
-    setPayouts(payouts);
-  };
 
   const fetchRequestPayouts = async () => {
     const requestParams: GetPayoutRequest = {
@@ -44,7 +38,6 @@ const RequestPayout = () => {
   };
 
   useEffect(() => {
-    fetchPayouts();
     fetchRequestPayouts();
   }, []);
 
@@ -57,7 +50,6 @@ const RequestPayout = () => {
     };
     await PayoutService.updatePayoutStatus(payout._id, params);
     handleNotify("Payout Sent For Request", "Payout request has been sent to admin.");
-    fetchPayouts();
     fetchRequestPayouts();
   };
 
@@ -87,34 +79,44 @@ const RequestPayout = () => {
       },
     },
     {
-      title: "Created at",
-      dataIndex: "created_at",
-      key: "created_at",
-      render: (created_at) => dayjs(created_at).format("DD/MM/YYYY"),
+      title: "Updated At",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      ellipsis: true,
+      render: (date: string) => new Date(date).toLocaleString(),
     },
-    {
-      title: "Transaction ID",
-      dataIndex: "transactions",
-      key: "transactions",
-      render: (transactions: Transaction[]) =>
-        transactions.map((transaction, index) => (
-          <span key={index}>{transaction.purchase_id},</span>
-        )),
-    },
+    // {
+    //   title: "Transaction ID",
+    //   dataIndex: "transactions",
+    //   key: "transactions",
+    //   render: (transactions: Transaction[]) =>
+    //     transactions.map((transaction, index) => (
+    //       <span key={index}>{transaction.purchase_id},</span>
+    //     )),
+    // },
     {
       title: "Balance Origin",
       dataIndex: "balance_origin",
       key: "balance_origin",
+      ellipsis: true,
+      align: 'right' as const,
+      render: (money: number) => moneyFormatter(money),
     },
     {
       title: "Balance Instructor Paid",
       dataIndex: "balance_instructor_paid",
       key: "balance_instructor_paid",
+      ellipsis: true,
+      align: 'right' as const,
+      render: (money: number) => moneyFormatter(money),
     },
     {
       title: "Balance Instructor Received",
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
+      ellipsis: true,
+      align: 'right' as const,
+      render: (money: number) => moneyFormatter(money),
     },
   ];
 
@@ -122,15 +124,14 @@ const RequestPayout = () => {
     emptyText: <EmptyData description="New payouts will appear here when they're ready for processing" message="No new payouts to process"/>
   };
 
-  const allPayoutsLocale = {
-    emptyText: <EmptyData description="Previous payouts will be displayed here" message="No payout history found" />
-  };
+  
 
   const newPayoutsColumns: TableProps<Payout>["columns"] = [
     ...baseColumns,
     {
       title: "Action",
       key: "action",
+      fixed: 'right' as const,
       render: (record: Payout) => (
         <Button
           type="text"
@@ -144,29 +145,19 @@ const RequestPayout = () => {
 
   return (
     <Card>
-      <h3 className="text-2xl my-5">Manage Payouts</h3>
+      <h3 className="text-2xl my-5">Request Payout</h3>
       <Table
         dataSource={newPayouts}
         columns={newPayoutsColumns}
-        pagination={{ pageSize: 5 }}
+        pagination={{ pageSize: 10 }}
+        tableLayout="fixed"
         rowKey="payout_no"
         bordered
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
         locale={newPayoutsLocale}
+      />
       
-      />
-      <h3 className="text-2xl my-5">All Payouts</h3>
-      <Table
-        dataSource={payouts}
-        columns={baseColumns}
-        pagination={{ pageSize: 5 }}
-        rowKey="payout_no"
-        bordered
-        style={{ borderRadius: "8px" }}
-        scroll={{ x: true }}
-        locale={allPayoutsLocale}
-      />
     </Card>
   );
 };

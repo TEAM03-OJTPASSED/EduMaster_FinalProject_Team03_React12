@@ -75,6 +75,7 @@ const InstructorSalesHistory = () => {
         title: "Select",
         dataIndex: "select",
         key: "select",
+        fixed: true,
         render: (_: any, record: any) => (
           <Checkbox
             checked={selectedRowKeys.includes(record.purchase_no)}
@@ -86,6 +87,7 @@ const InstructorSalesHistory = () => {
       title: "Purchase Number",
       dataIndex: "purchase_no",
       key: "purchaseNumber",
+      ellipsis: true,
     },
     {
       title: "Cart No",
@@ -93,9 +95,15 @@ const InstructorSalesHistory = () => {
       key: "CartNo",
     },
     {
-      title: "Course Name",
-      dataIndex: "course_nam",
-      key: "courseName",
+      title: "Course",
+      dataIndex: "course_name",
+      key: "name",
+      ellipsis: true, 
+      render: (text:string) => (
+        <span style={{ maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-block' }}>
+          {text}
+        </span>
+      ),
     },
     {
       title: "Status",
@@ -126,16 +134,20 @@ const InstructorSalesHistory = () => {
       title: "Price Paid",
       dataIndex: "price_paid",
       key: "pricePaid",
+      ellipsis: true,
       render: (price: number) => `$${price.toFixed(2)}`,
     },
     {
       title: "Student Name",
       dataIndex: "student_name",
       key: "studentName",
+      ellipsis: true,
+
     },
     {
       title: "Action",
       key: "action",
+      fixed: 'right' as const,
       render: (record: any) => (
         <Button type="primary" onClick={() => handleAction(record)}>
           View Details
@@ -199,14 +211,14 @@ const InstructorSalesHistory = () => {
           Create Payout
         </Button>
       </div>
-      <Table
+      <Table<Purchase>
         dataSource={salesHistory}
         columns={columns}
+        scroll={{ x: 'max-content' }}
         pagination={{ pageSize: 4 }}
         rowKey="purchase_no"
         bordered
         style={{ borderRadius: "8px" }}
-        scroll={{ x: true }}
         locale={{emptyText: <EmptyData message="No orders found" description="No orders found for the given search parameters"/>}}
       />
 

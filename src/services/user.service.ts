@@ -99,12 +99,12 @@ export const getUsers = async (searchParams: any) => {
   }
 };
 
-export const getUser = async (searchParams: any) => {
+export const getUser = async (user_id: string) => {
   try {
-    const response = await postRequest(`${BASE_URL}/id`, searchParams);
+    const response = await getRequest(`${BASE_URL}/${user_id}`);
     return response.data; // Trả về dữ liệu từ API
   } catch (error) {
-    console.error("Error fetching users:", error);
+    console.error("Error fetching user:", error);
     throw error; // Ném lỗi để xử lý ở nơi gọi
   }
 };

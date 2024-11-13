@@ -8,7 +8,6 @@ type SessionOptionsProps = {
   mode: "create" | "update";
   onFinish: FormProps["onFinish"];
   listCourses: Course[];
-  isLoading: boolean;
 };
 
 const SessionOptions: React.FC<SessionOptionsProps> = ({
@@ -16,7 +15,6 @@ const SessionOptions: React.FC<SessionOptionsProps> = ({
   mode,
   onFinish,
   listCourses,
-  isLoading,
 }) => {
   const [form] = Form.useForm<Partial<Session>>();
 
@@ -92,7 +90,6 @@ const SessionOptions: React.FC<SessionOptionsProps> = ({
             variant="solid"
             color="primary"
             htmlType="submit"
-            loading={isLoading}
           >
             {mode === "create" ? "Create" : "Change"}
           </Button>
