@@ -1,5 +1,11 @@
-import { Button, Card, Input, Modal, Table, Select, Tag } from "antd";
-import { SearchOutlined, PlusCircleOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { Button, Card, Input, Modal, Table, Tag } from "antd";
+import {
+  PlusCircleOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
+import _ from "lodash";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import CreateBlog from "./blog/CreateBlog";
@@ -10,33 +16,34 @@ import BlogService from "../../services/blog.service";
 import EditBlog from "./blog/EditBlog";
 import { ellipsisText } from "../../utils/ellipsisText";
 
+const initialBlogsParams: BlogSearchParams = {
+  searchCondition: {
+    category_id: "",
+    is_delete: false,
+  },
+  pageInfo: {
+    pageNum: 1,
+    pageSize: 10,
+  },
+};
+
 const BlogManagement = () => {
   const [isModalCreateVisible, setIsModalCreateVisible] = useState(false);
   const [isModalDeleteVisible, setIsModalDeleteVisible] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isModalEditVisible, setIsModalEditVisible] = useState(false);
   const [editBlogData, setEditBlogData] = useState<Blog | null>(null);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [fetchedBlogs, setFetchedBlogs] = useState<Blog[]>([]);
   const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [searchText, setSearchText] = useState("");
+  const [filteredBlogs, setFilteredBlogs] = useState<Blog[]>([]);
+  const [searchParams] = useState<BlogSearchParams>(initialBlogsParams);
+  const [searchText, setSearchText] = useState<string>("");
 
   const fetchBlogs = async () => {
     try {
-      const searchParams: BlogSearchParams = {
-        searchCondition: {
-          category_id: "",
-          is_delete: false,
-        },
-        pageInfo: {
-          pageNum: 1,
-          pageSize: 100,
-        },
-      };
       const res = await BlogService.getBlogs(searchParams);
       const pageData = res.data?.pageData ?? [];
-      setFetchedBlogs(pageData);
       setBlogs(pageData);
+      setFilteredBlogs(pageData);
     } catch (error) {
       console.error("Error fetching blogs:", error);
     }
@@ -44,35 +51,29 @@ const BlogManagement = () => {
 
   useEffect(() => {
     fetchBlogs();
-  }, []);
+  }, [searchParams]);
 
-  useEffect(() => {
-    const filteredBlogs = selectedCategories.length
-      ? fetchedBlogs.filter((blog) => selectedCategories.includes(blog.category_id))
-      : fetchedBlogs;
-    setBlogs(filteredBlogs);
-  }, [selectedCategories, fetchedBlogs]);
+  const handleSearch = () => {
+    const filtered = blogs.filter((blog) =>
+      blog.name.toLowerCase().includes(searchText.toLowerCase())
+    );
+    setFilteredBlogs(filtered);
+  };
 
   const showModalCreate = () => setIsModalCreateVisible(true);
-
-  const handleSelectChange = (values: string[]) => setSelectedCategories(values);
-
   const onSuccess = () => {
     setIsModalCreateVisible(false);
     fetchBlogs();
   };
-
   const handleCancel = () => {
     setIsModalCreateVisible(false);
     setIsModalDeleteVisible(false);
     setDeleteId(null);
   };
-
   const showModalDelete = (id: string) => {
     setDeleteId(id);
     setIsModalDeleteVisible(true);
   };
-
   const showModalEdit = (blogData: Blog) => {
     setEditBlogData(blogData);
     setIsModalEditVisible(true);
@@ -103,7 +104,7 @@ const BlogManagement = () => {
       dataIndex: "description",
       key: "description",
       render: (description: string) => {
-        return <div >{ellipsisText(description, 50)}</div>
+        return <div>{ellipsisText(description, 50)}</div>;
       },
     },
     {
@@ -137,7 +138,7 @@ const BlogManagement = () => {
           <Button
             type="text"
             icon={<EditOutlined style={{ color: "blue" }} />}
-            onClick={() => showModalEdit(record)} 
+            onClick={() => showModalEdit(record)}
           />
         </>
       ),
@@ -146,26 +147,27 @@ const BlogManagement = () => {
 
   return (
     <Card>
-      <div className="flex">
+      <div className="flex justify-between items-center mb-4">
         <h3 className="text-2xl my-5">Blog Management</h3>
       </div>
+
       <div className="flex flex-wrap items-center mb-4">
-        <Input
-          placeholder="Search By Blog Name"
-          prefix={<SearchOutlined />}
-          className="w-full md:w-1/3 mb-2 md:mb-0"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-        />
-        <Select
-          mode="multiple"
-          allowClear
-          placeholder="Select categories"
-          value={selectedCategories}
-          onChange={handleSelectChange}
-          className="w-full md:w-1/4 mb-2 md:mb-0 md:ml-3"
-          style={{ minWidth: '200px' }}
-        />
+        <div className="flex">
+          <Input
+            placeholder="Search by blog name"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            onPressEnter={handleSearch}
+            style={{ marginRight: 8 }}
+          />
+          <Button
+            type="primary"
+            icon={<SearchOutlined />}
+            onClick={handleSearch}
+          >
+            Search
+          </Button>
+        </div>
         <Button
           onClick={showModalCreate}
           icon={<PlusCircleOutlined />}
@@ -178,7 +180,7 @@ const BlogManagement = () => {
       </div>
 
       <Table
-        dataSource={blogs}
+        dataSource={filteredBlogs}
         columns={columns}
         pagination={{ pageSize: 5 }}
         rowKey="_id"
@@ -189,15 +191,15 @@ const BlogManagement = () => {
       {isModalEditVisible && editBlogData && (
         <Modal
           title="Edit Blog"
-          visible={isModalEditVisible}
+          open={isModalEditVisible}
           onCancel={() => setIsModalEditVisible(false)}
           width="80%"
           style={{ top: 20 }}
-          bodyStyle={{ height: "68vh", padding: 0 }}
+          styles={{ body: { height: "68vh", padding: 0 } }}
           footer={null}
         >
           <EditBlog
-            initialValues={editBlogData} // Pass the full blog data for editing
+            initialValues={editBlogData}
             onSuccess={() => {
               setIsModalEditVisible(false);
               fetchBlogs();
@@ -220,7 +222,7 @@ const BlogManagement = () => {
         onCancel={handleCancel}
         width="80%"
         style={{ top: 20 }}
-        bodyStyle={{ height: "68vh", padding: 0 }}
+        styles={{ body: { height: "68vh", padding: 0 } }}
         footer={null}
       >
         <CreateBlog onSuccess={onSuccess} />

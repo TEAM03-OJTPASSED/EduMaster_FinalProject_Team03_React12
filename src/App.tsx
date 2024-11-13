@@ -71,6 +71,7 @@ import StudentOrderHistory from "./pages/StudentDashboard/StudentOrderHistory";
 import VerifySuccessToken from "./pages/AuthPage/VerifyToken";
 import { gapi } from "gapi-script";
 import AwaitingPayout from "./pages/InstructorDashboard/instructor-management/payout/AwaitingPayout";
+import InstructorContent1 from "./pages/InstructorDashboard/subscription/TEST";
 
 function App() {
   useEffect(() => {
@@ -174,6 +175,19 @@ function App() {
               </Route>
             </Route>
 
+            <Route
+              path="message"
+              element={
+                <ProtectedRoute
+                  allowedRoles={["instructor", "student"]}
+                ></ProtectedRoute>
+              }
+            >
+              <Route element={<InstructorLayout />}>
+                <Route index element={<InstructorContent1 />} />
+              </Route>
+            </Route>
+
             {/* Instructor Layout */}
             <Route
               path="dashboard/instructor"
@@ -196,7 +210,6 @@ function App() {
                   />
                   <Route path="rejected-payout" element={<RejectedPayout />} />
                   <Route path="awaiting-payout" element={<AwaitingPayout />} />
-
                 </Route>
                 <Route
                   path="salesHistory"

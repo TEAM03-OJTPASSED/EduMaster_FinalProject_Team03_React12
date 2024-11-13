@@ -23,7 +23,6 @@ import { CourseStatusToggle } from "../../../components/StatusToggle";
 import GlobalSearchUnit from "../../../components/GlobalSearchUnit";
 import { statusFormatter } from "../../../utils/statusFormatter";
 
-
 const initialCoursesParams: GetCourses = {
   pageInfo: {
     pageNum: 1,
@@ -48,32 +47,29 @@ const initialCategoriesParams: GetCategories = {
   },
 };
 
-
-
 const InstructorCourseList: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [isModalCreateVisible, setIsModalCreateVisible] = useState(false);
   const [listCourses, setListCourses] = useState<Course[]>([]);
   const [listCategories, setListCategories] = useState<Category[]>([]);
-  const [searchParams, setSearchParams] = useState<GetCourses>(initialCoursesParams)
+  const [searchParams, setSearchParams] =
+    useState<GetCourses>(initialCoursesParams);
   const [totalItems, setTotalItems] = useState<number>();
 
-
   const showModal = async (course: Course) => {
-    setSelectedCourse(null); 
+    setSelectedCourse(null);
     const response = await CourseService.getCourse(course._id);
     if (response.data != undefined) {
       setSelectedCourse(response.data);
-      fetchCategories()
+      fetchCategories();
       setIsModalVisible(true);
     }
   };
 
   const showModalCreate = () => {
     setIsModalCreateVisible(true);
-    fetchCategories()
-
+    fetchCategories();
   };
 
   const handleCancel = () => {
@@ -83,22 +79,16 @@ const InstructorCourseList: React.FC = () => {
   };
 
   const fetchCourses = async () => {
-    
-    
-      const response = await CourseService.getCourses(searchParams);
-      setListCourses(response?.data?.pageData ?? []);
-      setTotalItems(response?.data?.pageInfo?.totalItems)
-    
+    const response = await CourseService.getCourses(searchParams);
+    setListCourses(response?.data?.pageData ?? []);
+    setTotalItems(response?.data?.pageInfo?.totalItems);
   };
 
   const fetchCategories = async () => {
-    
-    
-      const response = await CategoryService.getCategories(
-        initialCategoriesParams
-      );
-      setListCategories(response?.data?.pageData ?? []);
-    
+    const response = await CategoryService.getCategories(
+      initialCategoriesParams
+    );
+    setListCategories(response?.data?.pageData ?? []);
   };
 
   const handleSearch = (values: Record<string, any>) => {
@@ -108,11 +98,10 @@ const InstructorCourseList: React.FC = () => {
         ...searchParams.searchCondition, // Spread existing searchCondition fields
         category_id: values.category_id,
         keyword: values.keyword,
-        status: values.status
-      }
+        status: values.status,
+      },
     });
   };
-
 
   const handleCreateCourse = async (values: CourseRequest) => {
     const { price, discount, video_url, image_url, ...otherValues } = values;
@@ -124,51 +113,42 @@ const InstructorCourseList: React.FC = () => {
       image_url: image_url || "",
     };
 
-    
-    
-      const response = await CourseService.createCourse(numericValues);
-      if (response.success) {
-        handleCancel();
-        handleNotify(
-          "Course Created Successfully",
-          "The course has been created successfully."
-        );
-        await fetchCourses();
-      }
-    
+    const response = await CourseService.createCourse(numericValues);
+    if (response.success) {
+      handleCancel();
+      handleNotify(
+        "Course Created Successfully",
+        "The course has been created successfully."
+      );
+      await fetchCourses();
+    }
   };
 
   const handleDeleteCourse = async (courseId: string) => {
-    
-    
-      const response = await CourseService.deleteCourse(courseId);
-      if (response.success) {
-        handleNotify(
-          "Course Deleted Successfully",
-          "The course has been deleted successfully."
-        );
-        await fetchCourses();
-      }
-    
+    const response = await CourseService.deleteCourse(courseId);
+    if (response.success) {
+      handleNotify(
+        "Course Deleted Successfully",
+        "The course has been deleted successfully."
+      );
+      await fetchCourses();
+    }
   };
 
   const handleUpdateCourse = async (updatedCourse: CourseRequest) => {
-    
-    
-      if (selectedCourse) {
-        const response = await CourseService.updateCourse(
-          selectedCourse._id,
-          updatedCourse
+    if (selectedCourse) {
+      const response = await CourseService.updateCourse(
+        selectedCourse._id,
+        updatedCourse
+      );
+      if (response.success) {
+        handleNotify(
+          "Course Updated Successfully",
+          "The course has been updated successfully."
         );
-        if (response.success) {
-          handleNotify(
-            "Course Updated Successfully",
-            "The course has been updated successfully."
-          );
-          await fetchCourses();
-        }
+        await fetchCourses();
       }
-    
+    }
   };
 
   useEffect(() => {
@@ -219,9 +199,17 @@ const InstructorCourseList: React.FC = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      ellipsis: true, 
-      render: (text:string) => (
-        <span style={{ maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-block' }}>
+      ellipsis: true,
+      render: (text: string) => (
+        <span
+          style={{
+            maxWidth: 150,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            display: "inline-block",
+          }}
+        >
           {text}
         </span>
       ),
@@ -297,7 +285,7 @@ const InstructorCourseList: React.FC = () => {
           record.status === CourseStatusEnum.NEW ||
           record.status === CourseStatusEnum.WAITING_APPROVE ||
           record.status === CourseStatusEnum.REJECT;
-  
+
         return (
           <CourseStatusToggle
             status={record.status}
@@ -315,7 +303,7 @@ const InstructorCourseList: React.FC = () => {
     {
       title: "Action",
       key: "action",
-      fixed: 'right' as const,
+      fixed: "right" as const,
       render: (record: Course) => (
         <div className="flex gap-2">
           <Button
@@ -328,7 +316,7 @@ const InstructorCourseList: React.FC = () => {
             icon={<DeleteOutlined style={{ color: "red" }} />}
             onClick={() => handleDeleteCourse(record._id)}
           />
-  
+
           {record.status == CourseStatusEnum.NEW && (
             <Button
               type="text"
@@ -340,7 +328,7 @@ const InstructorCourseList: React.FC = () => {
               }
               title={
                 record.status !== CourseStatusEnum.NEW &&
-                  record.status !== CourseStatusEnum.REJECT
+                record.status !== CourseStatusEnum.REJECT
                   ? "Can only send NEW or REJECT courses"
                   : "Send to admin for approval"
               }
@@ -350,7 +338,6 @@ const InstructorCourseList: React.FC = () => {
       ),
     },
   ];
-  
 
   const statuses = [
     CourseStatusEnum.ACTIVE,
@@ -370,13 +357,20 @@ const InstructorCourseList: React.FC = () => {
           selectFields={[
             {
               name: "status",
-              options: statuses.map((status) => ({ label: statusFormatter(status), value: status })),
-              placeholder: "Filter by Status"
-            }, {
+              options: statuses.map((status) => ({
+                label: statusFormatter(status),
+                value: status,
+              })),
+              placeholder: "Filter by Status",
+            },
+            {
               name: "category_id",
-              options: listCategories.map((category) => ({ label: category.name, value: category._id })),
-              placeholder: "Filter by Category"
-            }
+              options: listCategories.map((category) => ({
+                label: category.name,
+                value: category._id,
+              })),
+              placeholder: "Filter by Category",
+            },
           ]}
           onSubmit={handleSearch}
         />
@@ -396,15 +390,15 @@ const InstructorCourseList: React.FC = () => {
       <Table
         dataSource={listCourses}
         columns={columns}
-        pagination={{ 
-          pageSize: 5, 
+        pagination={{
+          pageSize: 5,
           total: totalItems,
-          onChange: (page) => setSearchParams({ 
-            ...searchParams, 
-            pageInfo: { ...searchParams.pageInfo, pageNum: page }
-          })
+          onChange: (page) =>
+            setSearchParams({
+              ...searchParams,
+              pageInfo: { ...searchParams.pageInfo, pageNum: page },
+            }),
         }}
-        
         rowKey="name"
         bordered
         style={{ borderRadius: "8px" }}
@@ -441,7 +435,7 @@ const InstructorCourseList: React.FC = () => {
         destroyOnClose={true} // Add this to ensure form state is destroyed
       >
         <CourseOption
-          key={isModalCreateVisible ? 'create-new' : 'create'} // Add key prop to force remount
+          key={isModalCreateVisible ? "create-new" : "create"} // Add key prop to force remount
           mode="create"
           onFinished={handleCreateCourse}
           categories={listCategories}

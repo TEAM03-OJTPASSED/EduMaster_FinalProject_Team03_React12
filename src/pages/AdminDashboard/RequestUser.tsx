@@ -10,6 +10,7 @@ import {
   Spin,
   FormProps,
   Tooltip,
+  TableColumnType,
 } from "antd";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 
@@ -19,6 +20,7 @@ import { AppDispatch, RootState } from "../../redux/store/store";
 import { User } from "../../models/UserModel";
 import { UserSearchParams } from "../../models/SearchInfo.model";
 import GlobalSearchUnit from "../../components/GlobalSearchUnit";
+import { ColumnType } from "antd/es/table";
 
 const initializeSearchParam: UserSearchParams = {
   searchCondition: {
@@ -93,12 +95,11 @@ const RequestUser = () => {
     }));
   };
 
-  const columns = [
+  const columns: (ColumnType<User> | TableColumnType<User>)[] = [
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
-     
     },
     {
       title: "Avatar",

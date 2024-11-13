@@ -50,7 +50,6 @@ const GlobalSearchUnit = ({
           prefix={<SearchOutlined />}
           className="rounded-sm w-full max-w-80"
           onPressEnter={() => {
-            console.log(form.getFieldsValue());
             onSubmit(form.getFieldsValue());
           }}
         />

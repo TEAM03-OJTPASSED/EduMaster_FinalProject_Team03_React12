@@ -1,47 +1,39 @@
-import { Button, Card, Input, Select, Table, Form, Space } from "antd";
+import { Button, Card, Table, Space } from "antd";
 import {
-  SearchOutlined,
   DeleteOutlined,
   EditOutlined,
   PlusCircleOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import CreateCategoryModal from "../../components/Admin/AdminModals/CreateCategoryModal";
-import UpdateCategoryModal from "../../components/Admin/AdminModals/UpdateCategoryModal";
 import { Category, GetCategories } from "../../models/Category.model";
 import CategoryService from "../../services/category.service";
-import { useDebouncedSearch } from "../../hooks/useSearch";
+import GlobalSearchUnit from "../../components/GlobalSearchUnit";
+import DeleteCategorieModal from "../../components/Admin/AdminModals/DeleteCategorieModal";
+import UpdateCategory from "../../components/Admin/AdminModals/UpdateCategoryModal";
 
-const { Option } = Select;
+const initialCategoriesParam: GetCategories = {
+  pageInfo: {
+    pageSize: 10,
+    pageNum: 1,
+  },
+  searchCondition: { keyword: "", status: "active", is_deleted: false },
+};
 
 const CategoryManagement = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string | undefined>(
-    undefined
+  const [searchParams, setSearchParams] = useState<GetCategories>(
+    initialCategoriesParam
   );
-  const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
-  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-  const [form] = Form.useForm();
-  const [editingRecord, setEditingRecord] = useState<any>(null);
-  const [searchText, setSearchText] = useState("");
-  const [pageNum, setPageNum] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [createVisible, setCreateVisible] = useState(false);
+  const [editVisible, setEditVisible] = useState(false);
+  const [currentCategorie, setCurrentCategorie] = useState<Category | null>(
+    null
+  );
+  const [deleteModal, setDeleteModal] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [total, setTotal] = useState(0);
-  const filteredData = useDebouncedSearch(categories, searchText, 300, [
-    "name",
-    "parent_category_id",
-  ]);
 
   const fetchCategories = async () => {
-    const searchParams: GetCategories = {
-      searchCondition: {
-        keyword: searchText,
-        status: "active",
-        is_deleted: false,
-      },
-      pageInfo: { pageNum, pageSize },
-    };
-
     try {
       const response = await CategoryService.getCategories(searchParams);
       const responseData = response.data?.pageData;
@@ -49,7 +41,6 @@ const CategoryManagement = () => {
         ? responseData.flat() // Dùng flat() để chuyển thành User[]
         : [];
       setCategories(flattenedUsers);
-      console.log(responseData);
       setTotal(response.data?.pageInfo?.totalItems ?? 0);
     } catch (err) {
       console.error("Error fetching users:", err);
@@ -58,64 +49,27 @@ const CategoryManagement = () => {
 
   useEffect(() => {
     fetchCategories();
-  }, [pageNum, pageSize]);
+  }, [searchParams]);
 
-  const handleTableChange = (pagination: any) => {
-    setPageNum(pagination.current);
-    setPageSize(pagination.pageSize);
-  };
-
-  const handleCategoryChange = (value: string) => {
-    setSelectedCategory(value);
-  };
-
-  const handleDelete = (id: string) => {
-    console.log("Deleted record ID: ", id);
-  };
-
-  const showModalCreate = () => {
-    setIsCreateModalVisible(true);
-  };
-
-  const showModalEdit = (record: any) => {
-    setEditingRecord(record);
-    form.setFieldsValue({
-      categoryName: record.name,
-      description: record.description,
+  const handleSearch = (values: Record<string, any>) => {
+    setSearchParams({
+      pageInfo: searchParams.pageInfo,
+      searchCondition: {
+        ...searchParams.searchCondition, // Spread existing searchCondition fields
+        keyword: values.keyword,
+      },
     });
-    setIsEditModalVisible(true);
   };
 
-  const handleOkCreate = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        console.log("Create Form values: ", values);
-        setIsCreateModalVisible(false);
-        form.resetFields();
-      })
-      .catch((info) => {
-        console.log("Validate Failed:", info);
-      });
+  const handleEdit = (record: User) => {
+    setCurrentCategorie(record);
+    setEditVisible(true);
   };
 
-  const handleOkEdit = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        console.log("Edit Form values: ", values);
-        setIsEditModalVisible(false);
-        form.resetFields();
-      })
-      .catch((info) => {
-        console.log("Validate Failed:", info);
-      });
-  };
-
-  const handleCancel = () => {
-    setIsCreateModalVisible(false);
-    setIsEditModalVisible(false);
-    form.resetFields();
+  const handleDeleteConfirm = async (userId: string) => {
+    await CategoryService.deleteCategory(userId);
+    fetchCategories();
+    setDeleteModal(false);
   };
 
   const columns = [
@@ -134,14 +88,15 @@ const CategoryManagement = () => {
       key: "action",
       render: (record: any) => (
         <Space size="middle">
-          <Button
-            icon={<EditOutlined />}
-            onClick={() => showModalEdit(record)}
-          />
+          <Button icon={<EditOutlined />} onClick={() => handleEdit(record)} />
+
           <Button
             danger
             icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record._id)}
+            onClick={() => {
+              setCurrentCategorie(record);
+              setDeleteModal(true);
+            }}
           />
         </Space>
       ),
@@ -155,24 +110,12 @@ const CategoryManagement = () => {
       </div>
 
       <div className="flex flex-wrap items-center mb-4">
-        <Input
-          placeholder="Search By Category Name"
-          prefix={<SearchOutlined />}
-          className="w-full md:w-1/3 mb-2 md:mb-0"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
+        <GlobalSearchUnit
+          placeholder="Search By Course Name"
+          onSubmit={handleSearch}
         />
-        <Select
-          value={selectedCategory}
-          onChange={handleCategoryChange}
-          placeholder="Select a category"
-          className="w-full md:w-1/4 ml-0 md:ml-3 mb-2 md:mb-0"
-        >
-          <Option value="parent">Parent Category</Option>
-          <Option value="sub">Sub Category</Option>
-        </Select>
         <Button
-          onClick={showModalCreate}
+          onClick={() => setCreateVisible(true)}
           icon={<PlusCircleOutlined />}
           variant="solid"
           color="primary"
@@ -183,16 +126,18 @@ const CategoryManagement = () => {
       </div>
 
       <Table
-        dataSource={filteredData}
+        dataSource={categories}
         columns={columns}
         pagination={{
-          current: pageNum,
-          pageSize,
           total,
           showSizeChanger: true,
+          onChange: (page) =>
+            setSearchParams({
+              ...searchParams,
+              pageInfo: { ...searchParams.pageInfo, pageNum: page },
+            }),
         }}
         rowKey="_id"
-        onChange={handleTableChange}
         bordered
         style={{ borderRadius: "8px" }}
         scroll={{ x: "max-content" }}
@@ -200,19 +145,22 @@ const CategoryManagement = () => {
 
       {/* Modal for Create */}
       <CreateCategoryModal
-        open={isCreateModalVisible}
-        onCreate={handleOkCreate}
-        onCancel={handleCancel}
-        form={form}
+        visible={createVisible}
+        onClose={() => setCreateVisible(false)}
+        onSave={fetchCategories}
       />
-
-      {/* Modal for Edit */}
-      <UpdateCategoryModal
-        open={isEditModalVisible}
-        onUpdate={handleOkEdit}
-        onCancel={handleCancel}
-        form={form}
-        editingRecord={editingRecord}
+      <DeleteCategorieModal
+        visible={deleteModal}
+        onCancel={() => setDeleteModal(false)}
+        onDelete={() => handleDeleteConfirm(currentCategorie?._id!)}
+        userName={currentCategorie?.name || "Undefined User"}
+      />
+      <UpdateCategory
+        key={currentCategorie?._id}
+        visible={editVisible}
+        onClose={() => setEditVisible(false)}
+        category={currentCategorie ?? ({} as Category)}
+        onSave={fetchCategories}
       />
     </Card>
   );
