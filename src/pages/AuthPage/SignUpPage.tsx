@@ -22,7 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { register } from "../../services/auth.service";
 import { RootState } from "../../redux/store/store";
 import { uploadCustomRequest } from "../../utils/uploadCustomReuquest";
-// import { beforeUpload } from "../../utils/handleBeforUpload";
+import { beforeUpload } from "../../utils/handleBeforUpload";
 
 export type RegisterType = {
   name: string;
@@ -243,7 +243,7 @@ const SignUppage = () => {
                             listType="picture-card"
                             maxCount={1}
                             onChange={handleVideoChange}
-                            // beforeUpload={beforeUpload}
+                            beforeUpload={beforeUpload}
                           >
                             {fileListVideo.length >= 1 ? null : (
                               <div>

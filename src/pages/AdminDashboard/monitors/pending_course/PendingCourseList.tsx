@@ -95,7 +95,9 @@ const PendingCourseList: React.FC = () => {
       render: (course_name: string) => {
         return (
           <div>
-            <Tooltip title={course_name}>{ellipsisText(course_name, 50)}</Tooltip>
+            <Tooltip title={course_name}>
+              {ellipsisText(course_name, 50)}
+            </Tooltip>
           </div>
         );
       },
@@ -144,17 +146,23 @@ const PendingCourseList: React.FC = () => {
       key: "action",
       render: (record: Course) => (
         <Space size="middle">
-          <Button
-            type="text"
-            icon={<CheckOutlined />}
-            onClick={() => handleUpdateStatus(CourseStatusEnum.APPROVE, record)}
-          />
-          <Button
-            className="text-red-600"
-            icon={<CloseOutlined />}
-            type="text"
-            onClick={() => handleShowReason(record)}
-          />
+          <Tooltip title="Accept">
+            <Button
+              type="text"
+              icon={<CheckOutlined />}
+              onClick={() =>
+                handleUpdateStatus(CourseStatusEnum.APPROVE, record)
+              }
+            />
+          </Tooltip>
+          <Tooltip title="Reject">
+            <Button
+              className="text-red-600"
+              icon={<CloseOutlined />}
+              type="text"
+              onClick={() => handleShowReason(record)}
+            />
+          </Tooltip>
         </Space>
       ),
     },
@@ -191,6 +199,7 @@ const PendingCourseList: React.FC = () => {
     };
     await CourseService.updateCourseStatus(formAction);
     message.success("Status updated successfully");
+    setCoursePendingList((pendingCourses) => pendingCourses.filter((item)=> item._id !== course._id))
     setReasonVisible(false);
     setReasonReject(""); // Reset the reason when the modal closes
   };
