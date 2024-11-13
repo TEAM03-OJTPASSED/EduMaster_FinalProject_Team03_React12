@@ -218,28 +218,36 @@ const CourseOption: React.FC<CourseInformationProps> = ({
             name="video_url"
             rules={[{ required: true, message: "Please upload a demo video" }]}
           >
-            <Upload
-              action={API_UPLOAD_FILE}
-              accept="video/*"
-              listType="picture-card"
-              fileList={videoFileList}
-              onChange={handleVideoChange}
-              maxCount={1}
-            >
-              {videoFileList.length >= 1 ? null : (
-                <div>
-                  <PlusOutlined />
-                  <div>Upload</div>
-                </div>
-              )}
-            </Upload>
-            {videoPreviewUrl && (
-              <video
-                src={videoPreviewUrl}
-                controls
-                style={{ width: "100%", marginTop: "16px" }}
-              />
-            )}
+            <Row gutter={16} align="middle">
+              <Col>
+                <Upload
+                  action={API_UPLOAD_FILE}
+                  accept="video/*"
+                  listType="picture-card"
+                  fileList={videoFileList}
+                  onChange={handleVideoChange}
+                  maxCount={1}
+                >
+                  {videoFileList.length >= 1 ? null : (
+                    <div>
+                      <PlusOutlined />
+                      <div>Upload</div>
+                    </div>
+                  )}
+                </Upload>
+              </Col>
+              <Col>
+                {videoPreviewUrl && (
+                  <video
+                    src={videoPreviewUrl}
+                    width={200}
+                    height={150}
+                    controls
+                    style={{ marginLeft: "8px" }}
+                  />
+                )}
+              </Col>
+            </Row>
           </Form.Item>
         </Col>
       </Row>

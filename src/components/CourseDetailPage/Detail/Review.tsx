@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { Pagination, Rate, Dropdown, Menu} from "antd";
+import { Pagination, Rate, Dropdown, Menu, Input, Button, message } from "antd";
 import { EllipsisOutlined } from "@ant-design/icons";
 import { GetReviews, Review } from "../../../models/Review.model";
 import ReviewService from "../../../services/review.service";
@@ -13,12 +13,42 @@ type Props = {
 export const Reviews = ({ label, courseId }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [editingReviewId, setEditingReviewId] = useState<string | null>(null);
+  const [editComment, setEditComment] = useState("");
+  const [editRating, setEditRating] = useState(0);
   const pageSize = 3;
 
-  const handleEdit = (reviewId: string) => {
-    console.log("Edit review:", reviewId);
-    // Add edit functionality here
+  const handleEdit = (reviewId: string, comment: string, rating: number) => {
+    setEditingReviewId(reviewId);
+    setEditComment(comment);
+    setEditRating(rating);
   };
+
+  const saveEdit = async (reviewId: string) => {
+    const updatedReview = {
+      course_id: courseId,
+      comment: editComment,
+      rating: editRating,
+    };
+
+    try {
+      console.log("data update:", updatedReview);
+      await ReviewService.updateReview(reviewId, updatedReview);
+
+      setReviews((prevReviews) =>
+        prevReviews.map((review) =>
+          review._id === reviewId ? { ...review, ...updatedReview } : review
+        )
+      );
+
+      message.success("Review updated successfully");
+      setEditingReviewId(null);
+    } catch (error) {
+      console.error("Error updating review:", error);
+    }
+  };
+
+
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -47,11 +77,11 @@ export const Reviews = ({ label, courseId }: Props) => {
   }, []);
 
   const handleDelete = async (reviewId: string) => {
-    console.log("Delete review:", reviewId);
     try {
-        await ReviewService.deleteReview(reviewId);
+      await ReviewService.deleteReview(reviewId);
+      setReviews((prevReviews) => prevReviews.filter((review) => review._id !== reviewId));
     } catch (error) {
-
+      console.error("Error deleting review:", error);
     }
   };
 
@@ -191,7 +221,7 @@ export const Reviews = ({ label, courseId }: Props) => {
                 <Dropdown
                   overlay={
                     <Menu>
-                      <Menu.Item key="edit" onClick={() => handleEdit(review._id)}>
+                      <Menu.Item key="edit" onClick={() => handleEdit(review._id, review.comment, review.rating)}>
                         Edit
                       </Menu.Item>
                       <Menu.Item key="delete" danger onClick={() => handleDelete(review._id)}>
@@ -201,28 +231,46 @@ export const Reviews = ({ label, courseId }: Props) => {
                   }
                   trigger={['click']}
                 >
-                  <EllipsisOutlined className="text-lg cursor-pointer" />
+                  <EllipsisOutlined style={{ fontSize: "1.25rem", cursor: "pointer" }} />
                 </Dropdown>
               </div>
             </div>
+            {editingReviewId === review._id ? (
+              <>
+                <Rate value={editRating} onChange={setEditRating} />
+                <Input.TextArea
+                  value={editComment}
+                  onChange={(e) => setEditComment(e.target.value)}
+                  rows={3}
+                />
+                <div style={{ marginTop: 8 }}>
+                  <Button type="primary" onClick={() => saveEdit(review._id)} style={{ marginRight: 8 }}>
+                    Save
+                  </Button>
+                  <Button onClick={() => setEditingReviewId(null)}>
+                    Cancel
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <>
+                <Rate value={review.rating} disabled />
+                <div className="text-gray-500">{review.comment}</div>
+              </>
+            )}
 
-            <div className="flex items-start mt-1">
-              <Rate disabled defaultValue={review.rating} />
-            </div>
-            <div className="text-sm pt-2">{review.comment}</div>
           </div>
         </div>
       ))}
-      <div className="flex justify-center">
-        <Pagination
-          current={currentPage}
-          pageSize={pageSize}
-          total={courseReviews.length}
-          onChange={handlePageChange}
-          itemRender={itemRender}
-          className="mt-4"
-        />
-      </div>
+
+      <Pagination
+        current={currentPage}
+        onChange={handlePageChange}
+        total={courseReviews.length}
+        pageSize={pageSize}
+        itemRender={itemRender}
+        className="flex justify-center my-5"
+      />
     </div>
   );
 };
