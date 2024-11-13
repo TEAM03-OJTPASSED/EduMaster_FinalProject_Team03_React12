@@ -16,14 +16,14 @@ import {
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
-import { API_UPLOAD_FILE } from "../../../../constants/upload";
+import { API_UPLOAD_FILE } from "../../../../constants/api/upload";
 import { Course } from "../../../../models/Course.model";
 import { Category } from "../../../../models/Category.model";
 
 type CourseInformationProps = {
   initializeValue?: Course;
   mode: "create" | "update";
-  isLoading: boolean;
+  isLoading?: boolean;
   onFinished: FormProps["onFinish"];
   categories: Category[];
 };
@@ -36,7 +36,6 @@ const CourseOption: React.FC<CourseInformationProps> = ({
   initializeValue,
   mode,
   onFinished,
-  isLoading,
   categories,
 }) => {
   const [imageFileList, setImageFileList] = useState<UploadFile[]>([]);
@@ -304,7 +303,6 @@ const CourseOption: React.FC<CourseInformationProps> = ({
       {/* Button Submit */}
       <Form.Item>
         <Button
-          loading={isLoading}
           className="w-full"
           variant="solid"
           color="primary"

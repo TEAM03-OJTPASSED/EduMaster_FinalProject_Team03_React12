@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { Badge, Button, Card, Descriptions, Input, Modal, Table, TableProps, Tag } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import PayoutService from "../../../../services/payout.service";
-import { GetPayoutRequest, Payout, PayoutStatusEnum } from "../../../../models/Payout.model";
+import PayoutService from "../../../../services/payout.service"; 
+import { GetPayoutRequest, Payout, PayoutStatusEnum } from "../../../../models/Payout.model"; 
 import { moneyFormatter } from "../../../../utils/moneyFormatter";
 
-const CompletedPayout: React.FC = () => {
- 
+const AwaitingPayout: React.FC = () => {
+  
   const [filteredPayouts, setFilteredPayouts] = useState<Payout[]>([]);
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedPayout, setSelectedPayout] = useState<Payout | null>(null); // Thêm state cho đơn hàng được chọn
-
-  const initialParams : GetPayoutRequest = {
+  const initialParams :GetPayoutRequest= {
     searchCondition: {
       payout_no: "",
       instructor_id: "",
-      status: PayoutStatusEnum.COMPLETED,
+      status: PayoutStatusEnum.REQUEST_PAYOUT,
       is_instructor:true,
       is_delete: false,
     },
@@ -35,20 +34,15 @@ const CompletedPayout: React.FC = () => {
     setIsModalVisible(false);
     setSelectedPayout(null);
   };
-  
-
-  
-
-
-  const fetchPayouts = async () => {
-    const response = await PayoutService.getPayout(initialParams); 
-    const payouts = response.data?.pageData || [];
-    setFilteredPayouts(payouts);
-  };
-
 
   useEffect(() => {
-    
+    const fetchPayouts = async () => {
+        const response = await PayoutService.getPayout(initialParams); 
+        const payouts = response.data?.pageData || [];
+        setFilteredPayouts(payouts);
+      }
+
+
     fetchPayouts();
   }, []);
 
@@ -63,7 +57,7 @@ const CompletedPayout: React.FC = () => {
       dataIndex: "status",
       key: "status",
       render: (status: PayoutStatusEnum) => (
-        <Tag color="green">{status}</Tag>
+        <Tag color="yellow">{status}</Tag>
       ),
     },
     // {
@@ -131,6 +125,7 @@ const CompletedPayout: React.FC = () => {
         onChange={(e) => setSearchKeyword(e.target.value)}
       />
       <Table
+        className="min-w-full"
         dataSource={filteredPayouts.filter((payout) => payout.payout_no.includes(searchKeyword))}
         columns={columns}
         pagination={{ pageSize: 5 }}
@@ -139,6 +134,7 @@ const CompletedPayout: React.FC = () => {
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
       />
+
       {/* Modal for showing detailed information */}
       <Modal
       title={`Payout Details - ${selectedPayout?.payout_no}`}
@@ -187,7 +183,7 @@ const CompletedPayout: React.FC = () => {
 
         <Descriptions.Item label="Transaction ID">
           {selectedPayout.transactions.map((transaction) => (
-        <p className="w-full" key={transaction.purchase_id}>{transaction.purchase_id}</p>))}
+        <span key={transaction.purchase_id}>{transaction.purchase_id}</span>))}
         </Descriptions.Item>
 
       </Descriptions>
@@ -197,4 +193,5 @@ const CompletedPayout: React.FC = () => {
   );
 };
 
-export default CompletedPayout;
+export default AwaitingPayout;
+

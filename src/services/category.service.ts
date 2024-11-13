@@ -11,7 +11,7 @@ const CategoryService = {
 
     // Get a list of CATEGORYs with optional search filters
     getCategories(params: GetCategories): Promise<ApiResponse<APIResponseData<Category>>> {
-        return postRequest(CATEGORY_API.GET_CATEGORIES, params, false);
+        return postRequest(CATEGORY_API.GET_CATEGORIES, params);
     },
 
     // Get details for a specific CATEGORY by ID

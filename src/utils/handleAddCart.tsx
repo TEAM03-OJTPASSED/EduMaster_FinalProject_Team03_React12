@@ -23,5 +23,6 @@ export const handleAddCart = async (userRole : string, course: Course, navigate:
         message: "Course Added to Cart",
         description: `You have added "${course.name}" to your cart.`,
       });
+      return true
     }
 }

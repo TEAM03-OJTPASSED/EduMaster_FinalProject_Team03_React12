@@ -13,6 +13,7 @@ import { Blog } from "../../models/Blog.model";
 import { BlogSearchParams } from "../../models/SearchInfo.model";
 import BlogService from "../../services/blog.service";
 import EditBlog from "./blog/EditBlog";
+import { ellipsisText } from "../../utils/ellipsisText";
 
 const BlogManagement = () => {
   const [isModalCreateVisible, setIsModalCreateVisible] = useState(false);
@@ -112,6 +113,9 @@ const BlogManagement = () => {
       title: "Description",
       dataIndex: "description",
       key: "description",
+      render: (description: string) => {
+        return <div >{ellipsisText(description, 50)}</div>
+      },
     },
     {
       title: "Image",

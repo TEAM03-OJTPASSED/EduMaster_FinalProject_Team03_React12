@@ -1,5 +1,16 @@
 import { useEffect, useState } from "react";
-import { Table, Button, Input, Space, Card, Modal, message, Spin, FormProps, Tooltip } from "antd";
+import {
+  Table,
+  Button,
+  Input,
+  Space,
+  Card,
+  Modal,
+  message,
+  Spin,
+  FormProps,
+  Tooltip,
+} from "antd";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 
 import { previewInstructor, UserService } from "../../services/user.service";
@@ -21,7 +32,7 @@ const initializeSearchParam: UserSearchParams = {
 };
 const RequestUser = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, success } = useSelector(
+  const { loading } = useSelector(
     (state: RootState) => state.users.previewProfile
   );
 
@@ -67,13 +78,11 @@ const RequestUser = () => {
       comment: reason,
     };
     await previewInstructor(formPreview, dispatch);
-    if (success) {
-      message.success("Submit preview successfully");
-      setReasonVisible(false);
-    }
+    message.success("Submit preview successfully");
+    setReasonVisible(false);
     console.log(formPreview);
   };
-  
+
   const handleSearch: FormProps["onFinish"] = (values) => {
     setSearchParams((prev) => ({
       ...prev,
@@ -89,14 +98,19 @@ const RequestUser = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
+     
     },
     {
       title: "Avatar",
       dataIndex: "avatar_url",
       key: "avatar_url",
-      render: (avatar_url:string) => (
+      render: (avatar_url: string) => (
         <div className="h-full w-full md:w-[100px]">
-          <img src={avatar_url} alt={avatar_url} className="w-[200px] 2h-auto" />
+          <img
+            src={avatar_url}
+            alt={avatar_url}
+            className="w-[200px] 2h-auto"
+          />
         </div>
       ),
     },
@@ -104,34 +118,37 @@ const RequestUser = () => {
       title: "Email",
       dataIndex: "email",
       key: "email",
+      align: "center",
     },
     {
       title: "Phone Number",
       dataIndex: "phone_number",
       key: "phone_number",
+      align: "center",
     },
     {
       title: "Actions",
+      align: "center",
       key: "action",
       render: (record: any) => (
         <Space size="middle">
-        <Tooltip title="Accept">
-          <Button
-            type="text"
-            className="text-green-600"
-            icon={<CheckOutlined />}
-            onClick={() => handleSubmitPreview("approve", record)}
-          />
-        </Tooltip>
-        <Tooltip title="Reject">
-          <Button
-            className="text-red-600"
-            type="text"
-            icon={<CloseOutlined />}
-            onClick={() => handleShowReason(record)}
-          />
-        </Tooltip>
-      </Space>
+          <Tooltip title="Accept">
+            <Button
+              type="text"
+              className="text-green-600"
+              icon={<CheckOutlined />}
+              onClick={() => handleSubmitPreview("approve", record)}
+            />
+          </Tooltip>
+          <Tooltip title="Reject">
+            <Button
+              className="text-red-600"
+              type="text"
+              icon={<CloseOutlined />}
+              onClick={() => handleShowReason(record)}
+            />
+          </Tooltip>
+        </Space>
       ),
     },
   ];
@@ -145,7 +162,6 @@ const RequestUser = () => {
         <GlobalSearchUnit
           placeholder="Search By User Name"
           onSubmit={handleSearch}
-
         />
         <Table
           dataSource={users}

@@ -27,9 +27,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store/store";
 import { Course } from "../models/Course.model";
 import ClientService from "../services/client.service";
-import { GetCourseClient } from "../models/Client.model";
+import { GetBlogsClient, GetCourseClient } from "../models/Client.model";
 import { useEffect, useState } from "react";
 import { addToCart } from "../redux/slices/cartSlice";
+import SubscribeButton from "../components/SubscribeButton";
+import { Blog } from "../models/Blog.model";
 
 interface Category {
   icon: React.ReactNode;
@@ -92,6 +94,8 @@ interface Category {
 
 const HomePage = () => {
   const [courses, setCourses] = useState<Course[]>([]);
+  const [blogs, setBlogs] = useState<Blog[]>([]);
+
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
@@ -106,12 +110,28 @@ const HomePage = () => {
         category_id: "",
       },
     };
+    const initialBlogsParams: GetBlogsClient = {
+      pageInfo: {
+        pageNum: 1,
+        pageSize: 3,
+      },
+      searchCondition: {
+        keyword: "",
+        is_deleted: false,
+        category_id: "",
+      },
+    };
     const fetchCourses = async () => {
       const response = await ClientService.getCourses(initialCoursesParams);
       setCourses(response?.data?.pageData ?? []);
     };
+    const fetchBlogs = async () => {
+      const response = await ClientService.getBlogs(initialBlogsParams);
+      setBlogs(response?.data?.pageData ?? []);
+    };
 
     fetchCourses(); // Call the async function
+    fetchBlogs()
     setCategories([]);
   }, []);
 
@@ -151,7 +171,6 @@ const HomePage = () => {
       <div className="flex-col flex items-center">
         <div className="w-4 h-4 rounded-full bg-orange-500 bottom-32 right-8 fixed z-50"></div>
         <div className="w-4 h-4 rounded-full bg-orange-500 bottom-[100px] right-8 fixed z-50"></div>
-
         <button onClick={backToTop}>
           <div className=" w-12 h-12 rounded-full bottom-10 right-4 hover:scale-110 transition duration-500 bg-orange-500 fixed justify-center flex items-center z-50">
             <IoArrowUpOutline size={36} color="white" />
@@ -290,7 +309,7 @@ const HomePage = () => {
         </section>
 
         <section className="float-animation">
-          <LatestArticles />
+          <LatestArticles blogs={blogs} />
         </section>
       </main>
     </div>

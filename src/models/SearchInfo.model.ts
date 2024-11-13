@@ -84,3 +84,9 @@ export interface ReviewSearchCondition {
   is_rating_order?: boolean;
   is_deleted?: boolean
 }
+
+export interface GlobalSearchParam {
+  searchCondition: SearchCondition;
+  pageInfo: PageInfo;
+}
+

@@ -1,5 +1,6 @@
 import { useCustomNavigate } from "../../hooks/customNavigate";
 import { Course } from "../../models/Course.model";
+import { handleAddCart } from "../../utils/handleAddCart";
 import { CourseSummary } from "./CourseSummary";
 
 type Props = {
@@ -8,12 +9,19 @@ type Props = {
   id: string;
 };
 
+const currentUser = localStorage.getItem("user");
+
 export const Banner = ({ id, course, isPurchased }: Props) => {
   const totalLessons = course.session_list.reduce((sum, session) => {
     return sum + session.lesson_list.length;
   }, 0);
 
   const navigate = useCustomNavigate();
+
+  const handleAdd = async (userRole: string, course: Course, navigate: any) => {
+    await handleAddCart(userRole, course, navigate);
+    navigate("/cart/new");
+  };
 
   return (
     <div className="font-exo flex flex-col bg-orange-50 px-20 lg:-mx-40 -mx-24 pb-10">
@@ -47,7 +55,14 @@ export const Banner = ({ id, course, isPurchased }: Props) => {
             </div>
           ) : (
             <div className="flex">
-              <div className="bg-orange-500 text-white text-2xl font-semibold px-8 py-4 rounded cursor-pointer">
+              <div
+                className="bg-orange-500 text-white text-2xl font-semibold px-8 py-4 rounded cursor-pointer"
+                onClick={() =>
+                  currentUser
+                    ? handleAdd(JSON.parse(currentUser).role, course, navigate)
+                    : alert("User not logged in")
+                }
+              >
                 Start Now
               </div>
               <div className="flex flex-col items-start justify-center ml-4">

@@ -13,7 +13,7 @@ import {
   UploadProps,
 } from "antd";
 import { useState } from "react";
-import { API_UPLOAD_FILE } from "../constants/upload";
+import { API_UPLOAD_FILE } from "../constants/api/upload";
 import { PlusOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store/store";
@@ -190,51 +190,50 @@ const ModalRegisterGoogle = () => {
             </Form.Item>
 
             {/* Bank Information */}
-        
-              <div className="flex flex-wrap gap-4">
-                <Form.Item
-                  label="Bank Name"
-                  name="bank_name"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input your bank name!",
-                    },
-                  ]}
-                  className="flex-grow mb-6 md:!w-72 lg:!w-60"
-                >
-                  <Select
-                    showSearch
-                    placeholder="Select Your Bank Name"
-                    optionFilterProp="label"
-                    className="w-full !h-[3.25rem]"
-                    options={[
-                      { label: "Vietcombank", value: "Vietcombank" },
-                      { label: "Agribank", value: "Agribank" },
-                      { label: "TP Bank", value: "TP Bank" },
-                      { label: "ACB", value: "ACB" },
-                    ]}
-                  />
-                </Form.Item>
 
-                <Form.Item
-                  label="Bank Account"
-                  name="bank_account_no"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please input your bank account!",
-                    },
+            <div className="flex flex-wrap gap-4">
+              <Form.Item
+                label="Bank Name"
+                name="bank_name"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your bank name!",
+                  },
+                ]}
+                className="flex-grow mb-6 md:!w-72 lg:!w-60"
+              >
+                <Select
+                  showSearch
+                  placeholder="Select Your Bank Name"
+                  optionFilterProp="label"
+                  className="w-full !h-[3.25rem]"
+                  options={[
+                    { label: "Vietcombank", value: "Vietcombank" },
+                    { label: "Agribank", value: "Agribank" },
+                    { label: "TP Bank", value: "TP Bank" },
+                    { label: "ACB", value: "ACB" },
                   ]}
-                  className="flex-grow mb-6 md:!w-72 lg:!w-60"
-                >
-                  <Input
-                    placeholder="Enter your bank account"
-                    className="p-3 text-lg border-gray-300 rounded-lg focus:border-[#FF782D]"
-                  />
-                </Form.Item>
-              </div>
-           
+                />
+              </Form.Item>
+
+              <Form.Item
+                label="Bank Account"
+                name="bank_account_no"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your bank account!",
+                  },
+                ]}
+                className="flex-grow mb-6 md:!w-72 lg:!w-60"
+              >
+                <Input
+                  placeholder="Enter your bank account"
+                  className="p-3 text-lg border-gray-300 rounded-lg focus:border-[#FF782D]"
+                />
+              </Form.Item>
+            </div>
 
             <Form.Item
               label="Bank Account Name"

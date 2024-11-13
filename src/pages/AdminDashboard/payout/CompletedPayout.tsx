@@ -17,27 +17,32 @@ const AdminCompletedPayout = () => {
       title: "Payout No",
       dataIndex: "payout_no",
       key: "payout_no",
+      align: "center",
     },
     {
       title: "Instructor Name",
       dataIndex: "instructor_name",
       key: "instructor_name",
+      align: "center",
     },
 
     {
       title: "Balance Origin",
       dataIndex: "balance_origin",
       key: "balance_origin",
+      align: "center",
     },
     {
       title: "Balance Instructor Paid",
       dataIndex: "balance_instructor_paid",
       key: "balance_instructor_paid",
+      align: "center",
     },
     {
       title: "Balance Instructor Received",
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
+      align: "center",
     },
     {
       title: "Created at",
@@ -46,12 +51,13 @@ const AdminCompletedPayout = () => {
       render: (created_at) => {
         return <div>{dayjs(created_at).format("DD/MM/YYYY")}</div>;
       },
+      align: "center",
     },
     {
       title: "View Transaction",
       dataIndex: "view_transaction",
       key: "view_transaction",
-    
+      align: "center",
       render: (_, record: Payout) => {
         return (
           <div>

@@ -72,26 +72,41 @@ const StudentOrderHistory = () => {
       title: "Course Name",
       dataIndex: "course_name",
       key: "course_name",
+      ellipsis: true,
+      render: (text:string) => (
+        <span style={{ maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-block' }}>
+          {text}
+        </span>
+      ),
+
     },
     {
       title: "Purchase No",
       dataIndex: "purchase_no",
       key: "purchase_no",
+      ellipsis: true,
+
     },
     {
       title: "Cart No",
       dataIndex: "cart_no",
       key: "cart_no",
+      ellipsis: true,
+
     },
     {
       title: "Learner Name",
       dataIndex: "student_name",
       key: "student_name",
+      ellipsis: true,
+
     },
     {
       title: "Price Paid",
       dataIndex: "price",
       key: "price",
+      ellipsis: true,
+
       render: (price: number) => `$${price.toFixed(2)}`,
     },
     {
@@ -104,17 +119,26 @@ const StudentOrderHistory = () => {
       title: "Instructor Name",
       dataIndex: "instructor_name",
       key: "instructor_name",
+      ellipsis: true,
+      render: (text:string) => (
+        <span style={{ maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-block' }}>
+          {text}
+        </span>
+      ),
     },
     {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
+      ellipsis: true,
+
       render: (date: string) => new Date(date).toLocaleDateString(),
     },
 
     {
       title: "View Details",
       key: "action",
+      fixed: 'right' as const,
       render: (_: any, record: Purchase) => (
         <Button type="primary" onClick={() => showDetails(record)}>
           View Details

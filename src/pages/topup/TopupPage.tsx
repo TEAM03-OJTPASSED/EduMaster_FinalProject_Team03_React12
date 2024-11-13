@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   InputNumber,
@@ -9,6 +9,11 @@ import {
   Typography,
   Alert,
 } from "antd";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store/store";
+import { getUser, UserService } from "../../services/user.service";
+import { handleNotify } from "../../utils/handleNotify";
+import { User } from "../../models/UserModel";
 
 const { Text } = Typography;
 
@@ -31,12 +36,13 @@ const paymentMethods = [
 ];
 
 const TopUpPage = () => {
-  // State for controlled inputs
   const [amount, setAmount] = useState<number | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<string>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading] = useState(false); // Changed initial state to false
   const [error, setError] = useState<string>("");
+  const { currentUser } = useSelector((state: RootState) => state.auth.login);
+  const [user, setUser] = useState<User>()
 
   const handleSubmit = () => {
     if (!amount || amount < 5) {
@@ -54,13 +60,51 @@ const TopUpPage = () => {
   };
 
   const handleAmountChange = (value: number | null) => {
-    setAmount(value);
+    if (value === null) return; 
+
+    if (value === 0) setAmount(value); 
+
+    
+    const [integer, decimal] = value.toString().split(".");
+    if (decimal === undefined || decimal.length < 2) {
+      setAmount(Number(`${integer}.${decimal || "0"}`));
+    } else {
+      setAmount(value);
+    }
   };
 
-  const formatAmount = (value: number | undefined): string => {
-    if (!value) return "";
-    return `$ ${value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+  const formatAmount = (value: number | undefined) => {
+    if (value == undefined) return "$ 0.00";
+    return `$ ${Number(value).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
   };
+
+  const handleUpdateBalance = async () => {
+    setIsModalOpen(false)
+    if (amount) {
+       const response = await UserService.updateUser(currentUser._id, {...currentUser, balance:  Number(amount) })
+       if (response.success) {    
+          fetchUser()   
+          handleNotify("Top up successfully", `We've recieved your ${paymentMethod} payment of ${formatAmount(amount)}`)
+          setAmount(0)
+          setPaymentMethod("")
+       }
+    }
+  }
+
+  const fetchUser = async () => {
+      const response =  await getUser(currentUser._id)
+      if (response) {
+        setUser(response as User);
+      } else {
+        setUser({} as User); 
+      }
+  }
+
+  
+  useEffect(() => {
+    fetchUser()
+  },[])
+
 
 
 
@@ -77,7 +121,7 @@ const TopUpPage = () => {
         <Card className="bg-gray-50">
           <div className="flex items-center gap-2">
             <span className="text-gray-500">Current Balance</span>
-            <span className="text-xl font-bold">$200,000</span>
+            <span className="text-xl font-bold">${user?.balance_total || 0.00}</span>
           </div>
         </Card>
 
@@ -90,11 +134,11 @@ const TopUpPage = () => {
               onChange={handleAmountChange}
               formatter={formatAmount}
               placeholder="0"
-              min={10000}
-              step={1000}
+              min={5}
+              step={0.50}
             />
             <Text className="block mb-6 text-gray-500">
-              Minimum top-up amount: $10
+              Minimum top-up amount: $5
             </Text>
           </div>
 
@@ -136,7 +180,7 @@ const TopUpPage = () => {
           open={isModalOpen}
           onCancel={() => setIsModalOpen(false)}
           okText="Confirm Top Up"
-          onOk={() => setIsModalOpen(false)}
+          onOk={() => handleUpdateBalance() }
         >
           <div className="p-4">
             <h2 className="text-lg font-semibold mb-4">Confirm Top Up</h2>
@@ -152,7 +196,7 @@ const TopUpPage = () => {
                   <div className="flex justify-between mb-2">
                     <span>Amount:</span>
                     <span className="font-semibold">
-                      {amount ? `đ ${amount.toLocaleString()}` : "-"}
+                      {amount && formatAmount(amount)}
                     </span>
                   </div>
                   <div className="flex justify-between">

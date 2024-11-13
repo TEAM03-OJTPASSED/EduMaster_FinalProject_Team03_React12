@@ -61,7 +61,7 @@ const CourseCard: React.FC<{
           }`}
         >
           <div className="flex-grow">
-            <a className="text-gray-500 text-sm mb-2" href={`profile/${course.instructor_id}`}            >
+            <a className="text-gray-500 text-sm mb-2" href={`profile/${course.instructor_id}`}>
               by {course.instructor_name}
             </a>
             <h2 className="text-base font-semibold mb-4 overflow-ellipsis overflow-hidden whitespace-nowrap transition group-hover:text-[#FFAB2D]">
@@ -102,7 +102,7 @@ const CourseCard: React.FC<{
         </Card>
 
         <div
-          className={`z-10 absolute w-[352px] top-0 opacity-0 px-4 group-hover:opacity-100 transition-all duration-300 transform group-hover:translate-x-0 pointer-events-none group-hover:pointer-events-auto ${
+          className={`z-50 absolute w-[352px] top-0 opacity-0 px-4 group-hover:opacity-100 transition-all duration-300 transform group-hover:translate-x-0 pointer-events-none group-hover:pointer-events-auto ${
             (index + 1) % (isMdScreen ? 3 : 2) === 0 && viewMode !== "list"
               ? "right-full -translate-x-4 "
               : "left-full translate-x-4"

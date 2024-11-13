@@ -27,7 +27,7 @@ import { statusFormatter } from "../../../utils/statusFormatter";
 const initialCoursesParams: GetCourses = {
   pageInfo: {
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 5,
   },
   searchCondition: {
     keyword: "",
@@ -56,20 +56,24 @@ const InstructorCourseList: React.FC = () => {
   const [isModalCreateVisible, setIsModalCreateVisible] = useState(false);
   const [listCourses, setListCourses] = useState<Course[]>([]);
   const [listCategories, setListCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(false);
   const [searchParams, setSearchParams] = useState<GetCourses>(initialCoursesParams)
+  const [totalItems, setTotalItems] = useState<number>();
+
 
   const showModal = async (course: Course) => {
-    setSelectedCourse(null); // Reset the selected course first
+    setSelectedCourse(null); 
     const response = await CourseService.getCourse(course._id);
     if (response.data != undefined) {
       setSelectedCourse(response.data);
+      fetchCategories()
       setIsModalVisible(true);
     }
   };
 
   const showModalCreate = () => {
     setIsModalCreateVisible(true);
+    fetchCategories()
+
   };
 
   const handleCancel = () => {
@@ -78,29 +82,23 @@ const InstructorCourseList: React.FC = () => {
     setSelectedCourse(null); // Reset selected course when closing
   };
 
-
-
-  
   const fetchCourses = async () => {
-    setLoading(true);
-    try {
+    
+    
       const response = await CourseService.getCourses(searchParams);
       setListCourses(response?.data?.pageData ?? []);
-    } finally {
-      setLoading(false);
-    }
+      setTotalItems(response?.data?.pageInfo?.totalItems)
+    
   };
 
   const fetchCategories = async () => {
-    setLoading(true);
-    try {
+    
+    
       const response = await CategoryService.getCategories(
         initialCategoriesParams
       );
       setListCategories(response?.data?.pageData ?? []);
-    } finally {
-      setLoading(false);
-    }
+    
   };
 
   const handleSearch = (values: Record<string, any>) => {
@@ -114,7 +112,7 @@ const InstructorCourseList: React.FC = () => {
       }
     });
   };
-  
+
 
   const handleCreateCourse = async (values: CourseRequest) => {
     const { price, discount, video_url, image_url, ...otherValues } = values;
@@ -126,8 +124,8 @@ const InstructorCourseList: React.FC = () => {
       image_url: image_url || "",
     };
 
-    setLoading(true);
-    try {
+    
+    
       const response = await CourseService.createCourse(numericValues);
       if (response.success) {
         handleCancel();
@@ -137,14 +135,12 @@ const InstructorCourseList: React.FC = () => {
         );
         await fetchCourses();
       }
-    } finally {
-      setLoading(false);
-    }
+    
   };
 
   const handleDeleteCourse = async (courseId: string) => {
-    setLoading(true);
-    try {
+    
+    
       const response = await CourseService.deleteCourse(courseId);
       if (response.success) {
         handleNotify(
@@ -153,14 +149,12 @@ const InstructorCourseList: React.FC = () => {
         );
         await fetchCourses();
       }
-    } finally {
-      setLoading(false);
-    }
+    
   };
 
   const handleUpdateCourse = async (updatedCourse: CourseRequest) => {
-    setLoading(true);
-    try {
+    
+    
       if (selectedCourse) {
         const response = await CourseService.updateCourse(
           selectedCourse._id,
@@ -174,9 +168,7 @@ const InstructorCourseList: React.FC = () => {
           await fetchCourses();
         }
       }
-    } finally {
-      setLoading(false);
-    }
+    
   };
 
   useEffect(() => {
@@ -227,16 +219,24 @@ const InstructorCourseList: React.FC = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      ellipsis: true, 
+      render: (text:string) => (
+        <span style={{ maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-block' }}>
+          {text}
+        </span>
+      ),
     },
     {
       title: "Category Name",
       dataIndex: "category_name",
       key: "category_name",
+      ellipsis: true, // Ensures long text is truncated
     },
     {
       title: "Content",
       dataIndex: "content",
       key: "content",
+      ellipsis: true, // Ensures long text is truncated
     },
     {
       title: "Status",
@@ -267,6 +267,7 @@ const InstructorCourseList: React.FC = () => {
           </Tag>
         );
       },
+      ellipsis: true, // Ensures long status text is truncated
     },
     {
       title: "Price",
@@ -296,7 +297,7 @@ const InstructorCourseList: React.FC = () => {
           record.status === CourseStatusEnum.NEW ||
           record.status === CourseStatusEnum.WAITING_APPROVE ||
           record.status === CourseStatusEnum.REJECT;
-
+  
         return (
           <CourseStatusToggle
             status={record.status}
@@ -314,6 +315,7 @@ const InstructorCourseList: React.FC = () => {
     {
       title: "Action",
       key: "action",
+      fixed: 'right' as const,
       render: (record: Course) => (
         <div className="flex gap-2">
           <Button
@@ -326,7 +328,7 @@ const InstructorCourseList: React.FC = () => {
             icon={<DeleteOutlined style={{ color: "red" }} />}
             onClick={() => handleDeleteCourse(record._id)}
           />
-
+  
           {record.status == CourseStatusEnum.NEW && (
             <Button
               type="text"
@@ -338,7 +340,7 @@ const InstructorCourseList: React.FC = () => {
               }
               title={
                 record.status !== CourseStatusEnum.NEW &&
-                record.status !== CourseStatusEnum.REJECT
+                  record.status !== CourseStatusEnum.REJECT
                   ? "Can only send NEW or REJECT courses"
                   : "Send to admin for approval"
               }
@@ -348,6 +350,7 @@ const InstructorCourseList: React.FC = () => {
       ),
     },
   ];
+  
 
   const statuses = [
     CourseStatusEnum.ACTIVE,
@@ -357,25 +360,25 @@ const InstructorCourseList: React.FC = () => {
     CourseStatusEnum.REJECT,
     CourseStatusEnum.WAITING_APPROVE,
   ];
-  
+
   return (
     <Card>
       <h3 className="text-2xl my-5">Course Management</h3>
       <div className="flex justify-between">
-        <GlobalSearchUnit 
-            placeholder="Search By Course Name"
-            selectFields={[
-              {
-                name: "status",
-                options: statuses.map((status) => ({label: statusFormatter(status), value: status})),
-                placeholder: "Filter by Status"
-              },{
-                name: "category_id",
-                options: listCategories.map((category) => ({label: category.name, value: category._id})),
-                placeholder: "Filter by Category"
-              }
-            ]}
-            onSubmit={handleSearch}
+        <GlobalSearchUnit
+          placeholder="Search By Course Name"
+          selectFields={[
+            {
+              name: "status",
+              options: statuses.map((status) => ({ label: statusFormatter(status), value: status })),
+              placeholder: "Filter by Status"
+            }, {
+              name: "category_id",
+              options: listCategories.map((category) => ({ label: category.name, value: category._id })),
+              placeholder: "Filter by Category"
+            }
+          ]}
+          onSubmit={handleSearch}
         />
         <div>
           <Button
@@ -393,12 +396,19 @@ const InstructorCourseList: React.FC = () => {
       <Table
         dataSource={listCourses}
         columns={columns}
-        pagination={{ pageSize: 5 }}
+        pagination={{ 
+          pageSize: 5, 
+          total: totalItems,
+          onChange: (page) => setSearchParams({ 
+            ...searchParams, 
+            pageInfo: { ...searchParams.pageInfo, pageNum: page }
+          })
+        }}
+        
         rowKey="name"
         bordered
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
-        loading={loading}
       />
 
       <Modal
@@ -408,15 +418,14 @@ const InstructorCourseList: React.FC = () => {
         footer={null}
         width={1000}
         forceRender
-        destroyOnClose={true} 
+        destroyOnClose={true}
       >
         {selectedCourse && (
           <CourseOption
-            key={selectedCourse._id} 
+            key={selectedCourse._id}
             categories={listCategories}
             initializeValue={selectedCourse}
             mode="update"
-            isLoading={loading}
             onFinished={handleUpdateCourse}
           />
         )}
@@ -435,7 +444,6 @@ const InstructorCourseList: React.FC = () => {
           key={isModalCreateVisible ? 'create-new' : 'create'} // Add key prop to force remount
           mode="create"
           onFinished={handleCreateCourse}
-          isLoading={loading}
           categories={listCategories}
         />
       </Modal>

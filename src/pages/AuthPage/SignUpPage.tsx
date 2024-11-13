@@ -15,7 +15,7 @@ import { FormProps } from "antd";
 import { Player } from "@lottiefiles/react-lottie-player";
 import { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
-import { API_UPLOAD_FILE } from "../../constants/upload";
+import { API_UPLOAD_FILE } from "../../constants/api/upload";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // import { loginWithGoogle } from "../../redux/slices/authSlices";
@@ -40,9 +40,7 @@ export type RegisterType = {
 const SignUppage = () => {
   const dispatch = useDispatch();
   const [selectedRole, setSelectedRole] = useState<string>("student");
-  const { loading } = useSelector(
-    (state: RootState) => state.users.register
-  );
+  const { loading } = useSelector((state: RootState) => state.users.register);
   // const [imageUrl, setImageUrl] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [fileListImage, setFileListImage] = useState<UploadFile[]>([]);
