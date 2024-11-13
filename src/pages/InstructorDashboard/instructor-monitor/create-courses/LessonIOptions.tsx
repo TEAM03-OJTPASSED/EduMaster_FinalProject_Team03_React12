@@ -30,6 +30,7 @@ import { Question } from "../../../../models/Question.model";
 import ReactPlayer from "react-player";
 import { API_UPLOAD_FILE } from "../../../../constants/api/upload";
 import { handleNotify } from "../../../../utils/handleNotify";
+import { uploadCustomRequest } from "../../../../utils/uploadCustomReuquest";
 
 type LessonOptionsProps = {
   initialValues?: Lesson;
@@ -37,6 +38,7 @@ type LessonOptionsProps = {
   onFinished: FormProps["onFinish"];
   listSessions: Session[];
   listCourses: Course[];
+  onCourseChange: (value: string) => void;
 };
 
 const LessonIOptions: React.FC<LessonOptionsProps> = ({
@@ -45,6 +47,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
   onFinished,
   listCourses,
   listSessions,
+  onCourseChange
 }) => {
   const [imageFileList, setImageFileList] = useState<UploadFile[]>([]);
   const [videoFileList, setVideoFileList] = useState<UploadFile[]>([]);
@@ -55,7 +58,6 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | undefined>(
     initialValues?.video_url
   );
-  const [filteredSessions, setFilteredSessions] = useState<Session[]>([]);
 
   useEffect(() => {
     if (mode === "update") {
@@ -98,12 +100,9 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
       form.setFieldsValue({
         session_id: initialValues?.session_id ?? undefined,
       }); // Reset session selection
-      const filtered = listSessions.filter(
-        (session) => session.course_id === courseId
-      );
-      setFilteredSessions(filtered);
+      onCourseChange(courseId);
     },
-    [form, listSessions, setFilteredSessions, initialValues]
+    [form, listSessions, initialValues]
   );
 
   const handleLessonType = () => {
@@ -257,9 +256,9 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
     );
   };
 
-  const handleConsoleLog = () => {
-    console.log(JSON.stringify(questions));
-  };
+  // const handleConsoleLog = () => {
+  //   console.log(JSON.stringify(questions));
+  // };
 
   const onFinish = (values: {
     lesson_type: LessonTypeEnum;
@@ -321,12 +320,15 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
         >
           <Select
             placeholder="Select Session"
-            options={filteredSessions.map((session) => ({
+            options={listSessions.map((session) => ({
               label: session.name,
               value: session._id,
             }))}
+            disabled={!form.getFieldValue("course_id")}
+
           />
         </Form.Item>
+        {/* {(form.getFieldValue("course_id")).toString()} */}
 
         <Form.Item
           label="Lesson Type"
@@ -423,12 +425,14 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
               >
                 <div className="space-y-4">
                   <Upload
+                    customRequest={uploadCustomRequest}
                     action="https://api.cloudinary.com/v1_1/dz2dv8lk4/upload?upload_preset=edumaster1"
                     accept="image/*"
                     listType="picture-card"
                     fileList={imageFileList}
                     onChange={({ fileList }) => setImageFileList(fileList)}
                     maxCount={1}
+                    
                   >
                     {imageFileList.length >= 1 ? null : (
                       <div>
@@ -470,11 +474,13 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
                       <Col span={8}>
                         <Upload
                           action={API_UPLOAD_FILE}
+                          customRequest={uploadCustomRequest}
                           accept="video/*"
                           listType="picture-card"
                           fileList={videoFileList}
                           onChange={handleVideoChange}
                           maxCount={1}
+                          showUploadList
                           beforeUpload={(file) => {
                         const isSupportedFormat = ["video/mp4", "video/webm", "video/ogg", "video/mov"].includes(file.type);
                         if (!isSupportedFormat) {

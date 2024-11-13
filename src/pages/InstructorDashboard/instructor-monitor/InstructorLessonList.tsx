@@ -36,7 +36,7 @@ const initialCoursesParams: GetCourses = {
 const initialSessionsParams: GetSessions = {
   pageInfo: {
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 100,
   },
   searchCondition: {
     keyword: "",
@@ -70,6 +70,9 @@ const InstructorLessonList = () => {
   const [listLessons, setListLessons] = useState<Lesson[]>([]);
   const [searchParams, setSearchParams] =
     useState<GetLessons>(initialLessonsParams);
+  const [sessionSearchParams, setSessionSearchParams] = useState<GetSessions>(initialSessionsParams);
+
+
 
   const showModal = (lesson: Lesson) => {
     setSelectedLesson(lesson);
@@ -81,7 +84,6 @@ const InstructorLessonList = () => {
   const showCreateModal = () => {
     setIsModalCreateVisible(true);
     fetchCourses();
-    fetchLessons();
   };
 
   const resetModalState = () => {
@@ -100,7 +102,7 @@ const InstructorLessonList = () => {
   };
 
   const fetchSessions = async () => {
-    const response = await SessionService.getSessions(initialSessionsParams);
+    const response = await SessionService.getSessions(sessionSearchParams);
     setListSessions(response?.data?.pageData ?? []);
   };
 
@@ -131,7 +133,7 @@ const InstructorLessonList = () => {
       delete numericValues.assignment;
     }
 
-    try {
+    
       const response = await LessonService.createLesson(numericValues);
       if (response.success) {
         resetModalState();
@@ -141,8 +143,6 @@ const InstructorLessonList = () => {
         );
         await fetchLessons();
       }
-    } finally {
-    }
   };
 
   const handleUpdateLesson = async (updatedLesson: LessonRequest) => {
@@ -174,9 +174,12 @@ const InstructorLessonList = () => {
   };
 
   useEffect(() => {
-    fetchSessions();
     fetchCourses();
-  }, [searchParams]);
+  }, []);
+
+  useEffect(() => {
+    fetchSessions();
+  },[sessionSearchParams])
 
   useEffect(() => {
     fetchLessons();
@@ -286,7 +289,9 @@ const InstructorLessonList = () => {
                   value: course._id,
                   label: course.name,
                 })),
-                // onClick: () => fetchCourses()
+                onChange: (value:string) => {
+                  setSessionSearchParams({...sessionSearchParams, searchCondition: {...searchParams.searchCondition, course_id: value}})
+                } 
               },
               {
                 name: "session_id",
@@ -372,6 +377,7 @@ const InstructorLessonList = () => {
       >
         {selectedLesson && (
           <LessonIOptions
+            onCourseChange={(value) => setSessionSearchParams({...sessionSearchParams, searchCondition: {...searchParams.searchCondition, course_id: value}})}
             listCourses={listCourses}
             listSessions={listSessions}
             onFinished={handleUpdateLesson}
@@ -392,6 +398,7 @@ const InstructorLessonList = () => {
         destroyOnClose={true}
       >
         <LessonIOptions
+          onCourseChange={(value) => setSessionSearchParams({...sessionSearchParams, searchCondition: {...searchParams.searchCondition, course_id: value}})}
           onFinished={handleCreateLesson}
           mode="create"
           listCourses={listCourses}

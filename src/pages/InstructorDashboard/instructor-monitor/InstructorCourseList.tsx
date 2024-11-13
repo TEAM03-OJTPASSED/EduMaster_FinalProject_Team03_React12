@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Table, Card, Tag, Button, Modal } from "antd";
 import {
+  CommentOutlined,
   DeleteOutlined,
   EditOutlined,
   PlusCircleOutlined,
@@ -301,11 +302,13 @@ const InstructorCourseList: React.FC = () => {
           <span>${price.toFixed(2)}</span>
         </div>
       ),
+      align: 'right' as const
     },
     {
       title: "Discount",
       dataIndex: "discount",
       key: "discount",
+      align: 'right' as const,
       render: (discount: number) => (
         <div>
           <span className="text-red-500">{discount}%</span>
@@ -343,7 +346,7 @@ const InstructorCourseList: React.FC = () => {
         <div className="flex gap-2">
           <Button
             type="text"
-            icon={<EditOutlined />}
+            icon={<EditOutlined style={{ color: "blue" }} />}
             onClick={() => showModal(record)}
           />
           <Button
@@ -373,7 +376,7 @@ const InstructorCourseList: React.FC = () => {
                   record.status !== CourseStatusEnum.REJECT && record.status !== CourseStatusEnum.WAITING_APPROVE && (
           <Button
             type="text"
-            icon={<StarOutlined style={{ color: "orange" }} />}
+            icon={<CommentOutlined style={{ color: "orange" }} />}
             onClick={() => handleSeeReviews(record._id)}
             title={
               "See reviews"
