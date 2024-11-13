@@ -60,20 +60,24 @@ const BlogManagement = () => {
 
   const handleSearch = () => {
     setLoading(true);
-    const lowerCaseTags = selectedTags.map(tag => tag.toLowerCase()); 
-  
+    const lowerCaseTags = selectedTags.map((tag) => tag.toLowerCase());
+
     setTimeout(() => {
       const filteredBlogs = fetchedBlogs.filter((blog) => {
-        const blogTagsLowercase = blog.tags.map(tag => tag.toLowerCase()); 
-        const nameMatch = blog.name.toLowerCase().includes(searchText.toLowerCase()); 
-  
-        const tagsMatch = lowerCaseTags.length === 0 || lowerCaseTags.every((tag) => blogTagsLowercase.includes(tag));
-  
+        const blogTagsLowercase = blog.tags.map((tag) => tag.toLowerCase());
+        const nameMatch = blog.name
+          .toLowerCase()
+          .includes(searchText.toLowerCase());
+
+        const tagsMatch =
+          lowerCaseTags.length === 0 ||
+          lowerCaseTags.every((tag) => blogTagsLowercase.includes(tag));
+
         return nameMatch && tagsMatch;
       });
-  
+
       setBlogs(filteredBlogs);
-      setLoading(false);
+      setLoading(false)
     }, 300);
   };
 
@@ -114,7 +118,7 @@ const BlogManagement = () => {
       dataIndex: "description",
       key: "description",
       render: (description: string) => {
-        return <div >{ellipsisText(description, 50)}</div>
+        return <div>{ellipsisText(description, 50)}</div>;
       },
     },
     {
@@ -160,38 +164,41 @@ const BlogManagement = () => {
       <div className="flex">
         <h3 className="text-2xl my-5">Blog Management</h3>
       </div>
-      <div className="flex flex-wrap items-center mb-4">
-        <Input
-          placeholder="Search By Blog Name"
-          prefix={<SearchOutlined />}
-          className="w-full md:w-1/3 mb-2 md:mb-0"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-        />
-        <Select
-          mode="tags" // Allows adding tags by pressing Enter
-          placeholder="Search by Tags"
-          value={selectedTags}
-          onChange={(value) => setSelectedTags(value)} // Update tags state
-          className="w-full md:w-1/4 mb-2 md:mb-0 md:ml-3"
-          style={{ minWidth: "200px" }}
-        />
-        <Button
-          onClick={handleSearch}
-          icon={<SearchOutlined />}
-          shape="round"
-          type="primary"
-          className="w-full md:w-auto ml-0 md:ml-auto"
-          loading={loading} // Loading state for search button
-        >
-          Search
-        </Button>
+      <div className="flex flex-wrap items-center justify-between mb-4">
+        <div className="flex items-center space-x-3 w-full md:w-auto">
+          <Input
+            placeholder="Search By Blog Name"
+            prefix={<SearchOutlined />}
+            className="rounded w-full ml-0 md:w-1/3"
+            style={{ minWidth: "350px" }}
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
+          <Select
+            mode="tags"
+            placeholder="Search by Tags"
+            value={selectedTags}
+            onChange={(value) => setSelectedTags(value)}
+            className="w-full ml-0 md:w-1/4"
+            style={{ minWidth: "300px" }}
+          />
+          <Button
+            onClick={handleSearch}
+            icon={<SearchOutlined />}
+            shape="round"
+            type="primary"
+            className="w-full md:w-auto"
+          >
+            Search
+          </Button>
+        </div>
+
         <Button
           onClick={showModalCreate}
           icon={<PlusCircleOutlined />}
           shape="round"
           type="primary"
-          className="w-full md:w-auto ml-0 md:ml-auto"
+          className="w-full md:w-auto mt-2 md:mt-0"
         >
           Add New Blog
         </Button>
