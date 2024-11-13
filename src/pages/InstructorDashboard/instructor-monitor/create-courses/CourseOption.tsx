@@ -19,6 +19,9 @@ import React, { useEffect, useState } from "react";
 import { API_UPLOAD_FILE } from "../../../../constants/api/upload";
 import { Course } from "../../../../models/Course.model";
 import { Category } from "../../../../models/Category.model";
+import ReactPlayer from "react-player";
+import { handleNotify } from "../../../../utils/handleNotify";
+import { LevelsEnum } from "../../../../models/Lesson.model";
 
 type CourseInformationProps = {
   initializeValue?: Course;
@@ -156,9 +159,14 @@ const CourseOption: React.FC<CourseInformationProps> = ({
             rules={[
               { required: true, message: "Please input estimated level" },
             ]}
-            normalize={(value) => (value ? Number(value) : value)}
           >
-            <Input placeholder="Level" />
+            <Select
+              placeholder="Select Level"
+              options={(Object.values(LevelsEnum)).map((level) => ({
+                value: level,
+                label: level,
+              }))}
+            />
           </Form.Item>
         </Col>
       </Row>
@@ -227,7 +235,14 @@ const CourseOption: React.FC<CourseInformationProps> = ({
                   fileList={videoFileList}
                   onChange={handleVideoChange}
                   maxCount={1}
-                >
+                  beforeUpload={(file) => {
+                const isSupportedFormat = ["video/mp4", "video/webm", "video/ogg", "video/mov"].includes(file.type);
+                if (!isSupportedFormat) {
+                  handleNotify("File format not supported","You can only upload MP4, WebM, MOV or OGG video files!", 'error');
+                }
+                return isSupportedFormat || Upload.LIST_IGNORE; 
+              }}
+            >
                   {videoFileList.length >= 1 ? null : (
                     <div>
                       <PlusOutlined />
@@ -238,8 +253,8 @@ const CourseOption: React.FC<CourseInformationProps> = ({
               </Col>
               <Col>
                 {videoPreviewUrl && (
-                  <video
-                    src={videoPreviewUrl}
+                  <ReactPlayer
+                    url={videoPreviewUrl}
                     width={200}
                     height={150}
                     controls

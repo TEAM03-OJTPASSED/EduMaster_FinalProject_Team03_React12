@@ -11,7 +11,7 @@ const ReviewService = {
     getReviews(
       params: GetReviews
     ): Promise<ApiResponse<APIResponseData<Review>>> {
-      return postRequest(REVIEW_API.GET_REVIEWS, params, false);
+      return postRequest(REVIEW_API.GET_REVIEWS, params);
     },
   
     getView(reviewId: string): Promise<ApiResponse<Review>> {

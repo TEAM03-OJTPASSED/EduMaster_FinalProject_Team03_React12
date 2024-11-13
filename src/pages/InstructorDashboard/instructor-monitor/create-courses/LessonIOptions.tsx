@@ -27,6 +27,9 @@ import { Course } from "../../../../models/Course.model";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { Question } from "../../../../models/Question.model";
+import ReactPlayer from "react-player";
+import { API_UPLOAD_FILE } from "../../../../constants/api/upload";
+import { handleNotify } from "../../../../utils/handleNotify";
 
 type LessonOptionsProps = {
   initialValues?: Lesson;
@@ -466,13 +469,20 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
                     <Row gutter={16} align="middle">
                       <Col span={8}>
                         <Upload
-                          action="https://api.cloudinary.com/v1_1/dz2dv8lk4/upload?upload_preset=edumaster1"
+                          action={API_UPLOAD_FILE}
                           accept="video/*"
                           listType="picture-card"
                           fileList={videoFileList}
                           onChange={handleVideoChange}
                           maxCount={1}
-                        >
+                          beforeUpload={(file) => {
+                        const isSupportedFormat = ["video/mp4", "video/webm", "video/ogg", "video/mov"].includes(file.type);
+                        if (!isSupportedFormat) {
+                          handleNotify("File format not supported","You can only upload MP4, WebM, MOV or OGG video files!", 'error');
+                        }
+                        return isSupportedFormat || Upload.LIST_IGNORE; 
+                      }}
+                    >
                           {videoFileList.length >= 1 ? null : (
                             <div>
                               <PlusOutlined className="h-5 w-5" />
@@ -485,8 +495,8 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
                       <Col span={16}>
                         {videoPreviewUrl && (
                           <div style={{ width: "100%", overflow: "hidden" }}>
-                            <video
-                              src={videoPreviewUrl}
+                            <ReactPlayer
+                              url={videoPreviewUrl}
                               width="100%"
                               height="auto" // Adjusts height to maintain aspect ratio
                               controls
@@ -505,8 +515,8 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
               <div className="h-[70vh] w-full overflow-y-scroll">
                 <Form.Item name="assignment">
                   {questions.map((q) => (
-                    <div>
-                      <div key={q._id} className="mb-4">
+                    <div key={q._id}>
+                      <div className="mb-4">
                         <div className="flex justify-between items-center">
                           <div className="text-lg">Question {q._id}</div>
                           <Select
