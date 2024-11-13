@@ -22,6 +22,7 @@ import { Category } from "../../../../models/Category.model";
 import ReactPlayer from "react-player";
 import { handleNotify } from "../../../../utils/handleNotify";
 import { LevelsEnum } from "../../../../models/Lesson.model";
+import { uploadCustomRequest } from "../../../../utils/uploadCustomReuquest";
 
 type CourseInformationProps = {
   initializeValue?: Course;
@@ -205,6 +206,7 @@ const CourseOption: React.FC<CourseInformationProps> = ({
           >
             <Upload
               action={API_UPLOAD_FILE}
+              customRequest={uploadCustomRequest}
               accept="image/*"
               listType="picture-card"
               fileList={imageFileList}
@@ -229,6 +231,7 @@ const CourseOption: React.FC<CourseInformationProps> = ({
             <Row gutter={16} align="middle">
               <Col>
                 <Upload
+                  customRequest={uploadCustomRequest}
                   action={API_UPLOAD_FILE}
                   accept="video/*"
                   listType="picture-card"

@@ -18,11 +18,14 @@ const handleError = (error: AxiosError) => {
       const errorData = data as ErrorResponse;
       
       if (status === 400) {
-        handleNotify('Bad Request', errorData.message || errorData.Message || 'Bad Request', 'error');
+        handleNotify('Error', errorData.message || errorData.Message || 'Bad Request', 'error');
       }
       if (status === 401) {
         console.log("401 - Lỗi", error);
-        handleNotify('Unauthorized', errorData.message || errorData.Message || 'Unauthorized', 'error');
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.href = "/login"
+        handleNotify('Error', errorData.message || errorData.Message || 'Unauthorized', 'error');
       }
       if (status === 403) {
         console.log("403 - Lỗi", errorData);

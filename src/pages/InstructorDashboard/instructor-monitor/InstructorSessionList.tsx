@@ -195,13 +195,13 @@ const InstructorSessionList = () => {
         <>
           <Button
             type="text"
-            icon={<DeleteOutlined style={{ color: "red" }} />}
-            onClick={() => handleDeleteSession(record._id)}
+            icon={<EditOutlined style={{ color: "blue" }} />}
+            onClick={() => showModal(record)}
           />
           <Button
             type="text"
-            icon={<EditOutlined style={{ color: "blue" }} />}
-            onClick={() => showModal(record)}
+            icon={<DeleteOutlined style={{ color: "red" }} />}
+            onClick={() => handleDeleteSession(record._id)}
           />
         </>
       ),
