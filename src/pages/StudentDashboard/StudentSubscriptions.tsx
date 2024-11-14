@@ -88,7 +88,7 @@ const StudentSubscriptions = () => {
             <i className="fas fa-envelope mr-2"></i>
             {subscription.email}
           </p> */}
-          <SubscribeButton instructorId={subscription.instructor_id} instructorName={subscription.instructor_name} apiFlag={true} userRole={currentUser.role}/>
+          <SubscribeButton instructorId={subscription.instructor_id} instructorName={subscription.instructor_name} initialSubscribedValue={true} userRole={currentUser.role}/>
         </div>
       ))}
     </div>

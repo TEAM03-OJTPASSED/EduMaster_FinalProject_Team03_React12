@@ -36,6 +36,7 @@ import SubscribeButton from "../../components/SubscribeButton";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import SubscriptionService from "../../services/subscription.service";
+import { current } from "@reduxjs/toolkit";
 // import { authorize } from "../../utils/authorize";
 
 const { Title, Paragraph, Text } = Typography;
@@ -78,9 +79,11 @@ const ProfilePage: React.FC = () => {
   }, [id]);
 
   useEffect(() => {
-    if (userData.name) {
+    if (userData.name && currentUser === undefined) {
       checkSubscribed();
-    } 
+    } else {
+      setIsSubscribed(false)
+    }
   },[userData])
 
   const checkSubscribed = async () => {
