@@ -27,7 +27,6 @@ const TransactionListModal = React.lazy(
 );
 
 const AdminRequestPayout = () => {
- 
   const [isOpenTransaction, setIsOpenTransaction] = useState(false);
   const [currentRequestPayout, setCurrentRequestPayout] = useState<Payout>(
     {} as Payout
@@ -58,14 +57,10 @@ const AdminRequestPayout = () => {
 
   // fetch request payout
   const fetchDataRequestPayout = async () => {
-    setLoading(true);
-    try {
-      const res = await PayoutService.getPayout(searchRequestPayoutParam);
-      setRequestPayoutList(res?.data?.pageData as Payout[]);
-      setCurrentRequestPayouts(res?.data?.pageInfo as PageInfo);
-    } finally {
-      setLoading(false);
-    }
+    const res = await PayoutService.getPayout(searchRequestPayoutParam);
+
+    setRequestPayoutList(res?.data?.pageData as Payout[]);
+    setCurrentRequestPayouts(res?.data?.pageInfo as PageInfo);
   };
   useEffect(() => {
     fetchDataRequestPayout();
@@ -145,23 +140,25 @@ const AdminRequestPayout = () => {
       align: "center",
       render: (record: Payout) => (
         <Space size="middle">
-        <Tooltip title="Accept">
-          <Button
-            type="text"
-            className="text-green-600"
-            icon={<CheckOutlined />}
-            onClick={() => handleSubmitPreview(PayoutStatusEnum.COMPLETED, record)}
-          />
-        </Tooltip>
-        <Tooltip title="Reject">
-          <Button
-            className="text-red-600"
-            type="text"
-            icon={<CloseOutlined />}
-            onClick={() => handleShowReason(record)}
-          />
-        </Tooltip>
-      </Space>
+          <Tooltip title="Accept">
+            <Button
+              type="text"
+              className="text-green-600"
+              icon={<CheckOutlined />}
+              onClick={() =>
+                handleSubmitPreview(PayoutStatusEnum.COMPLETED, record)
+              }
+            />
+          </Tooltip>
+          <Tooltip title="Reject">
+            <Button
+              className="text-red-600"
+              type="text"
+              icon={<CloseOutlined />}
+              onClick={() => handleShowReason(record)}
+            />
+          </Tooltip>
+        </Space>
       ),
     },
   ];
@@ -186,13 +183,19 @@ const AdminRequestPayout = () => {
       status,
       comment: reason,
     };
-    await PayoutService.updatePayoutStatus(record._id, formPreview);
-    setRequestPayoutList((prevList) =>
-      prevList?.filter((item) => item._id !== record._id)
-    );
-    message.success("Submit preview successfully");
-    setReasonVisible(false);
-    console.log(formPreview);
+    setLoading(true);
+    try {
+      await PayoutService.updatePayoutStatus(record._id, formPreview);
+      setRequestPayoutList((prevList) =>
+        prevList?.filter((item) => item._id !== record._id)
+      );
+      await fetchDataRequestPayout();
+      message.success("Submit preview successfully");
+      setReasonVisible(false);
+      console.log(formPreview);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -225,7 +228,6 @@ const AdminRequestPayout = () => {
           bordered
           style={{ borderRadius: "8px" }}
           scroll={{ x: true }}
-          loading={loading}
         />
       </Card>
       <Modal
@@ -247,7 +249,12 @@ const AdminRequestPayout = () => {
             key="submit"
             variant="solid"
             htmlType="submit"
-            onClick={() => handleSubmitPreview(PayoutStatusEnum.REJECTED, currentRequestPayout)}
+            onClick={() =>
+              handleSubmitPreview(
+                PayoutStatusEnum.REJECTED,
+                currentRequestPayout
+              )
+            }
           >
             {loading ? <Spin /> : <span>Submit</span>}
           </Button>,

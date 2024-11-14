@@ -10,6 +10,8 @@ import {
   Spin,
   FormProps,
   Tooltip,
+  TableProps,
+  Tag,
 } from "antd";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 
@@ -19,7 +21,7 @@ import { AppDispatch, RootState } from "../../redux/store/store";
 import { User } from "../../models/UserModel";
 import { UserSearchParams } from "../../models/SearchInfo.model";
 import GlobalSearchUnit from "../../components/GlobalSearchUnit";
-
+import dayjs from "dayjs";
 const initializeSearchParam: UserSearchParams = {
   searchCondition: {
     keyword: "",
@@ -35,7 +37,6 @@ const RequestUser = () => {
   const { loading } = useSelector(
     (state: RootState) => state.users.previewProfile
   );
-
   const [reasonVisible, setReasonVisible] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -47,13 +48,25 @@ const RequestUser = () => {
     initializeSearchParam
   );
 
+  // check submitted
+  // const [isPreviewSubmitted, setIsPreviewSubmitted] = useState(false);
+
   const fetchUsers = async () => {
     const response = await UserService.getUsers(searchParams);
     const responseData = response.data?.pageData;
+
     const flattenedUsers: User[] = Array.isArray(responseData)
       ? responseData.flat()
       : [];
-    setUsers(flattenedUsers);
+
+    setUsers(
+      flattenedUsers
+        .slice()
+        .sort(
+          (a, b) =>
+            dayjs(b.updated_at).valueOf() - dayjs(a.updated_at).valueOf()
+        )
+    );
     setTotal(response.data?.pageInfo?.totalItems ?? 0);
   };
 
@@ -78,8 +91,10 @@ const RequestUser = () => {
       comment: reason,
     };
     await previewInstructor(formPreview, dispatch);
+    await fetchUsers();
     message.success("Submit preview successfully");
     setReasonVisible(false);
+    // fetchUsers()
     console.log(formPreview);
   };
 
@@ -93,23 +108,22 @@ const RequestUser = () => {
     }));
   };
 
-  const columns = [
+  const columns: TableProps<User>["columns"] = [
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
-     
     },
     {
       title: "Avatar",
       dataIndex: "avatar_url",
       key: "avatar_url",
       render: (avatar_url: string) => (
-        <div className="h-full w-full md:w-[100px]">
+        <div className="h-full w-full md:w-[100px] ">
           <img
             src={avatar_url}
             alt={avatar_url}
-            className="w-[200px] 2h-auto"
+            className="w-[200px] h-[100px] rounded-full"
           />
         </div>
       ),
@@ -126,29 +140,45 @@ const RequestUser = () => {
       key: "phone_number",
       align: "center",
     },
+    // {
+    //   title: "Log",
+    //   key: "Log",
+    //   align: "center",
+    //   render: (record :User)=>{
+    //     return <div>
+    //       {`Have updated at ${dayjs(record.updated_at).format("DD/MM/YYYY")}`}
+    //     </div>
+    //   }
+    // },
     {
       title: "Actions",
       align: "center",
       key: "action",
-      render: (record: any) => (
-        <Space size="middle">
-          <Tooltip title="Accept">
-            <Button
-              type="text"
-              className="text-green-600"
-              icon={<CheckOutlined />}
-              onClick={() => handleSubmitPreview("approve", record)}
-            />
-          </Tooltip>
-          <Tooltip title="Reject">
-            <Button
-              className="text-red-600"
-              type="text"
-              icon={<CloseOutlined />}
-              onClick={() => handleShowReason(record)}
-            />
-          </Tooltip>
-        </Space>
+      render: (record: User) => (
+        <>
+          {/* {isPreviewSubmitted && record.status ? (
+            <Tag color="primary">Previewed</Tag> // when submit successfully display button
+          ) : ( */}
+          <Space size="middle">
+            <Tooltip title="Accept">
+              <Button
+                type="text"
+                className="text-green-600"
+                icon={<CheckOutlined />}
+                onClick={() => handleSubmitPreview("approve", record)}
+              />
+            </Tooltip>
+            <Tooltip title="Reject">
+              <Button
+                className="text-red-600"
+                type="text"
+                icon={<CloseOutlined />}
+                onClick={() => handleShowReason(record)}
+              />
+            </Tooltip>
+          </Space>
+          {/* )} */}
+        </>
       ),
     },
   ];

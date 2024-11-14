@@ -4,50 +4,21 @@ import { GetLessons, Lesson } from "../../../../models/Lesson.model";
 import { PageInfo } from "../../../../models/SearchInfo.model";
 import { useEffect, useState } from "react";
 import LessonService from "../../../../services/lesson.service";
-import GlobalSearchUnit from "../../../../components/GlobalSearchUnit";
-import { GetSessions, Session } from "../../../../models/Session.model";
-import { Course, GetCourses } from "../../../../models/Course.model";
-import CourseService from "../../../../services/course.service";
-import SessionService from "../../../../services/session.service";
 
-
-const initialCoursesParams: GetCourses = {
-  pageInfo: {
-    pageNum: 1,
-    pageSize: 100,
-  },
-  searchCondition: {
-    keyword: "",
-    is_deleted: false,
-    category_id: "",
-  },
+type PendingLessonListProps = {
+  session_id: string;
 };
 
-const initialSessionsParams: GetSessions = {
-  pageInfo: {
-    pageNum: 1,
-    pageSize: 10,
-  },
-  searchCondition: {
-    keyword: "",
-    is_deleted: false,
-    is_position_order: true,
-    course_id: "",
-  },
-};
-
-
-const PendingLessonList = () => {
-  const [loading, setLoading] = useState(false);
-  const [listCourses, setListCourses] = useState<Course[]>([]);
-  const [listSessions, setListSessions] = useState<Session[]>([]);
+const PendingLessonList: React.FC<PendingLessonListProps> = ({
+  session_id,
+}) => {
   const [lessonPendingList, setLessonPendingList] = useState<Lesson[]>([]);
   const [currentLesson, setCurrentLesson] = useState<PageInfo>({} as PageInfo);
   const [lessonSearchParam, setLessonSearchParam] = useState<GetLessons>({
     searchCondition: {
       keyword: "",
       course_id: "",
-      session_id: "",
+      session_id: session_id,
       is_position_order: false,
       is_deleted: false,
     },
@@ -57,43 +28,11 @@ const PendingLessonList = () => {
     },
   });
 
-  const fetchCourses = async () => {
-    setLoading(true);
-    try {
-      const response = await CourseService.getCourses(initialCoursesParams);
-      setListCourses(response?.data?.pageData ?? []);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchSessions = async () => {
-    setLoading(true);
-    try {
-      const response = await SessionService.getSessions(initialSessionsParams);
-      setListSessions(response?.data?.pageData ?? []);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const fetchDataLesson = async () => {
-    setLoading(true);
-    try {
-      const res = await LessonService.getLessons(lessonSearchParam);
-      setLessonPendingList(res?.data?.pageData as Lesson[]);
-      setCurrentLesson(res?.data?.pageInfo as PageInfo);
-    } catch (error) {
-      console.error("Failed to fetch lessons", error);
-    } finally {
-      setLoading(false);
-    }
+    const res = await LessonService.getLessons(lessonSearchParam);
+    setLessonPendingList(res?.data?.pageData as Lesson[]);
+    setCurrentLesson(res?.data?.pageInfo as PageInfo);
   };
-
-  useEffect(() => {
-    fetchCourses();
-    fetchSessions();
-  }, []);
 
   useEffect(() => {
     fetchDataLesson();
@@ -122,7 +61,7 @@ const PendingLessonList = () => {
       render: (video_url) => (
         <div className="h-full w-full md:w-[200px]">
           <video className="w-[200px] 2h-auto" controls>
-          <source src={video_url} />
+            <source src={video_url} />
             Your browser does not support the video tag.
           </video>
         </div>
@@ -132,7 +71,9 @@ const PendingLessonList = () => {
       title: "Type",
       dataIndex: "lesson_type",
       key: "lesson_type",
-      render: (lesson_type: LessonTypeEnum) => <Tag color="gray">{lesson_type}</Tag>,
+      render: (lesson_type: LessonTypeEnum) => (
+        <Tag color="gray">{lesson_type}</Tag>
+      ),
     },
     {
       title: "Time",
@@ -141,50 +82,9 @@ const PendingLessonList = () => {
     },
   ];
 
-  const handleSearch = (values: Record<string, any>) => {
-    setLessonSearchParam({
-      ...lessonSearchParam,
-      searchCondition: {
-        ...lessonSearchParam.searchCondition,
-        keyword: values.keyword,
-        course_id: values.course_id,
-        session_id: values.session_id,
-      },
-    });
-  };
 
   return (
-    <Card>
-      <h3 className="text-2xl my-5">Lesson Management</h3>
-      <div className="flex justify-between">
-        <div className="flex justify-between gap-4 mb-5 overflow-hidden">
-          <GlobalSearchUnit
-            onSubmit={handleSearch}
-            placeholder="Search by Lesson Name"
-            isDependentSelect
-            selectFields={[
-              {
-                name: "course_id",
-                placeholder: "Filter by Course",
-                options: listCourses.map((course) => ({
-                  value: course._id,
-                  label: course.name,
-                })),
-              },
-              {
-                name: "session_id",
-                placeholder: "Filter by Session",
-                options: listSessions.map((session) => ({
-                  value: session._id,
-                  label: session.name,
-                  dependence: session.course_id,
-                })),
-                dependenceName: "course_id",
-              },
-            ]}
-          />
-        </div>
-      </div>
+    <div>
       <Table
         dataSource={lessonPendingList}
         columns={columns}
@@ -203,9 +103,8 @@ const PendingLessonList = () => {
         bordered
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
-        loading={loading}
       />
-    </Card>
+    </div>
   );
 };
 
