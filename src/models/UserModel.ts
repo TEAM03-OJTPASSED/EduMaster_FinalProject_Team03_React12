@@ -24,6 +24,12 @@ export interface User {
   highResAvatar?: string;
 }
 
+export enum UserStatusEnum {
+  ADMIN = "admin",
+  INSTRUCTOR = "instructor",
+  STUDENT = "student",
+}
+
 export interface ChangeUserRoleParams {
   user_id: string;
   role: string;

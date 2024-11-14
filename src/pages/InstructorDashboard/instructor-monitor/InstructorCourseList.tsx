@@ -6,7 +6,6 @@ import {
   EditOutlined,
   PlusCircleOutlined,
   SendOutlined,
-  StarOutlined,
 } from "@ant-design/icons";
 
 import CourseOption from "./create-courses/CourseOption";
@@ -27,7 +26,6 @@ import { statusFormatter } from "../../../utils/statusFormatter";
 import ReviewService from "../../../services/review.service";
 import { GetReviews, Review } from "../../../models/Review.model";
 import ReviewModal from "../../../components/Instructor/ReviewModal";
-
 
 const initialCoursesParams: GetCourses = {
   pageInfo: {
@@ -64,8 +62,6 @@ const reviewsParam: GetReviews = {
   },
 };
 
-
-
 const InstructorCourseList: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalReviewVisible, setIsModalReviewVisible] = useState(false);
@@ -75,33 +71,33 @@ const InstructorCourseList: React.FC = () => {
   const [listCourses, setListCourses] = useState<Course[]>([]);
   const [listCategories, setListCategories] = useState<Category[]>([]);
   const [listReviews, setListReviews] = useState<Review[]>([]);
-  const [searchParams, setSearchParams] = useState<GetCourses>(initialCoursesParams)
+  const [searchParams, setSearchParams] =
+    useState<GetCourses>(initialCoursesParams);
   const [totalItems, setTotalItems] = useState<number>();
 
   const handleSeeReviews = async (course_id: string) => {
-    fetchReviews(course_id)
+    fetchReviews(course_id);
     setIsModalReviewVisible(true);
   };
 
-  const handleCloseReviews= async () => {
-    setListReviews([])
-    setIsModalReviewVisible(false)
+  const handleCloseReviews = async () => {
+    setListReviews([]);
+    setIsModalReviewVisible(false);
   };
 
   const showModal = async (course: Course) => {
-    setSelectedCourse(null); 
+    setSelectedCourse(null);
     const response = await CourseService.getCourse(course._id);
     if (response.data != undefined) {
       setSelectedCourse(response.data);
-      fetchCategories()
+      fetchCategories();
       setIsModalReviewVisible(true);
     }
   };
 
   const showModalCreate = () => {
     setIsModalCreateVisible(true);
-    fetchCategories()
-
+    fetchCategories();
   };
 
   const handleCancel = () => {
@@ -110,25 +106,25 @@ const InstructorCourseList: React.FC = () => {
     setSelectedCourse(null); // Reset selected course when closing
   };
 
-  const fetchCourses = async () => {  
-      const response = await CourseService.getCourses(searchParams);
-      setListCourses(response?.data?.pageData ?? []);
-      setTotalItems(response?.data?.pageInfo?.totalItems)  
+  const fetchCourses = async () => {
+    const response = await CourseService.getCourses(searchParams);
+    setListCourses(response?.data?.pageData ?? []);
+    setTotalItems(response?.data?.pageInfo?.totalItems);
   };
 
-  const fetchReviews = async (course_id:string) => { 
-    const response = await ReviewService.getReviews({...initialCategoriesParams, searchCondition: {course_id: course_id}});
+  const fetchReviews = async (course_id: string) => {
+    const response = await ReviewService.getReviews(
+      { ...reviewsParam, searchCondition: { course_id: course_id } },
+      true
+    );
     setListReviews(response?.data?.pageData ?? []);
-};
+  };
 
   const fetchCategories = async () => {
-    
-    
-      const response = await CategoryService.getCategories(
-        initialCategoriesParams
-      );
-      setListCategories(response?.data?.pageData ?? []);
-    
+    const response = await CategoryService.getCategories(
+      initialCategoriesParams
+    );
+    setListCategories(response?.data?.pageData ?? []);
   };
 
   const handleSearch = (values: Record<string, any>) => {
@@ -138,11 +134,10 @@ const InstructorCourseList: React.FC = () => {
         ...searchParams.searchCondition, // Spread existing searchCondition fields
         category_id: values.category_id,
         keyword: values.keyword,
-        status: values.status
-      }
+        status: values.status,
+      },
     });
   };
-
 
   const handleCreateCourse = async (values: CourseRequest) => {
     const { price, discount, video_url, image_url, ...otherValues } = values;
@@ -154,51 +149,42 @@ const InstructorCourseList: React.FC = () => {
       image_url: image_url || "",
     };
 
-    
-    
-      const response = await CourseService.createCourse(numericValues);
-      if (response.success) {
-        handleCancel();
-        handleNotify(
-          "Course Created Successfully",
-          "The course has been created successfully."
-        );
-        await fetchCourses();
-      }
-    
+    const response = await CourseService.createCourse(numericValues);
+    if (response.success) {
+      handleCancel();
+      handleNotify(
+        "Course Created Successfully",
+        "The course has been created successfully."
+      );
+      await fetchCourses();
+    }
   };
 
   const handleDeleteCourse = async (courseId: string) => {
-    
-    
-      const response = await CourseService.deleteCourse(courseId);
-      if (response.success) {
-        handleNotify(
-          "Course Deleted Successfully",
-          "The course has been deleted successfully."
-        );
-        await fetchCourses();
-      }
-    
+    const response = await CourseService.deleteCourse(courseId);
+    if (response.success) {
+      handleNotify(
+        "Course Deleted Successfully",
+        "The course has been deleted successfully."
+      );
+      await fetchCourses();
+    }
   };
 
   const handleUpdateCourse = async (updatedCourse: CourseRequest) => {
-    
-    
-      if (selectedCourse) {
-        const response = await CourseService.updateCourse(
-          selectedCourse._id,
-          updatedCourse
+    if (selectedCourse) {
+      const response = await CourseService.updateCourse(
+        selectedCourse._id,
+        updatedCourse
+      );
+      if (response.success) {
+        handleNotify(
+          "Course Updated Successfully",
+          "The course has been updated successfully."
         );
-        if (response.success) {
-          handleNotify(
-            "Course Updated Successfully",
-            "The course has been updated successfully."
-          );
-          await fetchCourses();
-        }
+        await fetchCourses();
       }
-    
+    }
   };
 
   useEffect(() => {
@@ -249,9 +235,17 @@ const InstructorCourseList: React.FC = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      ellipsis: true, 
-      render: (text:string) => (
-        <span style={{ maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-block' }}>
+      ellipsis: true,
+      render: (text: string) => (
+        <span
+          style={{
+            maxWidth: 150,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            display: "inline-block",
+          }}
+        >
           {text}
         </span>
       ),
@@ -302,13 +296,13 @@ const InstructorCourseList: React.FC = () => {
           <span>${price.toFixed(2)}</span>
         </div>
       ),
-      align: 'right' as const
+      align: "right" as const,
     },
     {
       title: "Discount",
       dataIndex: "discount",
       key: "discount",
-      align: 'right' as const,
+      align: "right" as const,
       render: (discount: number) => (
         <div>
           <span className="text-red-500">{discount}%</span>
@@ -323,7 +317,7 @@ const InstructorCourseList: React.FC = () => {
           record.status === CourseStatusEnum.NEW ||
           record.status === CourseStatusEnum.WAITING_APPROVE ||
           record.status === CourseStatusEnum.REJECT;
-  
+
         return (
           <CourseStatusToggle
             status={record.status}
@@ -341,7 +335,7 @@ const InstructorCourseList: React.FC = () => {
     {
       title: "Action",
       key: "action",
-      fixed: 'right' as const,
+      fixed: "right" as const,
       render: (record: Course) => (
         <div className="flex gap-2">
           <Button
@@ -354,7 +348,7 @@ const InstructorCourseList: React.FC = () => {
             icon={<DeleteOutlined style={{ color: "red" }} />}
             onClick={() => handleDeleteCourse(record._id)}
           />
-  
+
           {record.status == CourseStatusEnum.NEW && (
             <Button
               type="text"
@@ -366,28 +360,26 @@ const InstructorCourseList: React.FC = () => {
               }
               title={
                 record.status !== CourseStatusEnum.NEW &&
-                  record.status !== CourseStatusEnum.REJECT
+                record.status !== CourseStatusEnum.REJECT
                   ? "Can only send NEW or REJECT courses"
                   : "Send to admin for approval"
               }
             />
           )}
           {record.status !== CourseStatusEnum.NEW &&
-                  record.status !== CourseStatusEnum.REJECT && record.status !== CourseStatusEnum.WAITING_APPROVE && (
-          <Button
-            type="text"
-            icon={<CommentOutlined style={{ color: "orange" }} />}
-            onClick={() => handleSeeReviews(record._id)}
-            title={
-              "See reviews"
-            }
-          />)
-          }
+            record.status !== CourseStatusEnum.REJECT &&
+            record.status !== CourseStatusEnum.WAITING_APPROVE && (
+              <Button
+                type="text"
+                icon={<CommentOutlined style={{ color: "orange" }} />}
+                onClick={() => handleSeeReviews(record._id)}
+                title={"See reviews"}
+              />
+            )}
         </div>
       ),
     },
   ];
-  
 
   const statuses = [
     CourseStatusEnum.ACTIVE,
@@ -407,13 +399,20 @@ const InstructorCourseList: React.FC = () => {
           selectFields={[
             {
               name: "status",
-              options: statuses.map((status) => ({ label: statusFormatter(status), value: status })),
-              placeholder: "Filter by Status"
-            }, {
+              options: statuses.map((status) => ({
+                label: statusFormatter(status),
+                value: status,
+              })),
+              placeholder: "Filter by Status",
+            },
+            {
               name: "category_id",
-              options: listCategories.map((category) => ({ label: category.name, value: category._id })),
-              placeholder: "Filter by Category"
-            }
+              options: listCategories.map((category) => ({
+                label: category.name,
+                value: category._id,
+              })),
+              placeholder: "Filter by Category",
+            },
           ]}
           onSubmit={handleSearch}
         />
@@ -433,15 +432,15 @@ const InstructorCourseList: React.FC = () => {
       <Table
         dataSource={listCourses}
         columns={columns}
-        pagination={{ 
-          pageSize: 5, 
+        pagination={{
+          pageSize: 5,
           total: totalItems,
-          onChange: (page) => setSearchParams({ 
-            ...searchParams, 
-            pageInfo: { ...searchParams.pageInfo, pageNum: page }
-          })
+          onChange: (page) =>
+            setSearchParams({
+              ...searchParams,
+              pageInfo: { ...searchParams.pageInfo, pageNum: page },
+            }),
         }}
-        
         rowKey="name"
         bordered
         style={{ borderRadius: "8px" }}
@@ -478,14 +477,18 @@ const InstructorCourseList: React.FC = () => {
         destroyOnClose={true} // Add this to ensure form state is destroyed
       >
         <CourseOption
-          key={isModalCreateVisible ? 'create-new' : 'create'} // Add key prop to force remount
+          key={isModalCreateVisible ? "create-new" : "create"} // Add key prop to force remount
           mode="create"
           onFinished={handleCreateCourse}
           categories={listCategories}
         />
       </Modal>
 
-      <ReviewModal reviews={listReviews} onClose={() => handleCloseReviews()} isOpen={isModalReviewVisible}/>
+      <ReviewModal
+        reviews={listReviews}
+        onClose={() => handleCloseReviews()}
+        isOpen={isModalReviewVisible}
+      />
     </Card>
   );
 };

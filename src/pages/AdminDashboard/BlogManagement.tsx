@@ -77,7 +77,7 @@ const BlogManagement = () => {
       });
 
       setBlogs(filteredBlogs);
-      setLoading(false)
+      setLoading(false);
     }, 300);
   };
 

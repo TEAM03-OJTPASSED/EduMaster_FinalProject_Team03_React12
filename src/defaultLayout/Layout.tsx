@@ -1,12 +1,11 @@
-import { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { FaComments } from "react-icons/fa";
 
 const GeneralLayout = () => {
-  const [isNavbarVisible, setIsNavbarVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  // const [isNavbarVisible, setIsNavbarVisible] = useState(true);
+  // const [lastScrollY, setLastScrollY] = useState(0);
 
   // // Handle scroll event to show/hide navbar with slide and fade effect
   // const handleScroll = () => {
@@ -32,9 +31,8 @@ const GeneralLayout = () => {
       {/* Navbar section */}
       <div
         className={`w-full h-16 left-0 flex items-center bg-white shadow fixed z-50 transition-all duration-300 ease-in-out ${
-          isNavbarVisible
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 translate-y-[-100%]"
+          "opacity-100 translate-y-0"
+            
         }`}
       >
         <Navbar />

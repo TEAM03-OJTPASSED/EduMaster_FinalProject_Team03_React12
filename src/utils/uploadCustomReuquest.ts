@@ -26,7 +26,10 @@ export const uploadCustomRequest:UploadProps['customRequest'] = async ({ file, o
         const data = await response.json();
         if (onSuccess && onSuccess(data, file)) handleNotify("Upload successful!", "Your file has been uploaded.", 'success');
       } catch (error) {
-        if (onError && onError(error)) handleNotify("Upload failed", "There was an error uploading your file.", 'error');
+        if (onError) {
+          handleNotify("Upload failed", "There was an error uploading your file.", 'error');
+          console.log(error)
+        }
       } finally {
         hideLoadingOverlay();
       }

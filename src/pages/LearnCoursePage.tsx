@@ -8,7 +8,6 @@ import ReactPlayer from "react-player";
 import { MdOutlinePlayCircle, MdOutlineTaskAlt } from "react-icons/md";
 import { FiBookOpen } from "react-icons/fi";
 import Navbar from "../components/Navbar";
-import LessonIOptions from "./InstructorDashboard/instructor-monitor/create-courses/LessonIOptions";
 
 const token = localStorage.getItem("token");
 

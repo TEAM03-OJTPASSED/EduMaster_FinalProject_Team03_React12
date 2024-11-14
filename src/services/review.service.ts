@@ -9,9 +9,10 @@ const ReviewService = {
     },
   
     getReviews(
-      params: GetReviews
+      params: GetReviews, isLoad?:boolean
     ): Promise<ApiResponse<APIResponseData<Review>>> {
-      return postRequest(REVIEW_API.GET_REVIEWS, params);
+      if (isLoad) return postRequest(REVIEW_API.GET_REVIEWS, params, true);
+      return postRequest(REVIEW_API.GET_REVIEWS, params, false);
     },
   
     getView(reviewId: string): Promise<ApiResponse<Review>> {

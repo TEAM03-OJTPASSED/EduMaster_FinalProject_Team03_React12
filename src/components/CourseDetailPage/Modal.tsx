@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { Course } from "../../models/Course.model";
 import { handleAddCart } from "../../utils/handleAddCart";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store/store";
 import { useCustomNavigate } from "../../hooks/customNavigate";
 
 type Props = {

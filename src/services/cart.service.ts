@@ -10,7 +10,7 @@ import { deleteRequest, postRequest, putRequest } from "./httpsMethod";
 
 const CartService = {
   createCart(courseId: string): Promise<ApiResponse> {
-    return postRequest(CART_API.CREATE_CART, { course_id: courseId });
+    return postRequest(CART_API.CREATE_CART, { course_id: courseId }, false);
   },
   getCartsByStatus(
     params: SearchCartByStatus
@@ -31,7 +31,7 @@ const CartService = {
     return putRequest(CART_API.UPDATE_CART_STATUS, params);
   },
   deleteCart(cartId: string): Promise<ApiResponse> {
-    return deleteRequest(CART_API.DELETE_CART(cartId));
+    return deleteRequest(CART_API.DELETE_CART(cartId), false);
   },
 };
 

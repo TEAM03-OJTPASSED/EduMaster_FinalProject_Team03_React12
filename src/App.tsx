@@ -59,7 +59,7 @@ import AdminSetting from "./pages/AdminDashboard/setting/AdminSetting";
 import AdminProfile from "./pages/AdminDashboard/setting/AdminProfile";
 import InstructorSalesHistory from "./pages/InstructorDashboard/instructor-management/InstructorOrdersHistory";
 import LearnCoursePage from "./pages/LearnCoursePage";
-import TopUpPage from "./pages/topup/TopupPage";
+// import TopUpPage from "./pages/topup/TopupPage";
 import AdminRequestPayout from "./pages/AdminDashboard/payout/RequestPayout";
 import AdminCompletedPayout from "./pages/AdminDashboard/payout/CompletedPayout";
 import AdminRejectedPayout from "./pages/AdminDashboard/payout/RejectedPayout";
@@ -69,6 +69,7 @@ import StudentOrderHistory from "./pages/StudentDashboard/StudentOrderHistory";
 import VerifySuccessToken from "./pages/AuthPage/VerifyToken";
 import { gapi } from "gapi-script";
 import AwaitingPayout from "./pages/InstructorDashboard/instructor-management/payout/AwaitingPayout";
+import InstructorContent1 from "./pages/InstructorDashboard/subscription/TEST";
 
 function App() {
   useEffect(() => {
@@ -137,7 +138,7 @@ function App() {
                 <Route path="users" element={<UserManagement />} />
                 <Route path="request-management" element={<RequestUser />} />
                 <Route path="categories" element={<CategoryManagement />} />
-                <Route path="top-up" element={<TopUpPage />} />
+                {/* <Route path="top-up" element={<TopUpPage />} /> */}
                 <Route path="payout" element={<PayoutManagement />} />
                 <Route path="payout" element={<AdminPayout />}>
                   <Route index element={<AdminRequestPayout />} />
@@ -172,6 +173,19 @@ function App() {
               </Route>
             </Route>
 
+            <Route
+              path="message"
+              element={
+                <ProtectedRoute
+                  allowedRoles={["instructor", "student"]}
+                ></ProtectedRoute>
+              }
+            >
+              <Route element={<InstructorLayout />}>
+                <Route index element={<InstructorContent1 />} />
+              </Route>
+            </Route>
+
             {/* Instructor Layout */}
             <Route
               path="dashboard/instructor"
@@ -183,7 +197,7 @@ function App() {
                 <Route index element={<InstructorContent />} />
                 <Route path="dashboard" element={<InstructorContent />} />
                 <Route path="my-learning" element={<StudentCourses />} />
-                <Route path="top-up" element={<TopUpPage />} />
+                {/* <Route path="top-up" element={<TopUpPage />} /> */}
                 <Route path="orders" element={<StudentOrderHistory />} />
 
                 <Route path="payout" element={<InstructorPayout />}>
@@ -243,7 +257,7 @@ function App() {
                   />
                 </Route>
                 <Route path="my-courses" element={<StudentCourses />} />
-                <Route path="top-up" element={<TopUpPage />} />
+                {/* <Route path="top-up" element={<TopUpPage />} /> */}
                 <Route path="orders" element={<StudentOrderHistory />} />
                 <Route path="subscriptions" element={<StudentSubscription />} />
               </Route>

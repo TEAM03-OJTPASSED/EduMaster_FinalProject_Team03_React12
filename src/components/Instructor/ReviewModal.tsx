@@ -1,6 +1,5 @@
 'use client'
 
-import React from 'react'
 import { Modal, List, Rate } from 'antd'
 import { StarFilled } from '@ant-design/icons'
 
@@ -32,6 +31,7 @@ export default function ReviewModal({ isOpen = false, onClose = () => {}, review
       onCancel={onClose}
       footer={null}
       width={600}
+      centered
     >
       <List
         itemLayout="vertical"

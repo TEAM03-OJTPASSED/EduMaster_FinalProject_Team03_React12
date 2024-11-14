@@ -1,119 +1,83 @@
-import React, { useState, useEffect } from 'react';
-import { Checkbox, Drawer, Button } from "antd";
+import React, { useState, useEffect, useCallback } from 'react';
+import { Drawer, Button, Radio } from "antd";
 import { FilterOutlined } from '@ant-design/icons';
 import Sider from 'antd/es/layout/Sider';
-
-interface FilterOption {
-  value: string | number;
-  label: string;
-  count?: number;
-}
-
-interface Filters {
-  category: string[];
-}
-
-interface FilterSection {
-  title: string;
-  type: keyof Filters;
-  options: FilterOption[];
-}
+import { debounce } from 'lodash';
 
 interface SearchFilterProps {
-  filters: FilterSection[];
-  onFilterChange: (filterType: keyof Filters, value: string | number) => void;
-  selectedFilters: Filters;
+  filters: Filters[];
+  selectedFilter?: string;
+  onChange: (value: string) => void;
 }
 
-export const SearchFilter: React.FC<SearchFilterProps> = ({ filters, onFilterChange, selectedFilters }) => {
+export interface Filters {
+  options: { label: string, value: string }[];
+  title: string;
+}
+
+export const SearchFilter: React.FC<SearchFilterProps> = ({ filters, onChange, selectedFilter }) => {
   const [visible, setVisible] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 992);
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 992);
-    };
-
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-
-    return () => {
-      window.removeEventListener('resize', checkMobile);
-    };
+    const handleResize = () => setIsMobile(window.innerWidth <= 992);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const handleFilterChange = (filterType: keyof Filters, checkedValue: string | number) => {
-    onFilterChange(filterType, checkedValue);
-  };
-
-  const renderCheckboxGroup = (section: FilterSection) => (
-    <Checkbox.Group
-      className="flex flex-col space-y-2"
-      value={selectedFilters[section.type]}
-      // onChange={(checkedValues) => handleFilterChange(section.type, checkedValues)}
-    >
-      {section.options.map((option) => (
-        <Checkbox key={option.value} value={option.value} onChange={(checkedValues) => handleFilterChange(section.type, checkedValues.target.value)}>
-          {option.label} {option.count !== undefined && `(${option.count})`}
-        </Checkbox>
-      ))}
-    </Checkbox.Group>
-  );
-
-  // const renderRatingGroup = (section: FilterSection) => (
-  //   <Checkbox.Group
-  //     className="flex flex-col space-y-2"
-  //     value={selectedFilters[section.type] as number[]}
-  //     // onChange={(checkedValues) => handleFilterChange(section.type, checkedValues)}
-  //   >
-  //     {section.options.map((option) => (
-  //       <Checkbox key={option.value} value={option.value}>
-  //         <Rate disabled defaultValue={Number(option.value)} /> {option.count !== undefined && `(${option.count})`}
-  //       </Checkbox>
-  //     ))}
-  //   </Checkbox.Group>
-  // );
+  // Debounce the onChange handler to delay the callback
+  const debouncedOnChange = useCallback(debounce(onChange, 800), []);
 
   const renderFilters = () => (
-    <div className=' sticky-sider top-0'>
+    <div className='sticky-sider top-0'>
       {filters.map((section) => (
-        <div key={section.type} className="mb-6">
+        <div key={section.title} className="mb-6">
           <h3 className="text-lg font-semibold mb-4">{section.title}</h3>
-          {/* {section.type === 'review' ? renderRatingGroup(section) :  */}
-          {renderCheckboxGroup(section)}
-       
+          <Radio.Group
+            className="flex flex-col space-y-2"
+            defaultValue={selectedFilter}
+            onChange={(e) => debouncedOnChange(e.target.value)}
+          >
+            {section.options.map((option) => (
+              <Radio key={option.value} value={option.value}>
+                {option.label}
+              </Radio>
+            ))}
+          </Radio.Group>
+          <button
+            className='italic text-orange-600 mt-2'
+            onClick={() => debouncedOnChange('')} // Clear filters when button is clicked
+          >
+            Clear Filters
+          </button>
         </div>
       ))}
     </div>
   );
 
-  return (
-    <>
-      {isMobile ? (
-        <div className='absolute -top-2 right-4'>
-          <Button
-            type="primary"
-            icon={<FilterOutlined />}
-            onClick={() => setVisible(true)}
-            className="mb-4 font-jost view-button ant-btn-variant-solid"
-          >
-            Filters
-          </Button>
-          <Drawer
-            title="Filters"
-            placement="right"
-            onClose={() => setVisible(false)}
-            visible={visible}
-            width={300}
-          >
-            {renderFilters()}
-          </Drawer>
-        </div>
-      ) : ( 
-        <Sider width={250} theme="light" className="p-4">          {renderFilters()}
-      </Sider>
-
-      )}
-    </>
+  return isMobile ? (
+    <div className='absolute -top-2 right-4'>
+      <Button
+        type="primary"
+        icon={<FilterOutlined />}
+        onClick={() => setVisible(true)}
+        className="mb-4 font-jost view-button ant-btn-variant-solid"
+      >
+        Filters
+      </Button>
+      <Drawer
+        title="Filters"
+        placement="right"
+        onClose={() => setVisible(false)}
+        visible={visible}
+        width={300}
+      >
+        {renderFilters()}
+      </Drawer>
+    </div>
+  ) : (
+    <Sider width={250} theme="light" className="p-4">
+      {renderFilters()}
+    </Sider>
   );
 };

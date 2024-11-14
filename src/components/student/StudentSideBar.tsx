@@ -6,7 +6,6 @@ import {
   UserOutlined,
   FolderOutlined,
   StarOutlined,
-  WalletOutlined,
   HistoryOutlined,
 } from "@ant-design/icons";
 import { useCustomNavigate } from "../../hooks/customNavigate";
@@ -51,12 +50,6 @@ const StudentMenuItems: MenuItem[] = [
     icon: <StarOutlined />,
     title: "Subscriptions",
     path: "/dashboard/student/subscriptions",
-  },
-  {
-    key: "top-up",
-    icon: <WalletOutlined />,
-    title: "Top Up",
-    path: "/dashboard/student/top-up",
   },
   {
     key: "settings",

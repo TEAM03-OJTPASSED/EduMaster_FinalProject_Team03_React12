@@ -2,12 +2,13 @@ import { Card } from "antd";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import { updatedUser } from "../../services/user.service";
-import UserProfileForm, { UserProfile } from "../../components/UserProfile";
+import UserProfileForm from "../../components/UserProfile";
+import { User } from "../../models/UserModel";
 
 const StudentProfile = () => {
   const { currentUser } = useSelector((state: RootState) => state.auth.login);
 
-  const handleSaveChanges = async (formValues: UserProfile) => {
+  const handleSaveChanges = async (formValues: User) => {
     const { video_url } = currentUser;
     const extendedFormValues = {
       ...formValues,
