@@ -106,7 +106,7 @@ const StudentOrderHistory = () => {
       dataIndex: "price",
       key: "price",
       ellipsis: true,
-
+      align: 'right' as const,
       render: (price: number) => `$${price.toFixed(2)}`,
     },
     {
