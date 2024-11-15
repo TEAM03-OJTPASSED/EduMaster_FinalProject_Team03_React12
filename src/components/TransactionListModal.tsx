@@ -13,24 +13,40 @@ const TransactionListModal: React.FC<TransactionListModalType> = ({ item }) => {
       dataIndex: "_id",
       key: "_id",
       align: "center" as const,
+      
     },
     {
       title: "Price",
       dataIndex: "price",
       key: "price",
       align: "center" as const,
+      render: (balance : number) =>{
+        return <div>
+          {`$${balance}`}
+        </div>
+      }
     },
     {
       title: "Price paid",
       dataIndex: "price_paid",
       key: "price_paid",
       align: "center" as const,
+      render: (balance : number) =>{
+        return <div>
+          {`$${balance}`}
+        </div>
+      }
     },
     {
       title: "Discount",
       dataIndex: "discount",
       key: "discount",
       align: "center" as const,
+      render: (balance : number) =>{
+        return <div>
+          {`${balance}%`}
+        </div>
+      }
     },
     {
       title: "Create at",

@@ -31,18 +31,33 @@ const AdminCompletedPayout = () => {
       dataIndex: "balance_origin",
       key: "balance_origin",
       align: "center",
+      render: (balance : number) =>{
+        return <div>
+          {`$${balance}`}
+        </div>
+      }
     },
     {
       title: "Balance Instructor Paid",
       dataIndex: "balance_instructor_paid",
       key: "balance_instructor_paid",
       align: "center",
+      render: (balance : number) =>{
+        return <div>
+          {`$${balance}`}
+        </div>
+      }
     },
     {
       title: "Balance Instructor Received",
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
       align: "center",
+      render: (balance : number) =>{
+        return <div>
+          {`$${balance}`}
+        </div>
+      }
     },
     {
       title: "Created at",
@@ -83,7 +98,7 @@ const AdminCompletedPayout = () => {
   const [currentRequestPayouts, setCurrentRequestPayouts] = useState<PageInfo>(
     {} as PageInfo
   );
-  const [searchRequestPayoutParam, setRequestPayoutParam] =
+  const [searchRequestPayoutParam, setSearchRequestPayoutParam] =
     useState<GetPayoutRequest>({
       searchCondition: {
         payout_no: "",
@@ -115,7 +130,7 @@ const AdminCompletedPayout = () => {
   const handleSearch = (values: Record<string, any>) => {
     console.log("request payout", values);
 
-    setRequestPayoutParam((prev) => ({
+    setSearchRequestPayoutParam((prev) => ({
       ...prev,
       searchCondition: {
         ...prev.searchCondition,
@@ -146,7 +161,7 @@ const AdminCompletedPayout = () => {
             pageSize: currentRequestPayouts.pageSize,
             total: currentRequestPayouts.totalItems,
             onChange: (pageNum, pageSize) => {
-              setRequestPayoutParam((prev) => ({
+              setSearchRequestPayoutParam((prev) => ({
                 ...prev,
                 pageInfo: { pageNum, pageSize },
               }));

@@ -127,6 +127,11 @@ const PendingCourseList: React.FC = () => {
       title: "Price",
       dataIndex: "price",
       key: "price",
+      render: (balance : number) =>{
+        return <div>
+          {`$${balance}`}
+        </div>
+      }
     },
     {
       title: "Discount",

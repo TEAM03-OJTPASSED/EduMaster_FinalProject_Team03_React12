@@ -32,18 +32,33 @@ const AdminRejectedPayout = () => {
       dataIndex: "balance_origin",
       key: "balance_origin",
       align: "center",
+      render: (balance : number) =>{
+        return <div>
+          {`$${balance}`}
+        </div>
+      }
     },
     {
       title: "Balance Instructor Paid",
       dataIndex: "balance_instructor_paid",
       key: "balance_instructor_paid",
       align: "center",
+      render: (balance : number) =>{
+        return <div>
+          {`$${balance}`}
+        </div>
+      }
     },
     {
       title: "Balance Instructor Received",
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
       align: "center",
+      render: (balance : number) =>{
+        return <div>
+          {`$${balance}`}
+        </div>
+      }
     },
     {
       title: "Created at",

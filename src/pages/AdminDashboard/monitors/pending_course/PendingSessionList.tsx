@@ -15,7 +15,7 @@ const PendingSessionList: React.FC<PendingSessionListProps> = ({
   course_id,
 }) => {
   const [sessionPendingList, setSessionPendingList] = useState<Session[]>([]);
-  const [currentSessionItem, setCurrentSessionItems] = useState<Session>(
+  const [currentSessionItem, setCurrentSessionItem] = useState<Session>(
     {} as Session
   );
   const [lessonVisible, setLessonVisible] = useState<boolean>(false);
@@ -44,7 +44,7 @@ const PendingSessionList: React.FC<PendingSessionListProps> = ({
   }, [sessionSearchParam, course_id]);
 
   const handleViewLesson = (record: Session) => {
-    setCurrentSessionItems(record);
+    setCurrentSessionItem(record);
     setLessonVisible(true);
   };
 
