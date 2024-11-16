@@ -1,4 +1,4 @@
-import { Table, Card, Tag, TableProps } from "antd";
+import { Table, Tag, TableProps } from "antd";
 import { LessonTypeEnum } from "../course/courseList";
 import { GetLessons, Lesson } from "../../../../models/Lesson.model";
 import { PageInfo } from "../../../../models/SearchInfo.model";
