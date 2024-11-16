@@ -36,6 +36,7 @@ const LearnCoursePage = () => {
   const [buttonText, setButtonText] = useState("");
   const [loading, setLoading] = useState(false);
   const [countdown, setCountDown] = useState(5);
+  const [sidebarWidth, setSidebarWidth] = useState("33%");
 
   const navigate = useNavigate();
   const colors = [
@@ -142,6 +143,29 @@ const LearnCoursePage = () => {
     }
   };
 
+  const handleMouseDown = () => {
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    const newWidth = (e.clientX / window.innerWidth) * 100;
+    if (newWidth >= 15 && newWidth <= 40) {
+      setSidebarWidth(`${newWidth}%`);
+    }
+  };
+
+  const handleMouseUp = () => {
+    document.removeEventListener("mousemove", handleMouseMove);
+    document.removeEventListener("mouseup", handleMouseUp);
+  };
+
+  const calculateContentWidth = () => {
+    const sidebarWidthValue = parseFloat(sidebarWidth);
+    const remainingWidth = 100 - sidebarWidthValue - 0.5; // Subtract 0.5% for the draggable divider
+    return `${remainingWidth}%`;
+  };
+
   if ((!course || !session) && returnCode !== 403) {
     return (
       <div className="fixed top-0 left-0 z-50 bg-white w-full">
@@ -205,10 +229,13 @@ const LearnCoursePage = () => {
     );
   }
   return (
-    <div className="fixed top-0 left-0 z-50 bg-white w-full h-[100vh]">
+    <div className="fixed top-0 left-0 z-50 bg-white w-full h-[100vh] no-select">
       <Navbar />
-      <div className="flex">
-        <div className="w-1/3 p-4 h-[88vh] overflow-y-scroll">
+      <div className="flex justify-between">
+        <div
+          className="p-4 h-[92vh] overflow-y-scroll custom-scrollbar"
+          style={{ width: sidebarWidth, minWidth: "20%", maxWidth: "50%" }}
+        >
           {session?.map((sessionItem, sessionIndex) => (
             <div key={sessionIndex} className="mb-4">
               <div className="group cursor-pointer rounded border border-white hover:border-orange-500 ">
@@ -220,6 +247,7 @@ const LearnCoursePage = () => {
                   }group-hover:border-orange-500 group-hover:bg-orange-200`}
                   onClick={() => toggleSession(sessionIndex)}
                 >
+                  <span>Session {sessionIndex + 1}: </span>
                   {sessionItem.name}
                 </h3>
                 <div
@@ -273,7 +301,16 @@ const LearnCoursePage = () => {
             </div>
           ))}
         </div>
-        <div className="w-2/3 h-[88vh] overflow-y-scroll">
+        <div
+          className="group flex h-[92vh] items-center justify-center w-2 bg-orange-100"
+          onMouseDown={handleMouseDown}
+        >
+          <div className="group-hover:block hidden w-[1px] bg-orange-500 h-[85vh]"></div>
+        </div>
+        <div
+          className="flex-grow h-[92vh] overflow-y-scroll"
+          style={{ width: calculateContentWidth() }}
+        >
           {selectedLesson && (
             <div className="mt-4 p-4 rounded">
               <h2 className="text-xl font-bold">{selectedLesson.name}</h2>
