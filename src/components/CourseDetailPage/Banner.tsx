@@ -7,14 +7,30 @@ type Props = {
   course: Course;
   isPurchased: boolean;
   id: string;
+  completed_lesson: string[];
 };
 
 const currentUser = localStorage.getItem("user");
 
-export const Banner = ({ id, course, isPurchased }: Props) => {
+export const Banner = ({
+  id,
+  course,
+  isPurchased,
+  completed_lesson,
+}: Props) => {
   const totalLessons = course.session_list.reduce((sum, session) => {
     return sum + session.lesson_list.length;
   }, 0);
+
+  const completedLessonCount = course.session_list.reduce((sum, session) => {
+    return (
+      sum +
+      session.lesson_list.filter((lesson) =>
+        completed_lesson.includes(lesson._id)
+      ).length
+    );
+  }, 0);
+  const progressPercentage = (completedLessonCount / totalLessons) * 100;
 
   const navigate = useCustomNavigate();
 
@@ -54,14 +70,28 @@ export const Banner = ({ id, course, isPurchased }: Props) => {
             </span>
           </div>
           {isPurchased ? (
-            <div className="flex items-baseline gap-4">
+            <div className="flex gap-4 w-full">
               <div
                 className="bg-orange-500 text-white text-2xl font-semibold px-8 py-4 rounded cursor-pointer"
                 onClick={() => handleLearn(course)}
               >
                 Learn Now
               </div>
-              <div className="font-light">Already enrolled</div>
+              <div className="flex-grow">
+                <div className="font-light">Already enrolled</div>
+                <div className="flex justify-between items-baseline">
+                  <div>Your Progress </div>
+                  <div className="mt-2 text-sm">
+                    {completedLessonCount} of {totalLessons} lessons completed ({progressPercentage.toFixed(0 )}%)
+                  </div>
+                </div>
+                <div className="bg-gray-200 h-3 w-full rounded">
+                  <div
+                    className="bg-orange-400 h-3 rounded"
+                    style={{ width: `${progressPercentage}%` }}
+                  ></div>
+                </div>
+              </div>
             </div>
           ) : (
             <div className="flex">

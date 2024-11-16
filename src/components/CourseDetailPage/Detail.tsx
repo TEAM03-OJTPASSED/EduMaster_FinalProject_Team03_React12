@@ -43,6 +43,21 @@ export const Detail = ({ isEnrolled, course, session }: Props) => {
             className=""
             dangerouslySetInnerHTML={{ __html: course.content }}
           />
+          {course.tag.length > 0 && (
+            <div>
+              <div className="text-xl font-bold pb-2 pt-4">Tags</div>
+              <div className="flex flex-wrap gap-2 text-sm">
+                {course.tag.map((tag, index) => (
+                  <div
+                    key={index}
+                    className=" bg-orange-200 text-neutral-800 px-2 py-1 rounded"
+                  >
+                    {tag}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
         <div>
           <div className="text-xl font-bold pb-2 pt-4">Curriculum</div>
@@ -98,6 +113,24 @@ export const Detail = ({ isEnrolled, course, session }: Props) => {
                           __html: session.description,
                         }}
                       />
+                      {session.tag.length > 0 && (
+                        <div>
+                          <div className="flex justify-between cursor-pointer font-semibold my-2">
+                            Tags
+                          </div>
+                          <div className="flex text-xs flex-wrap gap-2">
+                            {session.tag.map((tag: string, index: number) => (
+                              <div
+                                key={index}
+                                className=" bg-orange-200 text-neutral-800 px-2 py-1 rounded"
+                              >
+                                {tag}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
                       <div
                         className="mt-2 cursor-pointer text-orange-500 hover:underline"
                         onClick={() => toggleLesson(sessionIndex)}
