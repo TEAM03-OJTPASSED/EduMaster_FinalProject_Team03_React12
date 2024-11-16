@@ -37,7 +37,7 @@ const SubscriptionService = {
         pageSize:50,
       },
     }
-    return postRequest(SUBSCRIPTION_API.GET_SUBSCRIPTIONS, params);
+    return postRequest(SUBSCRIPTION_API.GET_SUBSCRIPTIONS, params, false);
   },
 };
 
