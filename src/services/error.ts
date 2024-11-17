@@ -22,9 +22,6 @@ const handleError = (error: AxiosError) => {
       }
       if (status === 401) {
         console.log("401 - Lỗi", error);
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        window.location.href = "/login"
         handleNotify('Error', errorData.message || errorData.Message || 'Unauthorized', 'error');
       }
       if (status === 403) {
