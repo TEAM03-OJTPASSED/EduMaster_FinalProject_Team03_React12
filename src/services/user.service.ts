@@ -29,7 +29,7 @@ export const UserService = {
     return postRequest(USER_API.GET_USERS, params);
   },
   getUser(userId: string): Promise<ApiResponse<APIResponseData<User[]>>> {
-    return getRequest(USER_API.GET_USER(userId));
+    return getRequest(USER_API.GET_USER(userId),false);
   },
   createUser(param: User): Promise<ApiResponse<User>> {
     return postRequest<User>(USER_API.CREATE_USER, param)

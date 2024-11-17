@@ -51,7 +51,7 @@ const ProfilePage: React.FC = () => {
   const [totalMinutes, setTotalMinutes] = useState(0);
   const [loading, setLoading] = useState(true);
   const [coursesLoading, setCoursesLoading] = useState(true);
-  const { currentUser } = useSelector((state: RootState) => state.auth.login);
+  const { currentUser, token } = useSelector((state: RootState) => state.auth.login);
   const [isSubscribed, setIsSubscribed] = useState<boolean | undefined>();
 
 
@@ -78,14 +78,19 @@ const ProfilePage: React.FC = () => {
   }, [id]);
 
   useEffect(() => {
-    if (userData.name && currentUser === undefined) {
+    if (userData.name && currentUser !== undefined ) {
       checkSubscribed();
-    } else {
+    } else if (currentUser === undefined && token === undefined) {
       setIsSubscribed(false)
     }
-  },[userData])
+  },[userData, currentUser])
 
   const checkSubscribed = async () => {
+    if (token === null) {
+      setIsSubscribed(false);
+      return;
+    } 
+
     const response = await SubscriptionService.checkSubscription("");
     if (response.data?.pageData) {
       setIsSubscribed(Boolean(response.data.pageData.find(object => object.instructor_name === userData.name)));
