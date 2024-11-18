@@ -43,6 +43,7 @@ const CourseDetailPage = () => {
         const data = await fetchCourse(courseId);
         if (data) {
           setCourse(data.data);
+          console.log(data.data);
           setSession(data.data.session_list);
           sessionStorage.setItem("sessionIndex", "0");
           sessionStorage.setItem("lessonIndex", "0");
