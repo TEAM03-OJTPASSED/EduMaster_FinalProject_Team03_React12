@@ -16,13 +16,12 @@ import { API_UPLOAD_FILE } from "../constants/api/upload";
 import { User } from "../models/UserModel";
 import ReactPlayer from "react-player";
 import { handleNotify } from "../utils/handleNotify";
+import { uploadPlugin } from "./UploadImageInCKE";
 
 interface UserProfileFormProps {
   currentUser: User;
   onSave: (values: User) => void;
 }
-
-
 
 const UserProfileForm: React.FC<UserProfileFormProps> = ({
   currentUser,
@@ -55,7 +54,7 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
         bank_account_name: currentUser.bank_account_name || "",
         video_url: currentUser.video_url || "",
       });
-      console.log(currentUser.video_url)
+      console.log(currentUser.video_url);
 
       setImageFileList(
         currentUser.avatar_url
@@ -112,6 +111,12 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
       "video_url",
     ]);
 
+    if (!formValues.avatar_url && currentUser.avatar_url) {
+      formValues.avatar_url = currentUser.avatar_url;
+    }
+    if (!formValues.video_url && currentUser.video_url) {
+      formValues.video_url = currentUser.video_url;
+    }
     console.log("form values:", formValues);
     onSave(formValues);
   };
@@ -161,11 +166,20 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
                   fileList={videoFileList}
                   maxCount={1}
                   beforeUpload={(file) => {
-                    const isSupportedFormat = ["video/mp4", "video/webm", "video/ogg", "video/mov"].includes(file.type);
+                    const isSupportedFormat = [
+                      "video/mp4",
+                      "video/webm",
+                      "video/ogg",
+                      "video/mov",
+                    ].includes(file.type);
                     if (!isSupportedFormat) {
-                      handleNotify("File format not supported","You can only upload MP4, WebM, MOV or OGG video files!", 'error');
+                      handleNotify(
+                        "File format not supported",
+                        "You can only upload MP4, WebM, MOV or OGG video files!",
+                        "error"
+                      );
                     }
-                    return isSupportedFormat || Upload.LIST_IGNORE; 
+                    return isSupportedFormat || Upload.LIST_IGNORE;
                   }}
                 >
                   {videoFileList.length < 1 && (
@@ -208,7 +222,7 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
       </Row>
 
       <Row gutter={16}>
-        <Col span={12}>
+        <Col span={8}>
           <Form.Item
             label="Full Name"
             name="name"
@@ -217,15 +231,52 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
             <Input placeholder="Full Name" />
           </Form.Item>
         </Col>
-        <Col span={12}>
+        <Col span={8}>
           <Form.Item label="Email" name="email">
             <Input placeholder="Email" />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item
+            label="Phone Number"
+            name="phone_number"
+            rules={[
+              {
+                pattern: /^\d{10}$/,
+                message: "Phone number must be contain 10 digits",
+              },
+            ]}
+          >
+            <Input
+              placeholder="Phone Number"
+              onKeyPress={(e) => {
+                if (!/[0-9]/.test(e.key)) {
+                  e.preventDefault(); // Prevent invalid characters
+                }
+              }}
+              onPaste={(e) => {
+                const pasteData = e.clipboardData.getData("text");
+                if (!/^\d+$/.test(pasteData)) {
+                  e.preventDefault(); // Block pasting invalid characters
+                }
+              }}
+            />
           </Form.Item>
         </Col>
       </Row>
 
       <Row gutter={16}>
-        <Col span={12}>
+        <Col span={8}>
+          <Form.Item label="Bank Name" name="bank_name">
+            <Input placeholder="Bank Name" />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="Bank Account Name" name="bank_account_name">
+            <Input placeholder="Bank Account Name" />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
           <Form.Item
             label="Bank Account"
             name="bank_account_no"
@@ -239,30 +290,6 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
             <Input placeholder="Bank Account" />
           </Form.Item>
         </Col>
-        <Col span={12}>
-          <Form.Item
-            label="Phone Number"
-            name="phone_number"
-            rules={[
-              { required: true, message: "Please enter your phone number" },
-            ]}
-          >
-            <Input placeholder="Phone Number" />
-          </Form.Item>
-        </Col>
-      </Row>
-
-      <Row gutter={16}>
-        <Col span={12}>
-          <Form.Item label="Bank Name" name="bank_name">
-            <Input placeholder="Bank Name" />
-          </Form.Item>
-        </Col>
-        <Col span={12}>
-          <Form.Item label="Bank Account Name" name="bank_account_name">
-            <Input placeholder="Bank Account Name" />
-          </Form.Item>
-        </Col>
       </Row>
 
       <Form.Item label="Description" name="description">
@@ -273,7 +300,10 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
             const data = editor.getData();
             form.setFieldsValue({ description: data });
           }}
-          config={{ placeholder: "Enter your description..." }}
+          config={{ 
+            placeholder: "Enter your description...",
+            extraPlugins: [uploadPlugin]
+          }}
         />
       </Form.Item>
 
