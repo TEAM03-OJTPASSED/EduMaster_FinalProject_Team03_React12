@@ -4,6 +4,7 @@ import { LatLngExpression } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Input, Button, Form } from 'antd';
 import DynamicBreadcrumb from "../components/Breadcrumb/Breadcrumb";
+import { sendEmail } from '../services/apiSendMail';
 
 const { TextArea } = Input;
 
@@ -12,9 +13,9 @@ const ContactPage: React.FC = () => {
 
   const [form] = Form.useForm();
 
-  // const onFinish = (values: { name: string; email: string; website?: string; message: string }) => {
-  //   sendEmail(values);
-  // };
+  const onFinish = (values: { name: string; email: string; website?: string; message: string }) => {
+    sendEmail(values);
+  };
 
   return (
     <div className='mt-2'>
