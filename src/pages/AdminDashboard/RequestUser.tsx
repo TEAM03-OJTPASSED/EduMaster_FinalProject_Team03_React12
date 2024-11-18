@@ -14,13 +14,13 @@ import {
 } from "antd";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 
-import { previewInstructor, UserService } from "../../services/user.service";
+import { previewInstructor } from "../../services/user.service";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store/store";
 import { User } from "../../models/UserModel";
 import { UserSearchParams } from "../../models/SearchInfo.model";
 import GlobalSearchUnit from "../../components/GlobalSearchUnit";
-import dayjs from "dayjs";
+import { getUsersRequestData } from "../../redux/slices/userSlice";
 const initializeSearchParam: UserSearchParams = {
   searchCondition: {
     keyword: "",
@@ -36,42 +36,46 @@ const RequestUser = () => {
   const { loading } = useSelector(
     (state: RootState) => state.users.previewProfile
   );
+ 
+  const {listRequest} = useSelector(
+    (state: RootState) => state.users.requestedUser
+  );
+  console.log("request user" ,listRequest);
+  
   const [reasonVisible, setReasonVisible] = useState(false);
-  const [users, setUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [reason, setReason] = useState("");
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [total, setTotal] = useState(0);
   const [searchParams, setSearchParams] = useState<UserSearchParams>(
     initializeSearchParam
   );
 
-  // check submitted
-  // const [isPreviewSubmitted, setIsPreviewSubmitted] = useState(false);
+  useEffect(()=>{
+    dispatch(getUsersRequestData(searchParams))
+  },[searchParams])
 
-  const fetchUsers = async () => {
-    const response = await UserService.getUsers(searchParams);
-    const responseData = response.data?.pageData;
 
-    const flattenedUsers: User[] = Array.isArray(responseData)
-      ? responseData.flat()
-      : [];
+  // const fetchUsers = async () => {
+  //   const response = await UserService.getUsers(searchParams);
+  //   const responseData = response.data?.pageData;
 
-    setUsers(
-      flattenedUsers
-        .slice()
-        .sort(
-          (a, b) =>
-            dayjs(b.updated_at).valueOf() - dayjs(a.updated_at).valueOf()
-        )
-    );
-    setTotal(response.data?.pageInfo?.totalItems ?? 0);
-  };
+  //   const flattenedUsers: User[] = Array.isArray(responseData)
+  //     ? responseData.flat()
+  //     : [];
 
-  useEffect(() => {
-    fetchUsers();
-  }, [searchParams]);
+  //   setUsers(
+  //     flattenedUsers
+  //       .slice()
+  //       .sort(
+  //         (a, b) =>
+  //           dayjs(b.updated_at).valueOf() - dayjs(a.updated_at).valueOf()
+  //       )
+  //   );
+  //   setTotal(response.data?.pageInfo?.totalItems ?? 0);
+  // };
+
+
 
   const handleTableChange = (pagination: any) => {
     setPageNum(pagination.current);
@@ -89,9 +93,10 @@ const RequestUser = () => {
       status,
       comment: reason,
     };
-    await previewInstructor(formPreview, dispatch);
-    await fetchUsers();
-    message.success("Submit preview successfully");
+    await previewInstructor(formPreview, dispatch, listRequest.pageData as User[]);
+
+    
+    
     setReasonVisible(false);
     // fetchUsers()
     console.log(formPreview);
@@ -139,16 +144,6 @@ const RequestUser = () => {
       key: "phone_number",
       align: "center",
     },
-    // {
-    //   title: "Log",
-    //   key: "Log",
-    //   align: "center",
-    //   render: (record :User)=>{
-    //     return <div>
-    //       {`Have updated at ${dayjs(record.updated_at).format("DD/MM/YYYY")}`}
-    //     </div>
-    //   }
-    // },
     {
       title: "Actions",
       align: "center",
@@ -193,11 +188,11 @@ const RequestUser = () => {
           onSubmit={handleSearch}
         />
         <Table
-          dataSource={users}
+          dataSource={listRequest.pageData}
           pagination={{
             current: pageNum,
             pageSize,
-            total,
+            total:listRequest.pageInfo?.totalItems,
             showSizeChanger: true,
           }}
           columns={columns}

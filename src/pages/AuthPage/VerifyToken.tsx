@@ -63,6 +63,7 @@ const VerifySuccessToken = () => {
               loop
               autoplay
               className="h-60 w-full mb-6"
+              renderer="canvas"
             />
             <h2 className="text-4xl font-medium my-5 text-center">
               Verify{" "}

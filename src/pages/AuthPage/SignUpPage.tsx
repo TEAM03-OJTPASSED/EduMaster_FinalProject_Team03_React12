@@ -20,9 +20,10 @@ import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // import { loginWithGoogle } from "../../redux/slices/authSlices";
 import { register } from "../../services/auth.service";
-import { RootState } from "../../redux/store/store";
+import { AppDispatch, RootState } from "../../redux/store/store";
 import { uploadCustomRequest } from "../../utils/uploadCustomReuquest";
 import { beforeUpload } from "../../utils/handleBeforUpload";
+import { useCustomNavigate } from "../../hooks/customNavigate";
 
 export type RegisterType = {
   name: string;
@@ -40,14 +41,19 @@ export type RegisterType = {
 };
 
 const SignUppage = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [selectedRole, setSelectedRole] = useState<string>("student");
-  const { loading } = useSelector((state: RootState) => state.users.register);
+  const { loading,success } = useSelector(
+    (state: RootState) => state.users.register
+  );
+  console.log("register success",success);
+  
   // const [imageUrl, setImageUrl] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [fileListImage, setFileListImage] = useState<UploadFile[]>([]);
   const [fileListVideo, setFileListVideo] = useState<UploadFile[]>([]);
   const [form] = Form.useForm<RegisterType>();
+  const navigate = useCustomNavigate();
 
   const handleSelectChange = (e: RadioChangeEvent) => {
     setSelectedRole(e.target.value);
@@ -67,12 +73,12 @@ const SignUppage = () => {
 
   const onFinish: FormProps["onFinish"] = (values) => {
     const { confirmPassword, ...others } = values;
-    register(others, dispatch);
+    register(others, dispatch,navigate);
+
   };
   const handleVideoChange: UploadProps["onChange"] = ({
     fileList: newFileList,
   }) => {
-
     const filteredFileList = newFileList.filter(
       (file) => file.type === "video/mp4"
     );

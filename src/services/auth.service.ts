@@ -22,7 +22,8 @@ import { handleNotify } from "../utils/handleNotify";
 
 export const register = async (
   formData: RegisterType,
-  dispatch: AppDispatch
+  dispatch: AppDispatch,
+  navigate: (path: string, newTab?: boolean)=> void
 ) => {
   dispatch(registerPending());
   try {
@@ -30,6 +31,7 @@ export const register = async (
     console.log("res", res.data);
     dispatch(registerFulfilled());
     handleNotify("success", "Please check your email")
+    navigate("/login")
   } catch (error) {
     console.log(error);
     dispatch(registerRejected());
