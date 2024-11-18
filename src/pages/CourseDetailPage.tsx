@@ -30,7 +30,7 @@ const CourseDetailPage = () => {
   // Get the course ID from the URL
   const { id } = useParams<{ id: string }>();
   const courseId = id ? id.toString() : "";
-
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
   const [course, setCourse] = useState<Course | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -43,6 +43,7 @@ const CourseDetailPage = () => {
         const data = await fetchCourse(courseId);
         if (data) {
           setCourse(data.data);
+          console.log(data.data);
           setSession(data.data.session_list);
           sessionStorage.setItem("sessionIndex", "0");
           sessionStorage.setItem("lessonIndex", "0");
@@ -69,7 +70,7 @@ const CourseDetailPage = () => {
     return (
       <div className="relative">
         <div className="inset-x-0 flex flex-col">
-          <Banner course={course} isPurchased={course.is_purchased} id={id} />
+          <Banner course={course} isPurchased={course.is_purchased} id={id} completed_lesson={user.completed_lesson}/>
         </div>
         <Detail
           isEnrolled={true}

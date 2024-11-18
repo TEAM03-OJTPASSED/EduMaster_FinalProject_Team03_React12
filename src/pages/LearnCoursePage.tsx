@@ -4,10 +4,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Course } from "../models/Course.model";
 import { Session } from "../models/Session.model";
 import { Lesson } from "../models/Lesson.model";
-import ReactPlayer from "react-player";
-import { MdOutlinePlayCircle, MdOutlineTaskAlt } from "react-icons/md";
-import { FiBookOpen } from "react-icons/fi";
 import Navbar from "../components/Navbar";
+import Skeleton from "../components/LearningPage/Skeleton";
+import Sidebar from "../components/LearningPage/Sidebar";
+import MainComponent from "../components/LearningPage/MainComponent";
 
 const token = localStorage.getItem("token");
 
@@ -36,6 +36,7 @@ const LearnCoursePage = () => {
   const [buttonText, setButtonText] = useState("");
   const [loading, setLoading] = useState(false);
   const [countdown, setCountDown] = useState(5);
+  const [sidebarWidth, setSidebarWidth] = useState("33%");
 
   const navigate = useNavigate();
   const colors = [
@@ -104,80 +105,101 @@ const LearnCoursePage = () => {
   };
 
   const handleClick = async (lesson: Lesson) => {
-    setLoading(true);
-    try {
-      const endpoint = lesson.is_completed
-        ? `https://edumaster-backend-dev.vercel.app/api/users/remove-completed-lesson/`
-        : `https://edumaster-backend-dev.vercel.app/api/users/completed-lesson/`;
-      const response = await axios.post(
-        `${endpoint}`,
-        { lessonId: lesson._id },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+    // Handle next lesson selection
+    if (buttonText === "Go To Next Item") {
+      const currentSessionIndex = session?.findIndex((s) =>
+        s.lesson_list.some((l) => l._id === lesson._id)
       );
-      if (response.data.success) {
-        setButtonText(
-          lesson.is_completed ? "Mark as Completed" : "Go To Next Item"
-        );
-        // Update the lesson's is_completed status in the state
-        setSession((prevSessions: Session[] | null) => {
-          if (!prevSessions) return null;
-          return prevSessions?.map((sessionItem: Session) => ({
-            ...sessionItem,
-            lesson_list: sessionItem.lesson_list.map((lessonItem: Lesson) =>
-              lessonItem._id === lesson._id
-                ? { ...lessonItem, is_completed: !lesson.is_completed }
-                : lessonItem
-            ),
-          }));
-        });
+      const currentLessonIndex = session?.[
+        currentSessionIndex!
+      ].lesson_list.findIndex((l) => l._id === lesson._id);
+
+      if (
+        currentSessionIndex !== undefined &&
+        currentLessonIndex !== undefined
+      ) {
+        // Check if it's the last lesson in the current session
+        if (
+          currentLessonIndex <
+          session![currentSessionIndex].lesson_list.length - 1
+        ) {
+          // Select the next lesson in the current session
+          selectLesson(
+            session![currentSessionIndex].lesson_list[currentLessonIndex + 1]
+          );
+        } else if (currentSessionIndex < session!.length - 1) {
+          // Select the first lesson of the next session
+          toggleSession(currentSessionIndex);
+          toggleSession(currentSessionIndex + 1);
+          selectLesson(session![currentSessionIndex + 1].lesson_list[0]);
+        } else {
+          // Last lesson of the last session
+          setButtonText("Completed");
+        }
       }
-    } catch (error) {
-      console.error("Error marking lesson as completed:", error);
-    } finally {
-      setLoading(false);
+    } else
+      try {
+        setLoading(true);
+        const endpoint =
+          "https://edumaster-backend-dev.vercel.app/api/users/completed-lesson/";
+        const response = await axios.post(
+          `${endpoint}`,
+          { lessonId: lesson._id },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (response.data.success) {
+          setButtonText(
+            lesson.is_completed ? "Mark as Completed" : "Go To Next Item"
+          );
+          setSession((prevSessions: Session[] | null) => {
+            if (!prevSessions) return null;
+            return prevSessions?.map((sessionItem: Session) => ({
+              ...sessionItem,
+              lesson_list: sessionItem.lesson_list.map((lessonItem: Lesson) =>
+                lessonItem._id === lesson._id
+                  ? { ...lessonItem, is_completed: true }
+                  : lessonItem
+              ),
+            }));
+          });
+
+          // Update the selectedLesson state directly
+          setSelectedLesson((prevLesson) =>
+            prevLesson
+              ? { ...prevLesson, is_completed: !prevLesson.is_completed }
+              : null
+          );
+        }
+      } catch (error) {
+        console.error("Error marking lesson as completed:", error);
+      } finally {
+        setLoading(false);
+      }
+  };
+
+  const handleMouseDown = () => {
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    const newWidth = (e.clientX / window.innerWidth) * 100;
+    if (newWidth >= 15 && newWidth <= 40) {
+      setSidebarWidth(`${newWidth}%`);
     }
   };
 
+  const handleMouseUp = () => {
+    document.removeEventListener("mousemove", handleMouseMove);
+    document.removeEventListener("mouseup", handleMouseUp);
+  };
+
   if ((!course || !session) && returnCode !== 403) {
-    return (
-      <div className="fixed top-0 left-0 z-50 bg-white w-full">
-        <Navbar />
-        <div className="flex">
-          <div className="w-1/3 h-[88vh] animate-pulse p-4 flex flex-col gap-3">
-            <div className="h-8 bg-gradient rounded w-full mb-4"></div>
-            <div className="h-6 bg-gray-300 rounded w-3/4 mx-4"></div>
-            <div className="h-6 bg-gray-300 rounded w-2/4 mx-4"></div>
-            <div className="h-6 bg-gray-300 rounded w-3/4 mx-4"></div>
-            <div className="h-6 bg-gray-300 rounded w-3/5 mx-4"></div>
-            <div className="h-8 bg-gradient rounded w-4/5 mb-4"></div>
-            <div className="h-6 bg-gray-300 rounded w1/2 mx-4"></div>
-            <div className="h-6 bg-gray-300 rounded w-2/4 mx-4"></div>
-            <div className="h-6 bg-gray-300 rounded w-3/5 mx-4"></div>
-            <div className="h-6 bg-gray-300 rounded w-4/5 mx-4"></div>
-            <div className="h-8 bg-gradient rounded w-full mb-4"></div>
-            <div className="h-6 bg-gray-300 rounded w-3/4 mx-4"></div>
-            <div className="h-6 bg-gray-300 rounded w-2/4 mx-4"></div>
-            <div className="h-6 bg-gray-300 rounded w-3/4 mx-4"></div>
-            <div className="h-6 bg-gray-300 rounded w-3/5 mx-4"></div>
-          </div>
-          <div className="w-2/3 h-[88vh] flex flex-col animate-pulse p-4 gap-2">
-            <div className="w-full h-[50vh] bg-gray-300 rounded"></div>
-            <div className="h-4 bg-gray-300 rounded w-full"></div>
-            <div className="h-4 bg-gray-300 rounded w-full"></div>
-            <div className="h-4 bg-gray-300 rounded w-full"></div>
-            <div className="h-4 bg-gray-300 rounded w-3/5"></div>
-            <div className="h-4 bg-gray-300 rounded w-full"></div>
-            <div className="h-4 bg-gray-300 rounded w-full"></div>
-            <div className="h-4 bg-gray-300 rounded w-2/5"></div>
-            <div className="h-8 bg-orange-500 rounded w-1/6"></div>
-          </div>
-        </div>
-      </div>
-    );
+    return <Skeleton />;
   }
 
   if (returnCode === 403) {
@@ -205,122 +227,30 @@ const LearnCoursePage = () => {
     );
   }
   return (
-    <div className="fixed top-0 left-0 z-50 bg-white w-full h-[100vh]">
+    <div className="fixed top-0 left-0 z-50 bg-white w-full h-[100vh] no-select">
       <Navbar />
-      <div className="flex">
-        <div className="w-1/3 p-4 h-[88vh] overflow-y-scroll">
-          {session?.map((sessionItem, sessionIndex) => (
-            <div key={sessionIndex} className="mb-4">
-              <div className="group cursor-pointer rounded border border-white hover:border-orange-500 ">
-                <h3
-                  className={`hover:group text-lg font-semibold p-2 border-transition ${
-                    expandedSessions[sessionIndex]
-                      ? "border-b-orange-500 border-orange-500"
-                      : "border-b-orange-500 border-transparent"
-                  }group-hover:border-orange-500 group-hover:bg-orange-200`}
-                  onClick={() => toggleSession(sessionIndex)}
-                >
-                  {sessionItem.name}
-                </h3>
-                <div
-                  className={`lesson-list transition-max-height duration-500 ease-in-out overflow-hidden ${
-                    expandedSessions[sessionIndex] ? "max-h-96" : "max-h-0"
-                  }`}
-                >
-                  {sessionItem.lesson_list &&
-                    sessionItem.lesson_list.map((lessonItem) => (
-                      <div
-                        key={lessonItem._id}
-                        onClick={() => selectLesson(lessonItem)}
-                        className={`pl-2 py-2 rounded cursor-pointer ${
-                          selectedLesson &&
-                          selectedLesson._id === lessonItem._id
-                            ? "bg-orange-500 text-white"
-                            : ""
-                        }`}
-                      >
-                        <div>
-                          <div className="flex gap-2">
-                            <div className="w-1/10">
-                              {lessonItem.is_completed ? (
-                                <MdOutlineTaskAlt className="w-6 h-6 text-green-500" />
-                              ) : (
-                                <div>
-                                  {lessonItem.lesson_type === "video" && (
-                                    <MdOutlinePlayCircle className="w-6 h-6" />
-                                  )}
-                                  {lessonItem.lesson_type === "reading" && (
-                                    <FiBookOpen className="w-6 h-6" />
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                            <div className="font-semibold">
-                              {lessonItem.name}
-                            </div>
-                          </div>
-                          <span className="text-sm">
-                            {lessonItem.lesson_type.charAt(0).toUpperCase() +
-                              lessonItem.lesson_type.slice(1)}
-                            <span className="px-2">•</span>
-                            {lessonItem.full_time} min
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              </div>
-            </div>
-          ))}
+      <div className="flex justify-between">
+        <Sidebar
+          sidebarWidth={sidebarWidth}
+          sessions={session}
+          expandedSessions={expandedSessions}
+          selectedLesson={selectedLesson}
+          toggleSession={toggleSession}
+          selectLesson={selectLesson}
+        />
+        <div
+          className="group flex h-[92vh] items-center justify-center w-2 bg-orange-100"
+          onMouseDown={handleMouseDown}
+        >
+          <div className="group-hover:block hidden w-[1px] bg-orange-500 h-[85vh]"></div>
         </div>
-        <div className="w-2/3 h-[88vh] overflow-y-scroll">
-          {selectedLesson && (
-            <div className="mt-4 p-4 rounded">
-              <h2 className="text-xl font-bold">{selectedLesson.name}</h2>
-              <div className="pt-2 rounded">
-                {selectedLesson.lesson_type === "video" ? (
-                  (console.log("Selected Lesson: ", selectedLesson),
-                  (
-                    <div className="w-full">
-                      <ReactPlayer
-                        width="100%"
-                        height="65vh"
-                        url={selectedLesson.video_url}
-                        controls
-                      />
-                    </div>
-                  ))
-                ) : selectedLesson.lesson_type === "assignment" ? (
-                  <div className="w-full">
-                    <h2>Assignment</h2>
-                    <p>{selectedLesson.assignment}</p>
-                  </div>
-                ) : (
-                  <div
-                    className="w-full"
-                    dangerouslySetInnerHTML={{
-                      __html: selectedLesson.description,
-                    }}
-                  />
-                )}
-              </div>
-              <div className="flex items-baseline gap-4">
-                <button
-                  onClick={() => handleClick(selectedLesson)}
-                  className="mt-4 px-4 py-2 font-bold bg-orange-500 text-white rounded"
-                  disabled={loading}
-                >
-                  {loading ? "Loading..." : buttonText}
-                </button>
-                {selectedLesson.is_completed && (
-                  <div className="text-orange-500 font-bold text-lg">
-                    ✔ Completed
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
+        <MainComponent
+          remainingWidth={`calc(${100 - parseInt(sidebarWidth)}% - 2px)`}
+          selectedLesson={selectedLesson}
+          handleClick={handleClick}
+          loading={loading}
+          buttonText={buttonText}
+        />
       </div>
     </div>
   );
