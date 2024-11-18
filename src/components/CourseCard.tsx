@@ -7,6 +7,7 @@ import { TiUserOutline } from "react-icons/ti";
 import { Course } from "../models/Course.model";
 import { FaStar } from "react-icons/fa6";
 import { useCustomNavigate } from "../hooks/customNavigate";
+import { moneyFormatter } from "../utils/moneyFormatter";
 
 const CourseCard: React.FC<{
   course: Course;
@@ -16,7 +17,15 @@ const CourseCard: React.FC<{
 }> = ({ course, viewMode, index, onAddCartClick }) => {
   const [isMdScreen, setIsMdScreen] = useState(false);
   const [isInCart, setIsInCart] = useState(course.is_in_cart);
+  const [loading, setLoading] = useState(false);
   const navigate = useCustomNavigate();
+
+  const handleAddCart = async () => { 
+    setLoading(true);
+    await onAddCartClick(course);
+    setLoading(false);
+    setIsInCart(true);
+  }
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 992px)");
@@ -29,7 +38,11 @@ const CourseCard: React.FC<{
 
   return (
     <div className="group relative">
-      <a href={`/course/${course._id}`}>
+      <a href={`/course/${course._id}`} 
+      onClick={(e) => {
+        e.preventDefault();
+        navigate(`/course/${course._id}`);
+      }}>
         <Card
           hoverable
           styles={{
@@ -94,7 +107,7 @@ const CourseCard: React.FC<{
             <div className="flex justify-between items-center">
               <span className="text-lg font-bold text-orange-500">
                 {typeof course.price === "number"
-                  ? `$${course.price.toFixed(0)}`
+                  ? moneyFormatter(course.price)
                   : course.price}
               </span>
               <Button type="link" className="text-blue-600 hover:text-blue-800">
@@ -137,11 +150,12 @@ const CourseCard: React.FC<{
             </ul>
             {!isInCart &&
               <Button
+                loading={loading}
                 className="font-jost w-full bg-primary text-primary-foreground hover:bg-primary/90 flex view-button ant-btn-variant-solid"
                 onClick={(e) => {
                   e.preventDefault();
-                  onAddCartClick(course);
-                  setIsInCart(true);
+                  e.stopPropagation();
+                  handleAddCart()
                 }}
               >
                 <FaShoppingCart className="text-white" size={18} /> Add to cart

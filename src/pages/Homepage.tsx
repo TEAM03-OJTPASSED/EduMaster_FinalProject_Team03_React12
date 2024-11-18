@@ -164,9 +164,8 @@ const HomePage = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const onAddCart = async (course: Course) => {
-    await dispatch(
-      addToCart({ course, userRole: currentUser?.role, navigate })
-    );
+    await dispatch(addToCart({ course, userRole: currentUser?.role, navigate }));
+    return true
   };
 
   return (

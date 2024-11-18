@@ -1,21 +1,34 @@
+import { Dispatch } from "redux";
 import { CART_API } from "../constants/api/cart";
 import { ApiResponse, APIResponseData } from "../models/ApiReponse.model";
 import {
   Cart,
+  CartStatusEnum,
   CartStatusUpdate,
   SearchCartByStatus,
 } from "../models/Cart.model";
 import { PurchaseSearchCondition } from "../models/SearchInfo.model";
+import { updateCartCount } from "../redux/slices/cartSlice";
 import { deleteRequest, postRequest, putRequest } from "./httpsMethod";
+
 
 const CartService = {
   createCart(courseId: string): Promise<ApiResponse> {
     return postRequest(CART_API.CREATE_CART, { course_id: courseId }, false);
   },
-  getCartsByStatus(
-    params: SearchCartByStatus
+  async getCartsByStatus(
+    params: SearchCartByStatus,
+    dispatch?: Dispatch
   ): Promise<ApiResponse<APIResponseData<Cart>>> {
-    return postRequest(CART_API.SEARCH_CART, params);
+    const response: ApiResponse<APIResponseData<Cart>> = await postRequest(CART_API.SEARCH_CART, params);
+  
+    // Update cart count in Redux state if status is NEW
+    if (params.searchCondition.status === CartStatusEnum.NEW && dispatch) {
+      const cartCount = response.data?.pageData?.length || 0;
+      dispatch((updateCartCount(cartCount)))
+      console.log('somethign')
+    }
+    return response;
   },
   getCartsWithPurchase(
     params: PurchaseSearchCondition
@@ -27,8 +40,9 @@ const CartService = {
   ): Promise<ApiResponse<APIResponseData<Cart>>> {
     return postRequest(CART_API.SEARCH_CART, params, false);
   },
-  updateStatusCart(params: CartStatusUpdate): Promise<ApiResponse> {
-    return putRequest(CART_API.UPDATE_CART_STATUS, params);
+  updateStatusCart(params: CartStatusUpdate, isLoad?: boolean): Promise<ApiResponse> {
+    if (isLoad) return putRequest(CART_API.UPDATE_CART_STATUS, params);
+    return putRequest(CART_API.UPDATE_CART_STATUS, params, false);
   },
   deleteCart(cartId: string): Promise<ApiResponse> {
     return deleteRequest(CART_API.DELETE_CART(cartId), false);

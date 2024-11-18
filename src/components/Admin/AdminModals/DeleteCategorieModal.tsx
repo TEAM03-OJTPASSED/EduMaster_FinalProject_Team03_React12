@@ -16,7 +16,7 @@ const DeleteCategorieModal: React.FC<DeleteCategorieModalProps> = ({
 }) => {
   return (
     <Modal
-      title="Confirm Delete Categorie"
+      title="Confirm Delete Category"
       open={visible}
       onCancel={onCancel}
       footer={[
@@ -26,7 +26,7 @@ const DeleteCategorieModal: React.FC<DeleteCategorieModalProps> = ({
       ]}
     >
       <p>
-        Are you sure you want to delete categorie{" "}
+        Are you sure you want to delete category{" "}
         <span style={{ color: "red", fontWeight: "bold" }}>{userName}</span>?
       </p>
     </Modal>

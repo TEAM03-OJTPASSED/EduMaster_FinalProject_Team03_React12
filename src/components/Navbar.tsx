@@ -61,7 +61,6 @@ const Navbar = () => {
   const { cartCount } = useSelector((state: RootState) => state.cart);
   const dispatch = useDispatch<AppDispatch>();
   
-  // Replace the existing useEffect for fetchCartData with:
   useEffect(() => {
     if (userLoggedIn) {
       dispatch(fetchCartCount());
