@@ -1,15 +1,19 @@
-import { Card, Table, Tag, TableProps, Button } from "antd";
-import { SendOutlined } from "@ant-design/icons";
+import { Card, Table, Button, Tooltip, Modal } from "antd";
+import { EyeFilled, RocketFilled } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import PayoutService from "../../../../services/payout.service";
 import { GetPayoutRequest, Payout, PayoutStatusEnum } from "../../../../models/Payout.model";
 import { handleNotify } from "../../../../utils/handleNotify";
 import EmptyData from "../../../../components/Empty Data/EmptyData";
 import { moneyFormatter } from "../../../../utils/moneyFormatter";
+import TransactionListModal from "../../../../components/TransactionListModal";
 
 const RequestPayout = () => {
   const [newPayouts, setNewPayouts] = useState<Payout[]>([]);
-
+  const [isOpenTransaction, setIsOpenTransaction] = useState(false);
+  const [currentRequestPayout, setCurrentRequestPayout] = useState<Payout>(
+    {} as Payout
+  );
   const initialParams: GetPayoutRequest = {
     searchCondition: {
       payout_no: "",
@@ -53,38 +57,38 @@ const RequestPayout = () => {
     fetchRequestPayouts();
   };
 
-  const baseColumns = [
+  const handleViewTransaction = (item: Payout) => {
+    setIsOpenTransaction(true);
+    setCurrentRequestPayout(item);
+  };
+
+
+
+  const columns = [
     {
       title: "Payout No",
       dataIndex: "payout_no",
       key: "payout_no",
     },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      filters: [
-        { text: PayoutStatusEnum.NEW, value: PayoutStatusEnum.NEW },
-        { text: PayoutStatusEnum.REQUEST_PAYOUT, value: PayoutStatusEnum.REQUEST_PAYOUT },
-      ],
-      onFilter: (value: any, record: any) => record.status === value,
-      render: (status: PayoutStatusEnum) => {
-        const statusColors = {
-          [PayoutStatusEnum.NEW]: "blue",
-          [PayoutStatusEnum.REQUEST_PAYOUT]: "yellow",
-          [PayoutStatusEnum.COMPLETED]: "green",
-          [PayoutStatusEnum.REJECTED]: "red",
-        };
-        return <Tag color={statusColors[status] || "gray"}>{status}</Tag>;
-      },
-    },
-    {
-      title: "Updated At",
-      dataIndex: "updated_at",
-      key: "updated_at",
-      ellipsis: true,
-      render: (date: string) => new Date(date).toLocaleString(),
-    },
+    // {
+    //   title: "Status",
+    //   dataIndex: "status",
+    //   key: "status",
+    //   filters: [
+    //     { text: PayoutStatusEnum.NEW, value: PayoutStatusEnum.NEW },
+    //     { text: PayoutStatusEnum.REQUEST_PAYOUT, value: PayoutStatusEnum.REQUEST_PAYOUT },
+    //   ],
+    //   onFilter: (value: any, record: any) => record.status === value,
+    //   render: (status: PayoutStatusEnum) => {
+    //     const statusColors = {
+    //       [PayoutStatusEnum.NEW]: "blue",
+    //       [PayoutStatusEnum.REQUEST_PAYOUT]: "yellow",
+    //       [PayoutStatusEnum.COMPLETED]: "green",
+    //       [PayoutStatusEnum.REJECTED]: "red",
+    //     };
+    //     return <Tag color={statusColors[status] || "gray"}>{status}</Tag>;
+    //   },
+    // },
     // {
     //   title: "Transaction ID",
     //   dataIndex: "transactions",
@@ -95,7 +99,7 @@ const RequestPayout = () => {
     //     )),
     // },
     {
-      title: "Balance Origin",
+      title: "Total",
       dataIndex: "balance_origin",
       key: "balance_origin",
       ellipsis: true,
@@ -103,7 +107,7 @@ const RequestPayout = () => {
       render: (money: number) => moneyFormatter(money),
     },
     {
-      title: "Balance Instructor Paid",
+      title: "Commission",
       dataIndex: "balance_instructor_paid",
       key: "balance_instructor_paid",
       ellipsis: true,
@@ -111,12 +115,56 @@ const RequestPayout = () => {
       render: (money: number) => moneyFormatter(money),
     },
     {
-      title: "Balance Instructor Received",
+      title: "Earnings",
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
       ellipsis: true,
       align: 'right' as const,
       render: (money: number) => moneyFormatter(money),
+    },
+    {
+      title: "Updated At",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      ellipsis: true,
+      align: 'center' as const,
+      render: (date: string) => new Date(date).toLocaleString(),
+    },
+    {
+      title: "Transactions",
+      dataIndex: "view_transaction",
+      key: "view_transaction",
+      align: "center" as const,
+      fixed: "right" as const,
+      render: (record: Payout) => {
+        return (
+          <div>
+            <Tooltip title="View Details">
+            <Button
+              className="text-red-600"
+              icon={<EyeFilled />}
+              type="text"
+              onClick={() => handleViewTransaction(record)}
+            >
+            </Button>
+            </Tooltip>
+          </div>
+        );
+      },
+    },
+    {
+      title: "Action",
+      key: "action",
+      fixed: 'right' as const,
+      render: (record: Payout) => (
+        <Tooltip title="Send to admin for approval">
+        <Button
+          type="text"
+          icon={<RocketFilled style={{ color: "green" }} />}
+          onClick={() => handleSendToAdmin(record)}
+        />
+        </Tooltip>
+      ),
     },
   ];
 
@@ -126,29 +174,12 @@ const RequestPayout = () => {
 
   
 
-  const newPayoutsColumns: TableProps<Payout>["columns"] = [
-    ...baseColumns,
-    {
-      title: "Action",
-      key: "action",
-      fixed: 'right' as const,
-      render: (record: Payout) => (
-        <Button
-          type="text"
-          icon={<SendOutlined style={{ color: "blue" }} />}
-          onClick={() => handleSendToAdmin(record)}
-          title="Send to admin for approval"
-        />
-      ),
-    },
-  ];
-
   return (
     <Card>
       <h3 className="text-2xl my-5">Request Payout</h3>
       <Table
         dataSource={newPayouts}
-        columns={newPayoutsColumns}
+        columns={columns}
         pagination={{ pageSize: 10 }}
         tableLayout="fixed"
         rowKey="payout_no"
@@ -157,6 +188,15 @@ const RequestPayout = () => {
         scroll={{ x: true }}
         locale={newPayoutsLocale}
       />
+      <Modal
+        open={isOpenTransaction}
+        width={1000}
+        closable
+        onCancel={() => setIsOpenTransaction(false)}
+        footer={null}
+      >
+        <TransactionListModal item={currentRequestPayout} />
+      </Modal>
       
     </Card>
   );

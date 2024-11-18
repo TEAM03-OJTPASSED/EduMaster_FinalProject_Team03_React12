@@ -22,10 +22,10 @@ const StudentProfile = () => {
 
   return (
     <Card>
-      <div>
+      {/* <div>
         <h3 className="text-2xl mt-5">Profile</h3>
         <h5 className="mb-4">Here is your information</h5>
-      </div>
+      </div> */}
       <UserProfileForm currentUser={currentUser} onSave={handleSaveChanges} />
     </Card>
   );

@@ -116,7 +116,7 @@ function App() {
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/faqs" element={<FAQsPage />} />
-              <Route path="/*" element={<ErrorPage />} />
+              <Route path="/*" element={<ErrorPage errorMsg="The page you requested doesn't exit yet" statusCode={404} />} />
               <Route path="cart/:status" element={<CartPage />} />
               <Route path="/blog/:id" element={<BlogDetailPage />} />
               <Route path="/profile/:id" element={<ProfilePage />} />

@@ -1,5 +1,6 @@
-import { Modal, message } from "antd";
+import { Button, Modal } from "antd";
 import BlogService from "../../../services/blog.service";
+import { handleNotify } from "../../../utils/handleNotify";
 
 
 interface DeleteBlogProps {
@@ -13,7 +14,7 @@ const DeleteBlog: React.FC<DeleteBlogProps> = ({ id, onSuccess, onCancel }) => {
     try {
       const response = await BlogService.deleteBlog(id);
       if (response.success) {
-        message.success("Blog deleted successfully");
+        handleNotify("Blog deleted successfully", "");
         onSuccess(); // Call the success callback to refresh the blog list
         onCancel(); // Close the modal
       } else {
@@ -21,18 +22,20 @@ const DeleteBlog: React.FC<DeleteBlogProps> = ({ id, onSuccess, onCancel }) => {
       }
     } catch (error) {
       console.error("Error deleting blog:", error);
-      message.error("Error deleting blog");
+      handleNotify("Error deleting blog", "", "error");
     }
   };
 
   return (
     <Modal
       title="Confirm Deletion"
-      visible={true}
-      onOk={handleDelete}
+      open={true}
       onCancel={onCancel}
-      okText="Delete"
-      cancelText="Cancel"
+      footer={[
+        <Button key="submit" type="primary" onClick={handleDelete} style={{ borderRadius: "15px" }}>
+          Delete
+        </Button>,
+        ]}
     >
       <p>Are you sure you want to delete this blog?</p>
     </Modal>

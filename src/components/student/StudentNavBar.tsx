@@ -129,6 +129,8 @@ const DashboardNavBar: React.FC<DashboardNavBarProps> = ({ role }) => {
               size="large"
               src={currentUser.avatar_url}
               alt="User Avatar"
+              icon={<UserOutlined/>}
+              className="bg-orange-400"
               style={{ border: "2px solid white" }}
             />
             {!isMobile && (

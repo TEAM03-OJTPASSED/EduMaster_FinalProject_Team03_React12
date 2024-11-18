@@ -1,4 +1,4 @@
-import { Button, Card, Modal, Table, TableProps } from "antd";
+import { Button, Card, Modal, Table, TableProps, Tooltip } from "antd";
 import PayoutService from "../../../services/payout.service";
 import {
   GetPayoutRequest,
@@ -9,7 +9,8 @@ import { PageInfo } from "../../../models/SearchInfo.model";
 import { useEffect, useState } from "react";
 import GlobalSearchUnit from "../../../components/GlobalSearchUnit";
 import TransactionListModal from "../../../components/TransactionListModal";
-import dayjs from "dayjs";
+import { EyeFilled } from "@ant-design/icons";
+import { moneyFormatter } from "../../../utils/moneyFormatter";
 
 const AdminRejectedPayout = () => {
   const columns: TableProps<Payout>["columns"] = [
@@ -18,71 +19,77 @@ const AdminRejectedPayout = () => {
       dataIndex: "payout_no",
       key: "payout_no",
       align: "center",
+      ellipsis: true
     },
     {
       title: "Instructor Name",
       dataIndex: "instructor_name",
       key: "instructor_name",
       align: "center",
+      ellipsis: true
     },
-
-
     {
-      title: "Balance Origin",
+      title: "Total",
       dataIndex: "balance_origin",
       key: "balance_origin",
       align: "center",
+      ellipsis: true,
       render: (balance : number) =>{
-        return <div>
-          {`$${balance}`}
-        </div>
+        return <div className="text-right">
+          {moneyFormatter(balance)}
+          </div>
       }
     },
     {
-      title: "Balance Instructor Paid",
+      title: "Commission",
       dataIndex: "balance_instructor_paid",
       key: "balance_instructor_paid",
       align: "center",
+      ellipsis: true,
       render: (balance : number) =>{
-        return <div>
-          {`$${balance}`}
+        return <div className="text-right">
+          {moneyFormatter(balance)}
         </div>
       }
     },
     {
-      title: "Balance Instructor Received",
+      title: "Instructor Earnings",
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
       align: "center",
+      ellipsis: true,
       render: (balance : number) =>{
-        return <div>
-          {`$${balance}`}
+        return <div className="text-right">
+          {moneyFormatter(balance)}
         </div>
       }
     },
     {
-      title: "Created at",
-      dataIndex: "created_at",
-      key: "created_at",
-      render: (created_at) => {
-        return <div>{dayjs(created_at).format("DD/MM/YYYY")}</div>;
-      },
-      align: "center",
+      title: "Updated At",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      ellipsis: true,
+      render: (date: string) => new Date(date).toLocaleString(),
+      align: "center"
     },
     {
-      title: "View Transaction",
+      title: "Transactions",
       dataIndex: "view_transaction",
       key: "view_transaction",
       align: "center",
+      fixed: "right",
       render: (_, record: Payout) => {
         return (
           <div>
+            <Tooltip title="View Details">
             <Button
-              type="primary"
+              className="text-red-600"
+              icon={<EyeFilled />}
+              type="text"
               onClick={() => handleViewTransaction(record)}
             >
-              View 
             </Button>
+            </Tooltip>
           </div>
         );
       },
@@ -94,7 +101,7 @@ const AdminRejectedPayout = () => {
     {} as Payout
   );
 
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [requestPayoutList, setRequestPayoutList] = useState<Payout[]>();
   const [currentRequestPayouts, setCurrentRequestPayouts] = useState<PageInfo>(
     {} as PageInfo
@@ -116,14 +123,14 @@ const AdminRejectedPayout = () => {
 
   // fetch request payout
   const fetchDataRequestPayout = async () => {
-    setLoading(true);
-    try {
+    // setLoading(true);
+    // try {
       const res = await PayoutService.getPayout(searchRequestPayoutParam);
       setRequestPayoutList(res?.data?.pageData as Payout[]);
       setCurrentRequestPayouts(res?.data?.pageInfo as PageInfo);
-    } finally {
-      setLoading(false);
-    }
+    // } finally {
+    //   setLoading(false);
+    // }
   };
   useEffect(() => {
     fetchDataRequestPayout();
@@ -172,7 +179,6 @@ const AdminRejectedPayout = () => {
           bordered
           style={{ borderRadius: "8px" }}
           scroll={{ x: true }}
-          loading={loading}
         />
       </Card>
       <Modal

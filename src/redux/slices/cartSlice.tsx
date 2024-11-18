@@ -35,9 +35,9 @@ export const addToCart = createAsyncThunk(
         return rejectWithValue('User not logged in');
       }
 
+      const response = await CartService.createCart(course._id)
       handleNotify("Course Added to Cart",`You have added "${course.name}" to your cart.`)
       console.log(course._id)
-      const response = await CartService.createCart(course._id)
   
       if (!response.success) 
       {
@@ -74,10 +74,16 @@ export const fetchCartCount = createAsyncThunk(
   }
 );
 
+
+
 const cartSlice = createSlice({
   name: 'cart',
   initialState,
-  reducers: {},
+  reducers: {
+    updateCartCount(state, action) {
+      state.cartCount = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       // Add to cart
@@ -85,7 +91,7 @@ const cartSlice = createSlice({
         state.loading = true;
       })
       .addCase(addToCart.fulfilled, (state) => {
-        state.loading = false;
+        state.loading = false;        
         state.cartCount += 1;
       })
       .addCase(addToCart.rejected, (state, action) => {
@@ -106,5 +112,5 @@ const cartSlice = createSlice({
       });
   },
 });
-
+export const { updateCartCount } = cartSlice.actions;
 export default cartSlice.reducer;

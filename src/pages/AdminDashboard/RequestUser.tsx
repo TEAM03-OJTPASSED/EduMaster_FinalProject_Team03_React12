@@ -6,8 +6,6 @@ import {
   Space,
   Card,
   Modal,
-  message,
-  Spin,
   FormProps,
   Tooltip,
   TableProps,
@@ -36,12 +34,9 @@ const RequestUser = () => {
   const { loading } = useSelector(
     (state: RootState) => state.users.previewProfile
   );
- 
-  const {listRequest} = useSelector(
+  const { listRequest } = useSelector(
     (state: RootState) => state.users.requestedUser
   );
-  console.log("request user" ,listRequest);
-  
   const [reasonVisible, setReasonVisible] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [reason, setReason] = useState("");
@@ -93,12 +88,11 @@ const RequestUser = () => {
       status,
       comment: reason,
     };
-    await previewInstructor(formPreview, dispatch, listRequest.pageData as User[]);
-
-    
-    
+    await previewInstructor(formPreview, dispatch,listRequest.pageData as User[]);
+    // await fetchUsers();
+    // message.success("Submit preview successfully");
     setReasonVisible(false);
-    // fetchUsers()
+ 
     console.log(formPreview);
   };
 
@@ -214,8 +208,9 @@ const RequestUser = () => {
             variant="solid"
             htmlType="submit"
             onClick={() => handleSubmitPreview("reject", currentUser)}
+            loading={loading}
           >
-            {loading ? <Spin /> : <span>Submit</span>}
+             <span>Submit</span>
           </Button>,
         ]}
       >

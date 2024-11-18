@@ -52,6 +52,7 @@ export default function CoursesPage() {
 
   const handleSearch = (searchText: string) => {
     setNoResult(false);
+    setCourses([])
     setSearchParams((prevParams) => {
       prevParams.set("search", searchText);
       return prevParams;
@@ -71,6 +72,7 @@ export default function CoursesPage() {
 
   const handleFilterChange = (value: string) => {
     setNoResult(false);
+    setCourses([])
     setSearchParams((prevParams) => {   
       prevParams.set("category", value);     
       return prevParams;

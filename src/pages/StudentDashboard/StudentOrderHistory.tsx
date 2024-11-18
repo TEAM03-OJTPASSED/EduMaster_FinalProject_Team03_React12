@@ -113,6 +113,7 @@ const StudentOrderHistory = () => {
       title: "Discount",
       dataIndex: "discount",
       key: "discount",
+      align: "right" as const,
       render: (discount: number) => `${discount}%`,
     },
     {

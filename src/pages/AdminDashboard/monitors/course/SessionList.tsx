@@ -17,7 +17,7 @@ const initialSessionsParams: GetSessions = {
     is_deleted: false,
     is_position_order: true,
     course_id: "",
-  }
+  },
 };
 
 const initialCoursesParams: GetCourses = {
@@ -29,7 +29,7 @@ const initialCoursesParams: GetCourses = {
     keyword: "",
     is_deleted: false,
     category_id: "",
-  }
+  },
 };
 
 const SessionList = () => {
@@ -37,18 +37,20 @@ const SessionList = () => {
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const [listSessions, setListSessions] = useState<Session[]>([]);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [listCourses, setListCourses] = useState<Course[]>([]);
-  const [searchParams, setSearchParams] = useState<GetSessions>(initialSessionsParams);
+  const [searchParams, setSearchParams] = useState<GetSessions>(
+    initialSessionsParams
+  );
 
   const fetchCourses = async () => {
-    setLoading(true);
-    try {
+    // setLoading(true);
+    // try {
       const response = await CourseService.getCourses(initialCoursesParams);
       setListCourses(response.data?.pageData as Course[]);
-    } finally {
-      setLoading(false);
-    }
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   const handleSearch = (values: Record<string, any>) => {
@@ -58,24 +60,24 @@ const SessionList = () => {
         ...searchParams.searchCondition,
         course_id: values.course_id || "",
         keyword: values.keyword || "",
-      }
+      },
     });
   };
 
   const fetchSessions = async () => {
-    setLoading(true);
-    try {
+    // setLoading(true);
+    // try {
       const response = await SessionService.getSessions({
         ...searchParams,
         pageInfo: { pageNum, pageSize },
       });
       setListSessions(response.data?.pageData ?? []);
       setTotal(response.data?.pageInfo?.totalItems ?? 0);
-    } catch (err) {
-      console.error("Error fetching sessions:", err);
-    } finally {
-      setLoading(false);
-    }
+    // } catch (err) {
+    //   console.error("Error fetching sessions:", err);
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   const handleTableChange = (pagination: any) => {
@@ -96,13 +98,51 @@ const SessionList = () => {
   }, []);
 
   const columns: TableProps<Session>["columns"] = [
-    { title: "Name", dataIndex: "name", key: "name" },
-    { title: "Course Name", dataIndex: "course_name", key: "course_name" , width:500},
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      ellipsis: true,
+      render: (text: string) => (
+        <span
+          style={{
+            maxWidth: 200,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            display: "inline-block",
+          }}
+        >
+          {text}
+        </span>
+      ),
+    },
+    {
+      title: "Name",
+      dataIndex: "course_name",
+      key: "name",
+      ellipsis: true,
+      render: (text: string) => (
+        <span
+          style={{
+            maxWidth: 400,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            display: "inline-block",
+          }}
+        >
+          {text}
+        </span>
+      ),
+    },
     {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
-      render: (createdAt: string) => dayjs(createdAt).format("DD-MM-YYYY"),
+      ellipsis: true,
+      align: 'center',
+      render: (createdAt: string) => dayjs(createdAt).format("DD/MM/YYYY"),
     },
   ];
 
@@ -116,9 +156,12 @@ const SessionList = () => {
           selectFields={[
             {
               name: "course_id",
-              options: listCourses.map((course) => ({ label: course.name, value: course._id })),
+              options: listCourses.map((course) => ({
+                label: course.name,
+                value: course._id,
+              })),
               placeholder: "Filter by Course",
-            }
+            },
           ]}
         />
       </div>
@@ -131,7 +174,6 @@ const SessionList = () => {
           total,
           showSizeChanger: true,
         }}
-        loading={loading}
         onChange={handleTableChange}
         rowKey="_id"
         bordered

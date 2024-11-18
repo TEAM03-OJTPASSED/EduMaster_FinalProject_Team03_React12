@@ -53,7 +53,7 @@ const CreateCategory: FC<CreateCategoryProps> = ({
           </Select>
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
-          <Button type="primary" htmlType="submit" style={{ float: "right" }}>
+          <Button type="primary" htmlType="submit" style={{ float: "right", borderRadius: "15px" }}>
             Add
           </Button>
         </Form.Item>

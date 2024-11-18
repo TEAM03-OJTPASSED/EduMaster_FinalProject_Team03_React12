@@ -135,6 +135,7 @@ const InstructorSalesHistory = () => {
       title: "Price Paid",
       dataIndex: "price_paid",
       key: "pricePaid",
+      align: "right" as const,
       ellipsis: true,
       render: (price: number) => `$${price.toFixed(2)}`,
     },
@@ -207,6 +208,7 @@ const InstructorSalesHistory = () => {
           variant="solid"
           color="primary"
           disabled={selectedRowKeys.length === 0}
+          className={`${selectedRowKeys.length === 0 && "disabled"} `}
         >
           Create Payout
         </Button>
