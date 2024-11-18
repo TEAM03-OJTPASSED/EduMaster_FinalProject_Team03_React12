@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Space, Card, Select, Switch, Tabs } from "antd";
+import { Table, Button, Card, Select, Switch, Tabs } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
@@ -160,17 +160,20 @@ const UserManagement: React.FC = () => {
       title: "Actions",
       key: "action",
       render: (record: User) => (
-        <Space size="middle">
-          <Button icon={<EditOutlined />} onClick={() => handleEdit(record)} />
+        <>
+          <Button 
+            type="text" 
+            icon={<EditOutlined style={{ color: "blue" }} />} 
+            onClick={() => handleEdit(record)} />
           <Button
-            danger
-            icon={<DeleteOutlined />}
+            type="text"
+            icon={<DeleteOutlined style={{ color: "red" }} />}
             onClick={() => {
               setCurrentUser(record);
               setDeleteUserModalVisible(true);
             }}
           />
-        </Space>
+        </>
       ),
     },
   ];
@@ -211,6 +214,7 @@ const UserManagement: React.FC = () => {
                   <Button
                     type="primary"
                     onClick={() => setCreateVisible(true)}
+                    style={{borderRadius: "15px"}}
                     icon={<PlusCircleOutlined />}
                   >
                     Add new user

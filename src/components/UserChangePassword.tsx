@@ -70,7 +70,7 @@ const UserChangePassword = () => {
         />
       </Form.Item>
       <div className="pt-4">
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" htmlType="submit" style={{ borderRadius: "15px" }}>
           Change Password
         </Button>
       </div>

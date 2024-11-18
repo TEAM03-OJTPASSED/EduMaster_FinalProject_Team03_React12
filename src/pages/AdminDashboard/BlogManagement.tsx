@@ -146,13 +146,13 @@ const BlogManagement = () => {
         <>
           <Button
             type="text"
-            icon={<DeleteOutlined style={{ color: "red" }} />}
-            onClick={() => showModalDelete(record._id)}
+            icon={<EditOutlined style={{ color: "blue" }} />}
+            onClick={() => showModalEdit(record)}
           />
           <Button
             type="text"
-            icon={<EditOutlined style={{ color: "blue" }} />}
-            onClick={() => showModalEdit(record)}
+            icon={<DeleteOutlined style={{ color: "red" }} />}
+            onClick={() => showModalDelete(record._id)}
           />
         </>
       ),
@@ -211,7 +211,6 @@ const BlogManagement = () => {
         rowKey="_id"
         bordered
         scroll={{ x: true }}
-        loading={loading}
       />
 
       {isModalEditVisible && editBlogData && (

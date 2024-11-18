@@ -7,10 +7,8 @@ import {
   Modal,
   Tooltip,
   Input,
-  message,
-  Spin,
 } from "antd";
-import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
+import { CheckOutlined, CloseOutlined, EyeFilled } from "@ant-design/icons";
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 import {
@@ -22,6 +20,7 @@ import {
 import PayoutService from "../../../services/payout.service";
 import { PageInfo } from "../../../models/SearchInfo.model";
 import GlobalSearchUnit from "../../../components/GlobalSearchUnit";
+import { handleNotify } from "../../../utils/handleNotify";
 const TransactionListModal = React.lazy(
   () => import("../../../components/TransactionListModal")
 );
@@ -139,12 +138,15 @@ const AdminRequestPayout = () => {
       render: (_, record: Payout) => {
         return (
           <div>
+            <Tooltip title="View Detail">
             <Button
-              type="primary"
+              className="text-red-600"
+              icon={<EyeFilled />}
+              type="text"
               onClick={() => handleViewTransaction(record)}
             >
-              View
             </Button>
+            </Tooltip>
           </div>
         );
       },
@@ -205,7 +207,7 @@ const AdminRequestPayout = () => {
         prevList?.filter((item) => item._id !== record._id)
       );
       await fetchDataRequestPayout();
-      message.success("Submit preview successfully");
+      handleNotify("Submit preview successfully", " ");
       setReasonVisible(false);
       console.log(formPreview);
     } finally {
@@ -264,6 +266,7 @@ const AdminRequestPayout = () => {
             key="submit"
             variant="solid"
             htmlType="submit"
+            style = {{ borderRadius: "15px" }}
             onClick={() =>
               handleSubmitPreview(
                 PayoutStatusEnum.REJECTED,
@@ -271,7 +274,7 @@ const AdminRequestPayout = () => {
               )
             }
           >
-            {loading ? <Spin /> : <span>Submit</span>}
+            <span>Submit</span>
           </Button>,
         ]}
       >

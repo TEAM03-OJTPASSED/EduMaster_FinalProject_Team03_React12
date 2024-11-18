@@ -278,7 +278,7 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
       </Form.Item>
 
       <div className="pt-4">
-        <Button type="primary" onClick={handleSubmit}>
+        <Button type="primary" onClick={handleSubmit} style = {{ borderRadius: "15px"}}>
           Save Changes
         </Button>
       </div>

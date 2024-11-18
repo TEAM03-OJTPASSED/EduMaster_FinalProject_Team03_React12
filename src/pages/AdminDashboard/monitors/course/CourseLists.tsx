@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Card, Tag, Button, Modal } from "antd";
+import { Table, Card, Tag, Button, Modal, Tooltip } from "antd";
 import { Course, GetCourses, CourseStatusEnum } from "../../../../models/Course.model";
 import CourseService from "../../../../services/course.service";
 
@@ -9,6 +9,7 @@ import { statusFormatter } from "../../../../utils/statusFormatter";
 import CategoryService from "../../../../services/category.service";
 import { Category, GetCategories } from "../../../../models/Category.model";
 import { capitalizeFirstLetter } from "../../../../utils/capitalize";
+import { EyeFilled } from "@ant-design/icons";
 
 const CourseLogModal = React.lazy(() => import("../../../../components/CourseLogModal"));
 
@@ -139,15 +140,20 @@ const CourseLists: React.FC = () => {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
-      render: (createdAt: string) => dayjs(createdAt).format("DD-MM-YYYY"),
+      render: (createdAt: string) => dayjs(createdAt).format("DD/MM/YYYY"),
     },
     {
       title: "Course Log",
       key: "course_log",
       render: (record: Course) => (
-        <Button type="primary" onClick={() => handleViewLog(record)}>
-          View Log
+        <Tooltip title="View Detail">
+        <Button 
+        className="text-red-600"
+        icon={<EyeFilled />}
+        type="text" 
+        onClick={() => handleViewLog(record)}>
         </Button>
+        </Tooltip>
       ),
     },
   ];
@@ -180,7 +186,6 @@ const CourseLists: React.FC = () => {
           onChange={handleTableChange}
           rowKey="_id"
           bordered
-          loading={loading}
           scroll={{ x: "max-content" }}
         />
       </Card>

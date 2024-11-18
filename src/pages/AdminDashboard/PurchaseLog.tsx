@@ -1,6 +1,5 @@
 import {  useEffect, useState } from "react";
 import { Card, FormProps, Table, Tag, Tooltip } from "antd";
-
 import { GetPurchases, Purchase, PurchaseStatusEnum } from "../../models/Purchase.model";
 import PurchaseService from "../../services/purchase.service";
 import { PageInfo } from "../../models/SearchInfo.model";

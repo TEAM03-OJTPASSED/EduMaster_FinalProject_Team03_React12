@@ -102,7 +102,7 @@ const SessionList = () => {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
-      render: (createdAt: string) => dayjs(createdAt).format("DD-MM-YYYY"),
+      render: (createdAt: string) => dayjs(createdAt).format("DD/MM/YYYY"),
     },
   ];
 
@@ -131,7 +131,6 @@ const SessionList = () => {
           total,
           showSizeChanger: true,
         }}
-        loading={loading}
         onChange={handleTableChange}
         rowKey="_id"
         bordered

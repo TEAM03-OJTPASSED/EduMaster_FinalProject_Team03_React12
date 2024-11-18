@@ -1,4 +1,4 @@
-import { Button, Card, Modal, Table, TableProps } from "antd";
+import { Button, Card, Modal, Table, TableProps, Tooltip } from "antd";
 import PayoutService from "../../../services/payout.service";
 import {
   GetPayoutRequest,
@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import GlobalSearchUnit from "../../../components/GlobalSearchUnit";
 import TransactionListModal from "../../../components/TransactionListModal";
 import dayjs from "dayjs";
+import { EyeFilled } from "@ant-design/icons";
 
 const AdminRejectedPayout = () => {
   const columns: TableProps<Payout>["columns"] = [
@@ -77,12 +78,15 @@ const AdminRejectedPayout = () => {
       render: (_, record: Payout) => {
         return (
           <div>
+            <Tooltip title="View Detail">
             <Button
-              type="primary"
+              className="text-red-600"
+              icon={<EyeFilled />}
+              type="text"
               onClick={() => handleViewTransaction(record)}
             >
-              View 
             </Button>
+            </Tooltip>
           </div>
         );
       },
@@ -172,7 +176,6 @@ const AdminRejectedPayout = () => {
           bordered
           style={{ borderRadius: "8px" }}
           scroll={{ x: true }}
-          loading={loading}
         />
       </Card>
       <Modal

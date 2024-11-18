@@ -6,14 +6,11 @@ import {
   Space,
   Card,
   Modal,
-  message,
-  Spin,
   FormProps,
   Tooltip,
   TableProps,
 } from "antd";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
-
 import { previewInstructor, UserService } from "../../services/user.service";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store/store";
@@ -21,6 +18,7 @@ import { User } from "../../models/UserModel";
 import { UserSearchParams } from "../../models/SearchInfo.model";
 import GlobalSearchUnit from "../../components/GlobalSearchUnit";
 import dayjs from "dayjs";
+import { handleNotify } from "../../utils/handleNotify";
 const initializeSearchParam: UserSearchParams = {
   searchCondition: {
     keyword: "",
@@ -91,7 +89,7 @@ const RequestUser = () => {
     };
     await previewInstructor(formPreview, dispatch);
     await fetchUsers();
-    message.success("Submit preview successfully");
+    handleNotify("Submit preview successfully", "");
     setReasonVisible(false);
     // fetchUsers()
     console.log(formPreview);
@@ -220,7 +218,7 @@ const RequestUser = () => {
             htmlType="submit"
             onClick={() => handleSubmitPreview("reject", currentUser)}
           >
-            {loading ? <Spin /> : <span>Submit</span>}
+             <span>Submit</span>
           </Button>,
         ]}
       >

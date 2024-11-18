@@ -209,7 +209,6 @@ const LessonList = () => {
         bordered
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
-        loading={loading}
       />
     </Card>
   );

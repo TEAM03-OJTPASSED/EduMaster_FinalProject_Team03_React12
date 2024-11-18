@@ -59,7 +59,7 @@ const EditUser: React.FC<EditUserProps> = ({
           <Input />
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
-          <Button type="primary" htmlType="submit" style={{ float: "right" }}>
+          <Button type="primary" htmlType="submit" style={{ float: "right", borderRadius: "15px" }}>
             Save
           </Button>
         </Form.Item>

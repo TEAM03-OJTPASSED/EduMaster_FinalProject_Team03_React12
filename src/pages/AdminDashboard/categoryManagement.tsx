@@ -87,18 +87,18 @@ const CategoryManagement = () => {
       title: "Actions",
       key: "action",
       render: (record: any) => (
-        <Space size="middle">
-          <Button icon={<EditOutlined />} onClick={() => handleEdit(record)} />
+        <>
+          <Button type="text" icon={<EditOutlined style={{ color: "blue" }} />} onClick={() => handleEdit(record)} />
 
           <Button
-            danger
-            icon={<DeleteOutlined />}
+            type="text"
+            icon={<DeleteOutlined style={{ color: "red" }} />}
             onClick={() => {
               setCurrentCategorie(record);
               setDeleteModal(true);
             }}
           />
-        </Space>
+        </>
       ),
     },
   ];
@@ -120,6 +120,7 @@ const CategoryManagement = () => {
           variant="solid"
           color="primary"
           className="w-full md:w-auto ml-0 md:ml-auto"
+          style={{borderRadius: "15px"}}
         >
           Add New Category
         </Button>

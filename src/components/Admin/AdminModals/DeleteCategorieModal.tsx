@@ -20,7 +20,7 @@ const DeleteCategorieModal: React.FC<DeleteCategorieModalProps> = ({
       open={visible}
       onCancel={onCancel}
       footer={[
-        <Button key="submit" type="primary" onClick={onDelete}>
+        <Button key="submit" type="primary" onClick={onDelete} style={{ borderRadius: "15px" }}>
           Delete
         </Button>,
       ]}
