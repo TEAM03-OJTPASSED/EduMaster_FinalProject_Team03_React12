@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Table, Card, Tag, Button, Modal } from "antd";
+import { Table, Card, Tag, Button, Modal, Tooltip } from "antd";
 import {
-  CommentOutlined,
-  DeleteOutlined,
-  EditOutlined,
+  DeleteFilled,
+  EditFilled,
   PlusCircleOutlined,
-  SendOutlined,
+  RocketFilled,
 } from "@ant-design/icons";
 
 import CourseOption from "./create-courses/CourseOption";
@@ -26,6 +25,8 @@ import { statusFormatter } from "../../../utils/statusFormatter";
 import ReviewService from "../../../services/review.service";
 import { GetReviews, Review } from "../../../models/Review.model";
 import ReviewModal from "../../../components/Instructor/ReviewModal";
+import { moneyFormatter } from "../../../utils/moneyFormatter";
+import { BiSolidComment } from "react-icons/bi";
 
 const initialCoursesParams: GetCourses = {
   pageInfo: {
@@ -91,7 +92,7 @@ const InstructorCourseList: React.FC = () => {
     if (response.data != undefined) {
       setSelectedCourse(response.data);
       fetchCategories();
-      setIsModalReviewVisible(true);
+      setIsModalVisible(true);
     }
   };
 
@@ -292,8 +293,8 @@ const InstructorCourseList: React.FC = () => {
       dataIndex: "price",
       key: "price",
       render: (price: number) => (
-        <div>
-          <span>${price.toFixed(2)}</span>
+        <div className="text-right">
+          {moneyFormatter(price)}
         </div>
       ),
       align: "right" as const,
@@ -304,14 +305,15 @@ const InstructorCourseList: React.FC = () => {
       key: "discount",
       align: "right" as const,
       render: (discount: number) => (
-        <div>
-          <span className="text-red-500">{discount}%</span>
+        <div className="text-red-500 text-right">
+         {discount}%
         </div>
       ),
     },
     {
       title: "Status Toggle",
       key: "statusToggle",
+      align: "center" as const,
       render: (record: Course) => {
         const isDisabled =
           record.status === CourseStatusEnum.NEW ||
@@ -333,48 +335,58 @@ const InstructorCourseList: React.FC = () => {
       },
     },
     {
-      title: "Action",
+      title: "Actions",
       key: "action",
+      align: "center" as const,
       fixed: "right" as const,
       render: (record: Course) => (
-        <div className="flex gap-2">
-          <Button
-            type="text"
-            icon={<EditOutlined style={{ color: "blue" }} />}
-            onClick={() => showModal(record)}
-          />
-          <Button
-            type="text"
-            icon={<DeleteOutlined style={{ color: "red" }} />}
-            onClick={() => handleDeleteCourse(record._id)}
-          />
-
-          {record.status == CourseStatusEnum.NEW && (
+        <div className="flex justify-between">
+          <Tooltip title="Edit" className="!font-jost">
             <Button
               type="text"
-              icon={<SendOutlined style={{ color: "blue" }} />}
+              icon={<EditFilled style={{ color: "blue" }} />}
+              onClick={() => showModal(record)}
+            />
+          </Tooltip>
+          <Tooltip title="Delete" className="!font-jost">
+
+            <Button
+              type="text"
+              icon={<DeleteFilled style={{ color: "red" }} />}
+              onClick={() => handleDeleteCourse(record._id)}
+            />
+          </Tooltip>
+
+          {record.status == CourseStatusEnum.NEW && (
+            <Tooltip title="Request Approval">
+            <Button
+              type="text"
+              icon={<RocketFilled style={{ color: "green" }} />}
               onClick={() => handleSendToAdmin(record)}
               disabled={
                 record.status !== CourseStatusEnum.NEW &&
                 record.status !== CourseStatusEnum.REJECT
               }
-              title={
+              aria-label={
                 record.status !== CourseStatusEnum.NEW &&
                 record.status !== CourseStatusEnum.REJECT
                   ? "Can only send NEW or REJECT courses"
                   : "Send to admin for approval"
               }
             />
+            </Tooltip>
           )}
           {record.status !== CourseStatusEnum.NEW &&
             record.status !== CourseStatusEnum.REJECT &&
             record.status !== CourseStatusEnum.WAITING_APPROVE && (
-              <Button
-                type="text"
-                icon={<CommentOutlined style={{ color: "orange" }} />}
-                onClick={() => handleSeeReviews(record._id)}
-                title={"See reviews"}
-              />
+              <Tooltip title="See reviews" className="!font-jost">
+                <Button
+                  type="text"
+                  icon={<BiSolidComment fill="orange" style={{ color: "orange" }} className=""/>}
+                  onClick={() => handleSeeReviews(record._id)}
+                  aria-label={"See reviews"}
+                />
+              </Tooltip>
             )}
         </div>
       ),
@@ -474,7 +486,7 @@ const InstructorCourseList: React.FC = () => {
         footer={null}
         width={1000}
         forceRender
-        destroyOnClose={true} // Add this to ensure form state is destroyed
+        destroyOnClose={true} 
       >
         <CourseOption
           key={isModalCreateVisible ? "create-new" : "create"} // Add key prop to force remount

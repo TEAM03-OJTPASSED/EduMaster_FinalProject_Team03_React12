@@ -12,8 +12,8 @@ import {
 } from "antd";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import { previewInstructor, UserService } from "../../services/user.service";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../redux/store/store";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../redux/store/store";
 import { User } from "../../models/UserModel";
 import { UserSearchParams } from "../../models/SearchInfo.model";
 import GlobalSearchUnit from "../../components/GlobalSearchUnit";
@@ -31,9 +31,9 @@ const initializeSearchParam: UserSearchParams = {
 };
 const RequestUser = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { loading } = useSelector(
-    (state: RootState) => state.users.previewProfile
-  );
+  // const { loading } = useSelector(
+  //   (state: RootState) => state.users.previewProfile
+  // );
   const [reasonVisible, setReasonVisible] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);

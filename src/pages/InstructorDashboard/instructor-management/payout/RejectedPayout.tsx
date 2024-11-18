@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Badge, Button, Card, Descriptions, Input, Modal, Table, TableProps, Tag } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import { Button, Card, Input, Modal, Table, TableProps, Tooltip } from "antd";
+import { EyeFilled, SearchOutlined } from "@ant-design/icons";
 import PayoutService from "../../../../services/payout.service"; 
 import { GetPayoutRequest, Payout, PayoutStatusEnum } from "../../../../models/Payout.model"; 
 import { moneyFormatter } from "../../../../utils/moneyFormatter";
+import TransactionListModal from "../../../../components/TransactionListModal";
 
 const RejectedPayout: React.FC = () => {
   
   const [filteredPayouts, setFilteredPayouts] = useState<Payout[]>([]);
   const [searchKeyword, setSearchKeyword] = useState<string>("");
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedPayout, setSelectedPayout] = useState<Payout | null>(null); // Thêm state cho đơn hàng được chọn
+
   const initialParams :GetPayoutRequest= {
     searchCondition: {
       payout_no: "",
@@ -25,14 +25,14 @@ const RejectedPayout: React.FC = () => {
     },
   };
 
-  const handleAction = (payout: Payout) => {
-    setSelectedPayout(payout);
-    setIsModalVisible(true);
-  };
+  const [isOpenTransaction, setIsOpenTransaction] = useState(false);
+  const [currentRequestPayout, setCurrentRequestPayout] = useState<Payout>(
+    {} as Payout
+  );
 
-  const handleCloseModal = () => {
-    setIsModalVisible(false);
-    setSelectedPayout(null);
+  const handleViewTransaction = (item: Payout) => {
+    setIsOpenTransaction(true);
+    setCurrentRequestPayout(item);
   };
 
   useEffect(() => {
@@ -53,32 +53,7 @@ const RejectedPayout: React.FC = () => {
       key: "payout_no",
     },
     {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status: PayoutStatusEnum) => (
-        <Tag color="red">{status}</Tag>
-      ),
-    },
-    // {
-    //   title: "Transaction ID",
-    //   dataIndex: "transactions",
-    //   key: "transactions",
-    //   render: (transactions: Transaction[]) =>
-    //     transactions.map((transaction) => (
-    //       <span key={transaction.purchase_id}>{transaction.purchase_id},</span>
-    //     )),
-    // },
-    {
-      title: "Updated At",
-      dataIndex: "updated_at",
-      key: "balance_instructor_received",
-      ellipsis: true,
-      render: (date: string) => new Date(date).toLocaleString(),
-
-    },
-    {
-      title: "Balance Origin",
+      title: "Total",
       dataIndex: "balance_origin",
       key: "balance_origin",
       ellipsis: true,
@@ -86,7 +61,7 @@ const RejectedPayout: React.FC = () => {
       render: (money: number) => moneyFormatter(money),
     },
     {
-      title: "Balance Instructor Paid",
+      title: "Commission",
       dataIndex: "balance_instructor_paid",
       key: "balance_instructor_paid",
       ellipsis: true,
@@ -94,7 +69,7 @@ const RejectedPayout: React.FC = () => {
       render: (money: number) => moneyFormatter(money),
     },
     {
-      title: "Balance Instructor Received",
+      title: "Earnings",
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
       ellipsis: true,
@@ -102,14 +77,34 @@ const RejectedPayout: React.FC = () => {
       render: (money: number) => moneyFormatter(money),
     },
     {
-      title: "Action",
-      key: "action",
-      fixed: 'right' as const,
-      render: (record: any) => (
-        <Button type="primary" onClick={() => handleAction(record)}>
-          View Details
-        </Button>
-      ),
+      title: "Updated At",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      ellipsis: true,
+      align: 'center' as const,
+      render: (date: string) => new Date(date).toLocaleString(),
+    },
+    {
+      title: "Transactions",
+      dataIndex: "view_transaction",
+      key: "view_transaction",
+      align: "center" as const,
+      fixed: "right" as const,
+      render: (_, record: Payout) => {
+        return (
+          <div>
+            <Tooltip title="View Details">
+            <Button
+              className="text-red-600"
+              icon={<EyeFilled />}
+              type="text"
+              onClick={() => handleViewTransaction(record)}
+            >
+            </Button>
+            </Tooltip>
+          </div>
+        );
+      },
     },
   ];
 
@@ -137,58 +132,14 @@ const RejectedPayout: React.FC = () => {
 
       {/* Modal for showing detailed information */}
       <Modal
-      title={`Payout Details - ${selectedPayout?.payout_no}`}
-      visible={isModalVisible}
-      onCancel={handleCloseModal}
-      footer={null}
-    > 
-    { selectedPayout && 
-      <Descriptions column={1} bordered>
-        <Descriptions.Item label="Payout Number">
-          {selectedPayout.payout_no}
-        </Descriptions.Item>
-        
-        <Descriptions.Item label="Status">
-          <Badge
-            status={
-              selectedPayout.status === PayoutStatusEnum.COMPLETED
-                ? 'success'
-                : selectedPayout.status === PayoutStatusEnum.REQUEST_PAYOUT
-                ? 'warning'
-                : 'error'
-            }
-            text={selectedPayout.status}
-          />
-        </Descriptions.Item>
-
-        <Descriptions.Item label="Balance Origin">
-          {`${moneyFormatter(selectedPayout.balance_origin)}`}
-        </Descriptions.Item>
-
-        <Descriptions.Item label="Paid to Instructor">
-          {`${moneyFormatter(selectedPayout.balance_instructor_paid)}`}
-        </Descriptions.Item>
-
-        <Descriptions.Item label="Received by Instructor">
-          {`${moneyFormatter(selectedPayout.balance_instructor_received)}`}
-        </Descriptions.Item>
-
-        <Descriptions.Item label="Created At">
-          {new Date(selectedPayout.created_at).toLocaleDateString()} - {new Date(selectedPayout.created_at).toLocaleTimeString()}
-        </Descriptions.Item>
-
-        <Descriptions.Item label="Last Updated">
-          {new Date(selectedPayout.updated_at).toLocaleDateString()} - {new Date(selectedPayout.updated_at).toLocaleTimeString()}
-        </Descriptions.Item>
-
-        <Descriptions.Item label="Transaction ID">
-          {selectedPayout.transactions.map((transaction) => (
-        <span key={transaction.purchase_id}>{transaction.purchase_id}</span>))}
-        </Descriptions.Item>
-
-      </Descriptions>
-    }
-    </Modal>
+        open={isOpenTransaction}
+        width={1000}
+        closable
+        onCancel={() => setIsOpenTransaction(false)}
+        footer={null}
+      >
+        <TransactionListModal item={currentRequestPayout} />
+      </Modal>
     </Card>
   );
 };

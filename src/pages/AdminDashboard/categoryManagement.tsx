@@ -1,4 +1,4 @@
-import { Button, Card, Table, Space } from "antd";
+import { Button, Card, Table } from "antd";
 import {
   DeleteOutlined,
   EditOutlined,

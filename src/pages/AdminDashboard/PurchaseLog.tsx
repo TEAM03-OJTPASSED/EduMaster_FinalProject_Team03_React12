@@ -13,11 +13,13 @@ const columns = [
     title: "Purchase Number",
     dataIndex: "purchase_no",
     key: "purchase_no",
+    ellipsis: true,
   },
   {
     title: "Course Name",
     dataIndex: "course_name",
     key: "course_name",
+    ellipsis: true,
     render: (course_name: string) => {
       return <Tooltip title={course_name}>{ellipsisText(course_name, 50)}</Tooltip>
     },
@@ -43,29 +45,35 @@ const columns = [
   {
     title: "Price Paid",
     dataIndex: "price_paid",
+    ellipsis: true,
     key: "price_paid",
+    align: 'right' as const,
     render: (price: number) => `$${price.toFixed(2)}`,
   },
   {
     title: "Discount",
     dataIndex: "discount",
     key: "discount",
+    align: 'right' as const,
     render: (discount: number) => `${discount}%`,
   },
   {
     title: "Student Name",
     dataIndex: "student_name",
     key: "student_name",
+    ellipsis: true,
   },
   {
     title: "Instructor Name",
     dataIndex: "instructor_name",
     key: "instructor_name",
+    ellipsis: true,
   },
   {
     title: "Created At",
     dataIndex: "created_at",
     key: "created_at",
+    ellipsis: true,
     render: (date: string) => new Date(date).toLocaleDateString(),
   },
 ];

@@ -57,44 +57,44 @@ const LessonList = () => {
   const [listCourses, setListCourses] = useState<Course[]>([]);
   const [listSessions, setListSessions] = useState<Session[]>([]);
   const [listLessons, setListLessons] = useState<Lesson[]>([]);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [searchParams, setSearchParams] =
     useState<GetLessons>(initialLessonsParams);
 
   const fetchCourses = async () => {
-    setLoading(true);
-    try {
+    // setLoading(true);
+    // try {
       const response = await CourseService.getCourses(initialCoursesParams);
       setListCourses(response?.data?.pageData ?? []);
-    } finally {
-      setLoading(false);
-    }
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   const fetchSessions = async () => {
-    setLoading(true);
-    try {
+    // // setLoading(true);
+    // try {
       const response = await SessionService.getSessions(initialSessionsParams);
       setListSessions(response?.data?.pageData ?? []);
-    } finally {
-      setLoading(false);
-    }
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   const fetchLessons = async () => {
-    try {
-      setLoading(true);
+    // try {
+    //   setLoading(true);
       const response = await LessonService.getLessons({
         ...searchParams,
         pageInfo: { pageNum, pageSize },
       });
       setListLessons(response.data?.pageData ?? []);
       setTotal(response.data?.pageInfo?.totalItems ?? 0);
-    } catch (err) {
-      console.error("Error fetching lessons:", err);
-    } finally {
-      setLoading(false);
-    }
+    // } catch (err) {
+    //   console.error("Error fetching lessons:", err);
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   const handleTableChange = (pagination: any) => {
@@ -113,16 +113,42 @@ const LessonList = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      ellipsis: true, 
+      render: (text:string) => (
+        <span style={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-block' }}>
+          {text}
+        </span>
+      ),
     },
     {
       title: "Session Name",
       dataIndex: "session_name",
       key: "session_name",
+      ellipsis: true, 
+      render: (text:string) => (
+        <span style={{ maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-block' }}>
+          {text}
+        </span>
+      ),
     },
     {
       title: "Course Name",
       dataIndex: "course_name",
-      key: "course_name",
+      key: "name",
+      ellipsis: true,
+      render: (text: string) => (
+        <span
+          style={{
+            maxWidth: 150,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            display: "inline-block",
+          }}
+        >
+          {text}
+        </span>
+      ),
     },
     {
       title: "Media",
@@ -140,14 +166,20 @@ const LessonList = () => {
       title: "Type",
       dataIndex: "lesson_type",
       key: "lesson_type",
+      align: 'center',
       render: (lesson_type: LessonTypeEnum) => (
-        <Tag color="gray">{lesson_type}</Tag>
+        <Tag className="mx-auto "color="gray">{lesson_type}</Tag>
       ),
     },
     {
-      title: "Time",
+      title: "Time (min.)",
       dataIndex: "full_time",
       key: "full_time",
+      align: 'right',
+      ellipsis: true,
+      render: (time: number) => (
+        <div>{time}</div>
+      )
     },
   ];
 

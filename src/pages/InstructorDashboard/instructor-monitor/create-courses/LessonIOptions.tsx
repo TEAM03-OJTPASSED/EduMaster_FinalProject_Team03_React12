@@ -6,6 +6,7 @@ import {
   Checkbox,
   Col,
   Form,
+  FormInstance,
   FormProps,
   Input,
   Radio,
@@ -39,6 +40,7 @@ type LessonOptionsProps = {
   listSessions: Session[];
   listCourses: Course[];
   onCourseChange: (value: string) => void;
+  form: FormInstance<Lesson>
 };
 
 const LessonIOptions: React.FC<LessonOptionsProps> = ({
@@ -47,14 +49,14 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
   onFinished,
   listCourses,
   listSessions,
-  onCourseChange
+  onCourseChange,
+  form
 }) => {
   const [imageFileList, setImageFileList] = useState<UploadFile[]>([]);
   const [videoFileList, setVideoFileList] = useState<UploadFile[]>([]);
   const [visibility, setVisibility] = useState<
     "reading" | "video" | "assignment" | "image"
   >("reading");
-  const [form] = Form.useForm<Lesson>();
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | undefined>(
     initialValues?.video_url
   );
@@ -102,7 +104,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
       }); // Reset session selection
       onCourseChange(courseId);
     },
-    [form, listSessions, initialValues]
+    [form, initialValues]
   );
 
   const handleLessonType = () => {

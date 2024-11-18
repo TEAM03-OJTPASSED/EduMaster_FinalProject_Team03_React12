@@ -119,6 +119,21 @@ h3 {
   font-family: "Jost", sans-serif !important;
 }
 
+.disabled.ant-btn-variant-solid {
+  color: white !important;
+  border: var(--color-primary-default) !important;
+  background-color: gray !important;
+  font-family: "Jost", sans-serif !important;
+}
+
+.disabled.ant-btn-variant-solid:hover {
+  color: white !important;
+  border: var(--color-primary-default) !important;
+  background-color: gray !important;
+  font-family: "Jost", sans-serif !important;
+}
+
+
 
 
 .ant-btn-variant-solid:hover {
@@ -484,3 +499,4 @@ img {
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* Internet Explorer/Edge */
 }
+

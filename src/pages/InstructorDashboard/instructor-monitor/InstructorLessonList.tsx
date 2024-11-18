@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { Table, Card, Tag, TableProps, Button, Modal } from "antd";
+import { Table, Card, Tag, TableProps, Button, Modal, Tooltip, Form } from "antd";
 import {
-  DeleteOutlined,
-  EditOutlined,
+  DeleteFilled,
+  EditFilled,
   PlusCircleOutlined,
 } from "@ant-design/icons";
 
@@ -59,6 +59,7 @@ const initialLessonsParams: GetLessons = {
   },
 };
 
+
 const InstructorLessonList = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalCreateVisible, setIsModalCreateVisible] = useState(false);
@@ -71,6 +72,9 @@ const InstructorLessonList = () => {
   const [searchParams, setSearchParams] =
     useState<GetLessons>(initialLessonsParams);
   const [sessionSearchParams, setSessionSearchParams] = useState<GetSessions>(initialSessionsParams);
+
+  const [form] = Form.useForm<Lesson>();
+
 
 
 
@@ -94,6 +98,8 @@ const InstructorLessonList = () => {
 
   const handleCancel = () => {
     resetModalState();
+    form.resetFields();
+    console.log("cancelling")
   };
 
   const fetchCourses = async () => {
@@ -102,6 +108,7 @@ const InstructorLessonList = () => {
   };
 
   const fetchSessions = async () => {
+    console.log(sessionSearchParams)
     const response = await SessionService.getSessions(sessionSearchParams);
     setListSessions(response?.data?.pageData ?? []);
   };
@@ -232,21 +239,29 @@ const InstructorLessonList = () => {
       },
     },
     {
-      title: "Action",
+      title: "Actions",
       key: "action",
-      render: (_, record: Lesson) => (
-        <>
-          <Button
-            type="text"
-            icon={<DeleteOutlined style={{ color: "red" }} />}
-            onClick={() => handleDeleteLesson(record._id)}
-          />
-          <Button
-            type="text"
-            icon={<EditOutlined style={{ color: "blue" }} />}
-            onClick={() => showModal(record)}
-          />
-        </>
+      width: 70,
+      align: "center" as const,
+      fixed: "right" as const,
+      render: (record: Lesson) => (
+        <div className="flex justify-between">
+          <Tooltip title="Edit" className="!font-jost">
+            <Button
+              type="text"
+              icon={<EditFilled style={{ color: "blue" }} />}
+              onClick={() => showModal(record)}
+            />
+          </Tooltip>
+          <Tooltip title="Delete" className="!font-jost">
+
+            <Button
+              type="text"
+              icon={<DeleteFilled style={{ color: "red" }} />}
+              onClick={() => handleDeleteLesson(record._id)}
+            />
+          </Tooltip>
+        </div>
       ),
     },
   ];
@@ -276,7 +291,7 @@ const InstructorLessonList = () => {
     <Card>
       <h3 className="text-2xl my-5">Lesson Management</h3>
       <div className="flex justify-between">
-        <div className="flex justify-between gap-4 mb-5 overflow-hidden">
+        <div className="flex justify-between gap-4 overflow-hidden">
           <GlobalSearchUnit
             onSubmit={handleSearch}
             placeholder="Search by Lesson Name"
@@ -290,8 +305,7 @@ const InstructorLessonList = () => {
                   label: course.name,
                 })),
                 onChange: (value:string) => {
-                  setSessionSearchParams({...sessionSearchParams, searchCondition: {...searchParams.searchCondition, course_id: value}})
-                } 
+                  setSessionSearchParams({...sessionSearchParams, searchCondition: {...searchParams.searchCondition, course_id: value}})                } 
               },
               {
                 name: "session_id",
@@ -369,7 +383,7 @@ const InstructorLessonList = () => {
       <Modal
         title="Lesson Details"
         open={isModalVisible}
-        onCancel={handleCancel}
+        onCancel={() => handleCancel()}
         footer={null}
         forceRender
         width={1000}
@@ -377,7 +391,13 @@ const InstructorLessonList = () => {
       >
         {selectedLesson && (
           <LessonIOptions
-            onCourseChange={(value) => setSessionSearchParams({...sessionSearchParams, searchCondition: {...searchParams.searchCondition, course_id: value}})}
+            form={form}
+            onCourseChange={(value) => 
+              {
+                console.log("line 392")
+                setSessionSearchParams({...sessionSearchParams, searchCondition: {...searchParams.searchCondition, course_id: value}})
+              }
+            }
             listCourses={listCourses}
             listSessions={listSessions}
             onFinished={handleUpdateLesson}
@@ -390,7 +410,7 @@ const InstructorLessonList = () => {
       <Modal
         title={<h1 className="text-lg">Lesson Details</h1>}
         open={isModalCreateVisible}
-        onCancel={handleCancel}
+        onCancel={() => handleCancel()}
         footer={null}
         forceRender
         width={1200}
@@ -398,6 +418,7 @@ const InstructorLessonList = () => {
         destroyOnClose={true}
       >
         <LessonIOptions
+          form={form}
           onCourseChange={(value) => setSessionSearchParams({...sessionSearchParams, searchCondition: {...searchParams.searchCondition, course_id: value}})}
           onFinished={handleCreateLesson}
           mode="create"

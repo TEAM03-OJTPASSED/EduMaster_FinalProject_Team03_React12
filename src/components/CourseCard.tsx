@@ -37,7 +37,7 @@ const CourseCard: React.FC<{
   }, []);
 
   return (
-    <div className="group relative">
+    <div className="group relative cursor-pointer">
       <a href={`/course/${course._id}`} 
       onClick={(e) => {
         e.preventDefault();
@@ -151,7 +151,7 @@ const CourseCard: React.FC<{
             {!isInCart &&
               <Button
                 loading={loading}
-                className="font-jost w-full bg-primary text-primary-foreground hover:bg-primary/90 flex view-button ant-btn-variant-solid"
+                className="font-jost cursor-pointer w-full bg-primary text-primary-foreground hover:bg-primary/90 flex view-button ant-btn-variant-solid"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -163,9 +163,10 @@ const CourseCard: React.FC<{
             }
             {(isInCart && !course.is_purchased) &&
                 <Button
-                className="font-jost w-full bg-primary text-primary-foreground hover:bg-primary/90 flex view-button ant-btn-variant-solid"
+                className="font-jost cursor-pointer w-full bg-primary text-primary-foreground hover:bg-primary/90 flex view-button ant-btn-variant-solid"
                 onClick={(e) => {
                   e.preventDefault();
+                  e.stopPropagation();
                   navigate(`/cart/new`)
                 }}
               >
@@ -175,11 +176,11 @@ const CourseCard: React.FC<{
 
             {course.is_purchased &&
               <Button
-                className=  "font-jost w-full bg-primary text-primary-foreground hover:bg-primary/90 flex view-button ant-btn-variant-solid"
+                className= "font-jost cursor-pointer w-full bg-primary text-primary-foreground hover:bg-primary/90 flex view-button ant-btn-variant-solid"
                 onClick={(e) => {
                   e.preventDefault();
+                  e.stopPropagation();
                   navigate(`/course/${course._id}`)
-                  window.scrollTo(0, 0)
                 }}
               >
                 <FaBook className="text-white" size={18} /> Learn Now

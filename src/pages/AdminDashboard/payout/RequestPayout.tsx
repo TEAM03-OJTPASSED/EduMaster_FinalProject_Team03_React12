@@ -9,7 +9,6 @@ import {
   Input,
 } from "antd";
 import { CheckOutlined, CloseOutlined, EyeFilled } from "@ant-design/icons";
-import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 import {
   GetPayoutRequest,
@@ -21,6 +20,7 @@ import PayoutService from "../../../services/payout.service";
 import { PageInfo } from "../../../models/SearchInfo.model";
 import GlobalSearchUnit from "../../../components/GlobalSearchUnit";
 import { handleNotify } from "../../../utils/handleNotify";
+import { moneyFormatter } from "../../../utils/moneyFormatter";
 const TransactionListModal = React.lazy(
   () => import("../../../components/TransactionListModal")
 );
@@ -34,7 +34,7 @@ const AdminRequestPayout = () => {
   const [reasonVisible, setReasonVisible] = useState(false);
   const [reason, setReason] = useState("");
 
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [requestPayoutList, setRequestPayoutList] = useState<Payout[]>();
   const [currentRequestPayouts, setCurrentRequestPayouts] = useState<PageInfo>(
     {} as PageInfo
@@ -80,65 +80,69 @@ const AdminRequestPayout = () => {
       dataIndex: "payout_no",
       key: "payout_no",
       align: "center",
+      ellipsis: true
     },
     {
       title: "Instructor Name",
       dataIndex: "instructor_name",
       key: "instructor_name",
       align: "center",
+      ellipsis: true
     },
-
     {
-      title: "Balance Origin",
+      title: "Total",
       dataIndex: "balance_origin",
       key: "balance_origin",
       align: "center",
+      ellipsis: true,
       render: (balance : number) =>{
-        return <div>
-          {`$${balance}`}
+        return <div className="text-right">
+          {moneyFormatter(balance)}
         </div>
       }
     },
     {
-      title: "Balance Instructor Paid",
+      title: "Commission",
       dataIndex: "balance_instructor_paid",
       key: "balance_instructor_paid",
       align: "center",
+      ellipsis: true,
       render: (balance : number) =>{
-        return <div>
-          {`$${balance}`}
+        return <div className="text-right">
+          {moneyFormatter(balance)}
         </div>
       }
     },
     {
-      title: "Balance Instructor Received",
+      title: "Instructor Earnings",
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
       align: "center",
+      ellipsis: true,
       render: (balance : number) =>{
-        return <div>
-          {`$${balance}`}
+        return <div className="text-right">
+          {moneyFormatter(balance)}
         </div>
       }
     },
     {
-      title: "Created at",
-      dataIndex: "created_at",
-      key: "created_at",
-      render: (created_at) => {
-        return <div>{dayjs(created_at).format("DD/MM/YYYY")}</div>;
-      },
-      align: "center",
+      title: "Updated At",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      ellipsis: true,
+      render: (date: string) => new Date(date).toLocaleString(),
+      align: "center"
     },
     {
-      title: "View Transaction",
+      title: "Transactions",
       dataIndex: "view_transaction",
       key: "view_transaction",
       align: "center",
+      fixed: "right",
       render: (_, record: Payout) => {
         return (
           <div>
-            <Tooltip title="View Detail">
+            <Tooltip title="View Details">
             <Button
               className="text-red-600"
               icon={<EyeFilled />}
@@ -155,6 +159,7 @@ const AdminRequestPayout = () => {
       title: "Actions",
       key: "action",
       align: "center",
+      fixed: "right",
       render: (record: Payout) => (
         <Space size="middle">
           <Tooltip title="Accept">
@@ -200,8 +205,8 @@ const AdminRequestPayout = () => {
       status,
       comment: reason,
     };
-    setLoading(true);
-    try {
+    // setLoading(true);
+    // try {
       await PayoutService.updatePayoutStatus(record._id, formPreview);
       setRequestPayoutList((prevList) =>
         prevList?.filter((item) => item._id !== record._id)
@@ -210,9 +215,9 @@ const AdminRequestPayout = () => {
       handleNotify("Submit preview successfully", " ");
       setReasonVisible(false);
       console.log(formPreview);
-    } finally {
-      setLoading(false);
-    }
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   return (
