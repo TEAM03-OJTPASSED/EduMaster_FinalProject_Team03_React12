@@ -36,25 +36,24 @@ const CourseDetailPage = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchCourse(courseId);
-        if (data) {
-          setCourse(data.data);
-          console.log(data.data);
-          setSession(data.data.session_list);
-          sessionStorage.setItem("sessionIndex", "0");
-          sessionStorage.setItem("lessonIndex", "0");
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error("Error fetching course data:", error);
-        setLoading(false);
-        setError("login");
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchCourse(courseId);
+      if (data) {
+        setCourse(data.data);
+        setSession(data.data.session_list);
+        sessionStorage.setItem("sessionIndex", "0");
+        sessionStorage.setItem("lessonIndex", "0");
       }
-    };
+    } catch (error) {
+      setError("login");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchData();
   }, [courseId]);
 
@@ -70,7 +69,12 @@ const CourseDetailPage = () => {
     return (
       <div className="relative">
         <div className="inset-x-0 flex flex-col">
-          <Banner course={course} isPurchased={course.is_purchased} id={id} completed_lesson={user.completed_lesson}/>
+          <Banner
+            course={course}
+            isPurchased={course.is_purchased}
+            id={id}
+            completed_lesson={user.completed_lesson}
+          />
         </div>
         <Detail
           isEnrolled={true}
@@ -78,7 +82,7 @@ const CourseDetailPage = () => {
           session={session || undefined}
         />
         <div className="lg:w-2/3">
-          <LeaveAComment courseId={courseId} />
+          <LeaveAComment courseId={courseId} onCommentSuccess={fetchData} />
         </div>
         <DetailModal course={course} isPurchased={course.is_purchased} />
       </div>
