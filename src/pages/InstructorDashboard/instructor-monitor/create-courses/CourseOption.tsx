@@ -54,6 +54,9 @@ const CourseOption: React.FC<CourseInformationProps> = ({
   const [SelectPriceType, setSelectPriceType] = useState<CoursePriceType>(
     initializeValue?.price && initializeValue.price > 0 ? "Paid" : "Free"
   );
+  const [tagOptions, setTagOptions] = useState<
+    { value: string; label: string }[]
+  >([]);
 
   const [form] = Form.useForm<Course>();
 
@@ -85,6 +88,15 @@ const CourseOption: React.FC<CourseInformationProps> = ({
       );
     }
   }, [initializeValue, form, mode]);
+
+  const handleTagsChange = (value: string[]) => {
+    const uniqueOptions = Array.from(new Set(value)).map((item) => ({
+      value: item,
+      label: item,
+    }));
+    setTagOptions(uniqueOptions);
+    form.setFieldsValue({ tag: value });
+  };
 
   const handleImageChange: UploadProps["onChange"] = ({
     fileList: newFileList,
@@ -163,7 +175,7 @@ const CourseOption: React.FC<CourseInformationProps> = ({
           >
             <Select
               placeholder="Select Level"
-              options={(Object.values(LevelsEnum)).map((level) => ({
+              options={Object.values(LevelsEnum).map((level) => ({
                 value: level,
                 label: level,
               }))}
@@ -180,6 +192,16 @@ const CourseOption: React.FC<CourseInformationProps> = ({
           maxLength={200}
           style={{ height: "100px" }}
           placeholder="Course description"
+        />
+      </Form.Item>
+
+      <Form.Item label="Tags" name="tag">
+        <Select
+          mode="tags"
+          placeholder="Add tags"
+          onChange={handleTagsChange}
+          options={tagOptions}
+          style={{ width: "100%" }}
         />
       </Form.Item>
       <Form.Item
@@ -239,13 +261,22 @@ const CourseOption: React.FC<CourseInformationProps> = ({
                   onChange={handleVideoChange}
                   maxCount={1}
                   beforeUpload={(file) => {
-                const isSupportedFormat = ["video/mp4", "video/webm", "video/ogg", "video/mov"].includes(file.type);
-                if (!isSupportedFormat) {
-                  handleNotify("File format not supported","You can only upload MP4, WebM, MOV or OGG video files!", 'error');
-                }
-                return isSupportedFormat || Upload.LIST_IGNORE; 
-              }}
-            >
+                    const isSupportedFormat = [
+                      "video/mp4",
+                      "video/webm",
+                      "video/ogg",
+                      "video/mov",
+                    ].includes(file.type);
+                    if (!isSupportedFormat) {
+                      handleNotify(
+                        "File format not supported",
+                        "You can only upload MP4, WebM, MOV or OGG video files!",
+                        "error"
+                      );
+                    }
+                    return isSupportedFormat || Upload.LIST_IGNORE;
+                  }}
+                >
                   {videoFileList.length >= 1 ? null : (
                     <div>
                       <PlusOutlined />
