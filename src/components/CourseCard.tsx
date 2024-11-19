@@ -74,7 +74,14 @@ const CourseCard: React.FC<{
           }`}
         >
           <div className="flex-grow">
-            <a className="text-gray-500 text-sm mb-2" href={`profile/${course.instructor_id}`}>
+            <a className="text-gray-500 text-sm mb-2" 
+            href={`profile/${course.instructor_id}`} 
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              navigate(`profile/${course.instructor_id}`)
+            }
+            }>
               by {course.instructor_name}
             </a>
             <h2 className="text-base font-semibold  overflow-ellipsis overflow-hidden whitespace-nowrap transition group-hover:text-[#FFAB2D]">
