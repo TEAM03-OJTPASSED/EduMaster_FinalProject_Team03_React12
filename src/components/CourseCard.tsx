@@ -8,6 +8,8 @@ import { Course } from "../models/Course.model";
 import { FaStar } from "react-icons/fa6";
 import { useCustomNavigate } from "../hooks/customNavigate";
 import { moneyFormatter } from "../utils/moneyFormatter";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store/store";
 
 const CourseCard: React.FC<{
   course: Course;
@@ -17,6 +19,7 @@ const CourseCard: React.FC<{
 }> = ({ course, viewMode, index, onAddCartClick }) => {
   const [isMdScreen, setIsMdScreen] = useState(false);
   const [isInCart, setIsInCart] = useState(course.is_in_cart);
+  const { currentUser } = useSelector((state: RootState) => state.auth.login);
   const [loading, setLoading] = useState(false);
   const navigate = useCustomNavigate();
 
@@ -24,7 +27,10 @@ const CourseCard: React.FC<{
     setLoading(true);
     await onAddCartClick(course);
     setLoading(false);
-    setIsInCart(true);
+    if (currentUser.role) 
+      {
+        setIsInCart(true);
+      }
   }
 
   useEffect(() => {
@@ -74,7 +80,14 @@ const CourseCard: React.FC<{
           }`}
         >
           <div className="flex-grow">
-            <a className="text-gray-500 text-sm mb-2" href={`profile/${course.instructor_id}`}>
+            <a className="text-gray-500 text-sm mb-2" 
+            href={`profile/${course.instructor_id}`} 
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              navigate(`/profile/${course.instructor_id}`)
+            }
+            }>
               by {course.instructor_name}
             </a>
             <h2 className="text-base font-semibold  overflow-ellipsis overflow-hidden whitespace-nowrap transition group-hover:text-[#FFAB2D]">
