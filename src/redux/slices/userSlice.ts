@@ -6,6 +6,7 @@ import { SearchParamInterface } from "../../types/search.type";
 import {  APIResponseData } from "../../models/ApiReponse.model";
 import { UserService } from "../../services/user.service";
 import {  UserSearchParams } from "../../models/SearchInfo.model";
+import dayjs from "dayjs";
 
 interface initialStateInterface {
   register: {
@@ -112,10 +113,11 @@ const usersSlice = createSlice({
       state.previewProfile.loading = true;
       state.previewProfile.success = false;
     },
-    previewProfileFulfilled: (state,action) => {
+    previewProfileFulfilled: (state) => {
       state.previewProfile.loading = false;
       state.previewProfile.success = true;
-      state.requestedUser.listRequest = action.payload as APIResponseData<User>;
+    
+
     },
     previewProfileRejected: (state) => {
       state.previewProfile.loading = false;
@@ -159,7 +161,7 @@ const usersSlice = createSlice({
       .addCase(getUsersRequestData.fulfilled, (state, action) => {
         state.requestedUser.loading = false;
         state.requestedUser.success = true;
-        state.requestedUser.listRequest = action.payload as APIResponseData<User>;
+        state.requestedUser.listRequest = action.payload as unknown as APIResponseData<User>;
       })
       .addCase(getUsersRequestData.rejected, (state) => {
         state.requestedUser.loading = false;

@@ -80,14 +80,14 @@ const AdminRequestPayout = () => {
       dataIndex: "payout_no",
       key: "payout_no",
       align: "center",
-      ellipsis: true
+      ellipsis: true,
     },
     {
       title: "Instructor Name",
       dataIndex: "instructor_name",
       key: "instructor_name",
       align: "center",
-      ellipsis: true
+      ellipsis: true,
     },
     {
       title: "Total",
@@ -95,11 +95,9 @@ const AdminRequestPayout = () => {
       key: "balance_origin",
       align: "center",
       ellipsis: true,
-      render: (balance : number) =>{
-        return <div className="text-right">
-          {moneyFormatter(balance)}
-        </div>
-      }
+      render: (balance: number) => {
+        return <div className="text-right">{moneyFormatter(balance)}</div>;
+      },
     },
     {
       title: "Commission",
@@ -107,11 +105,9 @@ const AdminRequestPayout = () => {
       key: "balance_instructor_paid",
       align: "center",
       ellipsis: true,
-      render: (balance : number) =>{
-        return <div className="text-right">
-          {moneyFormatter(balance)}
-        </div>
-      }
+      render: (balance: number) => {
+        return <div className="text-right">{moneyFormatter(balance)}</div>;
+      },
     },
     {
       title: "Instructor Earnings",
@@ -119,11 +115,9 @@ const AdminRequestPayout = () => {
       key: "balance_instructor_received",
       align: "center",
       ellipsis: true,
-      render: (balance : number) =>{
-        return <div className="text-right">
-          {moneyFormatter(balance)}
-        </div>
-      }
+      render: (balance: number) => {
+        return <div className="text-right">{moneyFormatter(balance)}</div>;
+      },
     },
     {
       title: "Updated At",
@@ -131,7 +125,7 @@ const AdminRequestPayout = () => {
       key: "updated_at",
       ellipsis: true,
       render: (date: string) => new Date(date).toLocaleString(),
-      align: "center"
+      align: "center",
     },
     {
       title: "Transactions",
@@ -143,13 +137,12 @@ const AdminRequestPayout = () => {
         return (
           <div>
             <Tooltip title="View Details">
-            <Button
-              className="text-red-600"
-              icon={<EyeFilled />}
-              type="text"
-              onClick={() => handleViewTransaction(record)}
-            >
-            </Button>
+              <Button
+                className="text-red-600"
+                icon={<EyeFilled />}
+                type="text"
+                onClick={() => handleViewTransaction(record)}
+              ></Button>
             </Tooltip>
           </div>
         );
@@ -205,19 +198,13 @@ const AdminRequestPayout = () => {
       status,
       comment: reason,
     };
-    // setLoading(true);
-    // try {
-      await PayoutService.updatePayoutStatus(record._id, formPreview);
-      setRequestPayoutList((prevList) =>
-        prevList?.filter((item) => item._id !== record._id)
-      );
-      await fetchDataRequestPayout();
-      handleNotify("Submit preview successfully", " ");
-      setReasonVisible(false);
-      console.log(formPreview);
-    // } finally {
-    //   setLoading(false);
-    // }
+    await PayoutService.updatePayoutStatus(record._id, formPreview);
+    setRequestPayoutList((prevList) =>
+      prevList?.filter((item) => item._id !== record._id)
+    );
+    handleNotify("Submit preview successfully", " ");
+    setReasonVisible(false);
+    console.log(formPreview);
   };
 
   return (
@@ -271,7 +258,7 @@ const AdminRequestPayout = () => {
             key="submit"
             variant="solid"
             htmlType="submit"
-            style = {{ borderRadius: "15px" }}
+            style={{ borderRadius: "15px" }}
             onClick={() =>
               handleSubmitPreview(
                 PayoutStatusEnum.REJECTED,

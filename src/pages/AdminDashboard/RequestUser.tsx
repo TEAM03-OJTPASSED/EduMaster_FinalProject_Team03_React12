@@ -62,10 +62,10 @@ const RequestUser = () => {
   //   setUsers(
   //     flattenedUsers
   //       .slice()
-  //       .sort(
-  //         (a, b) =>
-  //           dayjs(b.updated_at).valueOf() - dayjs(a.updated_at).valueOf()
-  //       )
+        // .sort(
+        //   (a, b) =>
+        //     dayjs(b.updated_at).valueOf() - dayjs(a.updated_at).valueOf()
+        // )
   //   );
   //   setTotal(response.data?.pageInfo?.totalItems ?? 0);
   // };
@@ -88,7 +88,11 @@ const RequestUser = () => {
       status,
       comment: reason,
     };
-    await previewInstructor(formPreview, dispatch,listRequest.pageData as User[]);
+    // const listUserFilterAfterChange = listRequest.pageData?.sort(
+    //   (a, b) =>
+    //     dayjs(b.updated_at).valueOf() - dayjs(a.updated_at).valueOf()
+    // )
+    await previewInstructor(formPreview, dispatch);
     // await fetchUsers();
     // message.success("Submit preview successfully");
     setReasonVisible(false);

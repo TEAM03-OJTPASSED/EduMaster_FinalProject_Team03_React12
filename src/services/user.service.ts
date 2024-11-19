@@ -227,19 +227,18 @@ export const deleteUser = async (userId: string) => {
 export const previewInstructor = async (
   formData: any,
   dispatch: AppDispatch,
-  userList: User[]
 ) => {
   dispatch(previewProfilePending());
   try {
     const res = await putRequest(USER_API.PREVIEW_INSTRUCTOR, formData);
     message.success("Submit preview successfully");
-    console.log("res preview", res.data);
-    const filterUserList = userList
-      .slice()
-      .sort(
-        (a, b) => dayjs(b.updated_at).valueOf() - dayjs(a.updated_at).valueOf()
-      );
-    dispatch(previewProfileFulfilled(filterUserList));
+    console.log("res preview", res);
+    // const filterUserList = userList
+    //   .slice()
+    //   .sort(
+    //     (a, b) => dayjs(b.updated_at).valueOf() - dayjs(a.updated_at).valueOf()
+    //   );
+    dispatch(previewProfileFulfilled());
   } catch (error) {
     console.log(error);
     dispatch(previewProfileRejected());
