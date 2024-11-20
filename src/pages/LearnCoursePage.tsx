@@ -157,7 +157,7 @@ const LearnCoursePage = () => {
           );
           setSession((prevSessions: Session[] | null) => {
             if (!prevSessions) return null;
-            return prevSessions?.map((sessionItem: Session) => ({
+            return prevSessions.map((sessionItem: Session) => ({
               ...sessionItem,
               lesson_list: sessionItem.lesson_list.map((lessonItem: Lesson) =>
                 lessonItem._id === lesson._id
@@ -173,6 +173,14 @@ const LearnCoursePage = () => {
               ? { ...prevLesson, is_completed: !prevLesson.is_completed }
               : null
           );
+
+          // Update the user object in localStorage
+          const user = JSON.parse(localStorage.getItem("user") || "{}");
+          const updatedUser = {
+            ...user,
+            completed_lesson: [...(user.completed_lesson || []), lesson._id],
+          };
+          localStorage.setItem("user", JSON.stringify(updatedUser));
         }
       } catch (error) {
         console.error("Error marking lesson as completed:", error);
