@@ -51,7 +51,9 @@ const ProfilePage: React.FC = () => {
   const [totalMinutes, setTotalMinutes] = useState(0);
   const [loading, setLoading] = useState(true);
   const [coursesLoading, setCoursesLoading] = useState(true);
-  const { currentUser, token } = useSelector((state: RootState) => state.auth.login);
+  const { currentUser, token } = useSelector(
+    (state: RootState) => state.auth.login
+  );
   const [isSubscribed, setIsSubscribed] = useState<boolean | undefined>();
   const [loadingData, setLoadingData] = useState(true);
 
@@ -121,18 +123,18 @@ const ProfilePage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (userData.name && currentUser !== undefined ) {
+    if (userData.name && currentUser !== undefined) {
       checkSubscribed();
     } else if (currentUser === undefined && token === undefined) {
-      setIsSubscribed(false)
+      setIsSubscribed(false);
     }
-  },[userData, currentUser])
+  }, [userData, currentUser]);
 
   const checkSubscribed = async () => {
     if (token === null) {
       setIsSubscribed(false);
       return;
-    } 
+    }
 
     const response = await SubscriptionService.checkSubscription("");
     if (response.data?.pageData) {
