@@ -6,7 +6,6 @@ import { SearchParamInterface } from "../../types/search.type";
 import {  APIResponseData } from "../../models/ApiReponse.model";
 import { UserService } from "../../services/user.service";
 import {  UserSearchParams } from "../../models/SearchInfo.model";
-import dayjs from "dayjs";
 
 interface initialStateInterface {
   register: {

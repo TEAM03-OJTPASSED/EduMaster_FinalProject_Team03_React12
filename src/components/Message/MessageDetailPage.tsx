@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Avatar, Input } from "antd";
 import dayjs from "dayjs";
 import { Message, MessageSearchParams } from "../../models/Message.model";
-import { io } from "socket.io-client";
 import MESSAGE_SERVICE from "../../services/message.service";
+import { io } from "socket.io-client";
 
 const { TextArea } = Input;
 
@@ -68,7 +69,7 @@ const MessageDetailPage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       const res = await MESSAGE_SERVICE.getMessages();
-      setMessages(res)
+      setMessages(res.data?.listMessage || [])
     };
     fetchData();
   }, [messageSearchParams]);

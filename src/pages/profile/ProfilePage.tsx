@@ -55,7 +55,7 @@ const ProfilePage: React.FC = () => {
     (state: RootState) => state.auth.login
   );
   const [isSubscribed, setIsSubscribed] = useState<boolean | undefined>();
-  const [loadingData, setLoadingData] = useState(true);
+  // const [loadingData, setLoadingData] = useState(true);
 
   const showModal = (image: string) => {
     setModalImage(image);
@@ -118,7 +118,7 @@ const ProfilePage: React.FC = () => {
   // Function to check if both data are loaded
   const checkDataLoaded = () => {
     if (!loading && !coursesLoading) {
-      setLoadingData(false); // When both data sets are loaded
+      return
     }
   };
 
