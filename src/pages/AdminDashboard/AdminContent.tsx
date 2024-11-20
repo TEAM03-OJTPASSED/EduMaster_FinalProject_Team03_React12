@@ -18,10 +18,11 @@ import CategoryService from "../../services/category.service";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import { User } from "../../models/UserModel";
+import CountUp from "react-countup";
 
 interface InfoCardProps {
   title: string;
-  value: string | number;
+  value: React.ReactNode; 
   icon: React.ReactNode;
   gradient: string;
   color: string;
@@ -34,6 +35,7 @@ const InfoCard: React.FC<InfoCardProps> = ({
   gradient,
   color,
 }) => (
+
   <Col className="gutter-row" xs={24} sm={12} md={8} lg={6}>
     <Card
       style={{
@@ -189,7 +191,6 @@ const AdminContent = () => {
     }
   }, [pageNum, pageSize]);
 
-
   useEffect(() => {
     fetchCounts();
     fetchPayout();
@@ -199,7 +200,6 @@ const AdminContent = () => {
     setPageNum(pagination.current);
     setPageSize(pagination.pageSize);
   };
-
 
   const columns = [
     {
@@ -248,35 +248,37 @@ const AdminContent = () => {
       <Row gutter={16}>
         <InfoCard
           title="Total Balance"
-          value={`${counts.totalBalance}$`}
+          value={<CountUp start={0} end={counts.totalBalance} duration={2} />}
           icon={<WalletOutlined style={{ fontSize: "24px", color: "#fff" }} />}
           gradient="linear-gradient(to bottom, #c6f6d5, #f0fff4)"
           color="#38a169"
         />
         <InfoCard
           title="Total Categories"
-          value={`${counts.categories}`}
+          value={<CountUp start={0} end={counts.categories} duration={2} />}
           icon={<TagsOutlined style={{ fontSize: "24px", color: "#fff" }} />}
           gradient="linear-gradient(to bottom, #fed7d7, #fff5f5)"
           color="#e53e3e"
         />
         <InfoCard
           title="Total Courses"
-          value={`${counts.courses}`}
-          icon={<SnippetsOutlined style={{ fontSize: "24px", color: "#fff" }} />}
+          value={<CountUp start={0} end={counts.courses} duration={2} />}
+          icon={
+            <SnippetsOutlined style={{ fontSize: "24px", color: "#fff" }} />
+          }
           gradient="linear-gradient(to bottom, #bee3f8, #ebf8ff)"
           color="#4299e1"
         />
         <InfoCard
           title="Total Users"
-          value={`${counts.users}`}
+          value={<CountUp start={0} end={counts.users} duration={2} />}
           icon={<UserOutlined style={{ fontSize: "24px", color: "#fff" }} />}
           gradient="linear-gradient(to bottom, #fed7e2, #fff5f7)"
           color="#d53f8c"
         />
         <InfoCard
           title="Total Blogs"
-          value={`${counts.blogs}`}
+          value={<CountUp start={0} end={counts.blogs} duration={2} />}
           icon={<CommentOutlined style={{ fontSize: "24px", color: "#fff" }} />}
           gradient="linear-gradient(to bottom, #fff99e, #fef9c3)"
           color="#d69e2e"
