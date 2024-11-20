@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Avatar, Input } from "antd";
 import dayjs from "dayjs";
 import { Message, MessageSearchParams } from "../../models/Message.model";
 import MESSAGE_SERVICE from "../../services/message.service";
-import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
 
 const { TextArea } = Input;
 
@@ -22,12 +21,16 @@ const users = [
 const MessageDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   // const id = "6712949129117a114223f294"
-  const  [messageSearchParams, setMessageSearchParams]  =
+  const  [messageSearchParams]  =
     useState<MessageSearchParams>({
       receiver_id: "6710e1eba31f13a6d0a5e76a",
       content: "",
-    });
-  const [message, setMessage] = useState<Message>({} as Message);
+  });
+
+  // const [message, setMessage] = useState<Message>({} as Message);
+
+
+
   const [messages, setMessages] = useState<Message[]>([]);
   // const messages = [
   //   ...listMessage
