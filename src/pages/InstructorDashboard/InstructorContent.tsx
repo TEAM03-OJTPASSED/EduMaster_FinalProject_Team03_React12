@@ -14,6 +14,8 @@ import { RootState } from "../../redux/store/store";
 import { UserService } from "../../services/user.service";
 import { User } from "../../models/UserModel";
 import { useSelector } from "react-redux";
+import SubscriptionService from "../../services/subscription.service";
+import { GlobalSearchParam } from "../../models/SearchInfo.model";
 
 // Tạo một component Card để tái sử dụng
 
@@ -78,6 +80,7 @@ const InstructorContent = () => {
   const [total, setTotal] = useState(0);
   const { currentUser } = useSelector((state: RootState) => state.auth.login);
   const [counts, setCounts] = useState({ courses: 0, totalBalance: 0 });
+  const [totalSubcriptions, setTotalSubcriptions] = useState<number>(0);
 
   const defaultPayload = {
     searchCondition: {
@@ -167,9 +170,31 @@ const InstructorContent = () => {
     }
   }, [pageNum, pageSize]);
 
+  const fetchSubscribers = async () => {
+    try {
+      const searchParams: GlobalSearchParam = {
+        searchCondition: {
+          keyword: "",
+          is_deleted: false,
+        },
+        pageInfo: {
+          pageNum: 1,
+          pageSize: 10,
+        },
+      };
+      const response = await SubscriptionService.getSubscribers(searchParams);
+      if (response?.success) {
+        setTotalSubcriptions(response.data?.pageInfo?.totalItems || 0);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     fetchCounts();
     fetchPayout();
+    fetchSubscribers();
   }, [fetchCounts, fetchPayout]);
 
   const handleTableChange = (pagination: any) => {
@@ -224,7 +249,7 @@ const InstructorContent = () => {
       <Row gutter={16}>
         <InfoCard
           title="Total Balance"
-          value={`${counts.totalBalance}$`}
+          value={`${counts.totalBalance.toFixed(2)}$`}
           icon={<WalletOutlined style={{ fontSize: "24px", color: "#fff" }} />}
           gradient="linear-gradient(to bottom, #c6f6d5, #f0fff4)"
           color="#38a169"
@@ -240,7 +265,7 @@ const InstructorContent = () => {
         />
         <InfoCard
           title="Total Subscribers"
-          value={249}
+          value={totalSubcriptions}
           icon={<UserOutlined style={{ fontSize: "24px", color: "#fff" }} />}
           gradient="linear-gradient(to bottom, #fed7e2, #fff5f7)"
           color="#d53f8c"

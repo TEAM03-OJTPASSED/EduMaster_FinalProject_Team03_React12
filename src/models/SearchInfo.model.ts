@@ -85,6 +85,10 @@ export interface ReviewSearchCondition {
   is_deleted?: boolean
 }
 
+export interface SubcriptionSearchParams {
+  searchCondition: SearchCondition;
+  pageInfo: PageInfo;
+}
 export interface GlobalSearchParam {
   searchCondition: SearchCondition;
   pageInfo: PageInfo;
