@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Input, Button, Pagination, Card, Tabs } from "antd";
-import { SearchOutlined, UserOutlined } from "@ant-design/icons";
+import { SearchOutlined } from "@ant-design/icons";
 import { useCustomNavigate } from "../../hooks/customNavigate";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
