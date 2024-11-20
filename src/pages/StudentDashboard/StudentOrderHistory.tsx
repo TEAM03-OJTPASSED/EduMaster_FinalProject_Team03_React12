@@ -102,7 +102,7 @@ const StudentOrderHistory = () => {
 
     },
     {
-      title: "Price Paid",
+      title: "Price",
       dataIndex: "price",
       key: "price",
       ellipsis: true,
@@ -114,6 +114,14 @@ const StudentOrderHistory = () => {
       dataIndex: "discount",
       key: "discount",
       render: (discount: number) => `${discount}%`,
+    },
+    {
+      title: "Price Paid",
+      dataIndex: "price_paid",
+      key: "price_paid",
+      ellipsis: true,
+
+      render: (price: number) => `$${price.toFixed(2)}`,
     },
     {
       title: "Instructor Name",
@@ -189,10 +197,13 @@ const StudentOrderHistory = () => {
               <strong>Cart No:</strong> {selectedCart.cart_no}
             </p>
             <p>
-              <strong>Price Paid:</strong> ${selectedCart.price.toFixed(2)}
+              <strong>Price:</strong> ${selectedCart.price.toFixed(2)}
             </p>
             <p>
               <strong>Discount:</strong> {selectedCart.discount}%
+            </p>
+            <p>
+              <strong>Price Paid:</strong> ${selectedCart.price_paid.toFixed(2)}
             </p>
             <p>
               <strong>Instructor Name:</strong> {selectedCart.instructor_name}

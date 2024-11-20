@@ -247,7 +247,7 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
               { required: true, message: "Please enter your phone number" },
             ]}
           >
-            <Input placeholder="Phone Number" />
+            <Input type="number" placeholder="Phone Number" />
           </Form.Item>
         </Col>
       </Row>

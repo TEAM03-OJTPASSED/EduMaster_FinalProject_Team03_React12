@@ -53,7 +53,7 @@ const ProfilePage: React.FC = () => {
   const [coursesLoading, setCoursesLoading] = useState(true);
   const { currentUser } = useSelector((state: RootState) => state.auth.login);
   const [isSubscribed, setIsSubscribed] = useState<boolean | undefined>();
-
+  const [loadingData, setLoadingData] = useState(true);
 
   const showModal = (image: string) => {
     setModalImage(image);
@@ -71,23 +71,78 @@ const ProfilePage: React.FC = () => {
         setUserData(res?.data as User);
       } finally {
         setLoading(false);
+        checkDataLoaded();
       }
     };
+
+    const fetchCourseById = async () => {
+      try {
+        const searchParam: GetCourses = {
+          searchCondition: {
+            keyword: "",
+            category_id: "",
+            user_id: id,
+            is_deleted: false,
+          },
+          pageInfo: {
+            pageNum: 1,
+            pageSize: 10,
+          },
+        };
+        const res = await ClientService.getCourses(searchParam);
+        const courses = res.data?.pageData as Course[];
+        setUserCourse(courses);
+        const students = courses.reduce(
+          (acc, course) => acc + course.enrolled,
+          0
+        );
+        const minutes = courses.reduce(
+          (acc, course) => acc + course.full_time,
+          0
+        );
+        setTotalStudents(students);
+        setTotalMinutes(minutes);
+      } finally {
+        setCoursesLoading(false);
+        checkDataLoaded();
+      }
+    };
+
+    // Call both API fetches
     fetchData();
     fetchCourseById();
   }, [id]);
 
+  // Function to check if both data are loaded
+  const checkDataLoaded = () => {
+    if (!loading && !coursesLoading) {
+      setLoadingData(false); // When both data sets are loaded
+    }
+  };
+
   useEffect(() => {
     if (userData.name) {
       checkSubscribed();
-    } 
-  },[userData])
+    }
+  }, [userData]);
 
   const checkSubscribed = async () => {
     const response = await SubscriptionService.checkSubscription("");
     if (response.data?.pageData) {
-      setIsSubscribed(Boolean(response.data.pageData.find(object => object.instructor_name === userData.name)));
-      console.log((Boolean(response.data.pageData.find(object => object.instructor_name === userData.name))));
+      setIsSubscribed(
+        Boolean(
+          response.data.pageData.find(
+            (object) => object.instructor_name === userData.name
+          )
+        )
+      );
+      console.log(
+        Boolean(
+          response.data.pageData.find(
+            (object) => object.instructor_name === userData.name
+          )
+        )
+      );
     }
   };
 
@@ -124,7 +179,6 @@ const ProfilePage: React.FC = () => {
       setCoursesLoading(false);
     }
   };
-
 
   const handleTabChange = (activeKey: string) => {
     if (activeKey === "2" && userCourse.length === 0) {
@@ -236,25 +290,38 @@ const ProfilePage: React.FC = () => {
                 }
                 description={course.description}
               />
-              <div className="flex flex-wrap gap-2 mt-2 pb-6">
-                <Tag color="orange">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mt-2 pb-6">
+                <Tag
+                  color="orange"
+                  className="max-w-xs truncate h-12 py-2 text-lg flex items-center"
+                >
                   Created at: {dayjs(course.created_at).format("DD/MM/YYYY")}
                 </Tag>
-                <Tag color="green">Level: {course.level}</Tag>
-                <Tag className="bg-orange-500 text-white font-jost">
+                <Tag
+                  color="green"
+                  className="max-w-xs truncate h-12 py-2 text-lg flex items-center"
+                >
+                  Level: {course.level}
+                </Tag>
+                <Tag className="bg-orange-500 text-white font-jost max-w-xs truncate h-12 py-2 text-lg flex items-center">
                   {course.category_name}
                 </Tag>
-                <Tag className="bg-gray-500 text-white font-jost">
+                <Tag className="bg-gray-500 text-white font-jost max-w-xs truncate h-12 py-2 text-lg text-right">
                   {course.full_time} minutes
                 </Tag>
-                <Tag color="blue" className="text-white font-jost">
+                <Tag
+                  color="blue"
+                  className="text-white font-jost max-w-xs truncate h-12 py-2 text-lg text-right"
+                >
                   {course.enrolled} enrolled
                 </Tag>
-                <Tag className="bg-blue-800 text-white font-jost flex items-center">
-                  {renderStars(course.average_rating)}
-                  <span className="ml-2">
-                    {course.average_rating.toFixed(1)} rating
-                  </span>
+                <Tag className="bg-blue-800 text-white font-jost flex items-center max-w-xs truncate h-12 py-2 text-lg text-right">
+                  <div className="flex items-center justify-end w-full">
+                    {renderStars(course.average_rating)}
+                    <span className="ml-2">
+                      {course.average_rating.toFixed(1)} rating
+                    </span>
+                  </div>
                 </Tag>
               </div>
             </div>

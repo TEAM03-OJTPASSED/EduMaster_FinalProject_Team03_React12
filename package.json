@@ -45,6 +45,8 @@
     "react-toastify": "^10.0.6",
     "reactjs-social-login": "^2.6.3",
     "redux": "^5.0.1",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "uuid": "^10.0.0"
   },
   "devDependencies": {

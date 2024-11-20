@@ -71,7 +71,9 @@ import StudentOrderHistory from "./pages/StudentDashboard/StudentOrderHistory";
 import VerifySuccessToken from "./pages/AuthPage/VerifyToken";
 import { gapi } from "gapi-script";
 import AwaitingPayout from "./pages/InstructorDashboard/instructor-management/payout/AwaitingPayout";
-import InstructorContent1 from "./pages/InstructorDashboard/subscription/TEST";
+import MessageLayout from "./components/Message/MessageLayout";
+import MessageDetailPage from "./components/Message/MessageDetailPage";
+import MessageContent from "./components/Message/MessageContent";
 
 function App() {
   useEffect(() => {
@@ -183,8 +185,9 @@ function App() {
                 ></ProtectedRoute>
               }
             >
-              <Route element={<InstructorLayout />}>
-                <Route index element={<InstructorContent1 />} />
+              <Route element={<MessageLayout />}>
+              <Route index element={<MessageContent />}/>
+                <Route element={<MessageDetailPage />} path="/message/:id"/>
               </Route>
             </Route>
 

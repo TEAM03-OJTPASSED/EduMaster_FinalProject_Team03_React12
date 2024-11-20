@@ -24,7 +24,7 @@ const menuItems = [
   {
     key: "management",
     icon: <BarChartOutlined />,
-    label: "Management",
+    label: "Management",  
     children: [
       {
         key: "3-1",
