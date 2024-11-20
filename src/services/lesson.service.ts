@@ -28,6 +28,8 @@ const LessonService = {
     deleteLesson(lessonId: string): Promise<ApiResponse> {
         return deleteRequest(LESSON_API.DELETE_LESSON(lessonId));
     }
+
+    
 };
 
 export default LessonService;
