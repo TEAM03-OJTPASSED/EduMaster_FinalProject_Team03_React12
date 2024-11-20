@@ -21,12 +21,17 @@ import { PageInfo } from "../../../../models/SearchInfo.model";
 import { Category, GetCategories } from "../../../../models/Category.model";
 import CategoryService from "../../../../services/category.service";
 import GlobalSearchUnit from "../../../../components/GlobalSearchUnit";
-import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
+import { CheckOutlined, CloseOutlined, EyeFilled } from "@ant-design/icons";
 import { ellipsisText } from "../../../../utils/ellipsisText";
+import { PendingCourseDetails } from "../../../../utils/LazyRouter";
 
 const PendingCourseList: React.FC = () => {
+  // View courses modal
+  const [courseDetailVisible, setCourseDetailVisible] =
+    useState<boolean>(false);
+
   // State variables
-  const [loading, setLoading] = useState(false);
+
   const [categoryFilter, setCategoryFilter] = useState<Category[]>([]);
   const [reasonReject, setReasonReject] = useState<string>("");
   const [reasonVisible, setReasonVisible] = useState<boolean>(false);
@@ -50,34 +55,24 @@ const PendingCourseList: React.FC = () => {
 
   // Fetch data functions
   const fetchDataCourse = async () => {
-    setLoading(true);
-    try {
-      const res = await CourseService.getCourses(courseSearchParam);
-      setCoursePendingList(res?.data?.pageData as Course[]);
-      setCurrentCourses(res?.data?.pageInfo as PageInfo);
-    } finally {
-      setLoading(false);
-    }
+    const res = await CourseService.getCourses(courseSearchParam);
+    setCoursePendingList(res?.data?.pageData as Course[]);
+    setCurrentCourses(res?.data?.pageInfo as PageInfo);
   };
 
   const fetchCategories = async () => {
-    setLoading(true);
-    try {
-      const categorySearchParam: GetCategories = {
-        searchCondition: {
-          keyword: "",
-          is_deleted: false,
-        },
-        pageInfo: {
-          pageNum: 1,
-          pageSize: 100,
-        },
-      };
-      const res = await CategoryService.getCategories(categorySearchParam);
-      setCategoryFilter(res?.data?.pageData as Category[]);
-    } finally {
-      setLoading(false);
-    }
+    const categorySearchParam: GetCategories = {
+      searchCondition: {
+        keyword: "",
+        is_deleted: false,
+      },
+      pageInfo: {
+        pageNum: 1,
+        pageSize: 100,
+      },
+    };
+    const res = await CategoryService.getCategories(categorySearchParam);
+    setCategoryFilter(res?.data?.pageData as Category[]);
   };
 
   // Fetch data on initial load and when courseSearchParam changes
@@ -132,6 +127,11 @@ const PendingCourseList: React.FC = () => {
       title: "Price",
       dataIndex: "price",
       key: "price",
+      render: (balance : number) =>{
+        return <div>
+          {`$${balance}`}
+        </div>
+      }
     },
     {
       title: "Discount",
@@ -144,6 +144,7 @@ const PendingCourseList: React.FC = () => {
     {
       title: "Actions",
       key: "action",
+
       render: (record: Course) => (
         <Space size="middle">
           <Tooltip title="Accept">
@@ -163,10 +164,23 @@ const PendingCourseList: React.FC = () => {
               onClick={() => handleShowReason(record)}
             />
           </Tooltip>
+          <Tooltip title="View Detail">
+            <Button
+              className="text-red-600"
+              icon={<EyeFilled />}
+              type="text"
+              onClick={() => handleShowCourseDetail(record)}
+            />
+          </Tooltip>
         </Space>
       ),
     },
   ];
+
+  const handleShowCourseDetail = (record: Course) => {
+    setCourseDetailVisible(true);
+    setCurrentCourse(record);
+  };
 
   // Handle modal display
   const handleShowReason = (record: Course) => {
@@ -199,7 +213,9 @@ const PendingCourseList: React.FC = () => {
     };
     await CourseService.updateCourseStatus(formAction);
     message.success("Status updated successfully");
-    setCoursePendingList((pendingCourses) => pendingCourses.filter((item)=> item._id !== course._id))
+    setCoursePendingList((pendingCourses) =>
+      pendingCourses.filter((item) => item._id !== course._id)
+    );
     setReasonVisible(false);
     setReasonReject(""); // Reset the reason when the modal closes
   };
@@ -242,7 +258,6 @@ const PendingCourseList: React.FC = () => {
           bordered
           style={{ borderRadius: "8px" }}
           scroll={{ x: true }}
-          loading={loading}
         />
       </Card>
       <Modal
@@ -267,6 +282,16 @@ const PendingCourseList: React.FC = () => {
           style={{ height: "100px" }}
           placeholder="Comment here..."
         />
+      </Modal>
+      {/* View Course Details */}
+      <Modal
+        title="Course Detail"
+        width={1000}
+        open={courseDetailVisible}
+        onCancel={() => setCourseDetailVisible(false)}
+        footer={null}
+      >
+        <PendingCourseDetails course_item={currentCourse} />
       </Modal>
     </div>
   );

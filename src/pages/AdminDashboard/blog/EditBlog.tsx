@@ -150,7 +150,7 @@ const EditBlog: React.FC<EditBlogProps> = ({ initialValues, onSuccess }) => {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" block>
+          <Button type="primary" htmlType="submit" block style={{ borderRadius: "15px" }}>
             Update Blog
           </Button>
         </Form.Item>

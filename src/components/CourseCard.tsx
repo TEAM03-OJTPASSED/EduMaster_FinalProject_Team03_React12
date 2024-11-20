@@ -7,6 +7,9 @@ import { TiUserOutline } from "react-icons/ti";
 import { Course } from "../models/Course.model";
 import { FaStar } from "react-icons/fa6";
 import { useCustomNavigate } from "../hooks/customNavigate";
+import { moneyFormatter } from "../utils/moneyFormatter";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store/store";
 
 const CourseCard: React.FC<{
   course: Course;
@@ -16,7 +19,19 @@ const CourseCard: React.FC<{
 }> = ({ course, viewMode, index, onAddCartClick }) => {
   const [isMdScreen, setIsMdScreen] = useState(false);
   const [isInCart, setIsInCart] = useState(course.is_in_cart);
+  const { currentUser } = useSelector((state: RootState) => state.auth.login);
+  const [loading, setLoading] = useState(false);
   const navigate = useCustomNavigate();
+
+  const handleAddCart = async () => { 
+    setLoading(true);
+    await onAddCartClick(course);
+    setLoading(false);
+    if (currentUser.role) 
+      {
+        setIsInCart(true);
+      }
+  }
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 992px)");
@@ -28,8 +43,12 @@ const CourseCard: React.FC<{
   }, []);
 
   return (
-    <div className="group relative">
-      <a href={`/course/${course._id}`}>
+    <div className="group relative cursor-pointer">
+      <a href={`/course/${course._id}`} 
+      onClick={(e) => {
+        e.preventDefault();
+        navigate(`/course/${course._id}`);
+      }}>
         <Card
           hoverable
           styles={{
@@ -61,7 +80,14 @@ const CourseCard: React.FC<{
           }`}
         >
           <div className="flex-grow">
-            <a className="text-gray-500 text-sm mb-2" href={`profile/${course.instructor_id}`}>
+            <a className="text-gray-500 text-sm mb-2" 
+            href={`profile/${course.instructor_id}`} 
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              navigate(`/profile/${course.instructor_id}`)
+            }
+            }>
               by {course.instructor_name}
             </a>
             <h2 className="text-base font-semibold  overflow-ellipsis overflow-hidden whitespace-nowrap transition group-hover:text-[#FFAB2D]">
@@ -94,7 +120,7 @@ const CourseCard: React.FC<{
             <div className="flex justify-between items-center">
               <span className="text-lg font-bold text-orange-500">
                 {typeof course.price === "number"
-                  ? `$${course.price.toFixed(0)}`
+                  ? moneyFormatter(course.price)
                   : course.price}
               </span>
               <Button type="link" className="text-blue-600 hover:text-blue-800">
@@ -137,11 +163,12 @@ const CourseCard: React.FC<{
             </ul>
             {!isInCart &&
               <Button
-                className="font-jost w-full bg-primary text-primary-foreground hover:bg-primary/90 flex view-button ant-btn-variant-solid"
+                loading={loading}
+                className="font-jost cursor-pointer w-full bg-primary text-primary-foreground hover:bg-primary/90 flex view-button ant-btn-variant-solid"
                 onClick={(e) => {
                   e.preventDefault();
-                  onAddCartClick(course);
-                  setIsInCart(true);
+                  e.stopPropagation();
+                  handleAddCart()
                 }}
               >
                 <FaShoppingCart className="text-white" size={18} /> Add to cart
@@ -149,9 +176,10 @@ const CourseCard: React.FC<{
             }
             {(isInCart && !course.is_purchased) &&
                 <Button
-                className="font-jost w-full bg-primary text-primary-foreground hover:bg-primary/90 flex view-button ant-btn-variant-solid"
+                className="font-jost cursor-pointer w-full bg-primary text-primary-foreground hover:bg-primary/90 flex view-button ant-btn-variant-solid"
                 onClick={(e) => {
                   e.preventDefault();
+                  e.stopPropagation();
                   navigate(`/cart/new`)
                 }}
               >
@@ -161,11 +189,11 @@ const CourseCard: React.FC<{
 
             {course.is_purchased &&
               <Button
-                className=  "font-jost w-full bg-primary text-primary-foreground hover:bg-primary/90 flex view-button ant-btn-variant-solid"
+                className= "font-jost cursor-pointer w-full bg-primary text-primary-foreground hover:bg-primary/90 flex view-button ant-btn-variant-solid"
                 onClick={(e) => {
                   e.preventDefault();
+                  e.stopPropagation();
                   navigate(`/course/${course._id}`)
-                  window.scrollTo(0, 0)
                 }}
               >
                 <FaBook className="text-white" size={18} /> Learn Now

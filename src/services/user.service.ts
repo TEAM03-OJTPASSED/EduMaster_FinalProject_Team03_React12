@@ -19,6 +19,8 @@ import {
 import { ApiResponse, APIResponseData } from "../models/ApiReponse.model";
 import { UserSearchParams } from "../models/SearchInfo.model";
 import { handleNotify } from "../utils/handleNotify";
+import dayjs from "dayjs";
+import { message } from "antd";
 const BASE_URL = "/api/users";
 
 export const UserService = {
@@ -29,7 +31,7 @@ export const UserService = {
     return postRequest(USER_API.GET_USERS, params);
   },
   getUser(userId: string): Promise<ApiResponse<APIResponseData<User[]>>> {
-    return getRequest(USER_API.GET_USER(userId));
+    return getRequest(USER_API.GET_USER(userId), false);
   },
   createUser(param: User): Promise<ApiResponse<User>> {
     return postRequest<User>(USER_API.CREATE_USER, param)
@@ -224,12 +226,18 @@ export const deleteUser = async (userId: string) => {
 
 export const previewInstructor = async (
   formData: any,
-  dispatch: AppDispatch
+  dispatch: AppDispatch,
 ) => {
   dispatch(previewProfilePending());
   try {
     const res = await putRequest(USER_API.PREVIEW_INSTRUCTOR, formData);
-    console.log("res preview", res.data);
+    message.success("Submit preview successfully");
+    console.log("res preview", res);
+    // const filterUserList = userList
+    //   .slice()
+    //   .sort(
+    //     (a, b) => dayjs(b.updated_at).valueOf() - dayjs(a.updated_at).valueOf()
+    //   );
     dispatch(previewProfileFulfilled());
   } catch (error) {
     console.log(error);

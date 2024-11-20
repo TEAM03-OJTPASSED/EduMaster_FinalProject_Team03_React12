@@ -6,22 +6,19 @@ import {
   Space,
   Card,
   Modal,
-  message,
-  Spin,
   FormProps,
   Tooltip,
-  TableColumnType,
+  TableProps,
 } from "antd";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 
-import { previewInstructor, UserService } from "../../services/user.service";
+import { previewInstructor } from "../../services/user.service";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store/store";
 import { User } from "../../models/UserModel";
 import { UserSearchParams } from "../../models/SearchInfo.model";
 import GlobalSearchUnit from "../../components/GlobalSearchUnit";
-import { ColumnType } from "antd/es/table";
-
+import { getUsersRequestData } from "../../redux/slices/userSlice";
 const initializeSearchParam: UserSearchParams = {
   searchCondition: {
     keyword: "",
@@ -37,31 +34,43 @@ const RequestUser = () => {
   const { loading } = useSelector(
     (state: RootState) => state.users.previewProfile
   );
-
+  const { listRequest } = useSelector(
+    (state: RootState) => state.users.requestedUser
+  );
   const [reasonVisible, setReasonVisible] = useState(false);
-  const [users, setUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [reason, setReason] = useState("");
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [total, setTotal] = useState(0);
   const [searchParams, setSearchParams] = useState<UserSearchParams>(
     initializeSearchParam
   );
 
-  const fetchUsers = async () => {
-    const response = await UserService.getUsers(searchParams);
-    const responseData = response.data?.pageData;
-    const flattenedUsers: User[] = Array.isArray(responseData)
-      ? responseData.flat()
-      : [];
-    setUsers(flattenedUsers);
-    setTotal(response.data?.pageInfo?.totalItems ?? 0);
-  };
+  useEffect(()=>{
+    dispatch(getUsersRequestData(searchParams))
+  },[searchParams])
 
-  useEffect(() => {
-    fetchUsers();
-  }, [searchParams]);
+
+  // const fetchUsers = async () => {
+  //   const response = await UserService.getUsers(searchParams);
+  //   const responseData = response.data?.pageData;
+
+  //   const flattenedUsers: User[] = Array.isArray(responseData)
+  //     ? responseData.flat()
+  //     : [];
+
+  //   setUsers(
+  //     flattenedUsers
+  //       .slice()
+        // .sort(
+        //   (a, b) =>
+        //     dayjs(b.updated_at).valueOf() - dayjs(a.updated_at).valueOf()
+        // )
+  //   );
+  //   setTotal(response.data?.pageInfo?.totalItems ?? 0);
+  // };
+
+
 
   const handleTableChange = (pagination: any) => {
     setPageNum(pagination.current);
@@ -79,9 +88,15 @@ const RequestUser = () => {
       status,
       comment: reason,
     };
+    // const listUserFilterAfterChange = listRequest.pageData?.sort(
+    //   (a, b) =>
+    //     dayjs(b.updated_at).valueOf() - dayjs(a.updated_at).valueOf()
+    // )
     await previewInstructor(formPreview, dispatch);
-    message.success("Submit preview successfully");
+    // await fetchUsers();
+    // message.success("Submit preview successfully");
     setReasonVisible(false);
+ 
     console.log(formPreview);
   };
 
@@ -95,7 +110,7 @@ const RequestUser = () => {
     }));
   };
 
-  const columns: (ColumnType<User> | TableColumnType<User>)[] = [
+  const columns: TableProps<User>["columns"] = [
     {
       title: "Name",
       dataIndex: "name",
@@ -106,11 +121,11 @@ const RequestUser = () => {
       dataIndex: "avatar_url",
       key: "avatar_url",
       render: (avatar_url: string) => (
-        <div className="h-full w-full md:w-[100px]">
+        <div className="h-full w-full md:w-[100px] ">
           <img
             src={avatar_url}
             alt={avatar_url}
-            className="w-[200px] 2h-auto"
+            className="w-[200px] h-[100px] rounded-full"
           />
         </div>
       ),
@@ -131,25 +146,31 @@ const RequestUser = () => {
       title: "Actions",
       align: "center",
       key: "action",
-      render: (record: any) => (
-        <Space size="middle">
-          <Tooltip title="Accept">
-            <Button
-              type="text"
-              className="text-green-600"
-              icon={<CheckOutlined />}
-              onClick={() => handleSubmitPreview("approve", record)}
-            />
-          </Tooltip>
-          <Tooltip title="Reject">
-            <Button
-              className="text-red-600"
-              type="text"
-              icon={<CloseOutlined />}
-              onClick={() => handleShowReason(record)}
-            />
-          </Tooltip>
-        </Space>
+      render: (record: User) => (
+        <>
+          {/* {isPreviewSubmitted && record.status ? (
+            <Tag color="primary">Previewed</Tag> // when submit successfully display button
+          ) : ( */}
+          <Space size="middle">
+            <Tooltip title="Accept">
+              <Button
+                type="text"
+                className="text-green-600"
+                icon={<CheckOutlined />}
+                onClick={() => handleSubmitPreview("approve", record)}
+              />
+            </Tooltip>
+            <Tooltip title="Reject">
+              <Button
+                className="text-red-600"
+                type="text"
+                icon={<CloseOutlined />}
+                onClick={() => handleShowReason(record)}
+              />
+            </Tooltip>
+          </Space>
+          {/* )} */}
+        </>
       ),
     },
   ];
@@ -165,11 +186,11 @@ const RequestUser = () => {
           onSubmit={handleSearch}
         />
         <Table
-          dataSource={users}
+          dataSource={listRequest.pageData}
           pagination={{
             current: pageNum,
             pageSize,
-            total,
+            total:listRequest.pageInfo?.totalItems,
             showSizeChanger: true,
           }}
           columns={columns}
@@ -191,8 +212,9 @@ const RequestUser = () => {
             variant="solid"
             htmlType="submit"
             onClick={() => handleSubmitPreview("reject", currentUser)}
+            loading={loading}
           >
-            {loading ? <Spin /> : <span>Submit</span>}
+             <span>Submit</span>
           </Button>,
         ]}
       >

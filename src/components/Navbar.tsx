@@ -61,7 +61,6 @@ const Navbar = () => {
   const { cartCount } = useSelector((state: RootState) => state.cart);
   const dispatch = useDispatch<AppDispatch>();
   
-  // Replace the existing useEffect for fetchCartData with:
   useEffect(() => {
     if (userLoggedIn) {
       dispatch(fetchCartCount());
@@ -185,7 +184,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="w-full h-20 flex items-center justify-between p-4 pb-0 z-50 bg-white shadow-md relative">
+    <div className="w-full h-18 flex items-center justify-between px-4 z-50 bg-white shadow-md relative">
       {!isSearchActive ? (
         <>
           <img

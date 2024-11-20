@@ -65,7 +65,8 @@ h3 {
 }
 
 .navbar-button:hover {
-  color: var(--color-primary-hover) !important; /* Màu chữ */
+  color: var(--color-primary-hover) !important;
+  background-color: var(--color-primary-default);
 }
 
 .navbar-button:active {
@@ -117,6 +118,21 @@ h3 {
   background-color: #2f2f2f !important;
   font-family: "Jost", sans-serif !important;
 }
+
+.disabled.ant-btn-variant-solid {
+  color: white !important;
+  border: var(--color-primary-default) !important;
+  background-color: gray !important;
+  font-family: "Jost", sans-serif !important;
+}
+
+.disabled.ant-btn-variant-solid:hover {
+  color: white !important;
+  border: var(--color-primary-default) !important;
+  background-color: gray !important;
+  font-family: "Jost", sans-serif !important;
+}
+
 
 
 
@@ -433,3 +449,54 @@ img {
 .not-subscribed {
   margin: 0 1.5rem; /* mx-6 */
 }
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #F97316;
+}
+
+/* Custom Scrollbar for Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #000000 #f1f1f1;
+}
+
+/* Custom Scrollbar for Edge */
+.custom-scrollbar::-ms-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-ms-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.custom-scrollbar::-ms-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-ms-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.no-select {
+  user-select: none; /* Standard syntax */
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+}
+

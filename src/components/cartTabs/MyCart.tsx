@@ -72,7 +72,8 @@ const MyCart: React.FC<MyCartProps> = ({
   );
 
   const handleRemoveCart = useCallback(
-    (cartId: string, cartNo: string) => {
+    (cartId: string, cartNo: string,  e: React.MouseEvent) => {
+      e.stopPropagation();
       removeCart({ cart_no: cartNo, _id: cartId });
     },
     [removeCart]
@@ -117,7 +118,7 @@ const MyCart: React.FC<MyCartProps> = ({
                       <Button
                         type="text"
                         icon={<DeleteOutlined />}
-                        onClick={() => handleRemoveCart(cart._id, cart.cart_no)}
+                        onClick={(e) => handleRemoveCart(cart._id, cart.cart_no, e)}
                         aria-label={`Remove ${cart.course_name} from cart`}
                       />
                     </>,

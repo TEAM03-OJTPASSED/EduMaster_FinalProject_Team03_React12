@@ -7,11 +7,8 @@ import {
   Modal,
   Tooltip,
   Input,
-  message,
-  Spin,
 } from "antd";
-import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
-import dayjs from "dayjs";
+import { CheckOutlined, CloseOutlined, EyeFilled } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import {
   GetPayoutRequest,
@@ -22,12 +19,13 @@ import {
 import PayoutService from "../../../services/payout.service";
 import { PageInfo } from "../../../models/SearchInfo.model";
 import GlobalSearchUnit from "../../../components/GlobalSearchUnit";
+import { handleNotify } from "../../../utils/handleNotify";
+import { moneyFormatter } from "../../../utils/moneyFormatter";
 const TransactionListModal = React.lazy(
   () => import("../../../components/TransactionListModal")
 );
 
 const AdminRequestPayout = () => {
- 
   const [isOpenTransaction, setIsOpenTransaction] = useState(false);
   const [currentRequestPayout, setCurrentRequestPayout] = useState<Payout>(
     {} as Payout
@@ -36,7 +34,7 @@ const AdminRequestPayout = () => {
   const [reasonVisible, setReasonVisible] = useState(false);
   const [reason, setReason] = useState("");
 
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [requestPayoutList, setRequestPayoutList] = useState<Payout[]>();
   const [currentRequestPayouts, setCurrentRequestPayouts] = useState<PageInfo>(
     {} as PageInfo
@@ -58,14 +56,10 @@ const AdminRequestPayout = () => {
 
   // fetch request payout
   const fetchDataRequestPayout = async () => {
-    setLoading(true);
-    try {
-      const res = await PayoutService.getPayout(searchRequestPayoutParam);
-      setRequestPayoutList(res?.data?.pageData as Payout[]);
-      setCurrentRequestPayouts(res?.data?.pageInfo as PageInfo);
-    } finally {
-      setLoading(false);
-    }
+    const res = await PayoutService.getPayout(searchRequestPayoutParam);
+
+    setRequestPayoutList(res?.data?.pageData as Payout[]);
+    setCurrentRequestPayouts(res?.data?.pageInfo as PageInfo);
   };
   useEffect(() => {
     fetchDataRequestPayout();
@@ -86,55 +80,70 @@ const AdminRequestPayout = () => {
       dataIndex: "payout_no",
       key: "payout_no",
       align: "center",
+      ellipsis: true,
     },
     {
       title: "Instructor Name",
       dataIndex: "instructor_name",
       key: "instructor_name",
       align: "center",
+      ellipsis: true,
     },
-
     {
-      title: "Balance Origin",
+      title: "Total",
       dataIndex: "balance_origin",
       key: "balance_origin",
       align: "center",
+      ellipsis: true,
+      render: (balance: number) => {
+        return <div className="text-right">{moneyFormatter(balance)}</div>;
+      },
     },
     {
-      title: "Balance Instructor Paid",
+      title: "Commission",
       dataIndex: "balance_instructor_paid",
       key: "balance_instructor_paid",
       align: "center",
+      ellipsis: true,
+      render: (balance: number) => {
+        return <div className="text-right">{moneyFormatter(balance)}</div>;
+      },
     },
     {
-      title: "Balance Instructor Received",
+      title: "Instructor Earnings",
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
       align: "center",
+      ellipsis: true,
+      render: (balance: number) => {
+        return <div className="text-right">{moneyFormatter(balance)}</div>;
+      },
     },
     {
-      title: "Created at",
-      dataIndex: "created_at",
-      key: "created_at",
-      render: (created_at) => {
-        return <div>{dayjs(created_at).format("DD/MM/YYYY")}</div>;
-      },
+      title: "Updated At",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      ellipsis: true,
+      render: (date: string) => new Date(date).toLocaleString(),
       align: "center",
     },
     {
-      title: "View Transaction",
+      title: "Transactions",
       dataIndex: "view_transaction",
       key: "view_transaction",
       align: "center",
+      fixed: "right",
       render: (_, record: Payout) => {
         return (
           <div>
-            <Button
-              type="primary"
-              onClick={() => handleViewTransaction(record)}
-            >
-              View
-            </Button>
+            <Tooltip title="View Details">
+              <Button
+                className="text-red-600"
+                icon={<EyeFilled />}
+                type="text"
+                onClick={() => handleViewTransaction(record)}
+              ></Button>
+            </Tooltip>
           </div>
         );
       },
@@ -143,25 +152,28 @@ const AdminRequestPayout = () => {
       title: "Actions",
       key: "action",
       align: "center",
+      fixed: "right",
       render: (record: Payout) => (
         <Space size="middle">
-        <Tooltip title="Accept">
-          <Button
-            type="text"
-            className="text-green-600"
-            icon={<CheckOutlined />}
-            onClick={() => handleSubmitPreview(PayoutStatusEnum.COMPLETED, record)}
-          />
-        </Tooltip>
-        <Tooltip title="Reject">
-          <Button
-            className="text-red-600"
-            type="text"
-            icon={<CloseOutlined />}
-            onClick={() => handleShowReason(record)}
-          />
-        </Tooltip>
-      </Space>
+          <Tooltip title="Accept">
+            <Button
+              type="text"
+              className="text-green-600"
+              icon={<CheckOutlined />}
+              onClick={() =>
+                handleSubmitPreview(PayoutStatusEnum.COMPLETED, record)
+              }
+            />
+          </Tooltip>
+          <Tooltip title="Reject">
+            <Button
+              className="text-red-600"
+              type="text"
+              icon={<CloseOutlined />}
+              onClick={() => handleShowReason(record)}
+            />
+          </Tooltip>
+        </Space>
       ),
     },
   ];
@@ -190,7 +202,7 @@ const AdminRequestPayout = () => {
     setRequestPayoutList((prevList) =>
       prevList?.filter((item) => item._id !== record._id)
     );
-    message.success("Submit preview successfully");
+    handleNotify("Submit preview successfully", " ");
     setReasonVisible(false);
     console.log(formPreview);
   };
@@ -225,7 +237,6 @@ const AdminRequestPayout = () => {
           bordered
           style={{ borderRadius: "8px" }}
           scroll={{ x: true }}
-          loading={loading}
         />
       </Card>
       <Modal
@@ -247,9 +258,15 @@ const AdminRequestPayout = () => {
             key="submit"
             variant="solid"
             htmlType="submit"
-            onClick={() => handleSubmitPreview(PayoutStatusEnum.REJECTED, currentRequestPayout)}
+            style={{ borderRadius: "15px" }}
+            onClick={() =>
+              handleSubmitPreview(
+                PayoutStatusEnum.REJECTED,
+                currentRequestPayout
+              )
+            }
           >
-            {loading ? <Spin /> : <span>Submit</span>}
+            <span>Submit</span>
           </Button>,
         ]}
       >

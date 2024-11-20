@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { Table, Card, Button, Modal } from "antd";
+import { Table, Card, Button, Modal, Tooltip } from "antd";
 import {
-  EditOutlined,
-  DeleteOutlined,
   PlusCircleOutlined,
+  EditFilled,
+  DeleteFilled,
 } from "@ant-design/icons";
 
 import dayjs from "dayjs";
@@ -189,21 +189,29 @@ const InstructorSessionList = () => {
       },
     },
     {
-      title: "Action",
+      title: "Actions",
       key: "action",
+      width: 70,
+      align: "center" as const,
+      fixed: "right" as const,
       render: (record: Session) => (
-        <>
-          <Button
-            type="text"
-            icon={<EditOutlined style={{ color: "blue" }} />}
-            onClick={() => showModal(record)}
-          />
-          <Button
-            type="text"
-            icon={<DeleteOutlined style={{ color: "red" }} />}
-            onClick={() => handleDeleteSession(record._id)}
-          />
-        </>
+        <div className="flex justify-between">
+          <Tooltip title="Edit" className="!font-jost">
+            <Button
+              type="text"
+              icon={<EditFilled style={{ color: "blue" }} />}
+              onClick={() => showModal(record)}
+            />
+          </Tooltip>
+          <Tooltip title="Delete" className="!font-jost">
+
+            <Button
+              type="text"
+              icon={<DeleteFilled style={{ color: "red" }} />}
+              onClick={() => handleDeleteSession(record._id)}
+            />
+          </Tooltip>
+        </div>
       ),
     },
   ];

@@ -13,9 +13,7 @@ export const SessionList = React.lazy(
 export const LessonList = React.lazy(
   () => import("../pages/AdminDashboard/monitors/course/LessonList")
 );
-export const PendingCourse = React.lazy(
-  () => import("../pages/AdminDashboard/monitors/pending_course/PendingCourse")
-);
+
 export const CourseList = React.lazy(
   () => import("../pages/AdminDashboard/monitors/course/CourseLists")
 );
@@ -31,6 +29,11 @@ export const PendingSessionList = React.lazy(
 export const PendingLessonList = React.lazy(
   () =>
     import("../pages/AdminDashboard/monitors/pending_course/PendingLessonList")
+);
+
+export const PendingCourseDetails = React.lazy(
+  () =>
+    import("../pages/AdminDashboard/monitors/pending_course/PendingCourseDetails")
 );
 export const BlogManagement = React.lazy(
   () => import("../pages/AdminDashboard/BlogManagement")

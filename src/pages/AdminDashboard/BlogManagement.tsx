@@ -25,11 +25,11 @@ const BlogManagement = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [searchText, setSearchText] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
 
   // Fetch blogs initially
   const fetchBlogs = async () => {
-    setLoading(true);
+    // setLoading(true);
     try {
       const searchParams: BlogSearchParams = {
         searchCondition: {
@@ -47,7 +47,7 @@ const BlogManagement = () => {
     } catch (error) {
       console.error("Error fetching blogs:", error);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
@@ -59,7 +59,7 @@ const BlogManagement = () => {
   const showModalCreate = () => setIsModalCreateVisible(true);
 
   const handleSearch = () => {
-    setLoading(true);
+    // setLoading(true);
     const lowerCaseTags = selectedTags.map((tag) => tag.toLowerCase());
 
     setTimeout(() => {
@@ -77,7 +77,7 @@ const BlogManagement = () => {
       });
 
       setBlogs(filteredBlogs);
-      setLoading(false);
+      // setLoading(false);
     }, 300);
   };
 
@@ -146,13 +146,13 @@ const BlogManagement = () => {
         <>
           <Button
             type="text"
-            icon={<DeleteOutlined style={{ color: "red" }} />}
-            onClick={() => showModalDelete(record._id)}
+            icon={<EditOutlined style={{ color: "blue" }} />}
+            onClick={() => showModalEdit(record)}
           />
           <Button
             type="text"
-            icon={<EditOutlined style={{ color: "blue" }} />}
-            onClick={() => showModalEdit(record)}
+            icon={<DeleteOutlined style={{ color: "red" }} />}
+            onClick={() => showModalDelete(record._id)}
           />
         </>
       ),
@@ -211,7 +211,6 @@ const BlogManagement = () => {
         rowKey="_id"
         bordered
         scroll={{ x: true }}
-        loading={loading}
       />
 
       {isModalEditVisible && editBlogData && (

@@ -15,10 +15,8 @@ import CategoryManagement from "./pages/AdminDashboard/categoryManagement";
 import AllCourse from "./pages/AdminDashboard/monitors/course/AllCourse";
 import SessionList from "./pages/AdminDashboard/monitors/course/SessionList";
 import LessonList from "./pages/AdminDashboard/monitors/course/LessonList";
-import PendingCourse from "./pages/AdminDashboard/monitors/pending_course/PendingCourse";
 import PendingCourseList from "./pages/AdminDashboard/monitors/pending_course/PendingCourseList";
-import PendingSessionList from "./pages/AdminDashboard/monitors/pending_course/PendingSessionList";
-import PendingLessonList from "./pages/AdminDashboard/monitors/pending_course/PendingLessonList";
+
 import BlogManagement from "./pages/AdminDashboard/BlogManagement";
 import PurchaseLog from "./pages/AdminDashboard/PurchaseLog";
 import AdminPayout from "./pages/AdminDashboard/payout/AdminPayout";
@@ -120,7 +118,7 @@ function App() {
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/faqs" element={<FAQsPage />} />
-              <Route path="/*" element={<ErrorPage />} />
+              <Route path="/*" element={<ErrorPage errorMsg="The page you requested doesn't exit yet" statusCode={404} />} />
               <Route path="cart/:status" element={<CartPage />} />
               <Route path="/blog/:id" element={<BlogDetailPage />} />
               <Route path="/profile/:id" element={<ProfilePage />} />
@@ -160,11 +158,11 @@ function App() {
                   <Route path="session" element={<SessionList />} />
                   <Route path="lesson" element={<LessonList />} />
                 </Route>
-                <Route path="pending-courses" element={<PendingCourse />}>
-                  <Route index element={<PendingCourseList />} />
-                  <Route path="session" element={<PendingSessionList />} />
-                  <Route path="lesson" element={<PendingLessonList />} />
-                </Route>
+
+                <Route path="pending-courses" element={<PendingCourseList />} />
+                {/* <Route path="session" element={<PendingSessionList />} />
+                  <Route path="lesson" element={<PendingLessonList />} /> */}
+
                 <Route path="blog" element={<BlogManagement />} />
                 <Route path="purchase-log" element={<PurchaseLog />} />
                 <Route path="settings" element={<AdminSetting />}>

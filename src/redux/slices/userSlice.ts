@@ -3,6 +3,10 @@ import { postRequest } from "../../services/httpsMethod";
 import { User } from "../../models/UserModel";
 import { DataInterface } from "../../types/data.type";
 import { SearchParamInterface } from "../../types/search.type";
+import {  APIResponseData } from "../../models/ApiReponse.model";
+import { UserService } from "../../services/user.service";
+import {  UserSearchParams } from "../../models/SearchInfo.model";
+import dayjs from "dayjs";
 
 interface initialStateInterface {
   register: {
@@ -10,7 +14,13 @@ interface initialStateInterface {
     success: boolean;
     message: string;
   };
+  requestedUser: {
+    listRequest: APIResponseData<User>,
+    loading: boolean,
+    success: boolean,
+  },
   previewProfile: {
+    
     loading: boolean;
     success: boolean;
     message: string;
@@ -19,7 +29,6 @@ interface initialStateInterface {
     loading: boolean;
     success: boolean;
     message: string;
-    
   };
   users: {
     loading: boolean;
@@ -33,6 +42,13 @@ const initialState: initialStateInterface = {
     loading: false,
     success: false,
     message: "",
+  },
+  requestedUser: {
+    listRequest: {
+      
+    },
+    loading: false,
+    success: false,
   },
   previewProfile: {
     loading: false,
@@ -66,6 +82,15 @@ export const getUsersData = createAsyncThunk(
   }
 );
 
+export const getUsersRequestData = createAsyncThunk(
+  "user/getUsersRequestData",
+  async (searchParam: UserSearchParams) => {
+    const res = await UserService.getUsers(searchParam);
+    console.log("request data thunk", res.data);
+    return res.data;
+  }
+);
+
 const usersSlice = createSlice({
   name: "users",
   initialState,
@@ -84,15 +109,15 @@ const usersSlice = createSlice({
       state.register.loading = false;
     },
 
-    previewProfilePending: (state) => {
+    previewProfilePending: (state, ) => {
       state.previewProfile.loading = true;
       state.previewProfile.success = false;
-      state.previewProfile.message = "";
     },
     previewProfileFulfilled: (state) => {
       state.previewProfile.loading = false;
       state.previewProfile.success = true;
-      state.previewProfile.message = "Preview successfully";
+    
+
     },
     previewProfileRejected: (state) => {
       state.previewProfile.loading = false;
@@ -123,11 +148,24 @@ const usersSlice = createSlice({
       .addCase(getUsersData.fulfilled, (state, action) => {
         state.users.loading = false;
         state.users.success = true;
-        state.users.data = action.payload as DataInterface<User>;
+        state.users.data = action.payload  as DataInterface<User>;
       })
       .addCase(getUsersData.rejected, (state) => {
         state.users.loading = false;
         state.users.success = false;
+      })
+      // Request instructor data
+      .addCase(getUsersRequestData.pending, (state) => {
+        state.requestedUser.loading = true;
+      })
+      .addCase(getUsersRequestData.fulfilled, (state, action) => {
+        state.requestedUser.loading = false;
+        state.requestedUser.success = true;
+        state.requestedUser.listRequest = action.payload as unknown as APIResponseData<User>;
+      })
+      .addCase(getUsersRequestData.rejected, (state) => {
+        state.requestedUser.loading = false;
+        state.requestedUser.success = false;
       });
   },
 });

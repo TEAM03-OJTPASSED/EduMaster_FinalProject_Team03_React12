@@ -16,17 +16,17 @@ const DeleteCategorieModal: React.FC<DeleteCategorieModalProps> = ({
 }) => {
   return (
     <Modal
-      title="Confirm Delete Categorie"
+      title="Confirm Delete Category"
       open={visible}
       onCancel={onCancel}
       footer={[
-        <Button key="submit" type="primary" onClick={onDelete}>
+        <Button key="submit" type="primary" onClick={onDelete} style={{ borderRadius: "15px" }}>
           Delete
         </Button>,
       ]}
     >
       <p>
-        Are you sure you want to delete categorie{" "}
+        Are you sure you want to delete category{" "}
         <span style={{ color: "red", fontWeight: "bold" }}>{userName}</span>?
       </p>
     </Modal>

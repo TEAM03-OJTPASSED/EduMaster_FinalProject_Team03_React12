@@ -7,14 +7,30 @@ type Props = {
   course: Course;
   isPurchased: boolean;
   id: string;
+  completed_lesson: string[];
 };
 
 const currentUser = localStorage.getItem("user");
 
-export const Banner = ({ id, course, isPurchased }: Props) => {
+export const Banner = ({
+  id,
+  course,
+  isPurchased,
+  completed_lesson,
+}: Props) => {
   const totalLessons = course.session_list.reduce((sum, session) => {
     return sum + session.lesson_list.length;
   }, 0);
+
+  const completedLessonCount = course.session_list.reduce((sum, session) => {
+    return (
+      sum +
+      session.lesson_list.filter((lesson) =>
+        completed_lesson.includes(lesson._id)
+      ).length
+    );
+  }, 0);
+  const progressPercentage = (completedLessonCount / totalLessons) * 100;
 
   const navigate = useCustomNavigate();
 
@@ -35,8 +51,8 @@ export const Banner = ({ id, course, isPurchased }: Props) => {
 
   return (
     <div className="font-exo flex flex-col bg-orange-50 px-20 lg:-mx-40 -mx-24 pb-10">
-      <div className="flex flex-col gap-8 pt-10">
-        <div className="lg:w-2/3 flex flex-col gap-4 items-start">
+      <div className="flex gap-8 pt-10">
+        <div className="lg:w-2/3 w-full flex flex-col gap-4 items-start">
           <div className="bg-orange-500 text-white font-bold px-4 py-2 rounded-lg">
             {course.category_name}
           </div>
@@ -54,14 +70,28 @@ export const Banner = ({ id, course, isPurchased }: Props) => {
             </span>
           </div>
           {isPurchased ? (
-            <div className="flex items-baseline gap-4">
+            <div className="flex gap-4 w-full">
               <div
                 className="bg-orange-500 text-white text-2xl font-semibold px-8 py-4 rounded cursor-pointer"
                 onClick={() => handleLearn(course)}
               >
                 Learn Now
               </div>
-              <div className="font-light">Already enrolled</div>
+              <div className="flex-grow">
+                <div className="font-light">Already enrolled</div>
+                <div className="flex justify-between items-baseline">
+                  <div>Your Progress </div>
+                  <div className="mt-2 text-sm">
+                    {completedLessonCount} of {totalLessons} lessons completed ({progressPercentage.toFixed(0 )}%)
+                  </div>
+                </div>
+                <div className="bg-gray-200 h-3 w-full rounded">
+                  <div
+                    className="bg-orange-400 h-3 rounded"
+                    style={{ width: `${progressPercentage}%` }}
+                  ></div>
+                </div>
+              </div>
             </div>
           ) : (
             <div className="flex">
@@ -95,7 +125,7 @@ export const Banner = ({ id, course, isPurchased }: Props) => {
           )}
         </div>
         <div className="hidden lg:w-1/3 lg:block relative">
-          <div className="absolute inset-0">
+          <div className="absolute inset-0">  
             <img
               src={course.image_url}
               alt="Course"

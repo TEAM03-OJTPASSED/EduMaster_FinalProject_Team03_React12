@@ -10,9 +10,11 @@ import {
   setIsLoginGoogleFailed,
   setRegisterGoogle,
 } from "../redux/slices/authSlices";
-// import { useDispatch, useSelector } from "react-redux";
-// import { AppDispatch, RootState } from "../redux/store/store";
+import { jwtDecode } from "jwt-decode";
 
+interface DecodedToken {
+  exp: number; // Thời gian hết hạn của token (Unix timestamp)
+}
 // Tạo instance của axios
 export const axiosClientVer2 = axios.create({
   baseURL: "https://edumaster-api-dev.vercel.app",
@@ -30,6 +32,13 @@ axiosClientVer2.interceptors.request.use(
 
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
+      const decodedToken = jwtDecode<DecodedToken>(token);
+      const currentTimestamp = Math.floor(Date.now() / 1000);
+      if (decodedToken.exp && currentTimestamp > decodedToken.exp) {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        location.href = "/login";
+      }
     }
     return config; // Trả về config đã được chỉnh sửa
   },

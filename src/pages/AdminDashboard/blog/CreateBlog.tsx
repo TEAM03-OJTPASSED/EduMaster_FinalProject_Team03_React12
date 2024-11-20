@@ -1,4 +1,4 @@
-import { Button, Form, Upload, Input, Select, message } from "antd";
+import { Button, Form, Upload, Input, Select } from "antd";
 import React, { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import type { UploadFile, UploadProps } from "antd";
@@ -10,6 +10,7 @@ import { API_UPLOAD_FILE } from "../../../constants/api/upload";
 
 import { uploadPlugin } from "../../../components/UploadImageInCKE";
 import { uploadCustomRequest } from "../../../utils/uploadCustomReuquest";
+import { handleNotify } from "../../../utils/handleNotify";
 
 type BlogFormProps = {
   initialValues?: BlogRequest;
@@ -66,16 +67,17 @@ const CreateBlog: React.FC<BlogFormProps> = ({ initialValues, onSuccess }) => {
       const response = await BlogService.createBlog(values);
       console.log("Create blog data:", values);
       if (response?.success && onSuccess) {
-        message.success("Blog created successfully");
+        handleNotify("Blog created successfully", "");
         onSuccess();
         form.resetFields();
         setFileList([]);
         setTagOptions([]);
       } else {
-        message.error("Failed to create blog");
+        handleNotify("Failed to create blog", "", "error");
       }
     } catch (error) {
-      message.error("An error occurred while creating the blog.");
+      console.error("Error creating blog:", error);
+      handleNotify("An error occurred while creating the blog.", "", "error");
     }
   };
 
@@ -144,7 +146,7 @@ const CreateBlog: React.FC<BlogFormProps> = ({ initialValues, onSuccess }) => {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" block>
+          <Button type="primary" htmlType="submit" block style={{ borderRadius: "15px" }}>
             Create Blog
           </Button>
         </Form.Item>

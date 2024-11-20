@@ -20,7 +20,7 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
       open={visible}
       onCancel={onCancel}
       footer={[
-        <Button key="submit" type="primary" onClick={onDelete}>
+        <Button key="submit" type="primary" onClick={onDelete} style={{ borderRadius: "15px" }}>
           Delete
         </Button>,
       ]}

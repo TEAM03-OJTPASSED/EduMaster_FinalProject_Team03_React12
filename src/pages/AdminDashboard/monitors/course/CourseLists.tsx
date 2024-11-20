@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Card, Tag, Button, Modal } from "antd";
+import { Table, Card, Tag, Button, Modal, Tooltip } from "antd";
 import { Course, GetCourses, CourseStatusEnum } from "../../../../models/Course.model";
 import CourseService from "../../../../services/course.service";
 
@@ -9,6 +9,8 @@ import { statusFormatter } from "../../../../utils/statusFormatter";
 import CategoryService from "../../../../services/category.service";
 import { Category, GetCategories } from "../../../../models/Category.model";
 import { capitalizeFirstLetter } from "../../../../utils/capitalize";
+import { EyeFilled } from "@ant-design/icons";
+import { moneyFormatter } from "../../../../utils/moneyFormatter";
 
 const CourseLogModal = React.lazy(() => import("../../../../components/CourseLogModal"));
 
@@ -32,7 +34,7 @@ const CourseLists: React.FC = () => {
   const [total, setTotal] = useState(0);
   const [courses, setCourses] = useState<Course[]>([]);
   const [listCategories, setListCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [isOpenLog, setIsOpenLog] = useState(false);
   const [currentCourse, setCurrentCourse] = useState<Course>({} as Course);
   const [searchParams, setSearchParams] = useState<GetCourses>(initialCoursesParams);
@@ -42,7 +44,7 @@ const CourseLists: React.FC = () => {
   const statuses = Object.values(CourseStatusEnum);
 
   const fetchCourses = async () => {
-    setLoading(true);
+    // setLoading(true);
     try {
       const response = await CourseService.getCourses(searchParams);
       const responseData = response.data?.pageData || [];
@@ -51,17 +53,17 @@ const CourseLists: React.FC = () => {
     } catch (err) {
       console.error("Error fetching courses:", err);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
   const fetchCategories = async () => {
-    setLoading(true);
+    // setLoading(true);
     try {
       const response = await CategoryService.getCategories(initialCategoriesParams);
       setListCategories(response?.data?.pageData ?? []);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
@@ -97,17 +99,32 @@ const CourseLists: React.FC = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      width: 250,
+      ellipsis: true,
+      render: (text: string) => (
+        <span
+          style={{
+            maxWidth: 150,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            display: "inline-block",
+          }}
+        >
+          {text}
+        </span>
+      ),
     },
     {
       title: "Category Name",
       dataIndex: "category_name",
-      key: "category_id",
+      key: "category_name",
+      ellipsis: true, // Ensures long text is truncated
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      align: "center" as const,
       render: (status: CourseStatusEnum) => {
         const statusColors = {
           [CourseStatusEnum.NEW]: "green",
@@ -128,26 +145,44 @@ const CourseLists: React.FC = () => {
       title: "Price",
       dataIndex: "price",
       key: "price",
+      render: (price: number) => (
+        <div className="text-right">
+          {moneyFormatter(price)}
+        </div>
+      ),
+      align: "right" as const,
     },
     {
       title: "Discount",
       dataIndex: "discount",
       key: "discount",
-      render: (discount: number) => <span className="text-red-500">{discount}%</span>,
+      align: "right" as const,
+      render: (discount: number) => (
+        <div className="text-red-500 text-right">
+         {discount}%
+        </div>
+      ),
     },
     {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
-      render: (createdAt: string) => dayjs(createdAt).format("DD-MM-YYYY"),
+      align: "center" as const,
+      render: (createdAt: string) => dayjs(createdAt).format("DD/MM/YYYY"),
     },
     {
       title: "Course Log",
       key: "course_log",
+      align: "center" as const,
       render: (record: Course) => (
-        <Button type="primary" onClick={() => handleViewLog(record)}>
-          View Log
+        <Tooltip title="View Detail">
+        <Button 
+        className="text-red-600"
+        icon={<EyeFilled />}
+        type="text" 
+        onClick={() => handleViewLog(record)}>
         </Button>
+        </Tooltip>
       ),
     },
   ];
@@ -180,7 +215,6 @@ const CourseLists: React.FC = () => {
           onChange={handleTableChange}
           rowKey="_id"
           bordered
-          loading={loading}
           scroll={{ x: "max-content" }}
         />
       </Card>
