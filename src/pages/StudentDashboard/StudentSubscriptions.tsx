@@ -78,7 +78,7 @@ const StudentSubscriptions = () => {
             className="w-20 h-20 bg-orange-100 rounded-full mx-auto mb-4"
             
           ><UserOutlined className="text-6xl mt-2"/></div>
-          <a className="text-lg font-semibold font-jost"           onClick={() => navigate(`/profile/${subscription._id}`, true)}
+          <a className="text-lg font-semibold font-jost"  href={`/profile/${subscription.instructor_id}`}  onClick={(e) => navigate(`/profile/${subscription.instructor_id}`, true, e)}
           >{subscription.instructor_name}</a>
           {/* <p className="text-gray-600">
             <i className="fas fa-phone-alt mr-2"></i>

@@ -233,7 +233,7 @@ const ProfilePage: React.FC = () => {
         <Avatar
           src={instructorInfo.avatar}
           size={160}
-          className="ml-4 border-4 border-white cursor-pointer mb-6"
+          className="ml-4 border-black border-2 cursor-pointer mb-6"
           onClick={() => showModal(instructorInfo.avatar as string)}
         />
         <div className="ml-5 ">
