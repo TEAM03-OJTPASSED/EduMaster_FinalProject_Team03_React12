@@ -16,12 +16,13 @@ import { User } from "../../models/UserModel";
 import { useSelector } from "react-redux";
 import SubscriptionService from "../../services/subscription.service";
 import { GlobalSearchParam } from "../../models/SearchInfo.model";
+import CountUp from "react-countup";
 
 // Tạo một component Card để tái sử dụng
 
 interface InfoCardProps {
   title: string;
-  value: string | number;
+  value: React.ReactNode;
   icon: React.ReactNode;
   gradient: string;
   color: string;
@@ -249,14 +250,14 @@ const InstructorContent = () => {
       <Row gutter={16}>
         <InfoCard
           title="Total Balance"
-          value={`${counts.totalBalance.toFixed(2)}$`}
+          value={<CountUp start={0} end={counts.totalBalance} duration={2} decimals={2} />}
           icon={<WalletOutlined style={{ fontSize: "24px", color: "#fff" }} />}
           gradient="linear-gradient(to bottom, #c6f6d5, #f0fff4)"
           color="#38a169"
         />
         <InfoCard
           title="Total Courses"
-          value={counts.courses}
+          value={<CountUp start={0} end={counts.courses} duration={2} />}
           icon={
             <SnippetsOutlined style={{ fontSize: "24px", color: "#fff" }} />
           }
@@ -265,7 +266,7 @@ const InstructorContent = () => {
         />
         <InfoCard
           title="Total Subscribers"
-          value={totalSubcriptions}
+          value={<CountUp start={0} end={totalSubcriptions} duration={2} />}
           icon={<UserOutlined style={{ fontSize: "24px", color: "#fff" }} />}
           gradient="linear-gradient(to bottom, #fed7e2, #fff5f7)"
           color="#d53f8c"
