@@ -60,7 +60,7 @@ const CourseDetailPage = () => {
           session={session || undefined}
         />
         <div className="lg:w-2/3">
-          <LeaveAComment courseId={courseId} onCommentSuccess={() => fetchData(courseId)} />
+          <LeaveAComment courseId={courseId} />
         </div>
         <DetailModal course={course} isPurchased={course.is_purchased} />
       </div>

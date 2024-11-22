@@ -4,10 +4,9 @@ import ReviewService from "../services/review.service";
 type Props = {
   label?: boolean;
   courseId: string;
-  onCommentSuccess: () => void; 
 };
 
-export const LeaveAComment = ({ courseId, onCommentSuccess  }: Props) => {
+export const LeaveAComment = ({ courseId }: Props) => {
   const [form] = Form.useForm();
 
   const onFinish = async ({ rating, comment }: Review) => {
@@ -18,10 +17,17 @@ export const LeaveAComment = ({ courseId, onCommentSuccess  }: Props) => {
     };
 
     try {
-      await ReviewService.createReview(reviewRequest);
+      const createReview = await ReviewService.createReview(reviewRequest);
+      console.log("create review:", createReview.data)
+      if (createReview && createReview.data) {
+
+        localStorage.setItem("create review", JSON.stringify(createReview.data));
+        
+        window.dispatchEvent(new Event("storageChange"));
+      }
       message.success("Review submitted successfully!")
+
       form.resetFields();
-      onCommentSuccess();
     } catch (error: any) {
   };
 }

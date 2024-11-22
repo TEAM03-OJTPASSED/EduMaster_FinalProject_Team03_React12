@@ -248,7 +248,7 @@ const AdminContent = () => {
       <Row gutter={16}>
         <InfoCard
           title="Total Balance"
-          value={<CountUp start={0} end={counts.totalBalance} duration={2} />}
+          value={<CountUp start={0} end={counts.totalBalance} duration={2} decimals={2} />}
           icon={<WalletOutlined style={{ fontSize: "24px", color: "#fff" }} />}
           gradient="linear-gradient(to bottom, #c6f6d5, #f0fff4)"
           color="#38a169"
