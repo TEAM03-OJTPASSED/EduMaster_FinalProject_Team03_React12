@@ -18,7 +18,7 @@ interface DecodedToken {
 // Tạo instance của axios
 export const axiosClientVer2 = axios.create({
   baseURL: "https://edumaster-api-dev.vercel.app",
-  timeout: 10000, // Request timeout
+  timeout: 600000, // Request timeout
   headers: {
     "Content-Type": "application/json",
   },
