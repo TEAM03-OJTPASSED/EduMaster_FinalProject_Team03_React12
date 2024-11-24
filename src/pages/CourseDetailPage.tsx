@@ -46,7 +46,7 @@ const CourseDetailPage = () => {
   if (course && id) {
     return (
       <div className="relative">
-        <div className="inset-x-0 flex flex-col">
+        <div className="px-5 lg:inset-x-0 flex flex-col">
           <Banner
             course={course}
             isPurchased={course.is_purchased}

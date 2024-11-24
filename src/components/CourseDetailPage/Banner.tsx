@@ -34,7 +34,7 @@ export const Banner = ({
 
   const navigate = useCustomNavigate();
 
-  const handleAdd = async (userRole: string, course: Course, navigate: any) => {
+  const handleAdd = async (userRole: string, course: Course, navigate: (path: string) => void) => {
     await handleAddCart(userRole, course, navigate);
     navigate("/cart/new");
   };
@@ -70,9 +70,9 @@ export const Banner = ({
             </span>
           </div>
           {isPurchased ? (
-            <div className="flex gap-4 w-full">
+            <div className="flex flex-col lg:flex-row gap-4 w-full">
               <div
-                className="bg-orange-500 text-white text-2xl font-semibold px-8 py-4 rounded cursor-pointer"
+                className="bg-orange-500 text-white text-2xl font-semibold px-8 py-4 rounded cursor-pointer text-center"
                 onClick={() => handleLearn(course)}
               >
                 Learn Now

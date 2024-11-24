@@ -36,7 +36,7 @@ export const Detail = ({ isEnrolled, course, session }: Props) => {
 
   return isEnrolled && course ? (
     <div className="font-exo flex mt-12">
-      <div className="w-2/3">
+      <div className="lg:w-2/3">
         <div className="flex flex-col">
           <div className="text-xl font-bold pb-2 pt-4">Overview</div>
           <div
@@ -106,7 +106,7 @@ export const Detail = ({ isEnrolled, course, session }: Props) => {
                       expandedSession === sessionIndex ? "max-h-96" : "max-h-0"
                     }`}
                   >
-                    <div className="px-4 pt-2">
+                    <div className="lg:px-4 pt-2">
                       <div
                         className="text-sm pt-2"
                         dangerouslySetInnerHTML={{
@@ -171,7 +171,7 @@ export const Detail = ({ isEnrolled, course, session }: Props) => {
                                 </div>
                                 {course.is_purchased && (
                                   <div
-                                    className={`w-1/5 text-orange-500 underline cursor-pointer hidden group-hover:block`}
+                                    className={`w-1/5 text-orange-500 underline cursor-pointer lg:hidden group-hover:block`}
                                     onClick={() =>
                                       handleGoToLesson(sessionIndex, lesson)
                                     }
@@ -195,7 +195,7 @@ export const Detail = ({ isEnrolled, course, session }: Props) => {
           </div>
         </div>
       </div>
-      <div className="w-1/3"></div>
+      <div className="lg:w-1/3"></div>
     </div>
   ) : (
     <div>
