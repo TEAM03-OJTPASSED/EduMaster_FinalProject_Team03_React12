@@ -64,14 +64,7 @@ export const Detail = ({ isEnrolled, course, session }: Props) => {
           <div className="border-2 rounded-lg px-4">
             {Array.isArray(session) &&
               session.map((session, sessionIndex) => (
-                <div
-                  className={`py-4 ${
-                    sessionIndex === session.length - 1
-                      ? "border-none"
-                      : "border-b-2"
-                  }`}
-                  key={sessionIndex}
-                >
+                <div className={`py-4 border-b-2 border-neutral-200`}>
                   <div
                     className="flex flex-col hover:bg-orange-100 px-4 py-2 rounded cursor-pointer"
                     onClick={() => toggleSession(sessionIndex)}
@@ -103,10 +96,10 @@ export const Detail = ({ isEnrolled, course, session }: Props) => {
                   </div>
                   <div
                     className={`transition-all duration-300 ease-out overflow-hidden ${
-                      expandedSession === sessionIndex ? "max-h-96" : "max-h-0"
+                      expandedSession === sessionIndex ? "max-h-[500px]" : "max-h-0"
                     }`}
                   >
-                    <div className="lg:px-4 pt-2">
+                    <div className="lg:px-4 pt-2 h-full">
                       <div
                         className="text-sm pt-2"
                         dangerouslySetInnerHTML={{
@@ -130,7 +123,6 @@ export const Detail = ({ isEnrolled, course, session }: Props) => {
                           </div>
                         </div>
                       )}
-
                       <div
                         className="mt-2 cursor-pointer text-orange-500 hover:underline"
                         onClick={() => toggleLesson(sessionIndex)}
@@ -139,51 +131,51 @@ export const Detail = ({ isEnrolled, course, session }: Props) => {
                           ? "Hide info about session content"
                           : "Show info about session content"}
                       </div>
-                      {expandedLesson === sessionIndex && (
-                        <div className="flex flex-col">
-                          {session.lesson_list.map(
-                            (lesson: Lesson, lessonIndex: number) => (
-                              <div
-                                key={lessonIndex}
-                                className="flex py-2 group"
-                              >
-                                <div className="w-4/5">
-                                  {course.is_purchased && (
-                                    <div>
-                                      <div>{lesson.name}</div>
+                        {expandedLesson === sessionIndex && (
+                          <div className="flex flex-col">
+                            {session.lesson_list.map(
+                              (lesson: Lesson, lessonIndex: number) => (
+                                <div
+                                  key={lessonIndex}
+                                  className="flex py-2 group"
+                                >
+                                  <div className="w-4/5">
+                                    {course.is_purchased && (
                                       <div>
-                                        {lesson.lesson_type
-                                          .charAt(0)
-                                          .toUpperCase() +
-                                          lesson.lesson_type.slice(1)}
+                                        <div>{lesson.name}</div>
+                                        <div>
+                                          {lesson.lesson_type
+                                            .charAt(0)
+                                            .toUpperCase() +
+                                            lesson.lesson_type.slice(1)}
+                                          <span className="px-2">•</span>
+                                          {lesson.full_time} minutes
+                                        </div>
+                                      </div>
+                                    )}
+                                    {!course.is_purchased && (
+                                      <div>
+                                        {lesson.name}
                                         <span className="px-2">•</span>
                                         {lesson.full_time} minutes
                                       </div>
-                                    </div>
-                                  )}
-                                  {!course.is_purchased && (
-                                    <div>
-                                      {lesson.name}
-                                      <span className="px-2">•</span>
-                                      {lesson.full_time} minutes
+                                    )}
+                                  </div>
+                                  {course.is_purchased && (
+                                    <div
+                                      className={`w-1/5 text-orange-500 underline cursor-pointer lg:hidden group-hover:block`}
+                                      onClick={() =>
+                                        handleGoToLesson(sessionIndex, lesson)
+                                      }
+                                    >
+                                      Go to learn
                                     </div>
                                   )}
                                 </div>
-                                {course.is_purchased && (
-                                  <div
-                                    className={`w-1/5 text-orange-500 underline cursor-pointer lg:hidden group-hover:block`}
-                                    onClick={() =>
-                                      handleGoToLesson(sessionIndex, lesson)
-                                    }
-                                  >
-                                    Go to learn
-                                  </div>
-                                )}
-                              </div>
-                            )
-                          )}
-                        </div>
-                      )}
+                              )
+                            )}
+                          </div>
+                        )}
                     </div>
                   </div>
                 </div>

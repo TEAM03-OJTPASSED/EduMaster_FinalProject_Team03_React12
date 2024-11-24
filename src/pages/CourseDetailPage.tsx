@@ -55,7 +55,7 @@ const CourseDetailPage = () => {
           />
         </div>
         <Detail
-          isEnrolled={true}
+          isEnrolled={course.is_purchased}
           course={course || undefined}
           session={session || undefined}
         />
