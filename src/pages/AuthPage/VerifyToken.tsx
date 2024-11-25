@@ -15,7 +15,7 @@ import {
 // ton tai thi thong bao success va 5 giay sau se tro ve trang login
 // ko ton tai thi no se thong bao fail va cho minh nut button de resend lai
 const VerifySuccessToken = () => {
-  // // token get tu tren link
+ 
   const { verification_id } = useParams();
 
   const dispatch = useDispatch<AppDispatch>();
@@ -63,6 +63,7 @@ const VerifySuccessToken = () => {
               loop
               autoplay
               className="h-60 w-full mb-6"
+              renderer="canvas"
             />
             <h2 className="text-4xl font-medium my-5 text-center">
               Verify{" "}

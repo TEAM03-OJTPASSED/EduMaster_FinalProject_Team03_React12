@@ -1,19 +1,24 @@
 import { useEffect, useState } from "react";
 import { Course } from "../../models/Course.model";
 import { handleAddCart } from "../../utils/handleAddCart";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store/store";
 import { useCustomNavigate } from "../../hooks/customNavigate";
 
 type Props = {
   course: Course;
   isPurchased: boolean;
 };
+
 export const DetailModal = ({ course, isPurchased }: Props) => {
   const [animateClass, setAnimateClass] = useState("");
   const [showCourseInfo, setShowCourseInfo] = useState(false);
-  const { currentUser } = useSelector((state: RootState) => state.auth.login);
-  const navigate = useCustomNavigate()
+  const navigate = useCustomNavigate();
+
+  const currentUser = localStorage.getItem("user");
+
+  const handleAdd = async (userRole: string, course: Course, navigate: ReturnType<typeof useCustomNavigate>) => {
+    await handleAddCart(userRole, course, navigate);
+    navigate("/cart/new");
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,7 +39,9 @@ export const DetailModal = ({ course, isPurchased }: Props) => {
   return (
     <>
       {showCourseInfo ? (
-        <div className={`fixed z-10 w-1/3 px-8 right-0 top-8 ${animateClass} `}>
+        <div
+          className={`lg:block hidden fixed z-10 mt-16 lg:w-1/3 px-8 right-0 top-8 ${animateClass} `}
+        >
           <div className="relative h-[20vh] bg-orange-200 rounded-t-lg">
             <div className="absolute bg-orange-500 text-white m-4 px-2 py-1 rounded">
               {course.category_name}
@@ -82,10 +89,26 @@ export const DetailModal = ({ course, isPurchased }: Props) => {
                   </div>
                 )}
                 <div>
-                  <div className="bg-orange-500 text-center text-lg font-bold text-white p-2 mt-2 rounded">
-                    Start Now
+                  <div
+                    className="bg-orange-500 text-center text-lg font-bold text-white p-2 mt-2 rounded"
+                    onClick={() =>
+                      currentUser
+                        ? handleAdd(
+                            JSON.parse(currentUser).role,
+                            course,
+                            navigate
+                          )
+                        : navigate("/login")
+                    }
+                  >
+                    Buy Now
                   </div>
-                  <div onClick={() => handleAddCart(currentUser.role, course, navigate)} className="text-center cursor-pointer text-lg font-bold border-2 border-orange-500 p-2 mt-2 rounded">
+                  <div
+                    onClick={() =>
+                      currentUser ? handleAddCart(JSON.parse(currentUser).role, course, navigate) : alert("User not logged in")
+                    }
+                    className="text-center cursor-pointer text-lg font-bold border-2 border-orange-500 p-2 mt-2 rounded"
+                  >
                     Add to cart
                   </div>
                 </div>

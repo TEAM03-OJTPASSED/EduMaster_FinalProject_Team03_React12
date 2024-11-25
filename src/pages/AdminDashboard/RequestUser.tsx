@@ -1,64 +1,76 @@
 import { useEffect, useState } from "react";
-import { Table, Button, Input, Space, Card, Modal, message, Spin } from "antd";
 import {
-  SearchOutlined,
-  CheckOutlined,
-  CloseOutlined,
-} from "@ant-design/icons";
-import { useDebouncedSearch } from "../../hooks/useSearch";
-import { previewInstructor, UserService } from "../../services/user.service";
+  Table,
+  Button,
+  Input,
+  Space,
+  Card,
+  Modal,
+  FormProps,
+  Tooltip,
+  TableProps,
+} from "antd";
+import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
+
+import { previewInstructor } from "../../services/user.service";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store/store";
 import { User } from "../../models/UserModel";
 import { UserSearchParams } from "../../models/SearchInfo.model";
-
+import GlobalSearchUnit from "../../components/GlobalSearchUnit";
+import { getUsersRequestData } from "../../redux/slices/userSlice";
+const initializeSearchParam: UserSearchParams = {
+  searchCondition: {
+    keyword: "",
+    role: "instructor",
+    status: true,
+    is_delete: false,
+    is_verified: false,
+  },
+  pageInfo: { pageNum: 1, pageSize: 10 },
+};
 const RequestUser = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, success } = useSelector(
+  const { loading } = useSelector(
     (state: RootState) => state.users.previewProfile
   );
-
+  const { listRequest } = useSelector(
+    (state: RootState) => state.users.requestedUser
+  );
   const [reasonVisible, setReasonVisible] = useState(false);
-  const [users, setUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [reason, setReason] = useState("");
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [total, setTotal] = useState(0);
-  const [searchText, setSearchText] = useState("");
-  const filteredData = useDebouncedSearch(users, searchText, 300, [
-    "name",
-    "email",
-  ]);
+  const [searchParams, setSearchParams] = useState<UserSearchParams>(
+    initializeSearchParam
+  );
 
-  const fetchUsers = async () => {
-    try {
-      const searchParams: UserSearchParams = {
-        searchCondition: {
-          keyword: searchText,
-          role: "instructor",
-          status: true,
-          is_delete: false,
-          is_verified: true,
-        },
-        pageInfo: { pageNum, pageSize },
-      };
+  useEffect(()=>{
+    dispatch(getUsersRequestData(searchParams))
+  },[searchParams])
 
-      const response = await UserService.getUsers(searchParams);
-      const responseData = response.data?.pageData;
-      const flattenedUsers: User[] = Array.isArray(responseData)
-        ? responseData.flat()
-        : [];
-      setUsers(flattenedUsers);
-      setTotal(response.data?.pageInfo?.totalItems ?? 0);
-    } catch (err) {
-      console.error("Error fetching users:", err);
-    }
-  };
 
-  useEffect(() => {
-    fetchUsers();
-  }, [pageNum, pageSize, searchText]);
+  // const fetchUsers = async () => {
+  //   const response = await UserService.getUsers(searchParams);
+  //   const responseData = response.data?.pageData;
+
+  //   const flattenedUsers: User[] = Array.isArray(responseData)
+  //     ? responseData.flat()
+  //     : [];
+
+  //   setUsers(
+  //     flattenedUsers
+  //       .slice()
+        // .sort(
+        //   (a, b) =>
+        //     dayjs(b.updated_at).valueOf() - dayjs(a.updated_at).valueOf()
+        // )
+  //   );
+  //   setTotal(response.data?.pageInfo?.totalItems ?? 0);
+  // };
+
+
 
   const handleTableChange = (pagination: any) => {
     setPageNum(pagination.current);
@@ -76,58 +88,89 @@ const RequestUser = () => {
       status,
       comment: reason,
     };
+    // const listUserFilterAfterChange = listRequest.pageData?.sort(
+    //   (a, b) =>
+    //     dayjs(b.updated_at).valueOf() - dayjs(a.updated_at).valueOf()
+    // )
     await previewInstructor(formPreview, dispatch);
-    if (success) {
-      message.success("Submit preview successfully");
-      setReasonVisible(false);
-    }
+    // await fetchUsers();
+    // message.success("Submit preview successfully");
+    setReasonVisible(false);
+ 
     console.log(formPreview);
   };
 
-  const columns = [
+  const handleSearch: FormProps["onFinish"] = (values) => {
+    setSearchParams((prev) => ({
+      ...prev,
+      searchCondition: {
+        ...prev.searchCondition,
+        keyword: values.keyword,
+      },
+    }));
+  };
+
+  const columns: TableProps<User>["columns"] = [
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
     },
     {
+      title: "Avatar",
+      dataIndex: "avatar_url",
+      key: "avatar_url",
+      render: (avatar_url: string) => (
+        <div className="h-full w-full md:w-[100px] ">
+          <img
+            src={avatar_url}
+            alt={avatar_url}
+            className="w-[200px] h-[100px] rounded-full"
+          />
+        </div>
+      ),
+    },
+    {
       title: "Email",
       dataIndex: "email",
       key: "email",
+      align: "center",
     },
     {
       title: "Phone Number",
-      dataIndex: "phone",
-      key: "phone",
-    },
-    {
-      title: "Username",
-      dataIndex: "username",
-      key: "username",
-    },
-    {
-      title: "Descriptions",
-      dataIndex: "createdAt",
-      key: "createdAt",
+      dataIndex: "phone_number",
+      key: "phone_number",
+      align: "center",
     },
     {
       title: "Actions",
+      align: "center",
       key: "action",
-      render: (record: any) => (
-        <Space size="middle">
-          <Button
-            type="text"
-            className="text-green-600"
-            icon={<CheckOutlined />}
-            onClick={() => handleSubmitPreview("approve", record)}
-          />
-          <Button
-            className="text-red-600"
-            type="text"
-            icon={<CloseOutlined />}
-            onClick={() => handleShowReason(record)}
-          />
-        </Space>
+      render: (record: User) => (
+        <>
+          {/* {isPreviewSubmitted && record.status ? (
+            <Tag color="primary">Previewed</Tag> // when submit successfully display button
+          ) : ( */}
+          <Space size="middle">
+            <Tooltip title="Accept">
+              <Button
+                type="text"
+                className="text-green-600"
+                icon={<CheckOutlined />}
+                onClick={() => handleSubmitPreview("approve", record)}
+              />
+            </Tooltip>
+            <Tooltip title="Reject">
+              <Button
+                className="text-red-600"
+                type="text"
+                icon={<CloseOutlined />}
+                onClick={() => handleShowReason(record)}
+              />
+            </Tooltip>
+          </Space>
+          {/* )} */}
+        </>
       ),
     },
   ];
@@ -138,21 +181,16 @@ const RequestUser = () => {
         <div className="flex">
           <h3 className="text-2xl my-5">Request Instructor Management</h3>
         </div>
-        <div className="flex flex-wrap items-center mb-4">
-          <Input
-            placeholder="Search By User Name"
-            prefix={<SearchOutlined />}
-            className="w-full md:w-1/3 mb-2 md:mb-0"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-          />
-        </div>
+        <GlobalSearchUnit
+          placeholder="Search By User Name"
+          onSubmit={handleSearch}
+        />
         <Table
-          dataSource={filteredData}
+          dataSource={listRequest.pageData}
           pagination={{
             current: pageNum,
             pageSize,
-            total,
+            total:listRequest.pageInfo?.totalItems,
             showSizeChanger: true,
           }}
           columns={columns}
@@ -174,8 +212,9 @@ const RequestUser = () => {
             variant="solid"
             htmlType="submit"
             onClick={() => handleSubmitPreview("reject", currentUser)}
+            loading={loading}
           >
-            {loading ? <Spin /> : <span>Submit</span>}
+             <span>Submit</span>
           </Button>,
         ]}
       >

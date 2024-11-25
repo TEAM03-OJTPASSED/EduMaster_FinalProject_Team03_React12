@@ -21,7 +21,7 @@ export interface Course {
   discount: number;
   created_at: string;
   price_paid: number;
-  full_time: number; // Assuming full_time represents duration
+  full_time: number;
   instructor_id: string;
   instructor_name: string;
   category_name: string;

@@ -6,124 +6,80 @@ import {
   MdOutlineKeyboardArrowUp,
 } from "react-icons/md";
 import { Reviews } from "./Detail/Review";
+import { Lesson } from "../../models/Lesson.model";
+import { useCustomNavigate } from "../../hooks/customNavigate";
 
 type Props = {
   isEnrolled: boolean;
   course?: Course;
   session?: Session;
 };
-type Review = {
-  _id: string;
-  user_id: string;
-  course_id: string;
-  comment: string;
-  rating: number;
-  is_deleted: boolean;
-  created_at: string;
-  updated_at: string;
-  __v: number;
-};
-const sampleReviews: Review[] = [
-  {
-    _id: "6680e264e19995122837e322",
-    user_id: "6680d54954c31267eb217f55",
-    course_id: "667ecee48039581edcd01af5",
-    comment: "Course is very good!",
-    rating: 3,
-    is_deleted: false,
-    created_at: "2024-06-30T04:43:16.652Z",
-    updated_at: "2024-06-30T05:05:21.619Z",
-    __v: 0,
-  },
-  {
-    _id: "6680e264e19995122837e323",
-    user_id: "6680d54954c31267eb217f56",
-    course_id: "667ecee48039581edcd01af6",
-    comment: "Excellent course!",
-    rating: 5,
-    is_deleted: false,
-    created_at: "2024-06-30T04:43:16.652Z",
-    updated_at: "2024-06-30T05:05:21.619Z",
-    __v: 0,
-  },
-  {
-    _id: "6680e264e19995122837e324",
-    user_id: "6680d54954c31267eb217f57",
-    course_id: "667ecee48039581edcd01af7",
-    comment: "Not bad, but could be better.",
-    rating: 2,
-    is_deleted: false,
-    created_at: "2024-06-30T04:43:16.652Z",
-    updated_at: "2024-06-30T05:05:21.619Z",
-    __v: 0,
-  },
-  {
-    _id: "6680e264e19995122837e323",
-    user_id: "6680d54954c31267eb217f57",
-    course_id: "667ecee48039581edcd01af7",
-    comment: "Not bad, but could be better.",
-    rating: 2,
-    is_deleted: false,
-    created_at: "2024-06-30T04:43:16.652Z",
-    updated_at: "2024-06-30T05:05:21.619Z",
-    __v: 0,
-  },
-];
-export const Detail = ({ isEnrolled, course, session }: Props) => {
+
+export const Detail = ({ course, session }: Props) => {
   const [expandedSession, setExpandedSession] = useState<number | null>(null);
+  const [expandedLesson, setExpandedLesson] = useState<number | null>(null);
+  const navigate = useCustomNavigate();
 
   const toggleSession = (index: number) => {
     setExpandedSession(expandedSession === index ? null : index);
   };
-  console.log("Session in detail: ", session);
-  return isEnrolled && course ? (
+
+  const toggleLesson = (index: number) => {
+    setExpandedLesson(expandedLesson === index ? null : index);
+  };
+
+  const handleGoToLesson = (sessionIndex: number, lesson: Lesson) => {
+    sessionStorage.setItem("sessionIndex", sessionIndex.toString());
+    sessionStorage.setItem("lessonIndex", JSON.stringify(lesson));
+    navigate("/learn/" + course?._id);
+  };
+
+  return course && (
     <div className="font-exo flex mt-12">
-      <div className="w-2/3">
+      <div className="lg:w-2/3 w-full">
         <div className="flex flex-col">
           <div className="text-xl font-bold pb-2 pt-4">Overview</div>
           <div
             className=""
             dangerouslySetInnerHTML={{ __html: course.content }}
           />
-          <div className="text-xl font-bold pb-2 pt-4">Skill set</div>
-          <div className="flex gap-2">
-            {course.tag &&
-              course.tag.map((tag, index) => (
-                <div
-                  key={index}
-                  className="bg-orange-200 px-2 rounded inline-block mr-2"
-                >
-                  {tag}
-                </div>
-              ))}
-          </div>
+          {course.tag.length > 0 && (
+            <div>
+              <div className="text-xl font-bold pb-2 pt-4">Tags</div>
+              <div className="flex flex-wrap gap-2 text-sm">
+                {course.tag.map((tag, index) => (
+                  <div
+                    key={index}
+                    className=" bg-orange-200 text-neutral-800 px-2 py-1 rounded"
+                  >
+                    {tag}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
         <div>
           <div className="text-xl font-bold pb-2 pt-4">Curriculum</div>
           <div className="border-2 rounded-lg px-4">
             {Array.isArray(session) &&
-              session.map((item, index) => (
-                <div
-                  className={`py-4 ${
-                    index === session.length - 1 ? "border-none" : "border-b-2"
-                  }`}
-                  key={index}
-                >
+              session.map((session, sessionIndex) => (
+                <div className={`py-4 border-b-2 border-neutral-200`}>
                   <div
                     className="flex flex-col hover:bg-orange-100 px-4 py-2 rounded cursor-pointer"
-                    onClick={() => toggleSession(index)}
+                    onClick={() => toggleSession(sessionIndex)}
                   >
-                    {expandedSession === index ? (
+                    {expandedSession === sessionIndex ? (
                       <div className="flex justify-between text-orange-500 text-lg cursor-pointer font-bold hover:text-orange-600">
-                        {item.name}
+                        {session.name}
                         <MdOutlineKeyboardArrowUp size={24} />
                       </div>
                     ) : (
                       <div
                         className="flex justify-between text-lg cursor-pointer font-bold"
-                        onClick={() => toggleSession(index)}
+                        onClick={() => toggleSession(sessionIndex)}
                       >
-                        {item.name}
+                        {session.name}
                         <MdOutlineKeyboardArrowDown
                           className="text-gray-600"
                           size={24}
@@ -131,37 +87,95 @@ export const Detail = ({ isEnrolled, course, session }: Props) => {
                       </div>
                     )}
                     <div className="flex text-sm font-light">
-                      <div className="">Session {item.position_order}</div>
+                      <div className="">Session {session.position_order}</div>
                       <span className="px-2">•</span>
-                      <div>{item.lesson_list.length} lessons</div>
+                      <div>{session.lesson_list.length} lessons</div>
                       <span className="px-2">•</span>
-                      <div>{Math.round(item.full_time / 60)} hours</div>
+                      <div>{Math.round(session.full_time / 60)} hours</div>
                     </div>
                   </div>
                   <div
                     className={`transition-all duration-300 ease-out overflow-hidden ${
-                      expandedSession === index ? "max-h-96" : "max-h-0"
+                      expandedSession === sessionIndex ? "max-h-[500px]" : "max-h-0"
                     }`}
                   >
-                    <div className="px-4 pt-2">
-                      <div className="font-semibold">What you'll learn</div>
+                    <div className="lg:px-4 pt-2 h-full">
                       <div
                         className="text-sm pt-2"
-                        dangerouslySetInnerHTML={{ __html: item.description }}
+                        dangerouslySetInnerHTML={{
+                          __html: session.description,
+                        }}
                       />
-                      <div className="font-semibold pt-2">
-                        Skill you'll gain
-                      </div>
-                      <div className="text-sm flex flex-wrap gap-2 pt-2">
-                        {item.tag.map((skill: string, index: number) => (
-                          <div
-                            className="bg-orange-200 px-2 rounded"
-                            key={index}
-                          >
-                            {skill}
+                      {session.tag.length > 0 && (
+                        <div>
+                          <div className="flex justify-between cursor-pointer font-semibold my-2">
+                            Tags
                           </div>
-                        ))}
+                          <div className="flex text-xs flex-wrap gap-2">
+                            {session.tag.map((tag: string, index: number) => (
+                              <div
+                                key={index}
+                                className=" bg-orange-200 text-neutral-800 px-2 py-1 rounded"
+                              >
+                                {tag}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      <div
+                        className="mt-2 cursor-pointer text-orange-500 hover:underline"
+                        onClick={() => toggleLesson(sessionIndex)}
+                      >
+                        {expandedLesson === sessionIndex
+                          ? "Hide info about session content"
+                          : "Show info about session content"}
                       </div>
+                        {expandedLesson === sessionIndex && (
+                          <div className="flex flex-col">
+                            {session.lesson_list.map(
+                              (lesson: Lesson, lessonIndex: number) => (
+                                <div
+                                  key={lessonIndex}
+                                  className="flex py-2 group"
+                                >
+                                  <div className="w-4/5">
+                                    {course.is_purchased && (
+                                      <div>
+                                        <div>{lesson.name}</div>
+                                        <div>
+                                          {lesson.lesson_type
+                                            .charAt(0)
+                                            .toUpperCase() +
+                                            lesson.lesson_type.slice(1)}
+                                          <span className="px-2">•</span>
+                                          {lesson.full_time} minutes
+                                        </div>
+                                      </div>
+                                    )}
+                                    {!course.is_purchased && (
+                                      <div>
+                                        {lesson.name}
+                                        <span className="px-2">•</span>
+                                        {lesson.full_time} minutes
+                                      </div>
+                                    )}
+                                  </div>
+                                  {course.is_purchased && (
+                                    <div
+                                      className={`w-1/5 text-orange-500 underline cursor-pointer lg:hidden group-hover:block`}
+                                      onClick={() =>
+                                        handleGoToLesson(sessionIndex, lesson)
+                                      }
+                                    >
+                                      Go to learn
+                                    </div>
+                                  )}
+                                </div>
+                              )
+                            )}
+                          </div>
+                        )}
                     </div>
                   </div>
                 </div>
@@ -169,21 +183,11 @@ export const Detail = ({ isEnrolled, course, session }: Props) => {
           </div>
           <div>
             <div className="text-xl font-bold pb-2 pt-4">Comment</div>
-            <Reviews items={sampleReviews} label={false} />
+            <Reviews label={false} courseId={course._id} />
           </div>
         </div>
       </div>
-      <div className="w-1/3"></div>
+      <div className="lg:w-1/3"></div>
     </div>
-  ) : (
-    <div>
-      <div className="w-2/3">
-        <div>
-          <div>About</div>
-          {course?.content}
-        </div>
-      </div>
-      <div className="w-1/3"></div>
-    </div>
-  );
+  )
 };

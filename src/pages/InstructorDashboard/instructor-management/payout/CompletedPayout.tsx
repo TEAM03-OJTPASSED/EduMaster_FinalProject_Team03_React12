@@ -1,27 +1,37 @@
 import React, { useEffect, useState } from "react";
-import { Card, Input, Table, TableProps, Tag } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
-import { useLocation } from "react-router-dom";
+import { Button, Card,  Input, Modal, Table, TableProps, Tooltip } from "antd";
+import { EyeFilled, SearchOutlined } from "@ant-design/icons";
 import PayoutService from "../../../../services/payout.service";
-import { Payout, PayoutStatusEnum } from "../../../../models/Payout.model";
+import { GetPayoutRequest, Payout, PayoutStatusEnum } from "../../../../models/Payout.model";
+import { moneyFormatter } from "../../../../utils/moneyFormatter";
+import TransactionListModal from "../../../../components/TransactionListModal";
 
 const CompletedPayout: React.FC = () => {
-  const location = useLocation();
-  const { status } = location.state || {};
+ 
   const [filteredPayouts, setFilteredPayouts] = useState<Payout[]>([]);
   const [searchKeyword, setSearchKeyword] = useState<string>("");
+  const [isOpenTransaction, setIsOpenTransaction] = useState(false);
+  const [currentRequestPayout, setCurrentRequestPayout] = useState<Payout>(
+    {} as Payout
+  );
 
-  const initialParams = {
+  const initialParams : GetPayoutRequest = {
     searchCondition: {
       payout_no: "",
       instructor_id: "",
-      status: undefined as PayoutStatusEnum | undefined, // Optional property syntax
+      status: PayoutStatusEnum.COMPLETED,
+      is_instructor:true,
       is_delete: false,
     },
     pageInfo: {
       pageNum: 1,
       pageSize: 10,
     },
+  };
+
+  const handleViewTransaction = (item: Payout) => {
+    setIsOpenTransaction(true);
+    setCurrentRequestPayout(item);
   };
   
 
@@ -31,8 +41,7 @@ const CompletedPayout: React.FC = () => {
   const fetchPayouts = async () => {
     const response = await PayoutService.getPayout(initialParams); 
     const payouts = response.data?.pageData || [];
-    const completedPayouts = payouts.filter((payout: Payout) => payout.status === status);
-    setFilteredPayouts(completedPayouts);
+    setFilteredPayouts(payouts);
   };
 
 
@@ -48,32 +57,58 @@ const CompletedPayout: React.FC = () => {
       key: "payout_no",
     },
     {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status: PayoutStatusEnum) => (
-        <Tag color="green">{status}</Tag>
-      ),
-    },
-    {
-      title: "Transaction ID",
-      dataIndex: "transaction_id",
-      key: "transaction_id",
-    },
-    {
-      title: "Balance Origin",
+      title: "Total",
       dataIndex: "balance_origin",
       key: "balance_origin",
+      ellipsis: true,
+      align: 'right' as const,
+      render: (money: number) => moneyFormatter(money),
     },
     {
-      title: "Balance Instructor Paid",
+      title: "Commission",
       dataIndex: "balance_instructor_paid",
       key: "balance_instructor_paid",
+      ellipsis: true,
+      align: 'right' as const,
+      render: (money: number) => moneyFormatter(money),
     },
     {
-      title: "Balance Instructor Received",
+      title: "Earnings",
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
+      ellipsis: true,
+      align: 'right' as const,
+      render: (money: number) => moneyFormatter(money),
+    },
+    {
+      title: "Updated At",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      ellipsis: true,
+      align: 'center' as const,
+      render: (date: string) => new Date(date).toLocaleString(),
+    },
+    {
+      title: "Transactions",
+      dataIndex: "view_transaction",
+      key: "view_transaction",
+      align: "center" as const,
+      fixed: "right" as const,
+      render: (_, record: Payout) => {
+        return (
+          <div>
+            <Tooltip title="View Details">
+            <Button
+              className="text-red-600"
+              icon={<EyeFilled />}
+              type="text"
+              onClick={() => handleViewTransaction(record)}
+            >
+            </Button>
+            </Tooltip>
+          </div>
+        );
+      },
     },
   ];
 
@@ -97,6 +132,16 @@ const CompletedPayout: React.FC = () => {
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
       />
+      {/* Modal for showing detailed information */}
+      <Modal
+        open={isOpenTransaction}
+        width={1000}
+        closable
+        onCancel={() => setIsOpenTransaction(false)}
+        footer={null}
+      >
+        <TransactionListModal item={currentRequestPayout} />
+      </Modal>
     </Card>
   );
 };

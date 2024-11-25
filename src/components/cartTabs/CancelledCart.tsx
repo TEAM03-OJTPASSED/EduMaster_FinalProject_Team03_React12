@@ -21,6 +21,7 @@ interface OrderProps {
   paymentStatus?: string;
   repurchaseCart: (cartItem: CartItem) => void;
   removeCart: (cartItem: CartItem) => void;
+  isLoading?: boolean; 
 }
 
 
@@ -29,15 +30,15 @@ const CancelledOrders: React.FC<OrderProps> = ({
   carts,
   navigate,
   repurchaseCart,
-  removeCart
-
+  removeCart,
+  isLoading
 }) => {
   return (
     <>
       <h1 className="mb-2 pt-4 text-4xl font-semibold">Cancelled Payments</h1>
       <div className="flex flex-col md:flex-row gap-8">
         <div className="w-full">
-          {carts.length > 0 ? (
+          {carts.length > 0 && (
             <List
               itemLayout="horizontal"
               dataSource={carts}
@@ -95,7 +96,9 @@ const CancelledOrders: React.FC<OrderProps> = ({
                 </List.Item>
               )}
             />
-          ) : (
+          )}  
+          
+          {carts.length === 0 && isLoading === false && (
             <Empty
               image={Empty.PRESENTED_IMAGE_SIMPLE}
               description={
@@ -104,10 +107,10 @@ const CancelledOrders: React.FC<OrderProps> = ({
                   <Button
                     type="primary"
                     icon={<ShoppingCartOutlined />}
-                    onClick={() => navigate("/cart")}
+                    onClick={() => navigate("/course")}
                     className="bg-orange-500 font-jost p-8 py-5 hover:bg-orange-600 view-button ant-btn-variant-solid"
                   >
-                    Browse Carts
+                    Browse Courses
                   </Button>
                 </Space>
               }

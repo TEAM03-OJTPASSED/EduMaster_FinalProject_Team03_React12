@@ -1,5 +1,5 @@
 import { Button, Col, Form, FormProps, Input, Row, Select } from "antd";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Session } from "../../../../models/Session.model";
 import { Course } from "../../../../models/Course.model";
 
@@ -8,7 +8,6 @@ type SessionOptionsProps = {
   mode: "create" | "update";
   onFinish: FormProps["onFinish"];
   listCourses: Course[];
-  isLoading: boolean;
 };
 
 const SessionOptions: React.FC<SessionOptionsProps> = ({
@@ -16,15 +15,26 @@ const SessionOptions: React.FC<SessionOptionsProps> = ({
   mode,
   onFinish,
   listCourses,
-  isLoading,
 }) => {
   const [form] = Form.useForm<Partial<Session>>();
+
+  const [tagOptions, setTagOptions] = useState<
+    { value: string; label: string }[]
+  >([]);
 
   useEffect(() => {
     if (mode === "update") {
       form.setFieldsValue(initialState ?? {});
     }
   }, [mode, initialState, form]);
+  const handleTagsChange = (value: string[]) => {
+    const uniqueOptions = Array.from(new Set(value)).map((item) => ({
+      value: item,
+      label: item,
+    }));
+    setTagOptions(uniqueOptions);
+    form.setFieldsValue({ tag: value });
+  };
   return (
     <div>
       <Form
@@ -58,8 +68,12 @@ const SessionOptions: React.FC<SessionOptionsProps> = ({
             </Form.Item>
           </Col>
         </Row>
-  
-        <Form.Item label="Course Name" name="course_id">
+
+        <Form.Item
+          label="Course Name"
+          name="course_id"
+          rules={[{ required: true, message: "Please select course name" }]}
+        >
           <Select
             placeholder="Select course name"
             options={listCourses.map((course: Course, index) => ({
@@ -84,13 +98,22 @@ const SessionOptions: React.FC<SessionOptionsProps> = ({
           />
         </Form.Item>
 
+        <Form.Item label="Tags" name="tag">
+          <Select
+            mode="tags"
+            placeholder="Add tags"
+            onChange={handleTagsChange}
+            options={tagOptions}
+            style={{ width: "100%" }}
+          />
+        </Form.Item>
+
         <Form.Item>
           <Button
             className="w-full"
             variant="solid"
             color="primary"
             htmlType="submit"
-            loading={isLoading}
           >
             {mode === "create" ? "Create" : "Change"}
           </Button>

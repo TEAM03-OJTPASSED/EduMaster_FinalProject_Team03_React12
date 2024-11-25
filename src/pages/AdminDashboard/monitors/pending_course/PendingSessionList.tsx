@@ -1,28 +1,31 @@
-import { Table, Input, Card, TableProps } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import { Table, TableProps, Tooltip, Button, Modal } from "antd";
 import dayjs from "dayjs";
 import { PageInfo } from "../../../../models/SearchInfo.model";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { GetSessions, Session } from "../../../../models/Session.model";
 import SessionService from "../../../../services/session.service";
-import useDebounce from "../../../../hooks/useDebounce";
 
-const PendingSessionList = () => {
-  const [searchText, setSearchText] = useState<string>("");
-  const searchDebounce = useDebounce(searchText, 2000);
+import { ellipsisText } from "../../../../utils/ellipsisText";
+import { PendingLessonList } from "../../../../utils/LazyRouter";
 
-  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
-  };
-
+type PendingSessionListProps = {
+  course_id: string;
+};
+const PendingSessionList: React.FC<PendingSessionListProps> = ({
+  course_id,
+}) => {
   const [sessionPendingList, setSessionPendingList] = useState<Session[]>([]);
+  const [currentSessionItem, setCurrentSessionItem] = useState<Session>(
+    {} as Session
+  );
+  const [lessonVisible, setLessonVisible] = useState<boolean>(false);
   const [currentSession, setCurrentSession] = useState<PageInfo>(
     {} as PageInfo
   );
   const [sessionSearchParam, setSessionSearchParam] = useState<GetSessions>({
     searchCondition: {
       keyword: "",
-      course_id: "",
+      course_id: course_id,
       is_position_order: false,
       is_deleted: false,
     },
@@ -31,15 +34,6 @@ const PendingSessionList = () => {
       pageSize: 5,
     },
   });
-
-  useEffect(() => {
-    // Update sessionSearchParam when searchDebounce changes
-    setSessionSearchParam((prev) => ({
-      ...prev,
-      searchCondition: { ...prev.searchCondition, keyword: searchDebounce },
-    }));
-  }, [searchDebounce]);
-
   useEffect(() => {
     const fetchData = async () => {
       const res = await SessionService.getSessions(sessionSearchParam);
@@ -47,7 +41,12 @@ const PendingSessionList = () => {
       setCurrentSession(res?.data?.pageInfo as PageInfo);
     };
     fetchData();
-  }, [sessionSearchParam]);
+  }, [sessionSearchParam, course_id]);
+
+  const handleViewLesson = (record: Session) => {
+    setCurrentSessionItem(record);
+    setLessonVisible(true);
+  };
 
   const columns: TableProps<Session>["columns"] = [
     {
@@ -59,11 +58,18 @@ const PendingSessionList = () => {
       title: "Course Name",
       dataIndex: "course_name",
       key: "course_name",
+      width: 400,
+      render: (course_name: string) => {
+        return (
+          <Tooltip title={course_name}>{ellipsisText(course_name, 50)}</Tooltip>
+        );
+      },
     },
     {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
+      align: "center",
       render: (created_at) => {
         return <div>{dayjs(created_at).format("DD/MM/YYYY")}</div>;
       },
@@ -72,23 +78,26 @@ const PendingSessionList = () => {
       title: "Position Order",
       dataIndex: "position_order",
       key: "position_order",
+      align: "center",
       render: (is_deleted) => {
         return <div className="text-red-600">{is_deleted}</div>;
+      },
+    },
+    {
+      title: "View Lesson",
+      key: "full_time",
+      render: (record: Session) => {
+        return (
+          <div>
+            <Button color="primary" onClick={() => handleViewLesson(record)}>View</Button>
+          </div>
+        );
       },
     },
   ];
 
   return (
-    <Card>
-      <h3 className="text-2xl my-5">Session Management</h3>
-      <div className="flex flex-wrap items-center mb-4">
-        <Input
-          placeholder="Search By Session Name"
-          prefix={<SearchOutlined />}
-          style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
-          onChange={handleSearchChange}
-        />
-      </div>
+    <div>
       <Table
         dataSource={sessionPendingList}
         columns={columns}
@@ -108,7 +117,17 @@ const PendingSessionList = () => {
         style={{ borderRadius: "8px" }}
         scroll={{ x: true }}
       />
-    </Card>
+
+      <Modal
+        title="Lesson Detail"
+        width={1000}
+        open={lessonVisible}
+        onCancel={() => setLessonVisible(false)}
+        footer={null}
+      >
+        <PendingLessonList session_id={currentSessionItem?._id} />
+      </Modal>
+    </div>
   );
 };
 

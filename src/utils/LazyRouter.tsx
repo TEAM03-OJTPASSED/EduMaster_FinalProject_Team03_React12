@@ -13,9 +13,7 @@ export const SessionList = React.lazy(
 export const LessonList = React.lazy(
   () => import("../pages/AdminDashboard/monitors/course/LessonList")
 );
-export const PendingCourse = React.lazy(
-  () => import("../pages/AdminDashboard/monitors/pending_course/PendingCourse")
-);
+
 export const CourseList = React.lazy(
   () => import("../pages/AdminDashboard/monitors/course/CourseLists")
 );
@@ -32,12 +30,15 @@ export const PendingLessonList = React.lazy(
   () =>
     import("../pages/AdminDashboard/monitors/pending_course/PendingLessonList")
 );
+
+export const PendingCourseDetails = React.lazy(
+  () =>
+    import("../pages/AdminDashboard/monitors/pending_course/PendingCourseDetails")
+);
 export const BlogManagement = React.lazy(
   () => import("../pages/AdminDashboard/BlogManagement")
 );
-export const CourseLog = React.lazy(
-  () => import("../pages/AdminDashboard/CourseLog")
-);
+
 export const PurchaseLog = React.lazy(
   () => import("../pages/AdminDashboard/PurchaseLog")
 );
@@ -47,10 +48,7 @@ export const InstructorPayout = React.lazy(
       "../pages/InstructorDashboard/instructor-management/payout/InstructorPayout"
     )
 );
-export const InstructorOrder = React.lazy(
-  () =>
-    import("../pages/InstructorDashboard/instructor-management/InstructorLearning")
-);
+
 export const InstructorCourses = React.lazy(
   () =>
     import("../pages/InstructorDashboard/instructor-monitor/InstructorCourses")
@@ -61,6 +59,7 @@ export const InstructorCourseList = React.lazy(
       "../pages/InstructorDashboard/instructor-monitor/InstructorCourseList"
     )
 );
+
 export const IntructorSessionList = React.lazy(
   () =>
     import(
@@ -154,3 +153,10 @@ export const PayoutManagement = React.lazy(
   () => import("../pages/AdminDashboard/payoutManagement")
 );
 export const LearnCourse = React.lazy(() => import("../pages/LearnCoursePage"));
+
+export const AwaitingPayout = React.lazy(
+  () =>
+    import(
+      "../pages/InstructorDashboard/instructor-management/payout/AwaitingPayout"
+    )
+);

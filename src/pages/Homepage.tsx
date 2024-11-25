@@ -4,18 +4,18 @@ import heroImage from "../assets/pexels-kseniachernaya-7301126.jpg";
 // import { BiSearch } from "react-icons/bi";
 import CategoriesGrid from "../components/home/CategoriesGrid";
 
-import {
-  FaPalette,
-  FaCode,
-  FaComments,
-  FaVideo,
-  FaCamera,
-  FaChartLine,
-  FaPenNib,
-  FaChartPie,
-  FaAtom,
-  FaNetworkWired,
-} from "react-icons/fa";
+// import {
+//   FaPalette,
+//   FaCode,
+//   FaComments,
+//   FaVideo,
+//   FaCamera,
+//   FaChartLine,
+//   FaPenNib,
+//   FaChartPie,
+//   FaAtom,
+//   FaNetworkWired,
+// } from "react-icons/fa";
 import CoursesGrid from "../components/home/CoursesGrid";
 import CTABanner from "../components/home/CTABanner";
 import LatestArticles from "../components/home/LatestArticles";
@@ -27,74 +27,72 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store/store";
 import { Course } from "../models/Course.model";
 import ClientService from "../services/client.service";
-import { GetCourseClient } from "../models/Client.model";
+import { GetBlogsClient, GetCourseClient } from "../models/Client.model";
 import { useEffect, useState } from "react";
 import { addToCart } from "../redux/slices/cartSlice";
+import { Blog } from "../models/Blog.model";
+import { Category } from "../models/Category.model";
 
-interface Category {
-  icon: React.ReactNode;
-  title: string;
-  courses: number;
-}
 
-const categories: Category[] = [
-  {
-    icon: <FaPalette className="text-4xl text-orange-500" />,
-    title: "Art & Design",
-    courses: 38,
-  },
-  {
-    icon: <FaCode className="text-4xl text-orange-500" />,
-    title: "Development",
-    courses: 38,
-  },
-  {
-    icon: <FaComments className="text-4xl text-orange-500" />,
-    title: "Communication",
-    courses: 38,
-  },
-  {
-    icon: <FaVideo className="text-4xl text-orange-500" />,
-    title: "Videography",
-    courses: 38,
-  },
-  {
-    icon: <FaCamera className="text-4xl text-orange-500" />,
-    title: "Photography",
-    courses: 38,
-  },
-  {
-    icon: <FaChartLine className="text-4xl text-orange-500" />,
-    title: "Marketing",
-    courses: 38,
-  },
-  {
-    icon: <FaPenNib className="text-4xl text-orange-500" />,
-    title: "Content Writing",
-    courses: 38,
-  },
-  {
-    icon: <FaChartPie className="text-4xl text-orange-500" />,
-    title: "Finance",
-    courses: 38,
-  },
-  {
-    icon: <FaAtom className="text-4xl text-orange-500" />,
-    title: "Science",
-    courses: 38,
-  },
-  {
-    icon: <FaNetworkWired className="text-4xl text-orange-500" />,
-    title: "Network",
-    courses: 38,
-  },
-];
 
+// const categories: Category[] = [
+//   {
+//     icon: <FaPalette className="text-4xl text-orange-500" />,
+//     title: "Art & Design",
+//     courses: 38,
+//   },
+//   {
+//     icon: <FaCode className="text-4xl text-orange-500" />,
+//     title: "Development",
+//     courses: 38,
+//   },
+//   {
+//     icon: <FaComments className="text-4xl text-orange-500" />,
+//     title: "Communication",
+//     courses: 38,
+//   },
+//   {
+//     icon: <FaVideo className="text-4xl text-orange-500" />,
+//     title: "Videography",
+//     courses: 38,
+//   },
+//   {
+//     icon: <FaCamera className="text-4xl text-orange-500" />,
+//     title: "Photography",
+//     courses: 38,
+//   },
+//   {
+//     icon: <FaChartLine className="text-4xl text-orange-500" />,
+//     title: "Marketing",
+//     courses: 38,
+//   },
+//   {
+//     icon: <FaPenNib className="text-4xl text-orange-500" />,
+//     title: "Content Writing",
+//     courses: 38,
+//   },
+//   {
+//     icon: <FaChartPie className="text-4xl text-orange-500" />,
+//     title: "Finance",
+//     courses: 38,
+//   },
+//   {
+//     icon: <FaAtom className="text-4xl text-orange-500" />,
+//     title: "Science",
+//     courses: 38,
+//   },
+//   {
+//     icon: <FaNetworkWired className="text-4xl text-orange-500" />,
+//     title: "Network",
+//     courses: 38,
+//   },
+// ];
 
 const HomePage = () => {
   const [courses, setCourses] = useState<Course[]>([]);
+  const [blogs, setBlogs] = useState<Blog[]>([]);
+
   const [categories, setCategories] = useState<Category[]>([]);
-  
 
   useEffect(() => {
     const initialCoursesParams: GetCourseClient = {
@@ -106,21 +104,42 @@ const HomePage = () => {
         keyword: "",
         is_deleted: false,
         category_id: "",
-      }
-    }
+      },
+    };
+    const initialBlogsParams: GetBlogsClient = {
+      pageInfo: {
+        pageNum: 1,
+        pageSize: 3,
+      },
+      searchCondition: {
+        keyword: "",
+        is_deleted: false,
+        category_id: "",
+      },
+    };
     const fetchCourses = async () => {
       const response = await ClientService.getCourses(initialCoursesParams);
       setCourses(response?.data?.pageData ?? []);
+    };
 
+    const fetchCategories = async () => {
+      const response = await ClientService.getCategories({...initialCoursesParams, pageInfo: { ...initialCoursesParams.pageInfo, pageSize: 16}});
+      setCategories(response?.data?.pageData ?? []);
+    };
+
+    const fetchBlogs = async () => {
+      const response = await ClientService.getBlogs(initialBlogsParams);
+      setBlogs(response?.data?.pageData ?? []);
     };
 
     fetchCourses(); // Call the async function
-    },[]);
-
-  
+    fetchBlogs()
+    fetchCategories()
+    
+  }, []);
 
   const navigate = useCustomNavigate();
-  
+
   window.addEventListener("scroll", function () {
     const floatElements = document.querySelectorAll(".float-animation");
 
@@ -133,20 +152,20 @@ const HomePage = () => {
       }
     });
   });
-  
+
   const backToTop = () => {
     document.documentElement.style.scrollBehavior = "smooth";
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
   };
 
-  const {currentUser} = useSelector((state : RootState) => state.auth.login)
+  const { currentUser } = useSelector((state: RootState) => state.auth.login);
 
   const dispatch = useDispatch<AppDispatch>();
 
-
   const onAddCart = async (course: Course) => {
     await dispatch(addToCart({ course, userRole: currentUser?.role, navigate }));
+    return true
   };
 
   return (
@@ -154,7 +173,6 @@ const HomePage = () => {
       <div className="flex-col flex items-center">
         <div className="w-4 h-4 rounded-full bg-orange-500 bottom-32 right-8 fixed z-50"></div>
         <div className="w-4 h-4 rounded-full bg-orange-500 bottom-[100px] right-8 fixed z-50"></div>
-
         <button onClick={backToTop}>
           <div className=" w-12 h-12 rounded-full bottom-10 right-4 hover:scale-110 transition duration-500 bg-orange-500 fixed justify-center flex items-center z-50">
             <IoArrowUpOutline size={36} color="white" />
@@ -266,7 +284,11 @@ const HomePage = () => {
                   <BiSolidArrowFromLeft className="group-hover:scale-150 transition " />
                 </Button>
               </div>
-              <CoursesGrid courses={courses} viewMode="grid" onAddCartClick={onAddCart} />
+              <CoursesGrid
+                courses={courses}
+                viewMode="grid"
+                onAddCartClick={onAddCart}
+              />
             </div>
           </div>
         </section>
@@ -289,7 +311,7 @@ const HomePage = () => {
         </section>
 
         <section className="float-animation">
-          <LatestArticles />
+          <LatestArticles blogs={blogs} />
         </section>
       </main>
     </div>

@@ -1,34 +1,116 @@
-import React, { useState, useMemo } from "react";
-import { Pagination } from "antd";
-
-interface Review {
-  _id: string;
-  user_id: string;
-  course_id: string;
-  comment: string;
-  rating: number;
-  is_deleted: boolean;
-  created_at: string;
-  updated_at: string;
-  __v: number;
-}
+import { useState, useMemo, useEffect } from "react";
+import { Pagination, Rate, Dropdown, Menu, Input, Button, message } from "antd";
+import { EllipsisOutlined } from "@ant-design/icons";
+import { GetReviews, Review } from "../../../models/Review.model";
+import ReviewService from "../../../services/review.service";
+import dayjs from "dayjs";
 
 type Props = {
-  items: Review[];
   label?: boolean;
+  courseId: string;
 };
 
-export const Reviews = ({ items, label }: Props) => {
+export const Reviews = ({ label, courseId }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [editingReviewId, setEditingReviewId] = useState<string | null>(null);
+  const [editComment, setEditComment] = useState("");
+  const [editRating, setEditRating] = useState(0);
   const pageSize = 3;
 
-  const handlePageChange = (page: React.SetStateAction<number>) => {
+  const handleEdit = (reviewId: string, comment: string, rating: number) => {
+    setEditingReviewId(reviewId);
+    setEditComment(comment);
+    setEditRating(rating);
+  };
+
+  const saveEdit = async (reviewId: string) => {
+    const updatedReview = {
+      course_id: courseId,
+      comment: editComment,
+      rating: editRating,
+    };
+
+    try {
+      await ReviewService.updateReview(reviewId, updatedReview);
+
+      setReviews((prevReviews) =>
+        prevReviews.map((review) =>
+          review._id === reviewId ? { ...review, ...updatedReview } : review
+        )
+      );
+
+      message.success("Review updated successfully");
+      setEditingReviewId(null);
+    } catch (error) {
+      console.error("Error updating review:", error);
+    }
+  };
+
+  const fetchReviews = async () => {
+    try {
+      const searchParams: GetReviews = {
+        searchCondition: {
+          course_id: "", // Chỉ lấy review của course hiện tại
+          rating: 0,
+          is_instructor: false,
+          is_rating_order: false,
+          is_deleted: false,
+        },
+        pageInfo: {
+          pageNum: 1,
+          pageSize: 100,
+        },
+      };
+      const res = await ReviewService.getReviews(searchParams);
+      const pageData = res.data?.pageData ?? [];
+      setReviews(pageData);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    }
+  };
+  useEffect(() => {
+    fetchReviews();
+    const handleStorageChange = () => {
+      if (localStorage.getItem("create review")) {
+        localStorage.removeItem("create review");
+        fetchReviews();
+      }
+    };
+    // Bắt sự kiện của localstorage
+    window.addEventListener("storageChange", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storageChange", handleStorageChange);
+    };
+  }, []);
+
+  const handleDelete = async (reviewId: string) => {
+    try {
+      await ReviewService.deleteReview(reviewId);
+      setReviews((prevReviews) =>
+        prevReviews.filter((review) => review._id !== reviewId)
+      );
+    } catch (error) {
+      console.error("Error deleting review:", error);
+    }
+  };
+
+  const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
+  const getReviewsByCourseId = (courseId: string) => {
+    return reviews.filter((review) => review.course_id === courseId);
+  };
+
+  const courseReviews = useMemo(
+    () => getReviewsByCourseId(courseId),
+    [reviews, courseId]
+  );
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
-  const currentItems = items.slice(startIndex, endIndex);
+  const currentItems = courseReviews.slice(startIndex, endIndex);
 
   const itemRender = (
     page: number,
@@ -58,7 +140,7 @@ export const Reviews = ({ items, label }: Props) => {
     const isActive = page === currentPage;
     return (
       <button
-        className={`px-4 py-1 rounded-full border  ${
+        className={`px-4 py-1 rounded-full border ${
           isActive
             ? "bg-orange-500 text-white"
             : "bg-neutral-100 text-black hover:bg-orange-500 hover:text-white border border-gray-300"
@@ -69,87 +151,116 @@ export const Reviews = ({ items, label }: Props) => {
     );
   };
 
-  const calculateRatingCounts = (items: Review[]) => {
+  const calculateRatingCounts = (courseReviews: Review[]) => {
     const counts = [0, 0, 0, 0, 0];
-    items.forEach((item) => {
-      if (item.rating >= 1 && item.rating <= 5) {
-        counts[item.rating - 1]++;
+    courseReviews.forEach((review) => {
+      if (review.rating >= 1 && review.rating <= 5) {
+        counts[review.rating - 1]++;
       }
     });
     return counts;
   };
 
   const renderStars = (rating: number) => {
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-      stars.push(
-        <svg
-          key={i}
-          className={`w-4 h-4 ${
-            i <= rating ? "text-orange-500" : "text-gray-300"
-          }`}
-          fill="currentColor"
-          viewBox="0 0 20 20"
-        >
-          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.287 3.957c.3.921-.755 1.688-1.54 1.118l-3.37-2.448a1 1 0 00-1.175 0l-3.37 2.448c-.784.57-1.838-.197-1.54-1.118l1.287-3.957a1 1 0 00-.364-1.118L2.05 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.957z" />
-        </svg>
-      );
-    }
-    return stars;
+    return Array.from({ length: 5 }, (_, i) => (
+      <svg
+        key={i}
+        className={`w-4 h-4 ${
+          i < rating ? "text-orange-500" : "text-gray-300"
+        }`}
+        fill="currentColor"
+        viewBox="0 0 20 20"
+      >
+        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.957a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.287 3.957c.3.921-.755 1.688-1.54 1.118l-3.37-2.448a1 1 0 00-1.175 0l-3.37 2.448c-.784.57-1.838-.197-1.54-1.118l1.287-3.957a1 1 0 00-.364-1.118L2.05 9.384c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.957z" />
+      </svg>
+    ));
   };
 
   const renderRatingSummary = useMemo(() => {
-    return () => {
-      const totalRatings = items.length;
-      const counts = calculateRatingCounts(items);
-      return counts.map((count, index) => {
-        const percentage = ((count / totalRatings) * 100).toFixed(0);
-        return (
-          <div key={index} className="flex items-center font-exo text-sm">
-            <span className="w-12 flex items-center">
-              {renderStars(index + 1)}
-            </span>
-            <span className="w-16 px-4">{percentage}%</span>
-            <div className="w-full bg-gray-200 rounded h-2 mx-2">
-              <div
-                className="bg-orange-500 h-2 rounded"
-                style={{ width: `${percentage}%` }}
-              ></div>
-            </div>
+    const totalRatings = courseReviews?.length;
+    const counts =
+      totalRatings > 0
+        ? calculateRatingCounts(courseReviews)
+        : Array(5).fill(0);
+
+    return counts.map((count, index) => {
+      const percentage =
+        totalRatings > 0 ? ((count / totalRatings) * 100).toFixed(0) : "0";
+
+      return (
+        <div key={index} className="flex items-center font-exo text-sm">
+          <span className="w-12 flex items-center">
+            {renderStars(index + 1)}
+          </span>
+          <span className="w-16 px-4">{percentage}%</span>
+          <div className="w-full bg-gray-200 rounded h-2 mx-2">
+            <div
+              className="bg-orange-500 h-2 rounded"
+              style={{ width: `${percentage}%` }}
+            ></div>
           </div>
-        );
-      });
-    };
-  }, [items]);
+        </div>
+      );
+    });
+  }, [courseReviews]);
+
+  const averageRating = (
+    courseReviews.reduce((acc, review) => acc + review.rating, 0) /
+    courseReviews.length
+  ).toFixed(1);
 
   return (
     <div>
-      <div>
-        {label && <div className="font-exo font-bold text-lg">Comment</div>}
-        <div>
-          <div className="flex items-center mb-4">
-            <span className="font-exo font-bold text-5xl mr-2">
-              {(
-                items.reduce((acc, item) => acc + item.rating, 0) / items.length
-              ).toFixed(1)}
-            </span>
-            <div>
-              <div className="flex items-center">
-                {renderStars(
-                  items.reduce((acc, item) => acc + item.rating, 0) /
-                    items.length
-                )}
-              </div>
-              <div>based on {items.length} ratings</div>
+      {label && <div className="font-exo font-bold text-lg">Comment</div>}
+      {/* {courseReviews.length > 0 && (
+        <div className="flex items-center mb-4">
+          <span className="font-exo font-bold text-5xl mr-2">
+            {averageRating}
+          </span>
+          <div>
+            <div className="flex items-center">
+              {renderStars(Math.round(Number(averageRating) || 0))}
             </div>
+            <div>based on {courseReviews.length} ratings</div>
           </div>
         </div>
-        <div className="mb-4">{renderRatingSummary()}</div>
-      </div>
+      )}
 
-      {currentItems.map((items) => (
+      <div className="mb-4">
+        {courseReviews && courseReviews.length > 0 ? (
+          renderRatingSummary
+        ) : (
+          <div className="h-20 border border-gray-300 rounded-md flex items-center justify-center">
+            <div className="text-center">Don't have any comment yet</div>
+          </div>
+        )}
+      </div> */}
+      {(courseReviews.length > 0 || localStorage.getItem("create review")) && (
+        <div className="flex items-center mb-4">
+          <span className="font-exo font-bold text-5xl mr-2">
+            {averageRating || "N/A"}
+          </span>
+          <div>
+            <div className="flex items-center">
+              {renderStars(Math.round(Number(averageRating) || 0))}
+            </div>
+            <div>based on {courseReviews.length} ratings</div>
+          </div>
+        </div>
+      )}
+
+      <div className="mb-4">
+        {courseReviews.length > 0
+          ? renderRatingSummary
+          : !localStorage.getItem("create review") && (
+              <div className="h-20 border border-gray-300 rounded-md flex items-center justify-center">
+                <div className="text-center">Don't have any comment yet</div>
+              </div>
+            )}
+      </div>
+      {currentItems.map((review) => (
         <div
-          key={items._id}
+          key={review._id}
           className="flex gap-5 font-exo p-4 border-t border-gray-300"
         >
           <div className="w-10">
@@ -161,23 +272,80 @@ export const Reviews = ({ items, label }: Props) => {
           </div>
           <div className="grow">
             <div className="flex justify-between">
-              <div className="font-bold">{items.user_id}</div>
-              <div className="text-sm">{items.created_at}</div>
+              <div className="font-bold">{review.reviewer_name}</div>
+              <div className="flex items-center gap-2">
+                <div className="text-sm">
+                  {dayjs(review.created_at).format("DD/MM/YYYY")}
+                </div>
+                <Dropdown
+                  overlay={
+                    <Menu>
+                      <Menu.Item
+                        key="edit"
+                        onClick={() =>
+                          handleEdit(review._id, review.comment, review.rating)
+                        }
+                      >
+                        Edit
+                      </Menu.Item>
+                      <Menu.Item
+                        key="delete"
+                        danger
+                        onClick={() => handleDelete(review._id)}
+                      >
+                        Delete
+                      </Menu.Item>
+                    </Menu>
+                  }
+                  trigger={["click"]}
+                >
+                  <EllipsisOutlined
+                    style={{ fontSize: "1.25rem", cursor: "pointer" }}
+                  />
+                </Dropdown>
+              </div>
             </div>
-            <div className="text-sm pt-2">{items.comment}</div>
+            {editingReviewId === review._id ? (
+              <>
+                <Rate value={editRating} onChange={setEditRating} />
+                <Input.TextArea
+                  value={editComment}
+                  onChange={(e) => setEditComment(e.target.value)}
+                  rows={3}
+                />
+                <div style={{ marginTop: 8 }}>
+                  <Button
+                    type="primary"
+                    onClick={() => saveEdit(review._id)}
+                    style={{ marginRight: 8 }}
+                  >
+                    Save
+                  </Button>
+                  <Button onClick={() => setEditingReviewId(null)}>
+                    Cancel
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <>
+                <Rate value={review.rating} disabled />
+                <div className="text-gray-500">{review.comment}</div>
+              </>
+            )}
           </div>
         </div>
       ))}
-      <div className="flex justify-center">
-        <Pagination
-          current={currentPage}
-          pageSize={pageSize}
-          total={items.length}
-          onChange={handlePageChange}
-          itemRender={itemRender}
-          className="mt-4"
-        />
-      </div>
+      {courseReviews?.length > 0 ||
+        (localStorage.getItem("create review") && (
+          <Pagination
+            current={currentPage}
+            onChange={handlePageChange}
+            total={courseReviews.length}
+            pageSize={pageSize}
+            itemRender={itemRender}
+            className="flex justify-center my-5"
+          />
+        ))}
     </div>
   );
 };

@@ -18,16 +18,20 @@ import {
   verifyTokenPending,
   verifyTokenRejected,
 } from "../redux/slices/authSlices";
+import { handleNotify } from "../utils/handleNotify";
 
 export const register = async (
   formData: RegisterType,
-  dispatch: AppDispatch
+  dispatch: AppDispatch,
+  navigate: (path: string, newTab?: boolean)=> void
 ) => {
   dispatch(registerPending());
   try {
     const res = await postRequest("/api/users", formData);
     console.log("res", res.data);
     dispatch(registerFulfilled());
+    handleNotify("Sign Up Successful!", "Please check your email")
+    navigate("/login")
   } catch (error) {
     console.log(error);
     dispatch(registerRejected());
@@ -56,8 +60,8 @@ export const resendTokenEmail = async (email: string, dispatch: AppDispatch) => 
   try {
     const res  = await postRequest("/api/auth/resend-token",{email:email})
     console.log("resend res", res.data);
-    
     dispatch(resendTokenFulfilled());
+    handleNotify("success", "Re-verify successfully, please check your email ")
   } catch (error) {
     console.log(error);
     dispatch(resendTokenRejected());

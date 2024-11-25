@@ -1,9 +1,10 @@
 // cartSlice.ts
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { message, notification } from 'antd';
+import { message } from 'antd';
 import { Course } from '../../models/Course.model';
 import CartService from '../../services/cart.service';
-import { CartStatusEnum, SearchCartByStatus } from '../../models/Cart.model';
+import { Cart, CartStatusEnum, SearchCartByStatus } from '../../models/Cart.model';
+import { handleNotify } from '../../utils/handleNotify';
 
 interface CartState {
   cartCount: number;
@@ -34,13 +35,17 @@ export const addToCart = createAsyncThunk(
         return rejectWithValue('User not logged in');
       }
 
-      const response = await CartService.createCart(course._id);
-      if (response) {
-        notification.success({
-          message: 'Course Added to Cart',
-          description: `You have added "${course.name}" to your cart.`,
-        });
-        return response.data;
+      const response = await CartService.createCart(course._id)
+      handleNotify("Course Added to Cart",`You have added "${course.name}" to your cart.`)
+      console.log(course._id)
+  
+      if (!response.success) 
+      {
+        handleNotify(
+          "Error adding item to to cart, please try again.",
+          `You have added "${course.name}" to your cart.`,
+        );
+        return true
       }
     
   }
@@ -64,15 +69,21 @@ export const fetchCartCount = createAsyncThunk(
       };
 
       const response = await CartService.getCartsAmount(initialCartSearchParams);
-      return response.data?.pageData.length || 0;
+      return (response.data?.pageData as Cart[]).length || 0;
     
   }
 );
 
+
+
 const cartSlice = createSlice({
   name: 'cart',
   initialState,
-  reducers: {},
+  reducers: {
+    updateCartCount(state, action) {
+      state.cartCount = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       // Add to cart
@@ -80,7 +91,7 @@ const cartSlice = createSlice({
         state.loading = true;
       })
       .addCase(addToCart.fulfilled, (state) => {
-        state.loading = false;
+        state.loading = false;        
         state.cartCount += 1;
       })
       .addCase(addToCart.rejected, (state, action) => {
@@ -101,5 +112,5 @@ const cartSlice = createSlice({
       });
   },
 });
-
+export const { updateCartCount } = cartSlice.actions;
 export default cartSlice.reducer;

@@ -1,55 +1,60 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Input, Space, Card, Select, Switch, Tabs } from "antd";
+import { Table, Button, Card, Select, Switch, Tabs } from "antd";
 import {
-  SearchOutlined,
   EditOutlined,
   DeleteOutlined,
   PlusCircleOutlined,
 } from "@ant-design/icons";
-
 import EditUser from "../../components/Admin/AdminModals/EditUserModal";
 import CreateUser from "../../components/Admin/AdminModals/CreateUserModal";
 import DeleteUserModal from "../../components/Admin/AdminModals/DeleteUserModal";
 import { UserSearchParams } from "../../models/SearchInfo.model";
-import { User } from "../../models/UserModel";
+import { User, UserStatusEnum } from "../../models/UserModel";
 import { UserService } from "../../services/user.service";
-import { useDebouncedSearch } from "../../hooks/useSearch";
+import GlobalSearchUnit from "../../components/GlobalSearchUnit";
+import { statusFormatter } from "../../utils/statusFormatter";
 
 const { Option } = Select;
 
+const initialUsersParams: UserSearchParams = {
+  searchCondition: {
+    keyword: "",
+    role: "",
+    status: true,
+    is_delete: false,
+    is_verified: true,
+  },
+  pageInfo: { pageNum: 1, pageSize: 10 },
+};
+
 const UserManagement: React.FC = () => {
+  const [activeTabKey, setActiveTabKey] = useState("active");
+  const [pageInfo, setPageInfo] = useState(initialUsersParams.pageInfo);
+  const [searchParams, setSearchParams] =
+    useState<UserSearchParams>(initialUsersParams);
   const [editVisible, setEditVisible] = useState(false);
   const [createVisible, setCreateVisible] = useState(false);
   const [deleteUserModalVisible, setDeleteUserModalVisible] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>([]);
-  const [pageNum, setPageNum] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
-  const [activeTabKey, setActiveTabKey] = useState("active");
-  const [searchText, setSearchText] = useState("");
-  const filteredData = useDebouncedSearch(users, searchText, 300, [
-    "name",
-    "email",
-  ]);
 
   const fetchUsers = async () => {
     const searchParams: UserSearchParams = {
       searchCondition: {
-        keyword: searchText,
+        keyword: "",
         role: "",
         status: activeTabKey === "active",
         is_delete: false,
         is_verified: true,
       },
-      pageInfo: { pageNum, pageSize },
+      pageInfo,
     };
-
     try {
       const response = await UserService.getUsers(searchParams);
       const responseData = response.data?.pageData;
       const flattenedUsers: User[] = Array.isArray(responseData)
-        ? responseData.flat() // Dùng flat() để chuyển thành User[]
+        ? responseData.flat()
         : [];
       setUsers(flattenedUsers);
       setTotal(response.data?.pageInfo?.totalItems ?? 0);
@@ -58,9 +63,15 @@ const UserManagement: React.FC = () => {
     }
   };
 
-  const handleEdit = (record: User) => {
-    setCurrentUser(record);
-    setEditVisible(true);
+  const handleSearchSubmit = (values: Record<string, any>) => {
+    setSearchParams({
+      pageInfo: searchParams.pageInfo,
+      searchCondition: {
+        ...searchParams.searchCondition,
+        keyword: values.keyword,
+        role: values.role,
+      },
+    });
   };
 
   const handleSave = async (updatedUserData: any) => {
@@ -74,6 +85,11 @@ const UserManagement: React.FC = () => {
     }
   };
 
+  const handleEdit = (record: User) => {
+    setCurrentUser(record);
+    setEditVisible(true);
+  };
+
   const handleDeleteConfirm = async (userId: string) => {
     await UserService.deleteUser(userId);
     fetchUsers();
@@ -81,14 +97,12 @@ const UserManagement: React.FC = () => {
   };
 
   const handleTableChange = (pagination: any) => {
-    setPageNum(pagination.current);
-    setPageSize(pagination.pageSize);
+    setPageInfo({ pageNum: pagination.current, pageSize: pagination.pageSize });
   };
 
   useEffect(() => {
     fetchUsers();
-    // }, [pageNum, pageSize, searchText, activeTabKey]);
-  }, [pageNum, pageSize, activeTabKey]);
+  }, [pageInfo, activeTabKey, searchParams]);
 
   const columns = [
     {
@@ -146,19 +160,28 @@ const UserManagement: React.FC = () => {
       title: "Actions",
       key: "action",
       render: (record: User) => (
-        <Space size="middle">
-          <Button icon={<EditOutlined />} onClick={() => handleEdit(record)} />
+        <>
+          <Button 
+            type="text" 
+            icon={<EditOutlined style={{ color: "blue" }} />} 
+            onClick={() => handleEdit(record)} />
           <Button
-            danger
-            icon={<DeleteOutlined />}
+            type="text"
+            icon={<DeleteOutlined style={{ color: "red" }} />}
             onClick={() => {
               setCurrentUser(record);
               setDeleteUserModalVisible(true);
             }}
           />
-        </Space>
+        </>
       ),
     },
+  ];
+
+  const role = [
+    UserStatusEnum.ADMIN,
+    UserStatusEnum.INSTRUCTOR,
+    UserStatusEnum.STUDENT,
   ];
 
   return (
@@ -174,27 +197,33 @@ const UserManagement: React.FC = () => {
             children: (
               <>
                 <div className="flex items-center justify-between mb-4">
-                  <Input
-                    placeholder="Search By User Name"
-                    prefix={<SearchOutlined />}
-                    className="w-full md:w-1/3"
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)} // Update searchText on input change
+                  <GlobalSearchUnit
+                    placeholder="Search By Course Name"
+                    selectFields={[
+                      {
+                        name: "role",
+                        options: role.map((status) => ({
+                          label: statusFormatter(status),
+                          value: status,
+                        })),
+                        placeholder: "Filter by roles",
+                      },
+                    ]}
+                    onSubmit={handleSearchSubmit}
                   />
                   <Button
                     type="primary"
                     onClick={() => setCreateVisible(true)}
+                    style={{borderRadius: "15px"}}
                     icon={<PlusCircleOutlined />}
                   >
                     Add new user
                   </Button>
                 </div>
                 <Table
-                  dataSource={filteredData}
+                  dataSource={users}
                   columns={columns}
                   pagination={{
-                    current: pageNum,
-                    pageSize,
                     total,
                     showSizeChanger: true,
                   }}

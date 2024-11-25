@@ -2,80 +2,21 @@ import { useParams } from "react-router-dom";
 import { BlogHeader } from "../components/BlogDetailPage/Header";
 import { TagList } from "../components/BlogDetailPage/TagList";
 import { RecentBlog } from "../components/BlogDetailPage/RecentBlog";
-import { Comment } from "../components/BlogDetailPage/Comment";
-import { LeaveAComment } from "../components/LeaveAComment";
+// import { Comment } from "../components/BlogDetailPage/Comment";
+// import { LeaveAComment } from "../components/LeaveAComment";
 import { Blog } from "../models/Blog.model";
 import { useEffect, useState } from "react";
 import BlogDetailSkeleton from "../components/Blogs/BlogDetailSkeleton";
 import ClientService from "../services/client.service";
-
-
-const comments = [
-  {
-    avatar: "https://picsum.photos/seed/picsum/200/300",
-    name: "John Doe",
-    date: "2024-07-18T04:16:27.274Z",
-    content: "Great blog",
-  },
-  {
-    avatar: "https://picsum.photos/seed/picsum/200/300",
-    name: "John Doe",
-    date: "2024-07-18T04:16:27.274Z",
-    content: "Great blog",
-  },
-  {
-    avatar: "https://picsum.photos/seed/picsum/200/300",
-    name: "John Doe",
-    date: "2024-07-18T04:16:27.274Z",
-    content: "Great blog",
-  },
-  {
-    avatar: "https://picsum.photos/seed/picsum/200/300",
-    name: "John Doe",
-    date: "2024-07-18T04:16:27.274Z",
-    content: "Great blog",
-  },
-  {
-    avatar: "https://picsum.photos/seed/picsum/200/300",
-    name: "John Doe",
-    date: "2024-07-18T04:16:27.274Z",
-    content: "Great blog",
-  },
-  {
-    avatar: "https://picsum.photos/seed/picsum/200/300",
-    name: "John Doe",
-    date: "2024-07-18T04:16:27.274Z",
-    content: "Great blog",
-  },
-  {
-    avatar: "https://picsum.photos/seed/picsum/200/300",
-    name: "John Doe",
-    date: "2024-07-18T04:16:27.274Z",
-    content: "Great blog",
-  },
-  {
-    avatar: "https://picsum.photos/seed/picsum/200/300",
-    name: "John Doe",
-    date: "2024-07-18T04:16:27.274Z",
-    content: "Great blog",
-  },
-];
-
-const HTMLContent = ({ content }: { content: string }) => {
-  return (
-    <div 
-      className="prose max-w-none" // if you're using Tailwind Typography
-      dangerouslySetInnerHTML={{ __html: content }} 
-    />
-  );
-};
+import parse from "html-react-parser";
+import dayjs from "dayjs";
+import { GetBlogsClient } from "../models/Client.model";
 
 const BlogDetailPage = () => {
   const { id } = useParams();
   const [blog, setBlog] = useState<Blog>();
+  const [allBlogs, setAllBlogs] = useState<Blog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -87,15 +28,40 @@ const BlogDetailPage = () => {
             setBlog(response.data);
           }
         } catch (error) {
-          console.error('Error fetching blog:', error);
+          console.error("Error fetching blog:", error);
         } finally {
           setIsLoading(false);
         }
       }
     };
-    
+    window.scrollTo(0, 0);
     fetchBlogs();
   }, [id]);
+
+  const blogsParams: GetBlogsClient = {
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 10,
+    },
+    searchCondition: {
+      keyword: "",
+      is_deleted: false,
+      category_id: "",
+    },
+  };
+
+  useEffect(() => {
+    const fetchAllBlogs = async () => {
+      try {
+        const response = await ClientService.getBlogs(blogsParams);
+        setAllBlogs(response?.data?.pageData ?? []);
+      } catch (error) {
+        console.error("Error fetching blogs:", error);
+      }
+    };
+
+    fetchAllBlogs();
+  }, []);
 
   if (isLoading) {
     return <BlogDetailSkeleton />;
@@ -105,39 +71,66 @@ const BlogDetailPage = () => {
     return <div>Blog not found</div>;
   }
 
+  const renderContent = (content: string) => {
+    return parse(content, {
+      replace: (domNode: any) => {
+        if (domNode.name === "oembed" && domNode.attribs?.url) {
+          const url = domNode.attribs.url;
+          return (
+            <iframe
+              width="100%"
+              height="400"
+              src={url.replace("youtu.be", "youtube.com/embed")}
+              frameBorder="0"
+              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          );
+        }
+      },
+    });
+  };
+
+  // Sort blogs by created_at in descending order and get the top 2
+  const recentBlogs = allBlogs
+    .slice()
+    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    .slice(0, 2);
+
   return (
     <div className="font-exo flex mt-6">
       <div className="w-3/4">
         <BlogHeader
           title={blog.name}
-          date={new Date(blog.created_at).toLocaleDateString()}
-          creator={blog.user_id}
-          comments={0}
+          date={dayjs(blog.created_at).format("DD/MM/YYYY")}
+          creator={blog.user_name}
         />
-        <img
-          src={blog.image_url}
-          alt="blog"
-          className="w-full h-[400px] mt-8 rounded-2xl object-contain"
-        />
-        <div className="mt-8"><HTMLContent content={blog.content}/></div>
-        <TagList tags={["1", "2", "6", "7"]} />
-        <div>
+        <div className="w-full">
+          {blog.image_url && (
+            <img
+              src={blog.image_url}
+              alt={blog.name}
+              className="w-96 h-96 mb-4"
+            />
+          )}
+          {renderContent(blog.content)}
+        </div>
+        <TagList tags={blog.tags || []} />
+        <div className="mb-20">
           <h2 className="text-lg font-semibold mt-8">Recent Blogs</h2>
           <div className="flex gap-4">
-            <RecentBlog category="Java" title="New Blog Java 1" />
-            <RecentBlog category="Java" title="New Blog Java 2" />
+            {recentBlogs.map((recentBlog) => (
+              <RecentBlog
+                key={recentBlog._id}
+                blog_id={recentBlog._id}
+                name={recentBlog.name}
+                created_at={recentBlog.created_at}
+                user_name={recentBlog.user_name}
+                description={recentBlog.description}
+              />
+            ))}
           </div>
         </div>
-        <div>
-          <h2 className="text-lg font-semibold mt-8">Comment</h2>
-          <div>
-            {comments.length === 0
-              ? "No comment"
-              : `${comments.length} comments`}
-          </div>
-          <Comment items={comments} />
-        </div>
-        <LeaveAComment />
       </div>
       <div className="w-1/4"></div>
     </div>

@@ -72,7 +72,8 @@ const MyCart: React.FC<MyCartProps> = ({
   );
 
   const handleRemoveCart = useCallback(
-    (cartId: string, cartNo: string) => {
+    (cartId: string, cartNo: string,  e: React.MouseEvent) => {
+      e.stopPropagation();
       removeCart({ cart_no: cartNo, _id: cartId });
     },
     [removeCart]
@@ -117,7 +118,7 @@ const MyCart: React.FC<MyCartProps> = ({
                       <Button
                         type="text"
                         icon={<DeleteOutlined />}
-                        onClick={() => handleRemoveCart(cart._id, cart.cart_no)}
+                        onClick={(e) => handleRemoveCart(cart._id, cart.cart_no, e)}
                         aria-label={`Remove ${cart.course_name} from cart`}
                       />
                     </>,
@@ -161,10 +162,10 @@ const MyCart: React.FC<MyCartProps> = ({
                   <Button
                     type="primary"
                     icon={<ShoppingCartOutlined />}
-                    onClick={() => navigate("/cart")}
+                    onClick={() => navigate("/course")}
                     className="bg-orange-500 font-jost p-8 py-5 hover:bg-orange-600 view-button ant-btn-variant-solid"
                   >
-                    Browse Carts
+                    Browse Courses
                   </Button>
                 </Space>
               }
@@ -189,7 +190,7 @@ const MyCart: React.FC<MyCartProps> = ({
                 size="large"
                 className="w-full mt-4 view-button ant-btn-variant-solid font-jost"
                 onClick={onCheckOut}
-                disabled={selectedCarts.length === 0}
+                disabled={selectedCarts.length === 0 || carts.length === 0}
               >
                 Proceed to Checkout <ArrowRightOutlined />
               </Button>

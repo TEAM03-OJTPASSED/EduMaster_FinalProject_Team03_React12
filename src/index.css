@@ -5,15 +5,12 @@
 @tailwind components;
 @tailwind utilities;
 
-
 .font-jost {
   font-family: "Jost", sans-serif;
 }
 .font-exo {
   font-family: "Exo", sans-serif;
 }
-
-
 
 :root {
   --primary-color: #c5c7c9; /* Màu chính */
@@ -68,7 +65,8 @@ h3 {
 }
 
 .navbar-button:hover {
-  color: var(--color-primary-hover) !important; /* Màu chữ */
+  color: var(--color-primary-hover) !important;
+  background-color: var(--color-primary-default);
 }
 
 .navbar-button:active {
@@ -106,12 +104,38 @@ h3 {
   color: white !important;
   border: var(--color-primary-default) !important;
   background-color: var(--color-primary-default) !important;
-  font-family: 'Jost',sans-serif !important;
+  font-family: "Jost", sans-serif !important;
+}
+
+.hover-btn.ant-btn-variant-solid {
+  color: white !important;
+  background-color: black !important;
+  font-family: "Jost", sans-serif !important;
+}
+
+.hover-btn.ant-btn-variant-solid:hover {
+  color: white !important;
+  background-color: #2f2f2f !important;
+  font-family: "Jost", sans-serif !important;
+}
+
+.disabled.ant-btn-variant-solid {
+  color: white !important;
+  border: var(--color-primary-default) !important;
+  background-color: gray !important;
+  font-family: "Jost", sans-serif !important;
+}
+
+.disabled.ant-btn-variant-solid:hover {
+  color: white !important;
+  border: var(--color-primary-default) !important;
+  background-color: gray !important;
+  font-family: "Jost", sans-serif !important;
 }
 
 .ant-btn-variant-solid:hover {
   background-color: var(--color-primary-pressed) !important;
-  font-family: 'Jost',sans-serif !important;
+  font-family: "Jost", sans-serif !important;
 }
 
 .view-button.ant-btn-variant-solid:hover {
@@ -247,7 +271,6 @@ h3 {
   animation-delay: 3s; /* Pause for 5 seconds before the next shake */
 }
 
-
 .custom-checkbox .ant-checkbox-inner {
   border-color: black !important;
 }
@@ -261,30 +284,26 @@ h3 {
   display: inline-block;
 }
 
-.ant-card-body{
+.ant-card-body {
   padding: 16px !important;
-  overflow: hidden !important
+  overflow: hidden !important;
 }
-
 
 .custom-tabs .ant-tabs-nav .ant-tabs-tab:hover {
-  color: #f97316;  
+  color: #f97316;
 }
-
 
 .custom-tabs .ant-tabs-nav .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
   color: #f97316;
 }
 
 .custom-tabs .ant-tabs-ink-bar {
-  background: #f97316;  
-
+  background: #f97316;
 }
 
 .custom-tabs .ant-tabs-tab {
   transition: color 0.3s;
-  font-size: 1rem;  
-
+  font-size: 1rem;
 }
 
 .custom-card {
@@ -301,11 +320,11 @@ h3 {
 }
 
 .ant-typography {
-  font-family: 'Jost', sans-serif !important;
+  font-family: "Jost", sans-serif !important;
 }
 
 h2.ant-typography {
-  font-family: 'Exo', sans-serif !important;
+  font-family: "Exo", sans-serif !important;
 }
 
 @keyframes float-in {
@@ -338,7 +357,6 @@ h2.ant-typography {
   animation: float-out 0.5s ease-out backwards;
 }
 
-
 .text-gradient {
   background: linear-gradient(to right, #ff7e5f, #feb47b);
   background-clip: text;
@@ -355,11 +373,12 @@ h2.ant-typography {
   height: 32px;
   position: relative;
   border-radius: 50%;
-  color: #FF3D00;
+  color: #ff3d00;
   animation: fill 1s ease-in infinite alternate;
 }
-.loader::before , .loader::after {
-  content: '';
+.loader::before,
+.loader::after {
+  content: "";
   position: absolute;
   height: 100%;
   width: 100%;
@@ -376,7 +395,104 @@ h2.ant-typography {
 }
 
 @keyframes fill {
- 0% {  box-shadow: 0 0 0 2px inset }
- 100%{ box-shadow: 0 0 0 10px inset }
+  0% {
+    box-shadow: 0 0 0 2px inset;
+  }
+  100% {
+    box-shadow: 0 0 0 10px inset;
+  }
 }
-  
+
+.ck-editor__editable {
+  min-height: 200px;
+}
+
+.custom-selector {
+  border-radius: 4rem !important;
+}
+
+.custom-selector .ant-select-selector {
+  border-radius: inherit;
+  background-color: inherit;
+  color: inherit;
+  padding: inherit;
+  font-size: inherit;
+}
+img {
+  image-rendering: -webkit-optimize-contrast;
+}
+
+@keyframes spinOnce {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-once {
+  animation: spinOnce 0.6s ease-in-out;
+}
+
+.subscribed {
+  margin: 0 0.75rem; /* mx-3 */
+}
+
+.not-subscribed {
+  margin: 0 1.5rem; /* mx-6 */
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #f97316;
+}
+
+/* Custom Scrollbar for Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #000000 #f1f1f1;
+}
+
+/* Custom Scrollbar for Edge */
+.custom-scrollbar::-ms-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-ms-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.custom-scrollbar::-ms-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-ms-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.no-select {
+  user-select: none; /* Standard syntax */
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+}
+
+.custom-bottom-gradient {
+  background: linear-gradient(to top, rgba(59, 59, 59, 0.85) -10%, rgba(0, 0, 0, 0) 20%);
+}

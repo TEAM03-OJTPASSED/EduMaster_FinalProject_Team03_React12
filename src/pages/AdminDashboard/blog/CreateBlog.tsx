@@ -1,56 +1,33 @@
-
-import { Button, Form, Upload, Input, Select, Image, message } from "antd";
+import { Button, Form, Upload, Input, Select } from "antd";
 import React, { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import type { UploadFile, UploadProps } from "antd";
-import "./CreateBlog.css";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import CategoryService from "../../../services/category.service";
-import { Category, GetCategories } from "../../../models/Category.model";
 import { BlogRequest } from "../../../models/Blog.model";
 import BlogService from "../../../services/blog.service";
-const { Option } = Select;
+import { API_UPLOAD_FILE } from "../../../constants/api/upload";
+
+import { uploadPlugin } from "../../../components/UploadImageInCKE";
+import { uploadCustomRequest } from "../../../utils/uploadCustomReuquest";
+import { handleNotify } from "../../../utils/handleNotify";
 
 type BlogFormProps = {
   initialValues?: BlogRequest;
-  onSuccess?: () => void; // Add a success callback prop
+  onSuccess?: () => void;
 };
 
-const CreateBlog: React.FC<BlogFormProps> = ({
-  initialValues,
-  onSuccess,
-}) => {
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const [previewOpen, setPreviewOpen] = useState<boolean>(false);
+const CreateBlog: React.FC<BlogFormProps> = ({ initialValues, onSuccess }) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [listCategories, setListCategories] = useState<Category[]>([]);
   const [form] = Form.useForm<BlogRequest>();
-
-  const initialCategoriesParams: GetCategories = {
-    pageInfo: {
-      pageNum: 1,
-      pageSize: 100,
-    },
-    searchCondition: {
-      keyword: "",
-      is_deleted: false,
-    },
-  };
-
-  const fetchCategories = async () => {
-    const categoriesResponse = await CategoryService.getCategories(initialCategoriesParams);
-    setListCategories(categoriesResponse.data?.pageData ?? []);
-  };
+  const [tagOptions, setTagOptions] = useState<
+    { value: string; label: string }[]
+  >([]);
 
   useEffect(() => {
-    fetchCategories();
     if (initialValues) {
-      form.setFieldsValue({
-        ...initialValues,
-        content: initialValues.content,
-      });
-      setPreviewImage(initialValues.image_url);
+      form.setFieldsValue({ ...initialValues, content: initialValues.content });
+
       setFileList([
         {
           uid: "-1",
@@ -62,49 +39,47 @@ const CreateBlog: React.FC<BlogFormProps> = ({
     }
   }, [initialValues, form]);
 
-  const handlePreview = async (file: UploadFile) => {
-    setPreviewImage(file.url || (file.preview as string));
-    setPreviewOpen(true);
-  };
-
-  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
+  const handleImageChange: UploadProps["onChange"] = ({
+    fileList: newFileList,
+  }) => {
     setFileList(newFileList);
-    if (newFileList.length > 0) {
-      const file = newFileList[0];
-      setPreviewImage(file.url || (file.preview as string));
+
+    if (newFileList.length > 0 && newFileList[0].status === "done") {
+      const uploadedImageUrl = newFileList[0].response?.secure_url;
+      form.setFieldsValue({ image_url: uploadedImageUrl });
+      console.log("image url:", uploadedImageUrl);
+    } else if (newFileList.length === 0 || newFileList[0].status === "error") {
+      form.setFieldsValue({ image_url: "" });
     }
   };
 
-  const uploadButton = (
-    <button style={{ border: 0, background: "none" }} type="button">
-      <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </button>
-  );
+  const handleTagsChange = (value: string[]) => {
+    const uniqueOptions = Array.from(new Set(value)).map((item) => ({
+      value: item,
+      label: item,
+    }));
+    setTagOptions(uniqueOptions);
+    form.setFieldsValue({ tags: value });
+  };
 
   const onFinish = async (values: BlogRequest) => {
-    values.image_url = "https://picsum.photos/id/237/200/300";
     try {
-      const response = await BlogService.createBlog(values); // Create the blog using BlogService
-      if (response && response.success && onSuccess) {
-        message.success("Blog created successfully");
+      const response = await BlogService.createBlog(values);
+      console.log("Create blog data:", values);
+      if (response?.success && onSuccess) {
+        handleNotify("Blog created successfully", "");
         onSuccess();
-        form.resetFields(); // Reset form fields
-        setFileList([]); // Clear uploaded files
-        setPreviewImage(null); // Clear preview image
-        return response.data; // Trả về dữ liệu người dùng đã được cập nhật 
+        form.resetFields();
+        setFileList([]);
+        setTagOptions([]);
       } else {
-        message.error("Failed to create blog"); // Hiển thị thông báo lỗi
-        return null; // Trả về null khi không thành công
+        handleNotify("Failed to create blog", "", "error");
       }
-
     } catch (error) {
-      console.error("Error create blog:", error);
-      message.error("An error occurred while creating the blog."); // Thông báo lỗi chung
-      return null; // Đảm bảo trả về null trong trường hợp có lỗi
+      console.error("Error creating blog:", error);
+      handleNotify("An error occurred while creating the blog.", "", "error");
     }
   };
-
 
   return (
     <Form
@@ -116,71 +91,86 @@ const CreateBlog: React.FC<BlogFormProps> = ({
     >
       {/* Left Section */}
       <div style={{ flex: 1, paddingRight: "16px", overflowY: "auto" }}>
-        <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please enter the blog name!" }]}>
+        <Form.Item
+          label="Name"
+          name="name"
+          rules={[{ required: true, message: "Please enter the blog name!" }]}
+        >
           <Input placeholder="Enter blog name" />
         </Form.Item>
 
-        <Form.Item label="Type" name="category_id" rules={[{ required: true, message: "Please select the blog type!" }]}>
-          <Select placeholder="Select blog type">
-            {listCategories.map((category) => (
-              <Option key={category._id} value={category._id}>
-                {category.name}
-              </Option>
-            ))}
-          </Select>
+        <Form.Item label="Tags" name="tags">
+          <Select
+            mode="tags"
+            placeholder="Add tags"
+            onChange={handleTagsChange}
+            options={tagOptions}
+            style={{ width: "100%" }}
+          />
         </Form.Item>
 
-        <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please enter the blog description!" }]}>
-          <Input.TextArea placeholder="Enter blog description" maxLength={500} showCount allowClear rows={4} />
+        <Form.Item
+          label="Description"
+          name="description"
+          rules={[
+            { required: true, message: "Please enter the blog description!" },
+          ]}
+        >
+          <Input.TextArea
+            placeholder="Enter blog description"
+            maxLength={200}
+            rows={2}
+          />
         </Form.Item>
 
-        <Form.Item label="Title Image" name="image_url">
+        <Form.Item
+          label="Title Image"
+          name="image_url"
+          rules={[{ required: true, message: "Please upload the blog image!" }]}
+        >
           <Upload
-            action="https://your-api-server.com/admin/upload"
+            action={API_UPLOAD_FILE}
+            customRequest={uploadCustomRequest}
             listType="picture-card"
-            onPreview={handlePreview}
-            onChange={handleChange}
+            onChange={handleImageChange}
             fileList={fileList}
             maxCount={1}
           >
-            {fileList.length > 0 ? null : uploadButton}
+            {fileList.length < 1 && (
+              <button style={{ border: 0, background: "none" }} type="button">
+                <PlusOutlined />
+                <div>Upload</div>
+              </button>
+            )}
           </Upload>
-
-          {previewImage && (
-            <Image
-              wrapperStyle={{ display: "none" }}
-              preview={{
-                visible: previewOpen,
-                onVisibleChange: (visible) => setPreviewOpen(visible),
-                afterOpenChange: (visible) => !visible && setPreviewImage(""),
-              }}
-              src={previewImage}
-            />
-          )}
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" block>
+          <Button type="primary" htmlType="submit" block style={{ borderRadius: "15px" }}>
             Create Blog
           </Button>
         </Form.Item>
       </div>
 
-      {/* Right Section - CKEditor */}
+      {/* CKEditor Section */}
       <div style={{ flex: 1, paddingLeft: "16px", overflowY: "auto" }}>
-        <Form.Item label="Content" name="content" rules={[{ required: true, message: "Please enter the blog content!" }]}>
+        <Form.Item
+          label="Content"
+          name="content"
+          rules={[
+            { required: true, message: "Please enter the blog content!" },
+          ]}
+        >
           <CKEditor
             editor={ClassicEditor}
             data={form.getFieldValue("content") || ""}
-            onChange={(_, editor) => {
+            onChange={(event, editor) => {
               const data = editor.getData();
+              console.log({ event, editor, data });
               form.setFieldsValue({ content: data });
             }}
             config={{
-              placeholder: "Enter blog content...",
-              ckfinder: {
-                uploadUrl: "/your-upload-endpoint", // Replace with your image upload endpoint
-              },
+              extraPlugins: [uploadPlugin],
             }}
           />
         </Form.Item>
@@ -190,4 +180,3 @@ const CreateBlog: React.FC<BlogFormProps> = ({
 };
 
 export default CreateBlog;
-

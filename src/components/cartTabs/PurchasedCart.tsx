@@ -7,6 +7,7 @@ import {
 
 } from "@ant-design/icons";
 import { Cart } from "../../models/Cart.model";
+import { moneyFormatter } from "../../utils/moneyFormatter";
 
 const { Text } = Typography;
 
@@ -19,6 +20,7 @@ interface OrderProps {
   orderDate?: string;
   orderNumber?: string;
   paymentStatus?: string;
+  isLoading?: boolean;
 }
 
 
@@ -26,6 +28,7 @@ interface OrderProps {
 const PurchasedOrders: React.FC<OrderProps> = ({
   carts,
   navigate,
+  isLoading = false
 
 }) => {
   return (
@@ -33,7 +36,7 @@ const PurchasedOrders: React.FC<OrderProps> = ({
       <h1 className="mb-2 pt-4 text-4xl font-semibold">Purchased Courses</h1>
       <div className="flex flex-col md:flex-row gap-8">
         <div className="w-full">
-          {carts.length > 0 ? (
+          {carts.length > 0 && (
             <List
               itemLayout="horizontal"
               dataSource={carts}
@@ -43,8 +46,8 @@ const PurchasedOrders: React.FC<OrderProps> = ({
                   actions={[
                     <div key={cart._id}>
                       <Text className={`font-jost px-8 text-base`}>
-                        <span className={`${cart.discount ? "line-through text-gray-400 text-sm pr-2" : "text-black text-right"}`}>đ{cart.price.toFixed(0)} </span>
-                        {cart.discount > 0 &&  `đ${cart.price * (100 - cart.discount)/100}`
+                        <span className={`${cart.discount ? "line-through text-gray-400 text-sm pr-2" : "text-black text-right"}`}>{moneyFormatter(cart.price)} </span>
+                        {cart.discount > 0 &&  `${moneyFormatter(cart.price_paid)}`
                         }
                       </Text>
                       <Text type="success">
@@ -85,7 +88,8 @@ const PurchasedOrders: React.FC<OrderProps> = ({
                 </List.Item>
               )}
             />
-          ) : (
+          )}  
+        {carts.length === 0 && isLoading === false && (
             <Empty
               image={Empty.PRESENTED_IMAGE_SIMPLE}
               description={

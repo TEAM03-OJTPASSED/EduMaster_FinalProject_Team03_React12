@@ -5,6 +5,7 @@ export type Blog = {
     user_name: string;
     category_id: string;
     category_name: string;
+    tags: string[];
     image_url: string;
     description: string;
     content: string;
@@ -14,8 +15,18 @@ export type Blog = {
 
 export interface BlogRequest {
     name: string;
-    caetgory_id: string;
+    tags: string[];
     image_url: string;
     description: string;
     content: string;
 }
+
+export interface BlogEditRequest {
+    _id: string;
+    name: string;
+    user_id?: string;
+    image_url: string;
+    description: string;
+    content: string;
+    tags: string[]; 
+};

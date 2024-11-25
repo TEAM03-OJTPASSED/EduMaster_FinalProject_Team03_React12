@@ -1,5 +1,4 @@
 import {
-  Alert,
   Button,
   Col,
   Form,
@@ -16,12 +15,15 @@ import { FormProps } from "antd";
 import { Player } from "@lottiefiles/react-lottie-player";
 import { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
-import { API_UPLOAD_FILE } from "../../constants/upload";
+import { API_UPLOAD_FILE } from "../../constants/api/upload";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 // import { loginWithGoogle } from "../../redux/slices/authSlices";
-import { register} from "../../services/auth.service";
-import { RootState } from "../../redux/store/store";
+import { register } from "../../services/auth.service";
+import { AppDispatch, RootState } from "../../redux/store/store";
+import { uploadCustomRequest } from "../../utils/uploadCustomReuquest";
+import { beforeUpload } from "../../utils/handleBeforUpload";
+import { useCustomNavigate } from "../../hooks/customNavigate";
 
 export type RegisterType = {
   name: string;
@@ -39,16 +41,19 @@ export type RegisterType = {
 };
 
 const SignUppage = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [selectedRole, setSelectedRole] = useState<string>("student");
-  const { loading, success } = useSelector(
+  const { loading,success } = useSelector(
     (state: RootState) => state.users.register
   );
+  console.log("register success",success);
+  
   // const [imageUrl, setImageUrl] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [fileListImage, setFileListImage] = useState<UploadFile[]>([]);
   const [fileListVideo, setFileListVideo] = useState<UploadFile[]>([]);
   const [form] = Form.useForm<RegisterType>();
+  const navigate = useCustomNavigate();
 
   const handleSelectChange = (e: RadioChangeEvent) => {
     setSelectedRole(e.target.value);
@@ -68,12 +73,16 @@ const SignUppage = () => {
 
   const onFinish: FormProps["onFinish"] = (values) => {
     const { confirmPassword, ...others } = values;
-    register(others, dispatch);
+    register(others, dispatch,navigate);
+
   };
   const handleVideoChange: UploadProps["onChange"] = ({
-    fileList: newFileList
+    fileList: newFileList,
   }) => {
-    setFileListVideo(newFileList || []);
+    const filteredFileList = newFileList.filter(
+      (file) => file.type === "video/mp4"
+    );
+    setFileListVideo(filteredFileList);
     if (newFileList.length > 0 && newFileList[0].status === "done") {
       const uploadedVideoUrl = newFileList[0].response.secure_url;
       form.setFieldsValue({ video_url: uploadedVideoUrl });
@@ -101,19 +110,6 @@ const SignUppage = () => {
           <h1 className="text-4xl font-semibold text-center text-gray-800">
             Register
           </h1>
-          {/* notification */}
-          {success && (
-            <div className="my-4">
-              <Alert
-                showIcon
-                description="Please check email"
-                type="success"
-                message={`Register successfully`}
-                closable
-              />
-            </div>
-          )}
-
           <div className="h-full ">
             <Form
               form={form}
@@ -161,7 +157,8 @@ const SignUppage = () => {
                   label="Password"
                   name="password"
                   rules={[
-                    { required: true, message: "Please input your password!" },
+                    { required: true, message: "Please input your password!"}, { min: 6, message: "Password must be at least 6 characters!" },
+
                   ]}
                   className="mb-6"
                 >
@@ -223,6 +220,7 @@ const SignUppage = () => {
                         >
                           <Upload
                             accept="image/*"
+                            customRequest={uploadCustomRequest}
                             action={API_UPLOAD_FILE}
                             fileList={fileListImage}
                             listType="picture-card"
@@ -250,11 +248,13 @@ const SignUppage = () => {
                         >
                           <Upload
                             accept="video/*"
+                            customRequest={uploadCustomRequest}
                             action={API_UPLOAD_FILE}
                             fileList={fileListVideo}
                             listType="picture-card"
                             maxCount={1}
                             onChange={handleVideoChange}
+                            beforeUpload={beforeUpload}
                           >
                             {fileListVideo.length >= 1 ? null : (
                               <div>
@@ -313,83 +313,66 @@ const SignUppage = () => {
                       />
                     </Form.Item>
                     {/* account */}
-                    <div>
-                      <div className="flex justify-between">
-                        <Form.Item<RegisterType>
-                          label="Bank Name"
-                          name="bank_name"
-                          rules={[
-                            {
-                              required: true,
-                              message: "Please input your bank name!",
-                            },
-                          ]}
-                          className="mb-6"
-                        >
-                          <Select
-                            showSearch
-                            placeholder="Select Your Bank Name"
-                            optionFilterProp="label"
-                            className="!w-50 !h-[3.25rem]"
-                            options={[
-                              {
-                                label: "",
-                                value: "",
-                              },
-                              {
-                                label: "Vietcombank",
-                                value: "Vietcombank",
-                              },
-                              {
-                                label: "Agribank",
-                                value: "Agribank",
-                              },
-                              {
-                                label: "TP Bank",
-                                value: "TP Bank",
-                              },
-                              {
-                                label: "ACB",
-                                value: "ACB",
-                              },
-                            ]}
-                          />
-                        </Form.Item>
-                        <Form.Item<RegisterType>
-                          label="Bank Account"
-                          name="bank_account_no"
-                          rules={[
-                            {
-                              required: true,
-                              message: "Please input bank account!",
-                            },
-                          ]}
-                          className="mb-6"
-                        >
-                          <Input
-                            placeholder="Enter your bank account"
-                            className="p-3 text-lg border-gray-300 rounded-lg focus:border-[#FF782D]"
-                          />
-                        </Form.Item>
-                      </div>
-
+                    <div className="flex flex-wrap gap-4">
                       <Form.Item<RegisterType>
-                        label="Bank Account Name"
-                        name="bank_account_name"
+                        label="Bank Name"
+                        name="bank_name"
                         rules={[
                           {
                             required: true,
-                            message: "Please input your bank account name!",
+                            message: "Please input your bank name!",
                           },
                         ]}
-                        className="mb-6"
+                        className="flex-grow mb-6 md:!w-72 lg:!w-60"
+                      >
+                        <Select
+                          showSearch
+                          placeholder="Select Your Bank Name"
+                          optionFilterProp="label"
+                          className="w-full !h-[3.25rem]"
+                          options={[
+                            { label: "Vietcombank", value: "Vietcombank" },
+                            { label: "Agribank", value: "Agribank" },
+                            { label: "TP Bank", value: "TP Bank" },
+                            { label: "ACB", value: "ACB" },
+                          ]}
+                        />
+                      </Form.Item>
+
+                      <Form.Item<RegisterType>
+                        label="Bank Account"
+                        name="bank_account_no"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your bank account!",
+                          },
+                        ]}
+                        className="flex-grow mb-6 md:!w-72 lg:!w-60"
                       >
                         <Input
-                          placeholder="Enter your bank account name"
+                          placeholder="Enter your bank account"
                           className="p-3 text-lg border-gray-300 rounded-lg focus:border-[#FF782D]"
                         />
                       </Form.Item>
                     </div>
+
+                    <Form.Item<RegisterType>
+                      label="Bank Account Name"
+                      name="bank_account_name"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input your bank account name!",
+                        },
+                      ]}
+                      className="mb-6"
+                    >
+                      <Input
+                        placeholder="Enter your bank account name"
+                        className="p-3 text-lg border-gray-300 rounded-lg focus:border-[#FF782D]"
+                      />
+                    </Form.Item>
                   </>
                 )}
               </div>

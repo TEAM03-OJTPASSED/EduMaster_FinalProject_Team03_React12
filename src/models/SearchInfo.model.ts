@@ -4,6 +4,7 @@ import { PurchaseStatusEnum } from "./Purchase.model";
 
 export interface SearchCondition<T = unknown> {
   keyword?: string;
+  user_id?: string;
   category_id?: string;
   status?: T;
   is_deleted: false;
@@ -29,7 +30,7 @@ export interface LessonSearchCondition {
   session_id?: string;
   lesson_type?: LessonTypeEnum;
   keyword?: string;
-  is_position_order: false;
+  is_position_order: boolean;
   is_deleted: false;
 }
 
@@ -44,7 +45,7 @@ export interface PurchaseSearchCondition {
 export interface UserSearchCondition {
   keyword?: string;
   role?: string;
-  status?: boolean;
+  status: boolean | string;
   is_verified?: boolean;
   is_delete?: boolean;
 }
@@ -75,3 +76,21 @@ export interface BlogSearchParams {
   searchCondition: BlogSearchCondition;
   pageInfo: PageInfo;
 }
+
+export interface ReviewSearchCondition {
+  course_id?: string;
+  rating?: number;
+  is_instructor?: boolean;
+  is_rating_order?: boolean;
+  is_deleted?: boolean
+}
+
+export interface SubcriptionSearchParams {
+  searchCondition: SearchCondition;
+  pageInfo: PageInfo;
+}
+export interface GlobalSearchParam {
+  searchCondition: SearchCondition;
+  pageInfo: PageInfo;
+}
+

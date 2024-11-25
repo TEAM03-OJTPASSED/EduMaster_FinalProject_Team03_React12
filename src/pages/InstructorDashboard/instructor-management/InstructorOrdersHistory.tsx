@@ -1,148 +1,249 @@
 import { useEffect, useState } from "react";
-import { Button, Card, Input, Table, Tag } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
-import { salesHistory } from "../../AdminDashboard/monitors/course/courseList";
-import StatusFilter from "../../../components/StatusFilter";
+import { Button, Card, Table, Tag, Checkbox, Modal } from "antd";
 import PurchaseService from "../../../services/purchase.service";
-import { Purchase } from "../../../models/Purchase.model"; 
-const columns = [
-  {
-    title: "Purchase Number",
-    dataIndex: "purchaseNumber",
-    key: "purchaseNumber",
+import { GetPurchases, Purchase, PurchaseStatusEnum } from "../../../models/Purchase.model"; 
+import GlobalSearchUnit from "../../../components/GlobalSearchUnit";
+import { statusFormatter } from "../../../utils/statusFormatter";
+import { PlusCircleOutlined } from "@ant-design/icons";
+import PayoutService from "../../../services/payout.service";
+import { CreatePayout } from "../../../models/Payout.model";
+import { handleNotify } from "../../../utils/handleNotify";
+import EmptyData from "../../../components/Empty Data/EmptyData";
+
+
+const initialParams: GetPurchases = {
+  searchCondition: {
+    purchase_no: "",
+    cart_no: "",
+    course_id: "",
   },
-  {
-    title: "Cart No",
-    dataIndex: "CartNo",
-    key: "CartNo",
+  pageInfo: {
+    pageNum: 1,
+    pageSize: 10,
   },
-  {
-    title: "Course Name",
-    dataIndex: "courseName",
-    key: "courseName",
-  },
-  {
-    title: "Status",
-    dataIndex: "status",
-    key: "status",
-    filters: [
-      { text: "Completed", value: "Completed" },
-      { text: "Pending", value: "Pending" },
-      { text: "Refunded", value: "Refunded" },
-    ],
-    onFilter: (value: any, record: any) =>
-      record.status.trim() === value.trim(),
-    render: (status: string) => (
-      <Tag
-        color={
-          status === "Completed"
-            ? "green"
-            : status === "Pending"
-            ? "orange"
-            : "red" // Màu cho trạng thái khác (Refunded)
-        }
-      >
-        {status}
-      </Tag>
-    ),
-  },
-  {
-    title: "Price Paid",
-    dataIndex: "pricePaid",
-    key: "pricePaid",
-    render: (price: number) => `$${price.toFixed(2)}`,
-  },
-  {
-    title: "Student Name",
-    dataIndex: "studentName",
-    key: "studentName",
-  },
-  {
-    title: "Action",
-    key: "action",
-    render: (record: any) => (
-      <Button type="primary" onClick={() => handleAction(record)}>
-        View Details
-      </Button>
-    ),
-  },
-];
+};
 
 const InstructorSalesHistory = () => {
   const [salesHistory, setSalesHistory] = useState<Purchase[]>([]);
-  const [searchText, setSearchText] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>();
-  const [loading, setLoading] = useState(true);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState<Purchase | null>(null); // Thêm state cho đơn hàng được chọn
+  const [searchParams, setSearchParams] = useState<GetPurchases>(initialParams)
+
+
+  const handleSelect = (key: React.Key) => {
+    const newSelectedRowKeys = selectedRowKeys.includes(key)
+      ? selectedRowKeys.filter((k) => k !== key)
+      : [...selectedRowKeys, key];
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+
+  const handleCreateOrder = async () => {
+
+      const selectedOrders = salesHistory.filter(order =>
+        selectedRowKeys.includes(order.purchase_no)
+      );
+  
+      const transaction_ids = selectedOrders.map(order => ({
+        purchase_id: order._id,
+      }));
+  
+      const createPayout: CreatePayout = {
+        instructor_id: selectedOrders[0].instructor_id,
+        transactions: transaction_ids,  
+      };
+
+      console.log(createPayout)
+
+
+      const response = await PayoutService.createPayout(createPayout);
+      if (response.success) handleNotify("Payout created!", "Your payout was created successfully")
+  };
+
+  const handleAction = (order: Purchase) => {
+    setSelectedOrder(order);
+    setIsModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+    setSelectedOrder(null);
+  };
+
+  const columns = [
+      { 
+        title: "Select",
+        dataIndex: "select",
+        key: "select",
+        fixed: true,
+        render: (_: any, record: Purchase) => (
+          <Checkbox
+            checked={selectedRowKeys.includes(record.purchase_no)}
+            onChange={() => handleSelect(record.purchase_no)}
+            disabled={record.status !== PurchaseStatusEnum.NEW }
+          />
+        ),
+      },
+    {
+      title: "Purchase Number",
+      dataIndex: "purchase_no",
+      key: "purchaseNumber",
+      ellipsis: true,
+    },
+    {
+      title: "Cart No",
+      dataIndex: "cart_no",
+      key: "CartNo",
+    },
+    {
+      title: "Course",
+      dataIndex: "course_name",
+      key: "name",
+      ellipsis: true, 
+      render: (text:string) => (
+        <span style={{ maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-block' }}>
+          {text}
+        </span>
+      ),
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      // filters: [
+      //   { text: "Completed", value: "Completed" },
+      //   { text: "Pending", value: "Pending" },
+      //   { text: "Refunded", value: "Refunded" },
+      // ],
+      // onFilter: (value: any, record: any) =>
+      //   record.status.trim() === value.trim(),
+      render: (status: string) => (
+        <Tag
+          color={
+            status === "Completed"
+              ? "green"
+              : status === PurchaseStatusEnum.REQUEST_PAID
+              ? "orange"
+              : "blue" // Màu cho trạng thái khác (Refunded)
+          }
+        >
+          {status}
+        </Tag>
+      ),
+    },
+    {
+      title: "Price Paid",
+      dataIndex: "price_paid",
+      key: "pricePaid",
+      align: "right" as const,
+      ellipsis: true,
+      render: (price: number) => `$${price.toFixed(2)}`,
+    },
+    {
+      title: "Student Name",
+      dataIndex: "student_name",
+      key: "studentName",
+      ellipsis: true,
+
+    },
+    {
+      title: "Action",
+      key: "action",
+      fixed: 'right' as const,
+      render: (record: any) => (
+        <Button type="primary" onClick={() => handleAction(record)}>
+          View Details
+        </Button>
+      ),
+    },
+  ];
+
+  const fetchSalesHistory = async () => {
+    const response = await PurchaseService.getPurchasesInstructor(searchParams);
+    setSalesHistory(response.data?.pageData || []); 
+  };
+
 
   useEffect(() => {
-    const fetchSalesHistory = async () => {
-      try {
-        const response: ApiResponse<APIResponseData<Purchase>> = await PurchaseService.getPurchasesInstructor({});
-        setSalesHistory(response.data); 
-      } catch (error) {
-        console.error("Failed to fetch sales history", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchSalesHistory();
-  }, []);
-  const handleSearch = (event: any) => {
-    setSearchText(event.target.value);
+  }, [searchParams]);
+
+  const handleSearch = (values: Record<string, any>) => {
+    console.log(values)
+    setSearchParams({
+      pageInfo: searchParams.pageInfo,
+      searchCondition: {
+        ...searchParams.searchCondition,
+        purchase_no: values.keyword,
+        status: values.status
+      }
+    });
   };
 
-  const handleStatusChange = (value: string | undefined) => {
-    setStatusFilter(value);
-  };
+  
 
-  const filteredCourses = salesHistory
-    .filter((course: any) =>
-      course.courseName.toLowerCase().includes(searchText.toLowerCase())
-    )
-    .filter((course: any) =>
-      statusFilter ? course.status === statusFilter : true
-    );
+  
 
-  const statuses = ["Completed", "Pending", "Refunded"];
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
   return (
     <Card>
       <h3 className="text-2xl my-5">Orders</h3>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
-        <div className="flex gap-4">
-          <Input
+      <GlobalSearchUnit 
             placeholder="Search By Course Name"
-            prefix={<SearchOutlined />}
-            style={{ width: "80%", borderRadius: "4px" }}
-            value={searchText}
-            onChange={handleSearch}
-          />
-          <StatusFilter
-            statuses={statuses}
-            selectedStatus={statusFilter}
-            onStatusChange={handleStatusChange}
-          />
-        </div>
+            selectFields={[
+              {
+                name: "status",
+                options:  Object.values(PurchaseStatusEnum).map((status) => ({label: statusFormatter(status), value: status})),
+                placeholder: "Filter by Status"
+              }
+            ]}
+            onSubmit={handleSearch}
+        />
+
+        <Button
+          onClick={handleCreateOrder}
+          icon={<PlusCircleOutlined />}
+          shape="round"
+          variant="solid"
+          color="primary"
+          disabled={selectedRowKeys.length === 0}
+          className={`${selectedRowKeys.length === 0 && "disabled"} `}
+        >
+          Create Payout
+        </Button>
       </div>
-      <Table
-        dataSource={filteredCourses}
+      <Table<Purchase>
+        dataSource={salesHistory}
         columns={columns}
+        scroll={{ x: 'max-content' }}
         pagination={{ pageSize: 4 }}
-        rowKey="purchaseNumber"
+        rowKey="purchase_no"
         bordered
         style={{ borderRadius: "8px" }}
-        scroll={{ x: true }}
+        locale={{emptyText: <EmptyData message="No orders found" description="No orders found for the given search parameters"/>}}
       />
+
+      {/* Modal for showing detailed information */}
+      <Modal
+        title="Order Details"
+        visible={isModalVisible}
+        onCancel={handleCloseModal}
+        footer={null}
+      >
+        {selectedOrder && (
+          <div>
+            <p><strong>Purchase No:</strong> {selectedOrder.purchase_no}</p>
+            <p><strong>Course Name:</strong> {selectedOrder.course_name}</p>
+            <p><strong>Status:</strong> {selectedOrder.status}</p>
+            <p><strong>Price Paid:</strong> ${selectedOrder.price_paid.toFixed(2)}</p>
+            <p><strong>Student Name:</strong> {selectedOrder.student_name}</p>
+            {/* Add more details here as needed */}
+          </div>
+        )}
+      </Modal>
     </Card>
   );
 };
 
 export default InstructorSalesHistory;
-
-const handleAction = (record: any) => {
-  console.log("Viewing details for:", record);
-};

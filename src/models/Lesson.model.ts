@@ -1,7 +1,6 @@
 import { LessonSearchCondition, PageInfo } from "./SearchInfo.model";
 
 export interface Lesson {
-  is_completed: boolean;
   _id: string;
   name: string;
   user_id: string;
@@ -10,7 +9,7 @@ export interface Lesson {
   lesson_type: string;
   description: string;
   video_url: string;
-  image_url: string;
+  assignment: string;
   full_time: number;
   position_order: number;
   is_deleted: boolean;
@@ -19,8 +18,8 @@ export interface Lesson {
   user_name: string;
   course_name: string;
   session_name: string;
-  // is_completed: string;
-};
+  is_completed: boolean;
+}
 
 export interface LessonRequest {
   name: string;
@@ -30,17 +29,26 @@ export interface LessonRequest {
   description: string;
   video_url: string;
   image_url: string;
+  assignment?: string;
   full_time: number;
   position_order: number;
 }
 
-export interface GetLessons { 
+export interface GetLessons {
   searchCondition: LessonSearchCondition;
   pageInfo: PageInfo;
 }
 
 export enum LessonTypeEnum {
-    TEXT = "text",
-    VIDEO = "video",
-    IMAGE = "image",
+  READING = "reading",
+  VIDEO = "video",
+  IMAGE = "image",
+  ASSIGNMENT = "assignment",
+}
+
+
+export enum LevelsEnum {
+  BEGINNER = "Beginner",
+  INTERMEDIATE = "Intermediate",
+  ADVANCED = "Advanced",
 }

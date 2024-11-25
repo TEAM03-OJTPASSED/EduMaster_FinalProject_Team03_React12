@@ -10,9 +10,9 @@ const DynamicBreadcrumb: React.FC = () => {
 
   const formatSegment = (segment: string) => {
     return segment
-      .split("-") // Tách chuỗi bằng dấu "-"
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Viết hoa chữ cái đầu
-      .join(" "); // Nối lại thành chuỗi với dấu cách
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   };
 
   const breadcrumbItems = [
@@ -22,7 +22,7 @@ const DynamicBreadcrumb: React.FC = () => {
     ...pathSegments.map((segment, index) => {
       const path = `/${pathSegments.slice(0, index + 1).join("/")}`;
       return {
-        title: <Link to={path}>{formatSegment(segment)}</Link>,
+        title: <Link to={path} className={`${ /\d/.test(segment) && "!hidden"}`}>{formatSegment(segment)}</Link>,
       };
     }),
   ];

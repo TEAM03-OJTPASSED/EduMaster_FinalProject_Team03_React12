@@ -20,6 +20,14 @@ export interface User {
   dob?: string;
   created_at: string;
   updated_at: string;
+  coverPhoto?: string;
+  highResAvatar?: string;
+}
+
+export enum UserStatusEnum {
+  ADMIN = "admin",
+  INSTRUCTOR = "instructor",
+  STUDENT = "student",
 }
 
 export interface ChangeUserRoleParams {

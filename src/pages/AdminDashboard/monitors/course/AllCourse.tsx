@@ -1,5 +1,6 @@
 import { Menu, MenuProps } from "antd";
-import { Outlet, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 const items: MenuProps["items"] = [
   {
     label: "Course",
@@ -17,6 +18,26 @@ const items: MenuProps["items"] = [
 
 const AllCourse = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { pathname } = location;
+
+  const [selectedKey, setSelectedKey] = useState<string>("");
+
+  useEffect(() => {
+    switch (pathname) {
+      case "/dashboard/admin/all-courses":
+        setSelectedKey("Course");
+        break;
+      case "/dashboard/admin/all-courses/session":
+        setSelectedKey("Session");
+        break;
+      case "/dashboard/admin/all-courses/lesson":
+        setSelectedKey("Lesson");
+        break;
+      default:
+        break;
+    }
+  }, [pathname]);
   const handleSelectMenu: MenuProps["onClick"] = (e) => {
     switch (e.key) {
       case "Course":
@@ -37,7 +58,7 @@ const AllCourse = () => {
       <Menu
         items={items}
         mode="horizontal"
-        defaultSelectedKeys={["Course"]}
+       selectedKeys={[selectedKey]}
         onClick={handleSelectMenu}
       />
       <Outlet />

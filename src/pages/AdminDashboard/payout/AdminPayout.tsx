@@ -1,42 +1,47 @@
 import { Menu, MenuProps } from "antd";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+
 const items: MenuProps["items"] = [
-  {
-    label: "Request Payout",
-    key: "Request Payout",
-  },
-  {
-    label: "Completed Payout",
-    key: "Completed Payout",
-  },
-  {
-    label: "Rejected Payout",
-    key: "Rejected Payout",
-  }
+  { label: "Request Payout", key: "Request Payout" },
+  { label: "Completed Payout", key: "Completed Payout" },
+  { label: "Rejected Payout", key: "Rejected Payout" },
 ];
 
 const AdminPayout = () => {
-  const naviagte = useNavigate();
+  const navigate = useNavigate();
   const location = useLocation();
+  const { pathname } = location;
+
+  const [selectedKey, setSelectedKey] = useState<string>("");
+
   useEffect(() => {
-    if (!location.state) {
-      naviagte("/dashboard/admin/payout", {
-        replace: true,
-        state: { status: ["Request Payout", "New"] },
-      });
+    switch (pathname) {
+      case "/dashboard/admin/payout":
+        setSelectedKey("Request Payout");
+        break;
+      case "/dashboard/admin/payout/completed-payout":
+        setSelectedKey("Completed Payout");
+        break;
+      case "/dashboard/admin/payout/rejected-payout":
+        setSelectedKey("Rejected Payout");
+        break;
+      default:
+        break;
     }
-  }, [location, naviagte]);
+  }, [pathname]);
+
   const handleSelectMenu: MenuProps["onClick"] = (e) => {
+    setSelectedKey(e.key);  // Update selectedKey when menu item is clicked
     switch (e.key) {
       case "Request Payout":
-        naviagte("/dashboard/admin/payout", {state: {status: ["Request Payout", "New"]} });
+        navigate("/dashboard/admin/payout");
         break;
       case "Completed Payout":
-        naviagte("completed-payout", {state: {status: "Completed"} });
+        navigate("/dashboard/admin/payout/completed-payout");
         break;
       case "Rejected Payout":
-        naviagte("rejected-payout", {state: {status: "Rejected"} });
+        navigate("/dashboard/admin/payout/rejected-payout");
         break;
       default:
         break;
@@ -48,7 +53,7 @@ const AdminPayout = () => {
       <Menu
         items={items}
         mode="horizontal"
-        defaultSelectedKeys={["Request Payout"]}
+        selectedKeys={[selectedKey]}  
         onClick={handleSelectMenu}
       />
       <Outlet />
