@@ -201,7 +201,7 @@ function App() {
                 <Route path="dashboard" element={<InstructorContent />} />
                 <Route path="my-learning" element={<StudentCourses />} />
                 {/* <Route path="top-up" element={<TopUpPage />} /> */}
-                <Route path="orders" element={<StudentOrderHistory />} />
+                <Route path="orders-history" element={<StudentOrderHistory />} />
 
                 <Route path="payout" element={<InstructorPayout />}>
                   <Route index element={<RequestPayout />} />
@@ -213,7 +213,7 @@ function App() {
                   <Route path="awaiting-payout" element={<AwaitingPayout />} />
                 </Route>
                 <Route
-                  path="salesHistory"
+                  path="orders"
                   element={<InstructorSalesHistory />}
                 />
                 <Route path="my-courses" element={<InstructorCourses />}>
@@ -261,7 +261,7 @@ function App() {
                 </Route>
                 <Route path="my-courses" element={<StudentCourses />} />
                 {/* <Route path="top-up" element={<TopUpPage />} /> */}
-                <Route path="orders" element={<StudentOrderHistory />} />
+                <Route path="orders-history" element={<StudentOrderHistory />} />
                 <Route path="subscriptions" element={<StudentSubscription />} />
               </Route>
             </Route>

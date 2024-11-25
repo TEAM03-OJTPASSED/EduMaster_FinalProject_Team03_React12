@@ -9,6 +9,7 @@ import {
   HistoryOutlined,
 } from "@ant-design/icons";
 import { useCustomNavigate } from "../../hooks/customNavigate";
+import { useLocation } from "react-router-dom";
 // import { GoListOrdered } from "react-icons/go";
 
 const { Sider } = Layout;
@@ -40,10 +41,10 @@ const StudentMenuItems: MenuItem[] = [
     path: "/dashboard/student/my-courses",
   },
   {
-    key: "orders",
+    key: "orders-history",
     icon: <HistoryOutlined />,
     title: "Orders History",
-    path: "/dashboard/student/orders", 
+    path: "/dashboard/student/orders-history", 
   },
   {
     key: "subscriptions",
@@ -60,6 +61,9 @@ const StudentMenuItems: MenuItem[] = [
 ];
 
 const DashboardSideBar: React.FC<SideBarProps> = ({ onMenuClick }) => {
+  const location = useLocation();
+  const lastPathSegment = location.pathname.split("/").filter(Boolean).pop();
+
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -127,7 +131,7 @@ const DashboardSideBar: React.FC<SideBarProps> = ({ onMenuClick }) => {
         boxShadow: "2px 0 5px rgba(0, 0, 0, 0.1)",
       }}
     >
-      <Menu theme="light" mode="inline" defaultSelectedKeys={["1"]}>
+      <Menu theme="light" mode="inline" defaultSelectedKeys={[lastPathSegment ?? "dashboard"]}>
         {renderMenuItems(menuItems)}
       </Menu>
     </Sider>
