@@ -24,6 +24,7 @@ export interface Course {
   full_time: number;
   instructor_id: string;
   instructor_name: string;
+  user_name: string;
   category_name: string;
   session_count: number;
   lesson_count: number;

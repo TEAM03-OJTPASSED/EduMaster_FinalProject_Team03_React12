@@ -72,6 +72,7 @@ import AwaitingPayout from "./pages/InstructorDashboard/instructor-management/pa
 import MessageLayout from "./components/Message/MessageLayout";
 import MessageDetailPage from "./components/Message/MessageDetailPage";
 import MessageContent from "./components/Message/MessageContent";
+import ReviewManagement from "./pages/AdminDashboard/ReviewManagement";
 
 function App() {
   useEffect(() => {
@@ -158,7 +159,7 @@ function App() {
                   <Route path="session" element={<SessionList />} />
                   <Route path="lesson" element={<LessonList />} />
                 </Route>
-
+                <Route path="review" element={<ReviewManagement />} />
                 <Route path="pending-courses" element={<PendingCourseList />} />
                 {/* <Route path="session" element={<PendingSessionList />} />
                   <Route path="lesson" element={<PendingLessonList />} /> */}

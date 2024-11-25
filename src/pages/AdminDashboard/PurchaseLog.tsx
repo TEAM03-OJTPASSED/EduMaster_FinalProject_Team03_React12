@@ -35,7 +35,7 @@ const columns = [
             ? "green"
             : status === "request_paid"
             ? "orange"
-            : "red" 
+            : "red"
         }
       >
         {status}
@@ -110,7 +110,7 @@ const Purchaselog = () => {
     fetchData();
   }, [purchaseLogSearchParam]);
 
-  const handleSearch :FormProps["onFinish"] = (values) => {  
+  const handleSearch :FormProps["onFinish"] = (values) => {
     setPurchaseLogSearchParam((prev) => ({
       ...prev,
       searchCondition: {
@@ -124,7 +124,7 @@ const Purchaselog = () => {
   return (
     <Card>
       <h3 className="text-2xl my-5">Purchase Log</h3>
-      <GlobalSearchUnit 
+      <GlobalSearchUnit
           placeholder="Search By Purchase Name"
           selectFields={[
             {
