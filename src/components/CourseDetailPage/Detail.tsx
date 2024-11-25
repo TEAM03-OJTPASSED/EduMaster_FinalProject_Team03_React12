@@ -15,7 +15,7 @@ type Props = {
   session?: Session;
 };
 
-export const Detail = ({ isEnrolled, course, session }: Props) => {
+export const Detail = ({ course, session }: Props) => {
   const [expandedSession, setExpandedSession] = useState<number | null>(null);
   const [expandedLesson, setExpandedLesson] = useState<number | null>(null);
   const navigate = useCustomNavigate();
@@ -34,7 +34,7 @@ export const Detail = ({ isEnrolled, course, session }: Props) => {
     navigate("/learn/" + course?._id);
   };
 
-  return course ? (
+  return course && (
     <div className="font-exo flex mt-12">
       <div className="lg:w-2/3 w-full">
         <div className="flex flex-col">
@@ -189,15 +189,5 @@ export const Detail = ({ isEnrolled, course, session }: Props) => {
       </div>
       <div className="lg:w-1/3"></div>
     </div>
-  ) : (
-    <div>
-      <div className="w-2/3">
-        <div>
-          <div>About</div>
-          {course?.content}
-        </div>
-      </div>
-      <div className="w-1/3"></div>
-    </div>
-  );
+  )
 };
