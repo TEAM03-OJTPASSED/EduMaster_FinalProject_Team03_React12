@@ -98,7 +98,7 @@ const PurchasedOrders: React.FC<OrderProps> = ({
                   <Button
                     type="primary"
                     icon={<ShoppingCartOutlined />}
-                    onClick={() => navigate("/cart")}
+                    onClick={() => navigate("/course")}
                     className="bg-orange-500 font-jost p-8 py-5 hover:bg-orange-600 view-button ant-btn-variant-solid"
                   >
                     Browse Courses
