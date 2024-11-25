@@ -8,6 +8,8 @@ import BlogService from "../../../services/blog.service";
 import { API_UPLOAD_FILE } from "../../../constants/api/upload";
 import { BlogEditRequest } from "../../../models/Blog.model";
 import { uploadCustomRequest } from "../../../utils/uploadCustomReuquest";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store/store";
 
 type EditBlogProps = {
   initialValues?: BlogEditRequest;
@@ -15,6 +17,7 @@ type EditBlogProps = {
 };
 
 const EditBlog: React.FC<EditBlogProps> = ({ initialValues, onSuccess }) => {
+  const { currentUser } = useSelector((state: RootState) => state.auth.login);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [form] = Form.useForm<BlogEditRequest>();
   const [tagOptions, setTagOptions] = useState<
@@ -70,11 +73,14 @@ const EditBlog: React.FC<EditBlogProps> = ({ initialValues, onSuccess }) => {
 
   const onFinish = async (values: BlogEditRequest) => {
     try {
+      const updatedValues = { ...values, user_id: currentUser._id };
+
       if (initialValues?._id) {
         const response = await BlogService.updateBlog(
           initialValues._id,
-          values
+          updatedValues
         );
+
         if (response?.success && onSuccess) {
           message.success("Blog updated successfully");
           onSuccess();
@@ -150,7 +156,12 @@ const EditBlog: React.FC<EditBlogProps> = ({ initialValues, onSuccess }) => {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" block style={{ borderRadius: "15px" }}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            block
+            style={{ borderRadius: "15px" }}
+          >
             Update Blog
           </Button>
         </Form.Item>

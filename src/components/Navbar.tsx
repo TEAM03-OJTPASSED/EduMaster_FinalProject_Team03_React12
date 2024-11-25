@@ -257,9 +257,11 @@ const Navbar = () => {
             )}
             {userLoggedIn ? (
               <Dropdown menu={profileMenu}>
-                <div className="w-10 h-10 text-xl rounded-full flex items-center justify-center cursor-pointer">
-                  <UserOutlined />
-                </div>
+                {currentUser.avatar_url ?
+                  <img className="w-8 h-8 obj-cover text-xl rounded-full flex items-center justify-center cursor-pointer" src={currentUser.avatar_url} alt="profile"/>
+                  :
+                  <UserOutlined/>
+                }
               </Dropdown>
             ) : (
               <>

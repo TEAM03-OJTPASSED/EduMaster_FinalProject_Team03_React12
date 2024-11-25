@@ -2,7 +2,6 @@ import { SearchOutlined } from "@ant-design/icons";
 import { Input, Form, Select, Button } from "antd";
 import { useState } from "react";
 
-const { Option } = Select;
 
 export interface SelectField {
   name: string;
@@ -92,23 +91,28 @@ const SelectFields = ({
           <Form.Item key={field.name} name={field.name}>
             <Select
               // onClick={() => field.onClick && field.onClick()}
+              showSearch
               disabled={trackFormFields?.[field.dependenceName] === undefined}
               allowClear
+              filterSort={(optionA, optionB) =>
+                (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+              }
               placeholder={field.placeholder ?? `Select ${field.name}`}
               className="custom-selector min-w-40  max-w-40"
+              options={field.options.map((option) => ({ label: option.label, value: option.value }))}
             >
-              {field.options 
-              .map((option) => (
-                  <Option key={option.value} value={option.value}>
-                    {option.label}
-                  </Option>
-                ))}
             </Select>
           </Form.Item>
         ) : (
           <Form.Item key={field.name} name={field.name}>
             <Select
               allowClear
+              showSearch
+              optionFilterProp="label"
+
+              filterSort={(optionA, optionB) =>
+                (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+              }
               placeholder={field.placeholder ?? `Select ${field.name}`}
               className="custom-selector   min-w-40  max-w-40"
               onChange= {(value) => {
@@ -116,12 +120,8 @@ const SelectFields = ({
                 trackChange(false);
               }}
               onClear={() => trackChange(true)}
-            >
-              {field.options.map((option) => (
-                <Option key={option.value} value={option.value}>
-                  {option.label}
-                </Option>
-              ))}
+              options={field.options.map((option) => ({ label: option.label, value: option.value }))}
+              >
             </Select>
           </Form.Item>
         )

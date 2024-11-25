@@ -57,6 +57,7 @@ const LessonList = () => {
   const [listCourses, setListCourses] = useState<Course[]>([]);
   const [listSessions, setListSessions] = useState<Session[]>([]);
   const [listLessons, setListLessons] = useState<Lesson[]>([]);
+  const [sessionSearchParams, setSessionSearchParams] = useState<GetSessions>(initialSessionsParams);
   // const [loading, setLoading] = useState(false);
   const [searchParams, setSearchParams] =
     useState<GetLessons>(initialLessonsParams);
@@ -74,7 +75,7 @@ const LessonList = () => {
   const fetchSessions = async () => {
     // // setLoading(true);
     // try {
-      const response = await SessionService.getSessions(initialSessionsParams);
+      const response = await SessionService.getSessions(sessionSearchParams);
       setListSessions(response?.data?.pageData ?? []);
     // } finally {
     //   setLoading(false);
@@ -104,9 +105,16 @@ const LessonList = () => {
 
   useEffect(() => {
     fetchLessons();
-    fetchCourses();
-    fetchSessions();
   }, [pageNum, pageSize, searchParams]);
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
+  useEffect(() => {
+    fetchSessions();
+  },[sessionSearchParams])
+
 
   const columns: TableProps<Lesson>["columns"] = [
     {
@@ -212,6 +220,8 @@ const LessonList = () => {
                   value: course._id,
                   label: course.name,
                 })),
+                onChange: (value:string) => {
+                  setSessionSearchParams({...sessionSearchParams, searchCondition: {...searchParams.searchCondition, course_id: value}})                } 
               },
               {
                 name: "session_id",
