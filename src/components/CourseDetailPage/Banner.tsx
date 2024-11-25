@@ -1,7 +1,9 @@
+import { FaPlay } from "react-icons/fa";
 import { useCustomNavigate } from "../../hooks/customNavigate";
 import { Course } from "../../models/Course.model";
 import { handleAddCart } from "../../utils/handleAddCart";
 import { CourseSummary } from "./CourseSummary";
+import { useState } from "react";
 
 type Props = {
   course: Course;
@@ -34,7 +36,11 @@ export const Banner = ({
 
   const navigate = useCustomNavigate();
 
-  const handleAdd = async (userRole: string, course: Course, navigate: (path: string) => void) => {
+  const handleAdd = async (
+    userRole: string,
+    course: Course,
+    navigate: (path: string) => void
+  ) => {
     await handleAddCart(userRole, course, navigate);
     navigate("/cart/new");
   };
@@ -49,11 +55,36 @@ export const Banner = ({
     navigate(`/learn/${id}`);
   };
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handlePreview = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleModalClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (e.target === e.currentTarget) {
+      closeModal();
+    }
+  };
+
   return (
     <div className="font-exo flex flex-col bg-orange-50 px-20 lg:-mx-40 -mx-24 pb-10">
       <div className="flex gap-8 pt-10">
         <div className="lg:w-2/3 w-full flex flex-col gap-4 items-start">
-          <div className="bg-orange-500 text-white font-bold px-4 py-2 rounded-lg">
+          <div className="lg:hidden relative w-full aspect-w-16 aspect-h-9 ">
+            <img
+              src={course.image_url}
+              alt="Logo"
+              className="w-full h-full object-cover rounded-lg"
+            />
+            <div className="absolute top-2 left-2 bg-orange-500 text-white font-bold px-4 py-2 rounded-lg">
+              {course.category_name}
+            </div>
+          </div>
+          <div className="hidden lg:block bg-orange-500 text-white font-bold px-4 py-2 rounded-lg">
             {course.category_name}
           </div>
           <div className="font-jost text-5xl font-bold text-gradient">
@@ -82,7 +113,8 @@ export const Banner = ({
                 <div className="flex justify-between items-baseline">
                   <div>Your Progress </div>
                   <div className="mt-2 text-sm">
-                    {completedLessonCount} of {totalLessons} lessons completed ({progressPercentage.toFixed(0 )}%)
+                    {completedLessonCount} of {totalLessons} lessons completed (
+                    {progressPercentage.toFixed(0)}%)
                   </div>
                 </div>
                 <div className="bg-gray-200 h-3 w-full rounded">
@@ -100,10 +132,10 @@ export const Banner = ({
                 onClick={() =>
                   currentUser
                     ? handleAdd(JSON.parse(currentUser).role, course, navigate)
-                    : alert("User not logged in")
+                    : navigate("/login")
                 }
               >
-                Start Now
+                Buy Now
               </div>
               <div className="flex flex-col items-start justify-center ml-4">
                 {course.discount && course.discount > 0 ? (
@@ -125,13 +157,34 @@ export const Banner = ({
           )}
         </div>
         <div className="hidden lg:w-1/3 lg:block relative">
-          <div className="absolute inset-0">  
+          <div className="absolute inset-0" onClick={() => handlePreview()}>
             <img
               src={course.image_url}
               alt="Course"
               className="rounded-lg w-full h-full object-cover"
             />
+
+            <div className="absolute top-1/2 left-1/2 z-10 transform -translate-x-1/2 -translate-y-1/2 p-5 rounded-full bg-white">
+              <FaPlay className="h-6 w-6" />
+            </div>
+            <div className="absolute z-10 bottom-2 left-1/2 transform -translate-x-1/2 text-white font-bold px-4 py-2 rounded-lg">
+              Preview this course
+            </div>
+            <div className="custom-bottom-gradient z-0 absolute bottom-0 inset-0"></div>
           </div>
+          {isModalOpen && (
+            <div
+              className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50"
+              onClick={handleModalClick}
+            >
+              <div className="bg-white p-4 rounded-lg relative">
+                <video controls className="w-full h-auto">
+                  <source src={course.video_url} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <div className="relative flex justify-center">

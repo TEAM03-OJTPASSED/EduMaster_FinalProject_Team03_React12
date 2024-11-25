@@ -98,10 +98,10 @@ export const DetailModal = ({ course, isPurchased }: Props) => {
                             course,
                             navigate
                           )
-                        : alert("User not logged in")
+                        : navigate("/login")
                     }
                   >
-                    Start Now
+                    Buy Now
                   </div>
                   <div
                     onClick={() =>

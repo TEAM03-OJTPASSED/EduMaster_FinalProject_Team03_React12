@@ -34,9 +34,9 @@ export const Detail = ({ isEnrolled, course, session }: Props) => {
     navigate("/learn/" + course?._id);
   };
 
-  return isEnrolled && course ? (
+  return course ? (
     <div className="font-exo flex mt-12">
-      <div className="lg:w-2/3">
+      <div className="lg:w-2/3 w-full">
         <div className="flex flex-col">
           <div className="text-xl font-bold pb-2 pt-4">Overview</div>
           <div

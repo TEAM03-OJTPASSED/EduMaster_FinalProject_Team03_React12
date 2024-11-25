@@ -133,9 +133,6 @@ h3 {
   font-family: "Jost", sans-serif !important;
 }
 
-
-
-
 .ant-btn-variant-solid:hover {
   background-color: var(--color-primary-pressed) !important;
   font-family: "Jost", sans-serif !important;
@@ -150,8 +147,6 @@ h3 {
     --color-neutral-white-grey
   ) !important; /* Màu nền khi click */
 }
-
-
 
 .dropdown-menu-button {
   background-color: transparent; /* Màu nền mặc định */
@@ -427,7 +422,6 @@ img {
   image-rendering: -webkit-optimize-contrast;
 }
 
-
 @keyframes spinOnce {
   0% {
     transform: rotate(0deg);
@@ -440,7 +434,6 @@ img {
 .animate-spin-once {
   animation: spinOnce 0.6s ease-in-out;
 }
-
 
 .subscribed {
   margin: 0 0.75rem; /* mx-3 */
@@ -465,7 +458,7 @@ img {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #F97316;
+  background: #f97316;
 }
 
 /* Custom Scrollbar for Firefox */
@@ -500,3 +493,6 @@ img {
   -ms-user-select: none; /* Internet Explorer/Edge */
 }
 
+.custom-bottom-gradient {
+  background: linear-gradient(to top, rgba(59, 59, 59, 0.85) -10%, rgba(0, 0, 0, 0) 20%);
+}
