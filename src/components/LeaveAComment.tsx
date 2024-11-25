@@ -1,6 +1,7 @@
-import { Form, Input, Button, Rate, message } from "antd";
+import { Form, Input, Button, Rate } from "antd";
 import { Review, ReviewRequest } from "../models/Review.model";
 import ReviewService from "../services/review.service";
+import { handleNotify } from "../utils/handleNotify";
 type Props = {
   label?: boolean;
   courseId: string;
@@ -11,35 +12,33 @@ export const LeaveAComment = ({ courseId }: Props) => {
 
   const onFinish = async ({ rating, comment }: Review) => {
     const reviewRequest: ReviewRequest = {
-      course_id: courseId,  // renamed to match `ReviewRequest`
+      course_id: courseId,
       rating,
       comment,
     };
 
     try {
       const createReview = await ReviewService.createReview(reviewRequest);
-      console.log("create review:", createReview.data)
-      if (createReview && createReview.data) {
 
-        localStorage.setItem("create review", JSON.stringify(createReview.data));
-        
+      if (createReview && createReview.data) {
+        localStorage.setItem(
+          "create review",
+          JSON.stringify(createReview.data)
+        );
         window.dispatchEvent(new Event("storageChange"));
       }
-      message.success("Review submitted successfully!")
 
+      handleNotify("Success", "Review submitted successfully!", "success");
       form.resetFields();
     } catch (error: any) {
+      form.resetFields();
+    }
   };
-}
   return (
     <div className="font-exo my-4">
       <div className="text-xl font-bold pt-4">Leave A Comment</div>
       {/* <div className="text-sm pt-1 pb-4">Your email address will not be published. Required fields are marked *</div> */}
-      <Form
-        form={form}
-        layout="vertical"
-        onFinish={onFinish}
-      >
+      <Form form={form} layout="vertical" onFinish={onFinish}>
         <Form.Item
           className="mb-2"
           name="rating"
@@ -57,7 +56,11 @@ export const LeaveAComment = ({ courseId }: Props) => {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" className="bg-orange-500 rounded-full hover:bg-orange-600">
+          <Button
+            type="primary"
+            htmlType="submit"
+            className="bg-orange-500 rounded-full hover:bg-orange-600"
+          >
             Post Comment
           </Button>
         </Form.Item>

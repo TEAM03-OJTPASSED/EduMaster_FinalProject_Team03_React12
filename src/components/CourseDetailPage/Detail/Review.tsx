@@ -1,9 +1,12 @@
 import { useState, useMemo, useEffect } from "react";
-import { Pagination, Rate, Dropdown, Menu, Input, Button, message } from "antd";
+import { Pagination, Rate, Dropdown, Menu, Input, Button} from "antd";
 import { EllipsisOutlined } from "@ant-design/icons";
 import { GetReviews, Review } from "../../../models/Review.model";
 import ReviewService from "../../../services/review.service";
 import dayjs from "dayjs";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store/store";
+import { handleNotify } from "../../../utils/handleNotify";
 
 type Props = {
   label?: boolean;
@@ -12,13 +15,18 @@ type Props = {
 
 export const Reviews = ({ label, courseId }: Props) => {
   const [currentPage, setCurrentPage] = useState(1);
+  const { currentUser } = useSelector((state: RootState) => state.auth.login);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [editingReviewId, setEditingReviewId] = useState<string | null>(null);
   const [editComment, setEditComment] = useState("");
   const [editRating, setEditRating] = useState(0);
   const pageSize = 3;
 
-  const handleEdit = (reviewId: string, comment: string, rating: number) => {
+  const handleEdit = (reviewId: string, comment: string, rating: number, reviewerId: string) => {
+    if (reviewerId !== currentUser?._id) {
+      handleNotify("Error", "You can only edit your own reviews.", 'error')
+      return;
+    }
     setEditingReviewId(reviewId);
     setEditComment(comment);
     setEditRating(rating);
@@ -39,8 +47,7 @@ export const Reviews = ({ label, courseId }: Props) => {
           review._id === reviewId ? { ...review, ...updatedReview } : review
         )
       );
-
-      message.success("Review updated successfully");
+      handleNotify("Success", "Review updated successfully", 'success');
       setEditingReviewId(null);
     } catch (error) {
       console.error("Error updating review:", error);
@@ -51,7 +58,7 @@ export const Reviews = ({ label, courseId }: Props) => {
     try {
       const searchParams: GetReviews = {
         searchCondition: {
-          course_id: "", // Chỉ lấy review của course hiện tại
+          course_id: courseId, 
           rating: 0,
           is_instructor: false,
           is_rating_order: false,
@@ -65,6 +72,7 @@ export const Reviews = ({ label, courseId }: Props) => {
       const res = await ReviewService.getReviews(searchParams);
       const pageData = res.data?.pageData ?? [];
       setReviews(pageData);
+      console.log("review list:", pageData)
     } catch (error) {
       console.error("Error fetching reviews:", error);
     }
@@ -85,28 +93,24 @@ export const Reviews = ({ label, courseId }: Props) => {
     };
   }, []);
 
-  const handleDelete = async (reviewId: string) => {
-    try {
-      await ReviewService.deleteReview(reviewId);
-      setReviews((prevReviews) =>
-        prevReviews.filter((review) => review._id !== reviewId)
-      );
-    } catch (error) {
-      console.error("Error deleting review:", error);
-    }
-  };
+  // const handleDelete = async (reviewId: string) => {
+  //   try {
+  //     await ReviewService.deleteReview(reviewId);
+  //     setReviews((prevReviews) =>
+  //       prevReviews.filter((review) => review._id !== reviewId)
+  //     );
+  //   } catch (error) {
+  //     console.error("Error deleting review:", error);
+  //   }
+  // };
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
-  const getReviewsByCourseId = (courseId: string) => {
-    return reviews.filter((review) => review.course_id === courseId);
-  };
-
   const courseReviews = useMemo(
-    () => getReviewsByCourseId(courseId),
-    [reviews, courseId]
+    () => reviews,
+    [reviews]
   );
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
@@ -283,18 +287,18 @@ export const Reviews = ({ label, courseId }: Props) => {
                       <Menu.Item
                         key="edit"
                         onClick={() =>
-                          handleEdit(review._id, review.comment, review.rating)
+                          handleEdit(review._id, review.comment, review.rating, review.reviewer_id)
                         }
                       >
                         Edit
                       </Menu.Item>
-                      <Menu.Item
+                      {/* <Menu.Item
                         key="delete"
                         danger
                         onClick={() => handleDelete(review._id)}
                       >
                         Delete
-                      </Menu.Item>
+                      </Menu.Item> */}
                     </Menu>
                   }
                   trigger={["click"]}

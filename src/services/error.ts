@@ -30,6 +30,7 @@ const handleError = (error: AxiosError) => {
       }
       if (status === 404) {
         console.log("404 - Not Found", error);
+        handleNotify("Error", errorData.message || errorData.Message || 'Error' , 'error');
       }
       if (status === 409) {
         console.log("409 - Tạo sổ.", error);
