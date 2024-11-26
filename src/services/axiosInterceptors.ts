@@ -3,7 +3,7 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from "axios";
-import handleError from "./error";
+import handleError, { ErrorResponse } from "./error";
 import { jwtDecode } from "jwt-decode";
 interface DecodedToken {
   exp: number; // Thời gian hết hạn của token
@@ -52,11 +52,17 @@ axiosClientVer2.interceptors.response.use(
   (error: AxiosError) => {
     // Xử lý lỗi phản hồi toàn cầu
     handleError(error);
-    console.log(
-      "error",
-      error.response?.data?.message.includes("is not exists.")
-    );
-    if (error.response?.data?.message.includes("is not exists.")) {
+    // console.log(
+    //   "error",
+    //   (error.response?.data as ErrorResponse).message?.includes(
+    //     "is not exists."
+    //   )
+    // );
+    if (
+      (error.response?.data as ErrorResponse).message?.includes(
+        "is not exists."
+      )
+    ) {
       localStorage.setItem("isNotExist", "true");
     } else {
       localStorage.setItem("isNotExist", "");
