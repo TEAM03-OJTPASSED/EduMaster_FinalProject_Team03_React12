@@ -12,6 +12,7 @@ import {
   BookOutlined,
   HourglassOutlined,
   ShoppingCartOutlined,
+  StarOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
@@ -70,6 +71,12 @@ const menuItems: MenuItem[] = [
         icon: <BookOutlined />,
         label: "All Courses",
         path: "/dashboard/admin/all-courses",
+      },
+      {
+        key: "review",
+        icon: <StarOutlined />,
+        label: "Review",
+        path: "/dashboard/admin/review",
       },
       {
         key: "pending-courses",

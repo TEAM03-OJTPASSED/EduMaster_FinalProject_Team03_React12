@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Menu } from "antd";
 import {
   DashboardOutlined,
@@ -10,7 +10,7 @@ import {
   UserOutlined,
   HistoryOutlined,
 } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const menuItems = [
   {
@@ -27,20 +27,20 @@ const menuItems = [
     label: "Management",  
     children: [
       {
-        key: "3-1",
+        key: "my-courses",
         title: "My Courses",
         icon: <BookOutlined />,
         path: "/dashboard/instructor/my-courses",
       },
       {
-        key: "sales",
+        key: "orders",
         icon: <ShoppingCartOutlined />,
         title: "Orders",
         label: "Orders",
-        path: "/dashboard/instructor/salesHistory",
+        path: "/dashboard/instructor/orders",
       },
       {
-        key: "management-payout",
+        key: "payout",
         icon: <MoneyCollectOutlined />,
         title: "Payout",
         path: "/dashboard/instructor/payout",
@@ -57,10 +57,10 @@ const menuItems = [
     path: "/dashboard/instructor/my-learning",
   },
   {
-    key: "orders",
+    key: "orders-history",
     icon: <HistoryOutlined />,
     label: "Orders History",
-    path: "/dashboard/instructor/orders", 
+    path: "/dashboard/instructor/orders-history", 
   },
   {
     key: "subscription",
@@ -82,7 +82,21 @@ const InstructorSidebar: React.FC<{ onMenuClick?: () => void }> = ({
   onMenuClick,
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const lastPathSegment = location.pathname.split("/").filter(Boolean).pop();
+  const [selectedParent, setSelectedParent] = useState<string>("")
 
+  useEffect(() => {
+    if (lastPathSegment) {
+      setSelectedParent(menuItems.find(
+        (item) =>
+          item.key === lastPathSegment ||
+          item.children?.some((child) => lastPathSegment.includes(child.key))
+      )?.key ?? "");
+    }
+
+  },[lastPathSegment])
+  
   const handleMenuClick = (key: string) => {
     if (onMenuClick) onMenuClick(); // Close Drawer if needed
 
@@ -130,7 +144,7 @@ const InstructorSidebar: React.FC<{ onMenuClick?: () => void }> = ({
     <Menu
       theme="light"
       mode="inline"
-      defaultSelectedKeys={["dashboard"]}
+      defaultSelectedKeys={[selectedParent, lastPathSegment ?? "dashboard"]}
       items={renderMenuItems(menuItems)}
     />
   );

@@ -8,5 +8,6 @@ export interface Subscription {
   updated_at: string;
   subscriber_name: string;
   instructor_name: string;
+  avatar_url: string;
 }
 

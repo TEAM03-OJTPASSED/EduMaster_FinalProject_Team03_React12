@@ -72,6 +72,7 @@ import AwaitingPayout from "./pages/InstructorDashboard/instructor-management/pa
 import MessageLayout from "./components/Message/MessageLayout";
 import MessageDetailPage from "./components/Message/MessageDetailPage";
 import MessageContent from "./components/Message/MessageContent";
+import ReviewManagement from "./pages/AdminDashboard/ReviewManagement";
 
 function App() {
   useEffect(() => {
@@ -158,7 +159,7 @@ function App() {
                   <Route path="session" element={<SessionList />} />
                   <Route path="lesson" element={<LessonList />} />
                 </Route>
-
+                <Route path="review" element={<ReviewManagement />} />
                 <Route path="pending-courses" element={<PendingCourseList />} />
                 {/* <Route path="session" element={<PendingSessionList />} />
                   <Route path="lesson" element={<PendingLessonList />} /> */}
@@ -201,7 +202,7 @@ function App() {
                 <Route path="dashboard" element={<InstructorContent />} />
                 <Route path="my-learning" element={<StudentCourses />} />
                 {/* <Route path="top-up" element={<TopUpPage />} /> */}
-                <Route path="orders" element={<StudentOrderHistory />} />
+                <Route path="orders-history" element={<StudentOrderHistory />} />
 
                 <Route path="payout" element={<InstructorPayout />}>
                   <Route index element={<RequestPayout />} />
@@ -213,7 +214,7 @@ function App() {
                   <Route path="awaiting-payout" element={<AwaitingPayout />} />
                 </Route>
                 <Route
-                  path="salesHistory"
+                  path="orders"
                   element={<InstructorSalesHistory />}
                 />
                 <Route path="my-courses" element={<InstructorCourses />}>
@@ -261,7 +262,7 @@ function App() {
                 </Route>
                 <Route path="my-courses" element={<StudentCourses />} />
                 {/* <Route path="top-up" element={<TopUpPage />} /> */}
-                <Route path="orders" element={<StudentOrderHistory />} />
+                <Route path="orders-history" element={<StudentOrderHistory />} />
                 <Route path="subscriptions" element={<StudentSubscription />} />
               </Route>
             </Route>

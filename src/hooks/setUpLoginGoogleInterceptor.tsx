@@ -5,7 +5,7 @@ import { setIsLoginGoogleFailed, setRegisterGoogle } from "../redux/slices/authS
 
 export const axiosClientVer2 = axios.create({
   baseURL: "https://edumaster-api-dev.vercel.app",
-  timeout: 10000,
+  timeout: 6000000,
   headers: {
     "Content-Type": "application/json",
   },

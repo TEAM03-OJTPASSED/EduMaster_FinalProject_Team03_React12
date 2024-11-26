@@ -256,7 +256,7 @@ const ProfilePage: React.FC = () => {
     );
 
   const AboutTab = () =>
-    loading ? (
+    loading || isSubscribed === undefined ? (
       <Skeleton active paragraph={{ rows: 4 }} />
     ) : (
       <>
