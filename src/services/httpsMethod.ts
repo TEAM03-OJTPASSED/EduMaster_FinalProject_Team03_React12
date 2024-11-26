@@ -2,6 +2,8 @@ import { AxiosResponse } from "axios";
 import axiosClientVer2 from "./axiosInterceptors";
 import { hideLoadingOverlay, showLoadingOverlay } from "../utils/loadingOverlay";
 import { ApiResponse } from "../models/ApiReponse.model";
+import { Message } from "../models/Message.model";
+import { CreateConversation } from "../models/Conversation.model";
 
 // [GET]
 const getRequest = async <T>(url: string, showLoading = true): Promise<ApiResponse<T>> => {
@@ -58,8 +60,40 @@ const deleteRequest = async <T>(url: string, showLoading = true): Promise<ApiRes
   }
 };
 
+// [GET REQUEST MESSAGE]
+const getRequestMessage = async (url: string, showLoading = true): Promise<Message[]> => {
+  if (showLoading) showLoadingOverlay();
+  try {
+    const res: AxiosResponse<Message[]> = await axiosClientVer2.get(url);
+    return res.data;
+  } finally {
+    if (showLoading) hideLoadingOverlay();
+  }
+};
+
+// [CREATE NEW CONVERSATION]
+const createNewConversation = async (url: string, showLoading = true, payload: CreateConversation) => {
+  if (showLoading) showLoadingOverlay();
+  try {
+    const res = await axiosClientVer2.post(url, payload);
+    return res.data;
+  } finally {
+    if (showLoading) hideLoadingOverlay();
+  }
+};
+
+
+const getListConversation = async (url: string, showLoading = true) => {
+  if (showLoading) showLoadingOverlay();
+  try {
+    const res = await axiosClientVer2.get(url);
+    return res.data;
+  } finally {
+    if (showLoading) hideLoadingOverlay();
+  }
+};
 // Export functions for use elsewhere
-export { getRequest, postRequest, putRequest, patchRequest, deleteRequest };
+export { getRequest, postRequest, putRequest, patchRequest, deleteRequest,getRequestMessage,getListConversation,createNewConversation };
 
 
 // HOW TO USE: Custom Service Example (e.g., CartService)

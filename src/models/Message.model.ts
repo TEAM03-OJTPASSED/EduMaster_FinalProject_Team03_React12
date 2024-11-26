@@ -1,5 +1,5 @@
 export interface Message {
-  _id: string;
+  _id?: string;
   sender_id: string;
   receiver_id: string;
   content: string;
@@ -7,6 +7,10 @@ export interface Message {
 }
 
 export interface MessageSearchParams {
-    receiver_id:string;
-    content?:string;
+  receiver_id: string;
+  content?: string;
+}
+export interface ConversationSearchParams {
+  receiver_id: string;
+  sender_id: string;
 }

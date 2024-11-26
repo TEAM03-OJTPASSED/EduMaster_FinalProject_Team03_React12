@@ -1,12 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Layout } from "antd";
 import MessageSidebar from "./MessageSideBar";
 import MessageNavbar from "./MessageNavbar";
 import { Outlet } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../redux/store/store";
+import { getConversationList } from "../../redux/slices/conversationSlice";
+import { User } from "../../models/UserModel";
 
 const { Content, Sider } = Layout;
 
 const MessageLayout: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>()
+  const {members} = useSelector((state:RootState) => state.conversation)
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user") || "{}") as User;
+    dispatch(getConversationList(user._id))
+  },[])
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* Navbar */}
@@ -22,7 +33,7 @@ const MessageLayout: React.FC = () => {
             padding: "16px 0",
           }}
         >
-          <MessageSidebar />
+          <MessageSidebar members = {members} />
         </Sider>
         {/* Main Content */}
         <Content

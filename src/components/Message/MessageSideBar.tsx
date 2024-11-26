@@ -1,4 +1,5 @@
 import { List, Image } from "antd";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const menuItems = [
@@ -11,20 +12,15 @@ const menuItems = [
     description: "I want to hire you for Space X internship",
     time: "9:45 AM",
   },
-  // {
-  //   key: "2",
-  //   id: "2",
-  //   avatar:
-  //     "https://dientusangtaovn.com/wp-content/uploads/2023/03/an-ba-to-com-1.jpg",
-  //   name: "An Ba To Kam",
-  //   description: "Bro I'm about to come in your face...",
-  //   time: "9:45 AM",
-  // },
-  // Add more items as needed
 ];
 
-const MessageSidebar = () => {
+
+
+const MessageSidebar = ({members} :  any) => {
+
+ 
   const navigate = useNavigate();
+  // api get receiver_id
 
   const handleNavigate = (id: string) => {
     navigate(`/message/${id}`);
@@ -35,11 +31,11 @@ const MessageSidebar = () => {
       <p className="font-bold text-4xl ml-3">Chats:</p>
       <List
         itemLayout="horizontal"
-        dataSource={menuItems}
+        dataSource={members as []}
         renderItem={(item) => (
           <List.Item
-            key={item.key}
-            onClick={() => handleNavigate(item.id)}
+            // key={item.key}
+            // onClick={() => handleNavigate(item._id as string)}
             style={{
               cursor: "pointer",
               padding: "8px 16px",
