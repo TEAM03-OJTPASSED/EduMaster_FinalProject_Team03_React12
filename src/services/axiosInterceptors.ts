@@ -4,16 +4,9 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 import handleError from "./error";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../redux/store/store";
-import {
-  setIsLoginGoogleFailed,
-  setRegisterGoogle,
-} from "../redux/slices/authSlices";
 import { jwtDecode } from "jwt-decode";
-
 interface DecodedToken {
-  exp: number; // Thời gian hết hạn của token (Unix timestamp)
+  exp: number; // Thời gian hết hạn của token
 }
 // Tạo instance của axios
 export const axiosClientVer2 = axios.create({
@@ -37,6 +30,7 @@ axiosClientVer2.interceptors.request.use(
       if (decodedToken.exp && currentTimestamp > decodedToken.exp) {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
+        localStorage.removeItem("isNotExist");
         location.href = "/login";
       }
     }
@@ -58,13 +52,15 @@ axiosClientVer2.interceptors.response.use(
   (error: AxiosError) => {
     // Xử lý lỗi phản hồi toàn cầu
     handleError(error);
-    const dispatch = useDispatch<AppDispatch>();
-    const { is_google } = useSelector((state: RootState) => state.auth.login);
-    if (is_google && error.response?.data) {
-      dispatch(setIsLoginGoogleFailed());
-      dispatch(setRegisterGoogle(true));
+    console.log(
+      "error",
+      error.response?.data?.message.includes("is not exists.")
+    );
+    if (error.response?.data?.message.includes("is not exists.")) {
+      localStorage.setItem("isNotExist", "true");
+    } else {
+      localStorage.setItem("isNotExist", "");
     }
-    // Luôn trả về lỗi cho hàm gọi
     return Promise.reject(error);
   }
 );

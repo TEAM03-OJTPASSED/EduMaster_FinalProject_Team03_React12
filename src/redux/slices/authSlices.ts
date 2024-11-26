@@ -1,8 +1,5 @@
 // Import necessary modules
-import {
-  createAsyncThunk,
-  createSlice,
-} from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getRequest, postRequest } from "../../services/httpsMethod";
 import { User } from "../../models/UserModel";
 import { ModalRegisterGoogleProps } from "../../components/ModalRegisterGoogle";
@@ -80,7 +77,7 @@ export const loginWithGoogle = createAsyncThunk<
   const response = await postRequest("/api/auth/google", {
     google_id: google_id,
   });
-  console.log("res gg", response.data);
+  console.log("res gg", response.message);
   localStorage.setItem("token", (response as any).data.token);
   if (response.success) {
     await dispatch(getCurrentUser());
@@ -95,8 +92,9 @@ export const registerWithGoogle = createAsyncThunk<
   ModalRegisterGoogleProps
 >("auth/registerGoogle", async (formData) => {
   const response = await postRequest("/api/users/google", formData);
-  handleNotify("Register gg successfully", " ")
+  handleNotify("Register gg successfully", " ");
   localStorage.setItem("token", (response as any).data.token);
+
   return response.data as AuthState;
 });
 
@@ -143,13 +141,14 @@ export const authSlice = createSlice({
     setRegisterGoogle: (state, action) => {
       state.login.is_register_google = action.payload.is_register;
       state.login.googleId = action.payload.google_id;
-    },
-    setIsLoginGoogleStart: (state,action) => {
-      state.login.googleId= action.payload
+    },    
+    setIsLoginGoogleStart: (state, action) => {
+      state.login.googleId = action.payload;
       state.login.is_google = true;
     },
     setIsLoginGoogleFailed: (state) => {
       state.login.is_google = false;
+      state.login.is_register_google = true;
     },
   },
   extraReducers: (builder) => {
@@ -182,19 +181,18 @@ export const authSlice = createSlice({
       })
       .addCase(loginWithGoogle.pending, (state) => {
         state.login.loading = true;
-        state.login.is_google = true;
-
+        // state.login.is_google = true;
       })
       .addCase(loginWithGoogle.fulfilled, (state) => {
         state.login.loading = false;
         state.login.success = true;
-        state.login.is_google = false;
+        // state.login.is_google = false;
       })
       .addCase(loginWithGoogle.rejected, (state) => {
         state.login.loading = false;
         state.login.success = false;
         state.login.is_register_google = true;
-        state.login.is_google = false;
+        // state.login.is_google = false;
       })
       .addCase(registerWithGoogle.pending, (state) => {
         state.login.loading = true;
@@ -202,12 +200,11 @@ export const authSlice = createSlice({
       .addCase(registerWithGoogle.fulfilled, (state) => {
         state.login.loading = false;
         state.login.success = true;
-        state.login.is_register_google = false
+        // state.login.is_register_google = false;
       })
       .addCase(registerWithGoogle.rejected, (state) => {
         state.login.loading = false;
         state.login.success = false;
-       
       });
   },
 });
@@ -224,7 +221,6 @@ export const {
   setRegisterGoogle,
   setIsLoginGoogleStart,
   setIsLoginGoogleFailed,
-  // setIsLoginGoogleSuccess,
 } = authSlice.actions;
 
 export default authSlice.reducer;

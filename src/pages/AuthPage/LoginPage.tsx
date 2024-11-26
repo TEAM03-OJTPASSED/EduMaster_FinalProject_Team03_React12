@@ -18,16 +18,23 @@ export type LoginProps = {
 const Loginpage = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const { currentUser, token, loading, is_register_google } = useSelector(
+  const { currentUser, token, loading,is_register_google } = useSelector(
     (state: RootState) => state.auth.login
   );
+
   const navigate = useNavigate();
+  const isNotExistAccount = localStorage.getItem("isNotExist");
+  useEffect(() => {
+    if (isNotExistAccount === "true") {
+      setIsOpenModal(true);
+    } else {
+      setIsOpenModal(false);
+    }
+  }, [isNotExistAccount]);
 
   useEffect(() => {
-    if (is_register_google) {
-      setIsOpenModal(true);
-    }
-  }, [is_register_google]);
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     if (currentUser) {
@@ -48,7 +55,6 @@ const Loginpage = () => {
     try {
       const { email, password } = values;
       await dispatch(login({ email, password }));
-      
     } catch (error) {
       console.log(error);
     }
@@ -139,15 +145,18 @@ const Loginpage = () => {
           </div>
         </div>
         {is_register_google && (
-        <Modal
-          open={isOpenModal}
-          width={800}
-          footer={null}
-          onCancel={() => setIsOpenModal(false)}
-        >
-          <ModalRegisterGoogle />
-        </Modal>
-      )}
+          <Modal
+            open={isOpenModal}
+            width={800}
+            footer={null}
+            onCancel={() => {
+              setIsOpenModal(false);
+              localStorage.setItem("isNotExist", "");
+            }}
+          >
+            <ModalRegisterGoogle />
+          </Modal>
+        )}
       </div>
       {/* <ModalRegisterGoogle /> */}
     </>

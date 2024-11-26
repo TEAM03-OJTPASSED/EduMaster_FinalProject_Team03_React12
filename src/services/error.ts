@@ -2,13 +2,14 @@ import { AxiosError } from "axios"; // Import AxiosError
 import { handleNotify } from "../utils/handleNotify"; // Import handleNotify
 
 // Định nghĩa kiểu cho response data
-interface ErrorResponse {
+export interface ErrorResponse {
   message?: string;
   Message?: string;
 }
 
 const handleError = (error: AxiosError) => {
 
+  
   // Chỉ định kiểu cho tham số error
   if (error.response) {
     const { status, data } = error.response; // Lấy status và data từ response

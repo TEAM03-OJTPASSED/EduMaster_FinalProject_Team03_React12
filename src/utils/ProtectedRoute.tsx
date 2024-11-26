@@ -13,7 +13,9 @@ const ProtectedRoute = ({
   allowedRoles = [],
   children,
 }: ProtectedRouteProps) => {
-  const { currentUser, token } = useSelector((state: RootState) => state.auth.login);
+  const { currentUser, token } = useSelector(
+    (state: RootState) => state.auth.login
+  );
   const userRole = currentUser ? currentUser.role : "";
   // If allowedRoles is empty, make it a public route.
   if (allowedRoles.length === 0) {
@@ -28,12 +30,14 @@ const ProtectedRoute = ({
   if (!currentUser && !token) {
     message.destroy();
     message.error("You must be logged in to do this action.");
-    return <Navigate to="/login" />;
+    return <Navigate to="/login" />; 
+    
   }
 
   // If user is authenticated but doesn't have the required role
   if (!allowedRoles.includes(userRole)) {
     localStorage.setItem("unauthorized", "true");
+    // localStorage.removeItem("isNotExist");
     return <Navigate to="/" />;
   }
 

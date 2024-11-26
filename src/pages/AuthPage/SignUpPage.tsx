@@ -13,7 +13,7 @@ import {
 } from "antd";
 import { FormProps } from "antd";
 import { Player } from "@lottiefiles/react-lottie-player";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import { API_UPLOAD_FILE } from "../../constants/api/upload";
 import { NavLink } from "react-router-dom";
@@ -43,11 +43,11 @@ export type RegisterType = {
 const SignUppage = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [selectedRole, setSelectedRole] = useState<string>("student");
-  const { loading,success } = useSelector(
+  const { loading, success } = useSelector(
     (state: RootState) => state.users.register
   );
-  console.log("register success",success);
-  
+  console.log("register success", success);
+
   // const [imageUrl, setImageUrl] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [fileListImage, setFileListImage] = useState<UploadFile[]>([]);
@@ -58,6 +58,10 @@ const SignUppage = () => {
   const handleSelectChange = (e: RadioChangeEvent) => {
     setSelectedRole(e.target.value);
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleImageChange: UploadProps["onChange"] = ({
     fileList: newFileList,
@@ -73,8 +77,7 @@ const SignUppage = () => {
 
   const onFinish: FormProps["onFinish"] = (values) => {
     const { confirmPassword, ...others } = values;
-    register(others, dispatch,navigate);
-
+    register(others, dispatch, navigate);
   };
   const handleVideoChange: UploadProps["onChange"] = ({
     fileList: newFileList,
@@ -157,8 +160,11 @@ const SignUppage = () => {
                   label="Password"
                   name="password"
                   rules={[
-                    { required: true, message: "Please input your password!"}, { min: 6, message: "Password must be at least 6 characters!" },
-
+                    { required: true, message: "Please input your password!" },
+                    {
+                      min: 6,
+                      message: "Password must be at least 6 characters!",
+                    },
                   ]}
                   className="mb-6"
                 >
