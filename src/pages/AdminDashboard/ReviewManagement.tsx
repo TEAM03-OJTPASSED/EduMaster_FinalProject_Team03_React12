@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import ReviewModal from "../../components/Admin/AdminModals/ViewReviewModal";
 import { Course, GetCourses } from "../../models/Course.model";
 import CourseService from "../../services/course.service";
+import GlobalSearchUnit from "../../components/GlobalSearchUnit";
 
 const initialCoursesParams: GetCourses = {
   pageInfo: { pageNum: 1, pageSize: 10 },
@@ -18,15 +19,15 @@ const initialCoursesParams: GetCourses = {
 
 const ReviewManagement = () => {
   const [courses, setCourses] = useState<Course[]>([]);
-//   const [searchParams, setSearchParams] =
-//     useState<GetCourses>(initialCoursesParams);
+  const [searchParams, setSearchParams] =
+    useState<GetCourses>(initialCoursesParams);
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
   // Fetch courses from the service
   const fetchCourses = async () => {
     try {
-      const res = await CourseService.getCourses(initialCoursesParams);
+      const res = await CourseService.getCourses(searchParams);
       const pageData = res.data?.pageData ?? [];
       setCourses(pageData);
       console.log("Courses fetched:", pageData);
@@ -37,7 +38,7 @@ const ReviewManagement = () => {
 
   useEffect(() => {
     fetchCourses();
-  }, []);
+  }, [searchParams]);
 
   // Open the modal with the selected course ID
   const handleViewReviews = (courseId: string) => {
@@ -79,10 +80,23 @@ const ReviewManagement = () => {
     },
   ];
 
+  const handleSearch = (values: Record<string, any>) => {
+    setSearchParams((prev) => ({
+      ...prev,
+      searchCondition: {
+        ...prev.searchCondition,
+        keyword: values.keyword,
+      },
+    }));
+  };
   return (
     <div>
       <Card>
         <h3 className="text-2xl my-5">Review Management</h3>
+        <GlobalSearchUnit
+          placeholder="Search By Course Name"
+          onSubmit={handleSearch}
+        />
         <Table
           dataSource={courses}
           columns={columns}

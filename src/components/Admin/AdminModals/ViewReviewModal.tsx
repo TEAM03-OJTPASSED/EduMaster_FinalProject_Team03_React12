@@ -52,7 +52,6 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
   };
 
   const handleDelete = async (reviewId: string) => {
-    setLoading(true);
     try {
       await ReviewService.deleteReview(reviewId);
       setReviews((prevReviews) =>
@@ -65,8 +64,6 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
         "Failed to delete review. Please try again.",
         "error"
       );
-    } finally {
-      setLoading(false);
     }
   };
 
