@@ -64,7 +64,9 @@ export const Banner = ({
     setIsModalOpen(false);
   };
 
-  const handleModalClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const handleModalClick = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
     if (e.target === e.currentTarget) {
       closeModal();
     }
@@ -174,11 +176,11 @@ export const Banner = ({
           </div>
           {isModalOpen && (
             <div
-              className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50"
+              className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50 overflow-auto"
               onClick={handleModalClick}
             >
-              <div className="bg-white p-4 rounded-lg relative">
-                <video controls className="w-full h-auto">
+              <div className="bg-white p-4 rounded-lg relative flex items-center justify-center">
+                <video controls className="max-w-[80vw] max-h-[80vh] object-contain">
                   <source src={course.video_url} type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>

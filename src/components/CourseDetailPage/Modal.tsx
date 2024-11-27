@@ -15,7 +15,11 @@ export const DetailModal = ({ course, isPurchased }: Props) => {
 
   const currentUser = localStorage.getItem("user");
 
-  const handleAdd = async (userRole: string, course: Course, navigate: ReturnType<typeof useCustomNavigate>) => {
+  const handleAdd = async (
+    userRole: string,
+    course: Course,
+    navigate: ReturnType<typeof useCustomNavigate>
+  ) => {
     await handleAddCart(userRole, course, navigate);
     navigate("/cart/new");
   };
@@ -105,7 +109,13 @@ export const DetailModal = ({ course, isPurchased }: Props) => {
                   </div>
                   <div
                     onClick={() =>
-                      currentUser ? handleAddCart(JSON.parse(currentUser).role, course, navigate) : alert("User not logged in")
+                      currentUser
+                        ? handleAddCart(
+                            JSON.parse(currentUser).role,
+                            course,
+                            navigate
+                          )
+                        : navigate("/login")
                     }
                     className="text-center cursor-pointer text-lg font-bold border-2 border-orange-500 p-2 mt-2 rounded"
                   >
