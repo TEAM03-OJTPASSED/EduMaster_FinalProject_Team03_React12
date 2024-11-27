@@ -118,7 +118,7 @@ const ProfilePage: React.FC = () => {
   // Function to check if both data are loaded
   const checkDataLoaded = () => {
     if (!loading && !coursesLoading) {
-      return
+      return;
     }
   };
 
@@ -328,7 +328,9 @@ const ProfilePage: React.FC = () => {
                   <div className="flex items-center justify-end w-full">
                     {renderStars(course.average_rating)}
                     <span className="ml-2">
-                      {course.average_rating.toFixed(1)} rating
+                      {course.average_rating > 0
+                        ? `${course.average_rating.toFixed(1)} rating`
+                        : ""}
                     </span>
                   </div>
                 </Tag>
@@ -341,6 +343,10 @@ const ProfilePage: React.FC = () => {
 
   // Function to render stars based on rounded average rating
   const renderStars = (averageRating: number) => {
+    if (averageRating === 0) {
+      return <Text className="text-white text-lg">No rating</Text>;
+    }
+
     const roundedRating = Math.round(averageRating);
     return (
       <>

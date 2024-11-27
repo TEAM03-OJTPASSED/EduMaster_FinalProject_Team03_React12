@@ -462,7 +462,7 @@ img {
 }
 
 /* Custom Scrollbar for Firefox */
-.custom-scrollbar {
+.custom-scrollbar { 
   scrollbar-width: thin;
   scrollbar-color: #000000 #f1f1f1;
 }

@@ -69,9 +69,9 @@ import StudentOrderHistory from "./pages/StudentDashboard/StudentOrderHistory";
 import VerifySuccessToken from "./pages/AuthPage/VerifyToken";
 import { gapi } from "gapi-script";
 import AwaitingPayout from "./pages/InstructorDashboard/instructor-management/payout/AwaitingPayout";
-import MessageLayout from "./components/Message/MessageLayout";
-import MessageDetailPage from "./components/Message/MessageDetailPage";
-import MessageContent from "./components/Message/MessageContent";
+// import MessageLayout from "./components/Message/MessageLayout";
+// import MessageDetailPage from "./components/Message/MessageDetailPage";
+// import MessageContent from "./components/Message/MessageContent";
 import ReviewManagement from "./pages/AdminDashboard/ReviewManagement";
 
 function App() {
@@ -176,7 +176,7 @@ function App() {
               </Route>
             </Route>
 
-            <Route
+            {/* <Route
               path="message"
               element={
                 <ProtectedRoute
@@ -184,11 +184,11 @@ function App() {
                 ></ProtectedRoute>
               }
             >
-              <Route element={<MessageLayout />}>
-              <Route index element={<MessageContent />}/>
-                <Route element={<MessageDetailPage />} path="/message/:id"/>
-              </Route>
-            </Route>
+              {/* <Route element={<MessageLayout />}> */}
+              {/* <Route index element={<MessageContent />}/> */}
+                {/* <Route element={<MessageDetailPage />} path="/message/:id"/> */}
+              {/* </Route>
+            // </Route> */} 
 
             {/* Instructor Layout */}
             <Route
