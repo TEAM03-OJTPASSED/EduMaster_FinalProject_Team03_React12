@@ -24,6 +24,7 @@ const CourseDetailPage = () => {
       const response = await ClientService.getCourseDetails(courseId);
       if (response.success && response.data) {
         setCourse(response.data as Course);
+        console.log('Course details:', response.data);
         setSession((response.data as Course).session_list as unknown as Session);
       } else {
         console.error('Error fetching course details:', response.message);
@@ -46,16 +47,16 @@ const CourseDetailPage = () => {
   if (course && id) {
     return (
       <div className="relative">
-        <div className="inset-x-0 flex flex-col">
+        <div className="px-5 lg:inset-x-0 flex flex-col">
           <Banner
             course={course}
             isPurchased={course.is_purchased}
             id={id}
-            completed_lesson={user.completed_lesson}
+            completed_lesson={user.completed_lesson || []}
           />
         </div>
         <Detail
-          isEnrolled={true}
+          isEnrolled={course.is_purchased}
           course={course || undefined}
           session={session || undefined}
         />
