@@ -104,7 +104,7 @@ const CourseCard: React.FC<{
                   className="mr-1 text-orange-500"
                   size={18}
                 />
-                {course.full_time} Hours
+                {Math.ceil(course.full_time/60)} Hours
               </span>
               <span className="flex items-center justify-end text-left">
                 <FaStar className="mr-1 text-yellow-400" size={20} />

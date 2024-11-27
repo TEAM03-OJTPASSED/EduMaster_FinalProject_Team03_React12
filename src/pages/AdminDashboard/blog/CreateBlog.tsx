@@ -64,8 +64,9 @@ const CreateBlog: React.FC<BlogFormProps> = ({ initialValues, onSuccess }) => {
 
   const onFinish = async (values: BlogRequest) => {
     try {
-      const response = await BlogService.createBlog(values);
-      console.log("Create blog data:", values);
+      const postdata:BlogRequest = {...values, tags: values.tags ?? [""]  } 
+      const response = await BlogService.createBlog(postdata);
+      console.log("Create blog data:", postdata);
       if (response?.success && onSuccess) {
         handleNotify("Blog created successfully", "");
         onSuccess();
