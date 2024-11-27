@@ -139,6 +139,10 @@ const Navbar = () => {
   const profileMenu: MenuProps = {
     items: [
       {
+        label: <span className="text-orange-500">{currentUser.name}</span>,
+        key: "balance",
+      },
+      {
         label: "My Dashboard",
         key: "dashboard",
         onClick: () => {
