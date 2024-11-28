@@ -1,5 +1,14 @@
 import { useEffect, useState } from "react";
-import { Table, Card, Tag, TableProps, Button, Modal, Tooltip, Form } from "antd";
+import {
+  Table,
+  Card,
+  Tag,
+  TableProps,
+  Button,
+  Modal,
+  Tooltip,
+  Form,
+} from "antd";
 import {
   DeleteFilled,
   EditFilled,
@@ -20,6 +29,7 @@ import { GetSessions, Session } from "../../../models/Session.model";
 import LessonService from "../../../services/lesson.service";
 import { handleNotify } from "../../../utils/handleNotify";
 import GlobalSearchUnit from "../../../components/GlobalSearchUnit";
+import DeleteItemModal from "../../../components/DeleteItemModal";
 
 const initialCoursesParams: GetCourses = {
   pageInfo: {
@@ -59,11 +69,11 @@ const initialLessonsParams: GetLessons = {
   },
 };
 
-
 const InstructorLessonList = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalCreateVisible, setIsModalCreateVisible] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState<Lesson>({} as Lesson);
+  const [deleteModal, setDeleteModal] = useState(false);
   // const [selectedCourse, setSelectedCourse] = useState<string>();
   // const [selectedSession, setSelectedSession] = useState<string>();
   const [listCourses, setListCourses] = useState<Course[]>([]);
@@ -71,12 +81,11 @@ const InstructorLessonList = () => {
   const [listLessons, setListLessons] = useState<Lesson[]>([]);
   const [searchParams, setSearchParams] =
     useState<GetLessons>(initialLessonsParams);
-  const [sessionSearchParams, setSessionSearchParams] = useState<GetSessions>(initialSessionsParams);
+  const [sessionSearchParams, setSessionSearchParams] = useState<GetSessions>(
+    initialSessionsParams
+  );
 
   const [form] = Form.useForm<Lesson>();
-
-
-
 
   const showModal = (lesson: Lesson) => {
     setSelectedLesson(lesson);
@@ -99,7 +108,7 @@ const InstructorLessonList = () => {
   const handleCancel = () => {
     resetModalState();
     form.resetFields();
-    console.log("cancelling")
+    console.log("cancelling");
   };
 
   const fetchCourses = async () => {
@@ -108,7 +117,7 @@ const InstructorLessonList = () => {
   };
 
   const fetchSessions = async () => {
-    console.log(sessionSearchParams)
+    console.log(sessionSearchParams);
     const response = await SessionService.getSessions(sessionSearchParams);
     setListSessions(response?.data?.pageData ?? []);
   };
@@ -140,16 +149,15 @@ const InstructorLessonList = () => {
       delete numericValues.assignment;
     }
 
-    
-      const response = await LessonService.createLesson(numericValues);
-      if (response.success) {
-        resetModalState();
-        handleNotify(
-          "Lesson Created Successfully",
-          "The lesson has been created successfully."
-        );
-        await fetchLessons();
-      }
+    const response = await LessonService.createLesson(numericValues);
+    if (response.success) {
+      resetModalState();
+      handleNotify(
+        "Lesson Created Successfully",
+        "The lesson has been created successfully."
+      );
+      await fetchLessons();
+    }
   };
 
   const handleUpdateLesson = async (updatedLesson: LessonRequest) => {
@@ -178,6 +186,7 @@ const InstructorLessonList = () => {
       );
       await fetchLessons();
     }
+    setDeleteModal(false);
   };
 
   useEffect(() => {
@@ -186,7 +195,7 @@ const InstructorLessonList = () => {
 
   useEffect(() => {
     fetchSessions();
-  },[sessionSearchParams])
+  }, [sessionSearchParams]);
 
   useEffect(() => {
     fetchLessons();
@@ -197,15 +206,23 @@ const InstructorLessonList = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      ellipsis: true, 
+      ellipsis: true,
     },
     {
       title: "Session Name",
       dataIndex: "session_name",
       key: "session_name",
-      ellipsis: true, 
-      render: (text:string) => (
-        <span style={{ maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-block' }}>
+      ellipsis: true,
+      render: (text: string) => (
+        <span
+          style={{
+            maxWidth: 150,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            display: "inline-block",
+          }}
+        >
           {text}
         </span>
       ),
@@ -214,8 +231,7 @@ const InstructorLessonList = () => {
     //   title: "Instructor",
     //   dataIndex: "user_name",
     //   key: "user_name",
-    //   ellipsis: true, 
-
+    //   ellipsis: true,
     // },
     {
       title: "Media",
@@ -254,11 +270,13 @@ const InstructorLessonList = () => {
             />
           </Tooltip>
           <Tooltip title="Delete" className="!font-jost">
-
             <Button
               type="text"
               icon={<DeleteFilled style={{ color: "red" }} />}
-              onClick={() => handleDeleteLesson(record._id)}
+              onClick={() => {
+                setSelectedLesson(record);
+                setDeleteModal(true);
+              }}
             />
           </Tooltip>
         </div>
@@ -270,22 +288,13 @@ const InstructorLessonList = () => {
     setSearchParams({
       pageInfo: searchParams.pageInfo,
       searchCondition: {
-        ...searchParams.searchCondition, // Spread existing searchCondition fields
+        ...searchParams.searchCondition,
         course_id: values.course_id,
         session_id: values.session_id,
         keyword: values.keyword,
       },
     });
   };
-
-  // const handleCourseChange = (courseId: string) => {
-  //   setSelectedCourse(courseId);
-  //   setSelectedSession(undefined);
-  // };
-
-  // const handleSessionChange = (sessionId: string) => {
-  //   setSelectedSession(sessionId);
-  // };
 
   return (
     <Card>
@@ -304,8 +313,15 @@ const InstructorLessonList = () => {
                   value: course._id,
                   label: course.name,
                 })),
-                onChange: (value:string) => {
-                  setSessionSearchParams({...sessionSearchParams, searchCondition: {...searchParams.searchCondition, course_id: value}})                } 
+                onChange: (value: string) => {
+                  setSessionSearchParams({
+                    ...sessionSearchParams,
+                    searchCondition: {
+                      ...searchParams.searchCondition,
+                      course_id: value,
+                    },
+                  });
+                },
               },
               {
                 name: "session_id",
@@ -320,42 +336,6 @@ const InstructorLessonList = () => {
               },
             ]}
           />
-
-          {/* <Input
-            placeholder="Search By Lesson Name"
-            prefix={<SearchOutlined className="w-4 h-4" />}
-            className="w-64"
-          />
-          <Select
-            allowClear
-            placeholder="Filter By Course"
-            className="w-48"
-            onChange={handleCourseChange}
-            value={selectedCourse}
-          >
-            {listCourses.map(course => (
-              <Select.Option key={course._id} value={String(course._id)}>
-                {course.name}
-              </Select.Option>
-            ))}
-          </Select>
-
-          <Select
-            allowClear
-            placeholder="Filter By Session"
-            className="w-48"
-            onChange={handleSessionChange}
-            value={selectedSession}
-            disabled={!selectedCourse}
-          >
-            {selectedCourse && listSessions
-              .filter(session => String(session.course_id) === String(selectedCourse))
-              .map(session => (
-                <Select.Option key={session._id} value={String(session._id)}>
-                  {session.name}
-                </Select.Option>
-              ))}
-          </Select> */}
         </div>
 
         <div className="flex">
@@ -392,12 +372,16 @@ const InstructorLessonList = () => {
         {selectedLesson && (
           <LessonIOptions
             form={form}
-            onCourseChange={(value) => 
-              {
-                console.log("line 392")
-                setSessionSearchParams({...sessionSearchParams, searchCondition: {...searchParams.searchCondition, course_id: value}})
-              }
-            }
+            onCourseChange={(value) => {
+              console.log("line 392");
+              setSessionSearchParams({
+                ...sessionSearchParams,
+                searchCondition: {
+                  ...searchParams.searchCondition,
+                  course_id: value,
+                },
+              });
+            }}
             listCourses={listCourses}
             listSessions={listSessions}
             onFinished={handleUpdateLesson}
@@ -419,13 +403,28 @@ const InstructorLessonList = () => {
       >
         <LessonIOptions
           form={form}
-          onCourseChange={(value) => setSessionSearchParams({...sessionSearchParams, searchCondition: {...searchParams.searchCondition, course_id: value}})}
+          onCourseChange={(value) =>
+            setSessionSearchParams({
+              ...sessionSearchParams,
+              searchCondition: {
+                ...searchParams.searchCondition,
+                course_id: value,
+              },
+            })
+          }
           onFinished={handleCreateLesson}
           mode="create"
           listCourses={listCourses}
           listSessions={listSessions}
         />
       </Modal>
+      <DeleteItemModal
+        visible={deleteModal}
+        onCancel={() => setDeleteModal(false)}
+        onDelete={() => handleDeleteLesson(selectedLesson?._id!)}
+        itemName={selectedLesson?.name}
+        itemType="Lesson" // Pass the type as 'category'
+      />
     </Card>
   );
 };

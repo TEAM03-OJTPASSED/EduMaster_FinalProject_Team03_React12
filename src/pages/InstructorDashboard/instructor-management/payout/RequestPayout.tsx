@@ -2,7 +2,11 @@ import { Card, Table, Button, Tooltip, Modal } from "antd";
 import { EyeFilled, RocketFilled } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import PayoutService from "../../../../services/payout.service";
-import { GetPayoutRequest, Payout, PayoutStatusEnum } from "../../../../models/Payout.model";
+import {
+  GetPayoutRequest,
+  Payout,
+  PayoutStatusEnum,
+} from "../../../../models/Payout.model";
 import { handleNotify } from "../../../../utils/handleNotify";
 import EmptyData from "../../../../components/Empty Data/EmptyData";
 import { moneyFormatter } from "../../../../utils/moneyFormatter";
@@ -27,7 +31,6 @@ const RequestPayout = () => {
     },
   };
 
-
   const fetchRequestPayouts = async () => {
     const requestParams: GetPayoutRequest = {
       ...initialParams,
@@ -45,24 +48,24 @@ const RequestPayout = () => {
     fetchRequestPayouts();
   }, []);
 
-
-
   const handleSendToAdmin = async (payout: Payout) => {
     const params = {
       status: PayoutStatusEnum.REQUEST_PAYOUT,
       comment: "Request payout by instructor",
     };
     await PayoutService.updatePayoutStatus(payout._id, params);
-    handleNotify("Payout Sent For Request", "Payout request has been sent to admin.");
+    handleNotify(
+      "Payout Sent For Request",
+      "Payout request has been sent to admin."
+    );
     fetchRequestPayouts();
   };
 
   const handleViewTransaction = (item: Payout) => {
+    console.log(item);
     setIsOpenTransaction(true);
     setCurrentRequestPayout(item);
   };
-
-
 
   const columns = [
     {
@@ -103,7 +106,7 @@ const RequestPayout = () => {
       dataIndex: "balance_origin",
       key: "balance_origin",
       ellipsis: true,
-      align: 'right' as const,
+      align: "right" as const,
       render: (money: number) => moneyFormatter(money),
     },
     {
@@ -111,7 +114,7 @@ const RequestPayout = () => {
       dataIndex: "balance_instructor_paid",
       key: "balance_instructor_paid",
       ellipsis: true,
-      align: 'right' as const,
+      align: "right" as const,
       render: (money: number) => moneyFormatter(money),
     },
     {
@@ -119,7 +122,7 @@ const RequestPayout = () => {
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
       ellipsis: true,
-      align: 'right' as const,
+      align: "right" as const,
       render: (money: number) => moneyFormatter(money),
     },
     {
@@ -127,7 +130,7 @@ const RequestPayout = () => {
       dataIndex: "updated_at",
       key: "updated_at",
       ellipsis: true,
-      align: 'center' as const,
+      align: "center" as const,
       render: (date: string) => new Date(date).toLocaleString(),
     },
     {
@@ -140,13 +143,12 @@ const RequestPayout = () => {
         return (
           <div>
             <Tooltip title="View Details">
-            <Button
-              className="text-red-600"
-              icon={<EyeFilled />}
-              type="text"
-              onClick={() => handleViewTransaction(record)}
-            >
-            </Button>
+              <Button
+                className="text-red-600"
+                icon={<EyeFilled />}
+                type="text"
+                onClick={() => handleViewTransaction(record)}
+              ></Button>
             </Tooltip>
           </div>
         );
@@ -155,24 +157,27 @@ const RequestPayout = () => {
     {
       title: "Action",
       key: "action",
-      fixed: 'right' as const,
+      fixed: "right" as const,
       render: (record: Payout) => (
         <Tooltip title="Send to admin for approval">
-        <Button
-          type="text"
-          icon={<RocketFilled style={{ color: "green" }} />}
-          onClick={() => handleSendToAdmin(record)}
-        />
+          <Button
+            type="text"
+            icon={<RocketFilled style={{ color: "green" }} />}
+            onClick={() => handleSendToAdmin(record)}
+          />
         </Tooltip>
       ),
     },
   ];
 
   const newPayoutsLocale = {
-    emptyText: <EmptyData description="New payouts will appear here when they're ready for processing" message="No new payouts to process"/>
+    emptyText: (
+      <EmptyData
+        description="New payouts will appear here when they're ready for processing"
+        message="No new payouts to process"
+      />
+    ),
   };
-
-  
 
   return (
     <Card>
@@ -197,13 +202,8 @@ const RequestPayout = () => {
       >
         <TransactionListModal item={currentRequestPayout} />
       </Modal>
-      
     </Card>
   );
 };
 
 export default RequestPayout;
-
-
-
-

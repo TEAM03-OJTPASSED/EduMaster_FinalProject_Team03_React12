@@ -1,12 +1,18 @@
 import { AxiosResponse } from "axios";
 import axiosClientVer2 from "./axiosInterceptors";
-import { hideLoadingOverlay, showLoadingOverlay } from "../utils/loadingOverlay";
+import {
+  hideLoadingOverlay,
+  showLoadingOverlay,
+} from "../utils/loadingOverlay";
 import { ApiResponse } from "../models/ApiReponse.model";
 import { Message } from "../models/Message.model";
 import { CreateConversation } from "../models/Conversation.model";
 
 // [GET]
-const getRequest = async <T>(url: string, showLoading = true): Promise<ApiResponse<T>> => {
+const getRequest = async <T>(
+  url: string,
+  showLoading = true
+): Promise<ApiResponse<T>> => {
   if (showLoading) showLoadingOverlay();
   try {
     const res: AxiosResponse<ApiResponse<T>> = await axiosClientVer2.get(url);
@@ -17,10 +23,17 @@ const getRequest = async <T>(url: string, showLoading = true): Promise<ApiRespon
 };
 
 // [POST]
-const postRequest = async <T>(url: string, payload: unknown, showLoading = true): Promise<ApiResponse<T>> => {
+const postRequest = async <T>(
+  url: string,
+  payload: unknown,
+  showLoading = true
+): Promise<ApiResponse<T>> => {
   if (showLoading) showLoadingOverlay();
   try {
-    const res: AxiosResponse<ApiResponse<T>> = await axiosClientVer2.post(url, payload);
+    const res: AxiosResponse<ApiResponse<T>> = await axiosClientVer2.post(
+      url,
+      payload
+    );
     return res.data;
   } finally {
     if (showLoading) hideLoadingOverlay();
@@ -28,10 +41,17 @@ const postRequest = async <T>(url: string, payload: unknown, showLoading = true)
 };
 
 // [PUT]
-const putRequest = async <T>(url: string, payload: unknown, showLoading = true): Promise<ApiResponse<T>> => {
+const putRequest = async <T>(
+  url: string,
+  payload: unknown,
+  showLoading = true
+): Promise<ApiResponse<T>> => {
   if (showLoading) showLoadingOverlay();
   try {
-    const res: AxiosResponse<ApiResponse<T>> = await axiosClientVer2.put(url, payload);
+    const res: AxiosResponse<ApiResponse<T>> = await axiosClientVer2.put(
+      url,
+      payload
+    );
     return res.data;
   } finally {
     if (showLoading) hideLoadingOverlay();
@@ -39,10 +59,17 @@ const putRequest = async <T>(url: string, payload: unknown, showLoading = true):
 };
 
 // [PATCH]
-const patchRequest = async <T>(url: string, payload: unknown, showLoading = true): Promise<ApiResponse<T>> => {
+const patchRequest = async <T>(
+  url: string,
+  payload: unknown,
+  showLoading = true
+): Promise<ApiResponse<T>> => {
   if (showLoading) showLoadingOverlay();
   try {
-    const res: AxiosResponse<ApiResponse<T>> = await axiosClientVer2.patch(url, payload);
+    const res: AxiosResponse<ApiResponse<T>> = await axiosClientVer2.patch(
+      url,
+      payload
+    );
     return res.data;
   } finally {
     if (showLoading) hideLoadingOverlay();
@@ -50,10 +77,15 @@ const patchRequest = async <T>(url: string, payload: unknown, showLoading = true
 };
 
 // [DELETE]
-const deleteRequest = async <T>(url: string, showLoading = true): Promise<ApiResponse<T>> => {
+const deleteRequest = async <T>(
+  url: string,
+  showLoading = true
+): Promise<ApiResponse<T>> => {
   if (showLoading) showLoadingOverlay();
   try {
-    const res: AxiosResponse<ApiResponse<T>> = await axiosClientVer2.delete(url);
+    const res: AxiosResponse<ApiResponse<T>> = await axiosClientVer2.delete(
+      url
+    );
     return res.data;
   } finally {
     if (showLoading) hideLoadingOverlay();
@@ -61,7 +93,10 @@ const deleteRequest = async <T>(url: string, showLoading = true): Promise<ApiRes
 };
 
 // [GET REQUEST MESSAGE]
-const getRequestMessage = async (url: string, showLoading = true): Promise<Message[]> => {
+const getRequestMessage = async (
+  url: string,
+  showLoading = true
+): Promise<Message[]> => {
   if (showLoading) showLoadingOverlay();
   try {
     const res: AxiosResponse<Message[]> = await axiosClientVer2.get(url);
@@ -72,7 +107,11 @@ const getRequestMessage = async (url: string, showLoading = true): Promise<Messa
 };
 
 // [CREATE NEW CONVERSATION]
-const createNewConversation = async (url: string, showLoading = true, payload: CreateConversation) => {
+const createNewConversation = async (
+  url: string,
+  showLoading = true,
+  payload: CreateConversation
+) => {
   if (showLoading) showLoadingOverlay();
   try {
     const res = await axiosClientVer2.post(url, payload);
@@ -81,7 +120,6 @@ const createNewConversation = async (url: string, showLoading = true, payload: C
     if (showLoading) hideLoadingOverlay();
   }
 };
-
 
 const getListConversation = async (url: string, showLoading = true) => {
   if (showLoading) showLoadingOverlay();
@@ -93,8 +131,16 @@ const getListConversation = async (url: string, showLoading = true) => {
   }
 };
 // Export functions for use elsewhere
-export { getRequest, postRequest, putRequest, patchRequest, deleteRequest,getRequestMessage,getListConversation,createNewConversation };
-
+export {
+  getRequest,
+  postRequest,
+  putRequest,
+  patchRequest,
+  deleteRequest,
+  getRequestMessage,
+  getListConversation,
+  createNewConversation,
+};
 
 // HOW TO USE: Custom Service Example (e.g., CartService)
 
