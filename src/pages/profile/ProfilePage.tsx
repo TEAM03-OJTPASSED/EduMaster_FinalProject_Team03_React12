@@ -118,7 +118,7 @@ const ProfilePage: React.FC = () => {
   // Function to check if both data are loaded
   const checkDataLoaded = () => {
     if (!loading && !coursesLoading) {
-      return
+      return;
     }
   };
 
@@ -229,31 +229,90 @@ const ProfilePage: React.FC = () => {
         </div>
       </div>
     ) : (
-      <div className="flex items-end mt-32 z-10 relative">
-        <Avatar
-          src={instructorInfo.avatar}
-          size={160}
-          className="ml-4 border-black border-2 cursor-pointer mb-6"
-          onClick={() => showModal(instructorInfo.avatar as string)}
-        />
-        <div className="ml-5 ">
-          <Title level={2} className="p-0 !mb-0">
-            {instructorInfo.name}
-          </Title>
-          <div>
-            <Text type="secondary"> {capitalize(instructorInfo.role)}</Text>
+      <div className="relative z-10">
+        {/* Cover Image */}
+        <div className="w-full h-48 sm:h-60 lg:h-60 relative">
+          {loading || isSubscribed === undefined ? null : (
+            <img
+              alt="Cover"
+              src={instructorInfo.avatar}
+              className="w-full h-full object-cover"
+            />
+          )}
+        </div>
+  
+        {/* Layout cho điện thoại */}
+        <div className="lg:hidden flex flex-col items-center pt-16 relative">
+          {/* Avatar */}
+          <Avatar
+            src={instructorInfo.avatar || undefined}
+            size={160}
+            icon={!instructorInfo.avatar && <UserOutlined />}
+            className="absolute -top-20 border-4 border-black rounded-full"
+            onClick={() =>
+              instructorInfo.avatar && showModal(instructorInfo.avatar as string)
+            }
+          />
+  
+          {/* Info */}
+          <div className="text-center mt-20">
+            <Title level={2} className="p-0 !mb-0">
+              {instructorInfo.name}
+            </Title>
+            <div>
+              <Text type="secondary">{capitalize(instructorInfo.role)}</Text>
+            </div>
+          </div>
+  
+          {/* Subscribe Button */}
+          <div className="mt-4">
+            <SubscribeButton
+              initialSubscribedValue={isSubscribed}
+              instructorName={instructorInfo.name}
+              instructorId={instructorInfo._id}
+              userRole={currentUser.role}
+            />
           </div>
         </div>
-        <div className="flex flex-col items-center ml-auto h-14">
-          <SubscribeButton
-            initialSubscribedValue={isSubscribed}
-            instructorName={instructorInfo.name}
-            instructorId={instructorInfo._id}
-            userRole={currentUser.role}
+  
+        {/* Layout cho laptop */}
+        <div className="hidden lg:flex items-end justify-between px-4 relative">
+          {/* Avatar */}
+          <Avatar
+            src={instructorInfo.avatar || undefined}
+            size={160}
+            icon={!instructorInfo.avatar && <UserOutlined />}
+            className="absolute -top-20 border-4 border-black rounded-full"
+            onClick={() =>
+              instructorInfo.avatar && showModal(instructorInfo.avatar as string)
+            }
           />
+  
+          {/* Info */}
+          <div className="ml-5 mt-16">
+            <Title level={2} className="p-0 !mb-0">
+              {instructorInfo.name}
+            </Title>
+            <div>
+              <Text type="secondary">{capitalize(instructorInfo.role)}</Text>
+            </div>
+          </div>
+  
+          {/* Subscribe Button */}
+          <div className="ml-auto mt-16">
+            <SubscribeButton
+              initialSubscribedValue={isSubscribed}
+              instructorName={instructorInfo.name}
+              instructorId={instructorInfo._id}
+              userRole={currentUser.role}
+            />
+          </div>
         </div>
       </div>
     );
+  
+  
+  
 
   const AboutTab = () =>
     loading || isSubscribed === undefined ? (
@@ -328,7 +387,9 @@ const ProfilePage: React.FC = () => {
                   <div className="flex items-center justify-end w-full">
                     {renderStars(course.average_rating)}
                     <span className="ml-2">
-                      {course.average_rating.toFixed(1)} rating
+                      {course.average_rating > 0
+                        ? `${course.average_rating.toFixed(1)} rating`
+                        : ""}
                     </span>
                   </div>
                 </Tag>
@@ -341,6 +402,10 @@ const ProfilePage: React.FC = () => {
 
   // Function to render stars based on rounded average rating
   const renderStars = (averageRating: number) => {
+    if (averageRating === 0) {
+      return <Text className="text-white text-lg">No rating</Text>;
+    }
+
     const roundedRating = Math.round(averageRating);
     return (
       <>
@@ -377,6 +442,7 @@ const ProfilePage: React.FC = () => {
           </Col>
           <Col span={8}>
             <Statistic
+            className="whitespace-nowrap"
               title="Teaching Minutes"
               value={instructorInfo.teachingHours}
               prefix={<ClockCircleOutlined />}
