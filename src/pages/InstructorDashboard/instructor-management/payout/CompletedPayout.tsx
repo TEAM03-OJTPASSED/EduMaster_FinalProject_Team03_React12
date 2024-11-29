@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card,  Input, Modal, Table, TableProps, Tooltip } from "antd";
+import { Button, Card, Input, Modal, Table, TableProps, Tooltip } from "antd";
 import { EyeFilled, SearchOutlined } from "@ant-design/icons";
 import PayoutService from "../../../../services/payout.service";
-import { GetPayoutRequest, Payout, PayoutStatusEnum } from "../../../../models/Payout.model";
+import {
+  GetPayoutRequest,
+  Payout,
+  PayoutStatusEnum,
+} from "../../../../models/Payout.model";
 import { moneyFormatter } from "../../../../utils/moneyFormatter";
 import TransactionListModal from "../../../../components/TransactionListModal";
 
 const CompletedPayout: React.FC = () => {
- 
   const [filteredPayouts, setFilteredPayouts] = useState<Payout[]>([]);
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [isOpenTransaction, setIsOpenTransaction] = useState(false);
@@ -15,12 +18,12 @@ const CompletedPayout: React.FC = () => {
     {} as Payout
   );
 
-  const initialParams : GetPayoutRequest = {
+  const initialParams: GetPayoutRequest = {
     searchCondition: {
       payout_no: "",
       instructor_id: "",
       status: PayoutStatusEnum.COMPLETED,
-      is_instructor:true,
+      is_instructor: true,
       is_delete: false,
     },
     pageInfo: {
@@ -33,20 +36,14 @@ const CompletedPayout: React.FC = () => {
     setIsOpenTransaction(true);
     setCurrentRequestPayout(item);
   };
-  
-
-  
-
 
   const fetchPayouts = async () => {
-    const response = await PayoutService.getPayout(initialParams); 
+    const response = await PayoutService.getPayout(initialParams);
     const payouts = response.data?.pageData || [];
     setFilteredPayouts(payouts);
   };
 
-
   useEffect(() => {
-    
     fetchPayouts();
   }, []);
 
@@ -61,7 +58,7 @@ const CompletedPayout: React.FC = () => {
       dataIndex: "balance_origin",
       key: "balance_origin",
       ellipsis: true,
-      align: 'right' as const,
+      align: "right" as const,
       render: (money: number) => moneyFormatter(money),
     },
     {
@@ -69,7 +66,7 @@ const CompletedPayout: React.FC = () => {
       dataIndex: "balance_instructor_paid",
       key: "balance_instructor_paid",
       ellipsis: true,
-      align: 'right' as const,
+      align: "right" as const,
       render: (money: number) => moneyFormatter(money),
     },
     {
@@ -77,7 +74,7 @@ const CompletedPayout: React.FC = () => {
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
       ellipsis: true,
-      align: 'right' as const,
+      align: "right" as const,
       render: (money: number) => moneyFormatter(money),
     },
     {
@@ -85,7 +82,7 @@ const CompletedPayout: React.FC = () => {
       dataIndex: "updated_at",
       key: "updated_at",
       ellipsis: true,
-      align: 'center' as const,
+      align: "center" as const,
       render: (date: string) => new Date(date).toLocaleString(),
     },
     {
@@ -98,13 +95,12 @@ const CompletedPayout: React.FC = () => {
         return (
           <div>
             <Tooltip title="View Details">
-            <Button
-              className="text-red-600"
-              icon={<EyeFilled />}
-              type="text"
-              onClick={() => handleViewTransaction(record)}
-            >
-            </Button>
+              <Button
+                className="text-red-600"
+                icon={<EyeFilled />}
+                type="text"
+                onClick={() => handleViewTransaction(record)}
+              ></Button>
             </Tooltip>
           </div>
         );
@@ -124,7 +120,9 @@ const CompletedPayout: React.FC = () => {
         onChange={(e) => setSearchKeyword(e.target.value)}
       />
       <Table
-        dataSource={filteredPayouts.filter((payout) => payout.payout_no.includes(searchKeyword))}
+        dataSource={filteredPayouts.filter((payout) =>
+          payout.payout_no.includes(searchKeyword)
+        )}
         columns={columns}
         pagination={{ pageSize: 5 }}
         rowKey="payout_no"

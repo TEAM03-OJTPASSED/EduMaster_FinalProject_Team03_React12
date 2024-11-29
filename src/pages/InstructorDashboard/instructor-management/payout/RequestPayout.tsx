@@ -62,7 +62,6 @@ const RequestPayout = () => {
   };
 
   const handleViewTransaction = (item: Payout) => {
-    console.log(item);
     setIsOpenTransaction(true);
     setCurrentRequestPayout(item);
   };
@@ -135,11 +134,10 @@ const RequestPayout = () => {
     },
     {
       title: "Transactions",
-      dataIndex: "view_transaction",
       key: "view_transaction",
       align: "center" as const,
       fixed: "right" as const,
-      render: (record: Payout) => {
+      render: (_: any, record: Payout) => {
         return (
           <div>
             <Tooltip title="View Details">
