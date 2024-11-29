@@ -188,7 +188,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="w-full h-18 flex items-center justify-between px-4 z-50 bg-white shadow-md relative">
+    <div className="w-full h-full flex items-center justify-between px-4 z-50 bg-white shadow-md relative">
       {!isSearchActive ? (
         <>
           <img

@@ -1,10 +1,10 @@
-// import React, { useEffect, useState } from "react";
+// import React, { useEffect, useMemo, useState } from "react";
 // import { useParams } from "react-router-dom";
 // import { Avatar, Input } from "antd";
 // import dayjs from "dayjs";
 // import { Message, MessageSearchParams } from "../../models/Message.model";
 // import MESSAGE_SERVICE from "../../services/message.service";
-// // import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
 
 // const { TextArea } = Input;
 
@@ -21,17 +21,18 @@
 // const MessageDetailPage: React.FC = () => {
 //   const { id } = useParams<{ id: string }>();
 //   // const id = "6712949129117a114223f294"
-//   const  [messageSearchParams]  =
-//     useState<MessageSearchParams>({
-//       receiver_id: "6710e1eba31f13a6d0a5e76a",
-//       content: "",
-//   });
+//   // const  [messageSearchParams]  =
+//   //   useState<MessageSearchParams>({
+//   //     receiver_id: "6710e1eba31f13a6d0a5e76a",
+//   //     content: "",
+//   // });
 
 //   // const [message, setMessage] = useState<Message>({} as Message);
 
 
 
-//   const [messages, setMessages] = useState<Message[]>([]);
+
+//   // const [messages, setMessages] = useState<Message[]>([]);
 //   // const messages = [
 //   //   ...listMessage
 //   //   // {
@@ -57,26 +58,25 @@
 //   // }, [id]);
 
 //   // Kết nối đến server khi component mount
-//   // useEffect(() => {
-//   //   const newSocket = io("https://edumaster-api-dev.vercel.app"); // Kết nối với server
-
-//   //   // Lắng nghe sự kiện từ server
-//   //   newSocket.on("connection", (data) => {
-//   //     console.log("Received from server:", data);
-//   //   });
-
-//   //   return () => {
-//   //     newSocket.disconnect(); // Ngắt kết nối khi component unmount
-//   //   };
-//   // }, []);
 //   useEffect(() => {
-//     const fetchData = async () => {
-//       const res = await MESSAGE_SERVICE.getMessages();
-//       setMessages(res.data?.listMessage || [])
-//     };
-//     fetchData();
-//   }, [messageSearchParams]);
+//     const newSocket = io("https://edumaster-api-dev.vercel.app"); // Kết nối với server
 
+//     // Lắng nghe sự kiện từ server
+//     newSocket.on("connection", (data) => {
+//       console.log("Received from server:", data);
+//     });
+
+//     return () => {
+//       newSocket.disconnect(); // Ngắt kết nối khi component unmount
+//     };
+//   }, []);
+//   // useEffect(() => {
+//   //   const fetchData = async () => {
+//   //     const res = await MESSAGE_SERVICE.getMessages();
+//   //     setMessages(res.data?.listMessage || [])
+//   //   };
+//   //   fetchData();
+//   // }, [messageSearchParams]);
 //   if (!user) {
 //     return <div>User not found</div>;
 //   }

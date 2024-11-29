@@ -9,8 +9,9 @@ import CreateCategoryModal from "../../components/Admin/AdminModals/CreateCatego
 import { Category, GetCategories } from "../../models/Category.model";
 import CategoryService from "../../services/category.service";
 import GlobalSearchUnit from "../../components/GlobalSearchUnit";
-import DeleteCategorieModal from "../../components/Admin/AdminModals/DeleteCategorieModal";
 import UpdateCategory from "../../components/Admin/AdminModals/UpdateCategoryModal";
+import DeleteItemModal from "../../components/DeleteItemModal";
+import { handleNotify } from "../../utils/handleNotify";
 
 const initialCategoriesParam: GetCategories = {
   pageInfo: {
@@ -67,9 +68,14 @@ const CategoryManagement = () => {
   };
 
   const handleDeleteConfirm = async (userId: string) => {
-    await CategoryService.deleteCategory(userId);
-    fetchCategories();
-    setDeleteModal(false);
+    const response = await CategoryService.deleteCategory(userId);
+    if (response.success) {
+      handleNotify(
+        "Category Deleted Successfully",
+        "The category has been deleted successfully."
+      );
+      fetchCategories();
+    }
   };
 
   const columns = [
@@ -79,16 +85,15 @@ const CategoryManagement = () => {
       key: "name",
     },
     {
-      title: "Parent Category",
-      dataIndex: "parent_cat",
-      key: "parent_cat",
-    },
-    {
       title: "Actions",
       key: "action",
       render: (record: any) => (
         <>
-          <Button type="text" icon={<EditOutlined style={{ color: "blue" }} />} onClick={() => handleEdit(record)} />
+          <Button
+            type="text"
+            icon={<EditOutlined style={{ color: "blue" }} />}
+            onClick={() => handleEdit(record)}
+          />
 
           <Button
             type="text"
@@ -120,7 +125,7 @@ const CategoryManagement = () => {
           variant="solid"
           color="primary"
           className="w-full md:w-auto ml-0 md:ml-auto"
-          style={{borderRadius: "15px"}}
+          style={{ borderRadius: "15px" }}
         >
           Add New Category
         </Button>
@@ -150,11 +155,12 @@ const CategoryManagement = () => {
         onClose={() => setCreateVisible(false)}
         onSave={fetchCategories}
       />
-      <DeleteCategorieModal
+      <DeleteItemModal
         visible={deleteModal}
         onCancel={() => setDeleteModal(false)}
         onDelete={() => handleDeleteConfirm(currentCategorie?._id!)}
-        userName={currentCategorie?.name || "Undefined User"}
+        itemName={currentCategorie?.name}
+        itemType="category" // Pass the type as 'category'
       />
       <UpdateCategory
         key={currentCategorie?._id}

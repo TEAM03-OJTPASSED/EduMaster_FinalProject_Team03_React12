@@ -1,7 +1,7 @@
 import { Button, Pagination } from "antd";
 import Search from "antd/es/input/Search";
 import { Content } from "antd/es/layout/layout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaBars } from "react-icons/fa";
 import { GrGrid } from "react-icons/gr";
 import CoursesGrid from "../home/CoursesGrid";
@@ -21,12 +21,19 @@ export const SearchResults: React.FC<{
   noResult: boolean;
   // onCourseSelected: (course: Course) => void;
 }> = ({ courses, onSearch, searchQuery, noResult }) => {
-  const [viewMode, setViewMode] = useState<"grid" | "list">("list");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const navigate = useCustomNavigate()
   const dispatch = useDispatch<AppDispatch>();
-
-
   const {currentUser} = useSelector((state : RootState) => state.auth.login)
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 776px)");
+    const handleResize = () => setViewMode("grid")
+    handleResize(); // Initial check
+    mediaQuery.addEventListener("change", handleResize); 
+
+    return () => mediaQuery.removeEventListener("change", handleResize); 
+  }, []);
 
 
   const onAddCart = async (course: Course) => {
@@ -34,15 +41,15 @@ export const SearchResults: React.FC<{
   };
   
   return (
-    <Content className="py-8 px-4 bg-white">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold">{searchQuery ? <span>Results for "<span className="font-bold">{searchQuery}</span>"</span>:"All Courses"}</h2>
-        <div className="flex items-center space-x-4">
+    <Content className=" sm:py-8 pb-8 pt-2 px-4 bg-white">
+      <div className="flex sm:flex-row flex-col  justify-between items-center mb-6">
+        <h2 className="text-2xl sm:mb-0 mb-12  font-semibold">{searchQuery ? <span>Results for "<span className="font-bold">{searchQuery}</span>"</span>:"All Courses"}</h2>
+        <div className="flex items-center justify-between space-x-4 w-full sm:w-[400px]">
           <Search
             placeholder={"Search"}
             defaultValue={searchQuery}
-            className=""
-            style={{ width: 200 }}
+            className="w-full"
+            
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 onSearch(e.currentTarget.value);

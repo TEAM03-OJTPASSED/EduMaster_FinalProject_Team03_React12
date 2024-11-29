@@ -17,12 +17,11 @@ import CategoriesGrid from "../components/home/CategoriesGrid";
 //   FaNetworkWired,
 // } from "react-icons/fa";
 import CoursesGrid from "../components/home/CoursesGrid";
-import CTABanner from "../components/home/CTABanner";
+// import CTABanner from "../components/home/CTABanner";
 import LatestArticles from "../components/home/LatestArticles";
 import { ProofOfProduct } from "../components/home/ProofOfProduct";
 import Search from "antd/es/input/Search";
 import { BiSolidArrowFromLeft } from "react-icons/bi";
-import { IoArrowUpOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store/store";
 import { Course } from "../models/Course.model";
@@ -153,12 +152,6 @@ const HomePage = () => {
     });
   });
 
-  const backToTop = () => {
-    document.documentElement.style.scrollBehavior = "smooth";
-    document.body.scrollTop = 0;
-    document.documentElement.scrollTop = 0;
-  };
-
   const { currentUser } = useSelector((state: RootState) => state.auth.login);
 
   const dispatch = useDispatch<AppDispatch>();
@@ -170,15 +163,6 @@ const HomePage = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="flex-col flex items-center">
-        <div className="w-4 h-4 rounded-full bg-orange-500 bottom-32 right-8 fixed z-50"></div>
-        <div className="w-4 h-4 rounded-full bg-orange-500 bottom-[100px] right-8 fixed z-50"></div>
-        <button onClick={backToTop}>
-          <div className=" w-12 h-12 rounded-full bottom-10 right-4 hover:scale-110 transition duration-500 bg-orange-500 fixed justify-center flex items-center z-50">
-            <IoArrowUpOutline size={36} color="white" />
-          </div>
-        </button>
-      </div>
       {/* <div className="flex flex-col md:flex-row gap-4">
         <button
           className="px-4 py-2 bg-yellow-500 text-white rounded-md w-full md:w-auto"
@@ -200,17 +184,17 @@ const HomePage = () => {
         </button>
       </div> */}
       <main className="w-full text-left overflow-visible font-jost ">
-        <section className="relative lg:h-[400px] font-jost h-[300px] w-[115vw] -ml-[15vw] flex justify-center items-center flex-col space-y-4 shadow-2xl shadow-orange-300  bg-black overflow-y-hidden">
+        <section className="relative lg:h-[400px] font-jost h-[300px] w-[115vw] -ml-[10vw] lg:-ml-[15vw] flex justify-center items-center flex-col space-y-4 shadow-2xl shadow-orange-300  bg-black overflow-y-hidden">
           <img
-            className=" w-[115vw] absolute xs:-top-36  object-bottom brightness-75 float-animation show "
+            className=" xs:w-[115vw] min-h-[300px] xs:h-auto absolute xs:-top-36 object-cover xs:object-bottom brightness-75 float-animation show "
             src={heroImage}
             alt="Hero"
           />
-          <div className="z-40 text-white text-4xl lg:text-5xl font-semibold w-[500px] text-center font-exo">
+          <div className="z-40 text-white text-3xl sm:text-4xl lg:text-5xl font-semibold w-[320px] xs:w-[400px] sm:w-[500px] text-center font-exo">
             Elevate Your Skills With{" "}
             <span className="underline">Online Courses</span>
           </div>
-          <div className="z-40 w-[400px] text-white text-center italic">
+          <div className="z-40 w-[320px] xs:w-[400px] text-white text-center italic">
             "All the courses you need, all in one place." Get started today to
             unlock your hidden potential!
           </div>
@@ -221,25 +205,24 @@ const HomePage = () => {
             placeholder="Search for any course..."
             onSearch={(e) => navigate(`course?search=${e}`)}
             enterButton
-            className="w-96 custom-search"
+            className=" w-64 sm:w-96 custom-search"
           />
         </section>
 
         <section className="float-animation show">
           <div className="py-12">
             <div className="container mx-auto px-4">
-              <div className="flex justify-between items-center mb-8">
+              <div className="flex sm:flex-row flex-col  justify-between items-center mb-8">
                 <div>
-                  <h2 className="text-2xl lg:text-4xl font-bold text-gray-800">
+                  <h2 className="text-2xl mb-2 sm:mb-0 lg:text-4xl font-bold text-gray-800">
                     Featured Categories
                   </h2>
-                  <p className="text-gray-600 mt-2">
-                    Explore our Popular Categories
-                  </p>
+                  <a  href="/course"   onClick={() => navigate("/course")} className="text-orange-600 cursor-pointer underline sm:no-underline sm:text-gray-600">Explore our Popular Categories </a>
+
                 </div>
                 <Button
                   type="default"
-                  className="group hover:bg-orange-500 hover:text-white text-base transition-colors py-6 px-6 rounded-3xl font-jost"
+                  className="group hover:bg-orange-500 sm:flex hidden hover:text-white text-base transition-colors py-6 px-6 rounded-3xl font-jost"
                   style={{
                     backgroundColor: "#0f0f0f",
                     color: "white",
@@ -252,7 +235,7 @@ const HomePage = () => {
               </div>
               <CategoriesGrid categories={categories} />
             </div>
-            <p className="text-gray-600 mt-12 text-2xl mx-auto text-center w-full italic font-semibold ">
+            <p className="text-gray-600 mt-12 sm:text-2xl mx-auto text-center w-full italic font-semibold ">
               ...and many more to come!
             </p>
           </div>
@@ -261,20 +244,19 @@ const HomePage = () => {
         <section className="float-animation">
           <div className="py-12 pt-0">
             <div className="container mx-auto px-4">
-              <div className="flex justify-between items-center mb-8">
+              <div className="flex sm:flex-row flex-col  justify-between items-center mb-8">
                 <div>
-                  <h2 className="text-2xl lg:text-4xl font-bold text-gray-800">
+                  <h2 className="text-2xl mb-2 sm:mb-0 lg:text-4xl font-bold text-gray-800">
                     Featured Courses
                   </h2>
-                  <p className="text-gray-600 mt-2">
-                    Explore our Popular Courses
-                  </p>
+                  <a  href="/course"   onClick={() => navigate("/course")} className="text-orange-600 cursor-pointer underline sm:no-underline sm:text-gray-600">Explore our Popular Courses </a>
+
                 </div>
 
                 <Button
                   onClick={() => navigate("/course")}
                   type="default"
-                  className="group hover:bg-orange-500 hover:text-white text-base transition-colors py-6 px-6 rounded-3xl font-jost"
+                  className="group hidden  sm:flex  hover:bg-orange-500 hover:text-white text-base transition-colors py-6 px-6 rounded-3xl font-jost"
                   style={{
                     backgroundColor: "#0f0f0f",
                     color: "white",
@@ -306,9 +288,9 @@ const HomePage = () => {
           <ProofOfProduct />
         </section>
 
-        <section className="float-animation">
+        {/* <section className="float-animation">
           <CTABanner />
-        </section>
+        </section> */}
 
         <section className="float-animation">
           <LatestArticles blogs={blogs} />

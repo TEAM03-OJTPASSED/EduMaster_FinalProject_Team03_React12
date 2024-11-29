@@ -38,15 +38,15 @@ const LatestArticles = ({ blogs }: { blogs: Blog[]}) => {
   return (
     <div className="py-12">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex sm:flex-row flex-col justify-between items-center mb-8">
           <div>
             <h2 className="text-2xl lg:text-4xl font-bold mb-2">Latest Articles</h2>
-            <p className="text-gray-600">Explore our Free Articles</p>
+            <p   onClick={() => navigate("/blog")} className="text-orange-600 cursor-pointer underline sm:no-underline sm:text-gray-600">Explore our Free Articles </p>
           </div>
           <Button
                   onClick={() => navigate("/blog")}
                   type="default"
-                  className="group hover:bg-orange-500 hover:text-white text-base transition-colors py-6 px-6 rounded-3xl font-jost"
+                  className="group hidden  sm:flex  hover:bg-orange-500 hover:text-white text-base transition-colors py-6 px-6 rounded-3xl font-jost"
                   style={{
                     backgroundColor: "#0f0f0f",
                     color: "white",

@@ -1,9 +1,7 @@
 // createCategory.tsx
-import { Modal, Form, Input, Select, Button } from "antd";
+import { Modal, Form, Input, Button } from "antd";
 import { FC } from "react";
 import CategoryService from "../../../services/category.service";
-
-const { Option } = Select;
 
 interface CreateCategoryProps {
   visible: boolean;
@@ -45,15 +43,12 @@ const CreateCategory: FC<CreateCategoryProps> = ({
         <Form.Item label="Description" name="description">
           <Input.TextArea placeholder="Enter description" rows={3} />
         </Form.Item>
-
-        <Form.Item label="Parent Category" name="parent_category_id">
-          <Select placeholder="Select a parent category">
-            <Option value="parent1">N/A</Option>
-            <Option value="parent2">Music</Option>
-          </Select>
-        </Form.Item>
         <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
-          <Button type="primary" htmlType="submit" style={{ float: "right", borderRadius: "15px" }}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            style={{ float: "right", borderRadius: "15px" }}
+          >
             Add
           </Button>
         </Form.Item>

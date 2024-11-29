@@ -9,13 +9,17 @@ import {
 import dayjs from "dayjs";
 
 import SessionOptions from "./create-courses/SessionOptions";
-import { GetSessions, Session, SessionRequest } from "../../../models/Session.model";
+import {
+  GetSessions,
+  Session,
+  SessionRequest,
+} from "../../../models/Session.model";
 import { Course, GetCourses } from "../../../models/Course.model";
 import SessionService from "../../../services/session.service";
 import CourseService from "../../../services/course.service";
 import { handleNotify } from "../../../utils/handleNotify";
 import GlobalSearchUnit from "../../../components/GlobalSearchUnit";
-
+import DeleteItemModal from "../../../components/DeleteItemModal";
 
 const initialCoursesParams: GetCourses = {
   pageInfo: {
@@ -26,8 +30,8 @@ const initialCoursesParams: GetCourses = {
     keyword: "",
     is_deleted: false,
     category_id: "",
-  }
-}
+  },
+};
 
 const initialSessionsParams: GetSessions = {
   pageInfo: {
@@ -39,16 +43,19 @@ const initialSessionsParams: GetSessions = {
     is_deleted: false,
     is_position_order: true,
     course_id: "",
-  }
-}
+  },
+};
 
 const InstructorSessionList = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
   const [isModalCreateVisible, setIsModalCreateVisible] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
   const [listCourses, setListCourses] = useState<Course[]>([]);
   const [listSessions, setListSessions] = useState<Session[]>([]);
-  const [searchParams, setSearchParams] = useState<GetSessions>(initialSessionsParams)
+  const [searchParams, setSearchParams] = useState<GetSessions>(
+    initialSessionsParams
+  );
 
   const showModal = (session: Session) => {
     setSelectedSession(null); // Reset the selected session first
@@ -67,17 +74,13 @@ const InstructorSessionList = () => {
   };
 
   const fetchCourses = async () => {
-    
-    
-      const response = await CourseService.getCourses(initialCoursesParams);
-      setListCourses(response?.data?.pageData ?? []);
+    const response = await CourseService.getCourses(initialCoursesParams);
+    setListCourses(response?.data?.pageData ?? []);
   };
 
   const fetchSessions = async () => {
-     
-    
-      const response = await SessionService.getSessions(searchParams);
-      setListSessions(response?.data?.pageData ?? []);
+    const response = await SessionService.getSessions(searchParams);
+    setListSessions(response?.data?.pageData ?? []);
   };
 
   const handleCreateSession = async (values: SessionRequest) => {
@@ -86,61 +89,66 @@ const InstructorSessionList = () => {
       ...otherValues,
       position_order: position_order ? Number(position_order) : 0,
     };
-  
-    
-    
-      const response = await SessionService.createSession(numericValues);
-      if (response.success) {
-        handleCancel(); // Close modal if successful
-        handleNotify("Session Created Successfully", "The session has been created successfully.");
-        await fetchSessions(); // Refresh the course list
-      }
+
+    const response = await SessionService.createSession(numericValues);
+    if (response.success) {
+      handleCancel(); // Close modal if successful
+      handleNotify(
+        "Session Created Successfully",
+        "The session has been created successfully."
+      );
+      await fetchSessions(); // Refresh the course list
+    }
   };
 
-
   const handleUpdateSession = async (updatedSession: SessionRequest) => {
-    
-    
-      if (selectedSession) {
-        const response = await SessionService.updateSession(selectedSession._id, updatedSession);
-        if (response.success) {
-          handleNotify("Session Updated Successfully", "The session has been updated successfully.");
-          await fetchSessions(); // Refresh the course list
-        }
-      }
-  }
-
-  const handleDeleteSession = async (sessionId: string) => {
-    
-    
-      const response = await SessionService.deleteSession(sessionId);
+    if (selectedSession) {
+      const response = await SessionService.updateSession(
+        selectedSession._id,
+        updatedSession
+      );
       if (response.success) {
-        handleNotify("Session Deleted Successfully", "The Session has been deleted successfully.");
+        handleNotify(
+          "Session Updated Successfully",
+          "The session has been updated successfully."
+        );
         await fetchSessions(); // Refresh the course list
       }
-  }
+    }
+  };
+
+  const handleDeleteSession = async (sessionId: string) => {
+    const response = await SessionService.deleteSession(sessionId);
+    if (response.success) {
+      handleNotify(
+        "Session Deleted Successfully",
+        "The Session has been deleted successfully."
+      );
+      await fetchSessions(); // Refresh the course list
+    }
+    setDeleteModal(false);
+  };
 
   const handleSearch = (values: Record<string, any>) => {
-    console.log(values)
+    console.log(values);
     setSearchParams({
       pageInfo: searchParams.pageInfo,
       searchCondition: {
         ...searchParams.searchCondition, // Spread existing searchCondition fields
         course_id: values.course_id,
         keyword: values.keyword,
-      }
+      },
     });
   };
-
 
   useEffect(() => {
     fetchCourses(); // Call the async function
     fetchSessions(); // Call the async function
-  },[]);
+  }, []);
 
   useEffect(() => {
     fetchSessions();
-  },[searchParams]); //update based on search params
+  }, [searchParams]); //update based on search params
 
   // filter sessions usefx
   // useEffect(() => {
@@ -172,12 +180,19 @@ const InstructorSessionList = () => {
       dataIndex: "course_name",
       key: "course_name",
       ellipsis: true,
-      render: (text:string) => (
-        <span style={{ maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-block' }}>
+      render: (text: string) => (
+        <span
+          style={{
+            maxWidth: 150,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            display: "inline-block",
+          }}
+        >
           {text}
         </span>
       ),
-
     },
     {
       title: "Created At",
@@ -204,11 +219,13 @@ const InstructorSessionList = () => {
             />
           </Tooltip>
           <Tooltip title="Delete" className="!font-jost">
-
             <Button
               type="text"
               icon={<DeleteFilled style={{ color: "red" }} />}
-              onClick={() => handleDeleteSession(record._id)}
+              onClick={() => {
+                setSelectedSession(record);
+                setDeleteModal(true);
+              }}
             />
           </Tooltip>
         </div>
@@ -216,42 +233,24 @@ const InstructorSessionList = () => {
     },
   ];
 
-  
-
   return (
     <Card>
       <h3 className="text-2xl my-5">Session Management</h3>
       <div className="flex justify-between overflow-hidden">
-          <GlobalSearchUnit 
+        <GlobalSearchUnit
           onSubmit={handleSearch}
           placeholder="Search By Session Name"
           selectFields={[
             {
               name: "course_id",
-              options: listCourses.map((course) => ({label: course.name, value: course._id})),
-              placeholder: "Filter by Course"
-            }
+              options: listCourses.map((course) => ({
+                label: course.name,
+                value: course._id,
+              })),
+              placeholder: "Filter by Course",
+            },
           ]}
-          />
-        {/* <Input
-          placeholder="Search By Session Name"
-          prefix={<SearchOutlined />}
-          style={{ width: "80%", marginBottom: "20px", borderRadius: "4px" }}
-          // onChange={(e) => setSearchText(e.target.value)}
         />
-        <Select
-          allowClear
-          placeholder="Filter By Course"
-          className="w-48"
-          onChange={handleCourseChange}
-          value={selectedCourse}
-        >
-          {listCourses.map(course => (
-            <Select.Option key={course._id} value={String(course._id)}>
-              {course.name}
-            </Select.Option>
-          ))}
-        </Select> */}
         <div className="flex">
           <Button
             onClick={showModalCreate}
@@ -303,15 +302,22 @@ const InstructorSessionList = () => {
         footer={null}
         forceRender
         width={1000}
-        destroyOnClose={true} 
+        destroyOnClose={true}
       >
         <SessionOptions
-          key={isModalCreateVisible ? 'create-new' : 'create'} 
+          key={isModalCreateVisible ? "create-new" : "create"}
           listCourses={listCourses}
           mode="create"
           onFinish={handleCreateSession}
         />
       </Modal>
+      <DeleteItemModal
+        visible={deleteModal}
+        onCancel={() => setDeleteModal(false)}
+        onDelete={() => handleDeleteSession(selectedSession?._id!)}
+        itemName={selectedSession?.name}
+        itemType="Lesson" // Pass the type as 'category'
+      />
     </Card>
   );
 };

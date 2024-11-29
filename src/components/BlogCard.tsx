@@ -1,7 +1,6 @@
 import { Button, Card, Tag } from "antd";
 import { AiOutlineCalendar } from "react-icons/ai";
 import { BiCategory } from "react-icons/bi";
-import { TiUserOutline } from "react-icons/ti";
 import { Blog } from "../models/Blog.model";
 import dayjs from "dayjs";
 import { useCustomNavigate } from "../hooks/customNavigate";
@@ -60,13 +59,17 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog, viewMode }) => {
               <AiOutlineCalendar className="mr-1 text-orange-500" size={18} />
               {dayjs(blog.created_at).format("DD/MM/YYYY")}
             </span>
-            <span className="flex items-center justify-end">
+            {/* <span className="flex items-center justify-end">
               <TiUserOutline className="mr-1 text-orange-500" size={20} />
               {blog.user_name}
-            </span>
-            <span className="flex items-center">
-              <BiCategory className="mr-1 text-orange-500" size={18} />
-              {blog.description}
+            </span> */}
+            <span
+              className="flex items-center"
+            >
+              <BiCategory className="mr-1 text-orange-500 flex-shrink-0" size={18} />
+              <span className="overflow-hidden overflow-ellipsis whitespace-nowrap">   
+                {blog.description}
+              </span>
             </span>
           </div>
 

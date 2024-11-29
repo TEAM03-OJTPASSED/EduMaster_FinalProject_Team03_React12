@@ -1,7 +1,7 @@
 import { Button, Pagination } from "antd";
 import Search from "antd/es/input/Search";
 import { Content } from "antd/es/layout/layout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaBars } from "react-icons/fa";
 import { GrGrid } from "react-icons/gr";
 import BlogsGrid from "../home/BlogsGrid";
@@ -17,36 +17,48 @@ export const SearchResults: React.FC<{
   searchQuery?: string;
   noResult: boolean;
 }> = ({ blogs, onSearch, searchQuery, noResult }) => {
-  const [viewMode, setViewMode] = useState<"grid" | "list">("list");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 776px)");
+    const handleResize = () => setViewMode("grid")
+    handleResize(); // Initial check
+    mediaQuery.addEventListener("change", handleResize); 
+
+    return () => mediaQuery.removeEventListener("change", handleResize); 
+  }, []);
 
   return (
-    <Content className="py-8 px-4 bg-white">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">All Blogs</h2>
-        <div className="flex items-center space-x-4">
+    <Content className=" sm:py-8 pb-8 pt-2 px-4 bg-white">
+      <div className="flex sm:flex-row flex-col  justify-between items-center mb-6">
+        <h2 className="text-2xl sm:mb-0 mb-12  font-semibold">{searchQuery ? <span>Results for "<span className="font-bold">{searchQuery}</span>"</span>:"All Blogs"}</h2>
+        <div className="flex items-center justify-between space-x-4 w-full sm:w-[400px]">
           <Search
             placeholder={"Search"}
             defaultValue={searchQuery}
-            style={{ width: 200 }}
+            className="w-full"
+            
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 onSearch(e.currentTarget.value);
               }
             }}
-            onSearch={(e) => {
-              onSearch(e);
-            }}
+            onSearch={(e) => {           
+                onSearch(e);
+              }
+            }
           />
           <Button
             icon={<GrGrid />}
             onClick={() => setViewMode("grid")}
             type={viewMode === "grid" ? "primary" : "default"}
-            className=" md:inline-block hidden"
+            className="view-button"
           />
           <Button
             icon={<FaBars />}
             onClick={() => setViewMode("list")}
             type={viewMode === "list" ? "primary" : "default"}
+            className=" md:inline-block hidden view-button"
           />
         </div>
       </div>

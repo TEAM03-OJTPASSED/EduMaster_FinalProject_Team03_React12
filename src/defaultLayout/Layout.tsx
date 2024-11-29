@@ -3,6 +3,8 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { FaComments } from "react-icons/fa";
 import { useCustomNavigate } from "../hooks/customNavigate";
+import { IoArrowUpOutline } from "react-icons/io5";
+
 const GeneralLayout = () => {
   const navigate = useCustomNavigate();
   
@@ -28,6 +30,12 @@ const GeneralLayout = () => {
   //   };
   // }, [lastScrollY]);
 
+  const backToTop = () => {
+    document.documentElement.style.scrollBehavior = "smooth";
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  };
+
   return (
     <div className="div">
       {/* Navbar section */}
@@ -50,19 +58,28 @@ const GeneralLayout = () => {
       </div>
 
       {/* Fixed Chat Bubbles */}
-      <div className="fixed bottom-4 left-4 flex flex-col gap-4">
+      <div className="fixed bottom-4 left-4 flex flex-col gap-2 sm:gap-4">
         {/* Zalo Chat */}
         <a
           href="https://id.zalo.me/account?continue=https%3A%2F%2Fchat.zalo.me%2F"
           target="_blank"
           rel="noopener noreferrer"
-          className="bg-blue-500 text-white p-4 rounded-full shadow-lg flex items-center justify-center"
+          className="bg-blue-500 text-white py-3 sm:p-4 rounded-full shadow-lg flex items-center justify-center"
         >
-          <span className="font-bold text-lg">Zalo</span>
+          <span className="font-bold text-sm sm:text-lg">Zalo</span>
         </a>
         {/* Instructor Chat */}
-        <button className="bg-green-500 text-white p-4 rounded-full shadow-lg flex items-center justify-center" onClick={()=>{navigate("/message")}}>
-          <FaComments size={24} />
+        <button className="bg-green-500 text-white p-3 rounded-full shadow-lg flex items-center justify-center" onClick={()=>{navigate("/message")}}>
+          <FaComments size={24} className=" hidden sm:block" />
+          <FaComments size={18} className=" sm:hidden" />
+
+        </button>
+        <button onClick={backToTop}>
+          <div className=" sm:w-12 sm:h-12 w-8 h-8 rounded-full bottom-10 right-2 sm:right-4 hover:scale-110 transition duration-500 bg-orange-500 fixed justify-center flex items-center z-50">
+            <IoArrowUpOutline size={36} color="white" className=" hidden sm:block" />
+            <IoArrowUpOutline size={22} color="white" className=" sm:hidden " />
+
+          </div>
         </button>
       </div>
     </div>

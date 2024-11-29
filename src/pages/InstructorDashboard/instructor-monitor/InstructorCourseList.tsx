@@ -27,6 +27,7 @@ import { GetReviews, Review } from "../../../models/Review.model";
 import ReviewModal from "../../../components/Instructor/ReviewModal";
 import { moneyFormatter } from "../../../utils/moneyFormatter";
 import { BiSolidComment } from "react-icons/bi";
+import DeleteItemModal from "../../../components/DeleteItemModal";
 
 const initialCoursesParams: GetCourses = {
   pageInfo: {
@@ -66,9 +67,9 @@ const reviewsParam: GetReviews = {
 const InstructorCourseList: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalReviewVisible, setIsModalReviewVisible] = useState(false);
-
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [isModalCreateVisible, setIsModalCreateVisible] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
   const [listCourses, setListCourses] = useState<Course[]>([]);
   const [listCategories, setListCategories] = useState<Category[]>([]);
   const [listReviews, setListReviews] = useState<Review[]>([]);
@@ -170,6 +171,7 @@ const InstructorCourseList: React.FC = () => {
       );
       await fetchCourses();
     }
+    setDeleteModal(false);
   };
 
   const handleUpdateCourse = async (updatedCourse: CourseRequest) => {
@@ -293,9 +295,7 @@ const InstructorCourseList: React.FC = () => {
       dataIndex: "price",
       key: "price",
       render: (price: number) => (
-        <div className="text-right">
-          {moneyFormatter(price)}
-        </div>
+        <div className="text-right">{moneyFormatter(price)}</div>
       ),
       align: "right" as const,
     },
@@ -305,9 +305,7 @@ const InstructorCourseList: React.FC = () => {
       key: "discount",
       align: "right" as const,
       render: (discount: number) => (
-        <div className="text-red-500 text-right">
-         {discount}%
-        </div>
+        <div className="text-red-500 text-right">{discount}%</div>
       ),
     },
     {
@@ -349,31 +347,33 @@ const InstructorCourseList: React.FC = () => {
             />
           </Tooltip>
           <Tooltip title="Delete" className="!font-jost">
-
             <Button
               type="text"
               icon={<DeleteFilled style={{ color: "red" }} />}
-              onClick={() => handleDeleteCourse(record._id)}
+              onClick={() => {
+                setSelectedCourse(record);
+                setDeleteModal(true);
+              }}
             />
           </Tooltip>
 
           {record.status == CourseStatusEnum.NEW && (
             <Tooltip title="Request Approval">
-            <Button
-              type="text"
-              icon={<RocketFilled style={{ color: "green" }} />}
-              onClick={() => handleSendToAdmin(record)}
-              disabled={
-                record.status !== CourseStatusEnum.NEW &&
-                record.status !== CourseStatusEnum.REJECT
-              }
-              aria-label={
-                record.status !== CourseStatusEnum.NEW &&
-                record.status !== CourseStatusEnum.REJECT
-                  ? "Can only send NEW or REJECT courses"
-                  : "Send to admin for approval"
-              }
-            />
+              <Button
+                type="text"
+                icon={<RocketFilled style={{ color: "green" }} />}
+                onClick={() => handleSendToAdmin(record)}
+                disabled={
+                  record.status !== CourseStatusEnum.NEW &&
+                  record.status !== CourseStatusEnum.REJECT
+                }
+                aria-label={
+                  record.status !== CourseStatusEnum.NEW &&
+                  record.status !== CourseStatusEnum.REJECT
+                    ? "Can only send NEW or REJECT courses"
+                    : "Send to admin for approval"
+                }
+              />
             </Tooltip>
           )}
           {record.status !== CourseStatusEnum.NEW &&
@@ -382,7 +382,13 @@ const InstructorCourseList: React.FC = () => {
               <Tooltip title="See reviews" className="!font-jost">
                 <Button
                   type="text"
-                  icon={<BiSolidComment fill="orange" style={{ color: "orange" }} className=""/>}
+                  icon={
+                    <BiSolidComment
+                      fill="orange"
+                      style={{ color: "orange" }}
+                      className=""
+                    />
+                  }
                   onClick={() => handleSeeReviews(record._id)}
                   aria-label={"See reviews"}
                 />
@@ -486,7 +492,7 @@ const InstructorCourseList: React.FC = () => {
         footer={null}
         width={1000}
         forceRender
-        destroyOnClose={true} 
+        destroyOnClose={true}
       >
         <CourseOption
           key={isModalCreateVisible ? "create-new" : "create"} // Add key prop to force remount
@@ -495,6 +501,14 @@ const InstructorCourseList: React.FC = () => {
           categories={listCategories}
         />
       </Modal>
+
+      <DeleteItemModal
+        visible={deleteModal}
+        onCancel={() => setDeleteModal(false)}
+        onDelete={() => handleDeleteCourse(selectedCourse?._id!)}
+        itemName={selectedCourse?.name}
+        itemType="Course" // Pass the type as 'category'
+      />
 
       <ReviewModal
         reviews={listReviews}

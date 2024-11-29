@@ -66,7 +66,7 @@ const CourseCard: React.FC<{
                   viewMode === "list"
                     ? "min-w-[200px]  w-[200px] md:min-w-[250px] md:w-[250px]"
                     : "w-full"
-                } h-56 object-cover`}
+                } h-40 sm:h-56 object-cover`}
               />
               <Tag className="absolute top-2 left-2 bg-black text-white">
                 {course.category_name}
@@ -104,7 +104,7 @@ const CourseCard: React.FC<{
                   className="mr-1 text-orange-500"
                   size={18}
                 />
-                {course.full_time} Hours
+                {Math.ceil(course.full_time/60)} Hours
               </span>
               <span className="flex items-center justify-end text-left">
                 <FaStar className="mr-1 text-yellow-400" size={20} />
@@ -118,7 +118,7 @@ const CourseCard: React.FC<{
             </div>
 
             <div className="flex justify-between items-center">
-              <span className="text-lg font-bold text-orange-500">
+              <span className="text-base sm:text-lg font-bold text-orange-500">
                 {typeof course.price === "number"
                   ? moneyFormatter(course.price)
                   : course.price}
