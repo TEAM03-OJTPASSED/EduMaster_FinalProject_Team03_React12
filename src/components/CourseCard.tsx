@@ -66,7 +66,7 @@ const CourseCard: React.FC<{
                   viewMode === "list"
                     ? "min-w-[200px]  w-[200px] md:min-w-[250px] md:w-[250px]"
                     : "w-full"
-                } h-56 object-cover`}
+                } h-40 sm:h-56 object-cover`}
               />
               <Tag className="absolute top-2 left-2 bg-black text-white">
                 {course.category_name}
@@ -118,7 +118,7 @@ const CourseCard: React.FC<{
             </div>
 
             <div className="flex justify-between items-center">
-              <span className="text-lg font-bold text-orange-500">
+              <span className="text-base sm:text-lg font-bold text-orange-500">
                 {typeof course.price === "number"
                   ? moneyFormatter(course.price)
                   : course.price}
