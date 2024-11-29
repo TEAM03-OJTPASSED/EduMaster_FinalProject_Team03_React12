@@ -46,7 +46,7 @@ const LatestArticles = ({ blogs }: { blogs: Blog[]}) => {
           <Button
                   onClick={() => navigate("/blog")}
                   type="default"
-                  className="group hidden sm:inline-block hover:bg-orange-500 hover:text-white text-base transition-colors py-6 px-6 rounded-3xl font-jost"
+                  className="group hidden  sm:flex  hover:bg-orange-500 hover:text-white text-base transition-colors py-6 px-6 rounded-3xl font-jost"
                   style={{
                     backgroundColor: "#0f0f0f",
                     color: "white",

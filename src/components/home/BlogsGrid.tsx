@@ -102,7 +102,8 @@ export default function BlogsGrid({ viewMode, blogs }: BlogsGridProps) {
             xs={24}
             sm={viewMode === "list" ? 24 : 12}
             md={viewMode === "list" ? 24 : 12}
-            lg={viewMode === "list" ? 24 : 8}
+            lg={viewMode === "list" ? 24 : 12}
+            xl={viewMode === "list" ? 24 : 8}
           >
             <BlogCardSkeleton viewMode={viewMode} />
           </Col>
@@ -113,7 +114,8 @@ export default function BlogsGrid({ viewMode, blogs }: BlogsGridProps) {
           xs={24}
           sm={viewMode === "list" ? 24 : 12}
           md={viewMode === "list" ? 24 : 12}
-          lg={viewMode === "list" ? 24 : 8}
+          lg={viewMode === "list" ? 24 : 12}
+          xl={viewMode === "list" ? 24 : 8}
           key={blog._id}
         >
           <BlogCard blog={blog} viewMode={viewMode} />

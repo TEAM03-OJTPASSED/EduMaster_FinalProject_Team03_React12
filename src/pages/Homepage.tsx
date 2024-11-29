@@ -222,7 +222,7 @@ const HomePage = () => {
                 </div>
                 <Button
                   type="default"
-                  className="group hover:bg-orange-500 sm:inline-block hidden hover:text-white text-base transition-colors py-6 px-6 rounded-3xl font-jost"
+                  className="group hover:bg-orange-500 sm:flex hidden hover:text-white text-base transition-colors py-6 px-6 rounded-3xl font-jost"
                   style={{
                     backgroundColor: "#0f0f0f",
                     color: "white",
@@ -256,7 +256,7 @@ const HomePage = () => {
                 <Button
                   onClick={() => navigate("/course")}
                   type="default"
-                  className="group hidden sm:inline-block hover:bg-orange-500 hover:text-white text-base transition-colors py-6 px-6 rounded-3xl font-jost"
+                  className="group hidden  sm:flex  hover:bg-orange-500 hover:text-white text-base transition-colors py-6 px-6 rounded-3xl font-jost"
                   style={{
                     backgroundColor: "#0f0f0f",
                     color: "white",
