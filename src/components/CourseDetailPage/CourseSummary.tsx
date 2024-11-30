@@ -3,8 +3,8 @@ import {
   MdAccountCircle,
   MdInsertChart,
   MdAutoStories,
-  MdQuestionMark,
 } from "react-icons/md";
+import { capitalizeFirstLetter } from "../../utils/capitalize";
 
 type Props = {
   time: number;
@@ -17,30 +17,28 @@ export const CourseSummary = ({
   time,
   student,
   level,
-  lessons,
-  quizzes,
+  lessons
 }: Props) => {
   return (
-    <div className="flex gap-5">
-      <div className="flex items-center font-jost font-light gap-2">
+    <div className="absolute w-full mt-4 lg:text-xl bg-white flex shadow-lg py-4 lg:px-8 rounded-lg justify-center">
+      <div className="w-1/4 flex lg:flex-row flex-col items-center justify-center font-jost font-light gap-2 lg:px-4">
         <MdOutlineAccessTimeFilled height={16} fill="#FF782D" />
-        {time} Weeks
+        {Math.ceil(time / 60)} Hours
       </div>
-      <div className="flex items-center font-jost font-light gap-2">
+      <div className="w-[1px] h-full bg-slate-200 min-h-[45px] min-w-[1px]"></div>
+      <div className="w-1/4 flex lg:flex-row flex-col items-center justify-center font-jost font-light gap-2 lg:px-4">
         <MdAccountCircle height={16} fill="#FF782D" />
         {student} Students
       </div>
-      <div className="flex items-center font-jost font-light gap-2">
+      <div className="w-[1px] h-full bg-slate-200 min-h-[45px] min-w-[1px]"></div>
+      <div className="w-1/4 flex lg:flex-row flex-col items-center justify-center font-jost font-light gap-2 lg:px-4">
         <MdInsertChart height={16} fill="#FF782D" />
-        {level} levels
+        {capitalizeFirstLetter(level)} <span className="lg:block hidden">levels</span>
       </div>
-      <div className="flex items-center font-jost font-light gap-2">
+      <div className="w-[1px] h-full bg-slate-200 min-h-[45px] min-w-[1px]"></div>
+      <div className="w-1/4 flex lg:flex-row flex-col items-center justify-center font-jost font-light gap-2">
         <MdAutoStories height={16} fill="#FF782D" />
         {lessons} Lessons
-      </div>
-      <div className="flex items-center font-jost font-light gap-2">
-        <MdQuestionMark height={16} fill="#FF782D" />
-        {quizzes} Quizzes
       </div>
     </div>
   );

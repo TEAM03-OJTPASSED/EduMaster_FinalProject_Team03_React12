@@ -8,32 +8,26 @@ const DynamicBreadcrumb: React.FC = () => {
     .split("/")
     .filter((segment) => segment); // Tách đường dẫn thành các phần
 
-  // Hàm xử lý các đoạn segment để chuyển đổi 'Request-management' thành 'Request Management'
   const formatSegment = (segment: string) => {
     return segment
-      .split("-") // Tách chuỗi bằng dấu "-"
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Viết hoa chữ cái đầu
-      .join(" "); // Nối lại thành chuỗi với dấu cách
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   };
 
-  return (
-    <Breadcrumb style={{ margin: "16px 0" }}>
-      <Breadcrumb.Item>
-        <Link to="/">Home</Link> {/* Trang chính */}
-      </Breadcrumb.Item>
-      {pathSegments.map((segment, index) => {
-        const path = `/${pathSegments.slice(0, index + 1).join("/")}`;
-        return (
-          <Breadcrumb.Item key={path}>
-            <Link to={path}>
-              {formatSegment(segment)}{" "}
-              {/* Gọi hàm formatSegment để định dạng */}
-            </Link>
-          </Breadcrumb.Item>
-        );
-      })}
-    </Breadcrumb>
-  );
+  const breadcrumbItems = [
+    {
+      title: <Link to="/">Home</Link>, // Trang chính
+    },
+    ...pathSegments.map((segment, index) => {
+      const path = `/${pathSegments.slice(0, index + 1).join("/")}`;
+      return {
+        title: <Link to={path} className={`${ /\d/.test(segment) && "!hidden"}`}>{formatSegment(segment)}</Link>,
+      };
+    }),
+  ];
+
+  return <Breadcrumb style={{ margin: "16px 0" }} items={breadcrumbItems} />;
 };
 
 export default DynamicBreadcrumb;

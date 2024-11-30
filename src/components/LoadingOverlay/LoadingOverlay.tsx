@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./LoadingOverlay.css";
 // import loadingGif from "./untitled@1x-1.0s-200px-200px.gif";
 import loadingGif from "./Animation - 1728462135018.gif";

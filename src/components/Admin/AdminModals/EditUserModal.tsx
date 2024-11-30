@@ -1,67 +1,66 @@
-import React from "react";
-import { Modal, Form, Input, Select, Switch, Button } from "antd";
+import { Modal, Form, Input, Button } from "antd";
+import { User } from "../../../models/UserModel";
+interface EditUserProps {
+  visible: boolean;
+  onClose: () => void;
+  user: User;
+  onSave: (values: User) => void;
+}
 
-const { Option } = Select;
-
-const EditUser = ({ visible, onClose, user, onSave }) => {
+const EditUser: React.FC<EditUserProps> = ({
+  visible,
+  onClose,
+  user,
+  onSave,
+}) => {
   const [form] = Form.useForm();
 
-  const handleFinish = (values) => {
+  const handleFinish = (values: any) => {
+    values.dob = values.dob ? values.dob.format("YYYY-MM-DD") : "";
+    values.description = values.description || "";
+    values.avatar_url = values.avatar_url || "";
+    values.video_url = values.video_url || "";
+    values.bank_name = values.bank_name || "";
+    values.bank_account_no = values.bank_account_no || "";
+    values.bank_account_name = values.bank_account_name || "";
     onSave(values);
-    onClose(); // Close modal after saving
+    onClose();
   };
 
   return (
-    <Modal
-      title="Chỉnh sửa người dùng"
-      visible={visible}
-      onCancel={onClose}
-      footer={null}
-    >
+    <Modal title="Update User" open={visible} onCancel={onClose} footer={null}>
       <Form
         form={form}
-        initialValues={user}
+        initialValues={{
+          name: user?.name || "",
+          email: user?.email || "",
+          phone_number: user?.phone_number || "",
+          avatar_url: user?.avatar_url || "",
+          video_url: user?.video_url || "",
+          bank_name: user?.bank_name || "",
+          bank_account_no: user?.bank_account_no || "",
+          bank_account_name: user?.bank_account_name || "",
+          dob: user?.dob || "",
+          status: user?.status || false,
+          role: user?.role,
+          description: user?.description || "",
+        }}
         onFinish={handleFinish}
-        labelCol={{ span: 6 }} // Aligns labels to 6 columns width
-        wrapperCol={{ span: 18 }} // Aligns input fields to 18 columns width
+        labelCol={{ span: 6 }}
+        wrapperCol={{ span: 18 }}
       >
-        <Form.Item name="name" label="Họ và tên" rules={[{ required: true }]}>
+        <Form.Item name="name" label="Full name" rules={[{ required: true }]}>
           <Input />
         </Form.Item>
         <Form.Item name="email" label="Email" rules={[{ required: true }]}>
           <Input disabled />
         </Form.Item>
-        <Form.Item
-          name="phone"
-          label="Số điện thoại"
-          rules={[{ required: true }]}
-        >
+        <Form.Item name="phone_number" label="Phone number">
           <Input />
         </Form.Item>
-        <Form.Item
-          name="username"
-          label="Tên đăng nhập"
-          rules={[{ required: true }]}
-        >
-          <Input disabled />
-        </Form.Item>
-        <Form.Item
-          name="role"
-          label="Loại người dùng"
-          rules={[{ required: true }]}
-        >
-          <Select>
-            <Option value="Admin">Admin</Option>
-            <Option value="Instructor">Instructor</Option>
-            <Option value="Student">Student</Option>
-          </Select>
-        </Form.Item>
-        <Form.Item name="status" label="Trạng thái" valuePropName="checked">
-          <Switch />
-        </Form.Item>
         <Form.Item wrapperCol={{ offset: 6, span: 18 }}>
-          <Button type="primary" htmlType="submit" style={{ float: "right" }}>
-            Lưu
+          <Button type="primary" htmlType="submit" style={{ float: "right", borderRadius: "15px" }}>
+            Save
           </Button>
         </Form.Item>
       </Form>

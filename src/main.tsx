@@ -1,13 +1,20 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { Provider } from "react-redux";
+import { store } from "./redux/store/store.ts";
+import ErrorBoundary from "./utils/errorBoundary.tsx";
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <GoogleOAuthProvider clientId="715342506317-e5fp0tmr1c0ihdkhra8k2ahk18h5pgs7.apps.googleusercontent.com">
-      <App />
-    </GoogleOAuthProvider>
-  </StrictMode>
+  <GoogleOAuthProvider clientId="67368420889-utrdru1873d1pudjah97ihj32vvfire8.apps.googleusercontent.com">
+
+    <ErrorBoundary>
+
+
+      <Provider store={store}>
+        <App />
+      </Provider>
+      </ErrorBoundary>
+  </GoogleOAuthProvider>
 );

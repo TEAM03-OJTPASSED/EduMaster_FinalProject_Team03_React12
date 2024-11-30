@@ -1,7 +1,6 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { Layout } from "antd";
-import DynamicBreadcrumb from "../components/Breadcrumb/Breadcrumb";
 import InstructorNavbar from "../components/Instructor/InstructorNavbar";
 
 const { Content } = Layout;
@@ -13,10 +12,8 @@ const InstructorLayout: React.FC = () => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768); // Kiểm tra kích thước màn hình
     };
-
     handleResize(); // Kiểm tra khi render lần đầu
     window.addEventListener("resize", handleResize);
-
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
@@ -31,7 +28,7 @@ const InstructorLayout: React.FC = () => {
           marginTop: "80px",
         }}
       >
-        <DynamicBreadcrumb />
+        {/* <DynamicBreadcrumb /> */}
         <Content
           style={{
             borderRadius: "15px",

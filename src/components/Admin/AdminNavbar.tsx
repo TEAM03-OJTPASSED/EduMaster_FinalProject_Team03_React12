@@ -1,13 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { Layout, Button, Drawer, Avatar, Dropdown, Menu } from "antd";
-import { MenuOutlined } from "@ant-design/icons";
+import { useState, useEffect } from "react";
+import { Layout, Button, Drawer, Avatar, Dropdown } from "antd";
+import { MenuOutlined, UserOutlined, LogoutOutlined } from "@ant-design/icons";
 import logoImage from "../../assets/EduMaster.png";
 import { useCustomNavigate } from "../../hooks/customNavigate";
 import AdminSidebar from "./AdminSidebar";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store/store";
 
 const { Sider } = Layout;
 
 const AdminNavBar = () => {
+  const { currentUser } = useSelector((state: RootState) => state.auth.login);
+
   const navigate = useCustomNavigate();
   const [isMobile, setIsMobile] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -29,19 +33,29 @@ const AdminNavBar = () => {
 
   const [isHovered, setIsHovered] = useState(false); // Thêm state cho hover
 
-  const menu = (
-    <Menu>
-      <Menu.Item key="profile" onClick={() => navigate("/profile")}>
-        Profile
-      </Menu.Item>
-      <Menu.Item key="settings" onClick={() => navigate("/settings")}>
-        Settings
-      </Menu.Item>
-      <Menu.Item key="logout" onClick={() => navigate("/logout")}>
-        Logout
-      </Menu.Item>
-    </Menu>
-  );
+  // The menu items
+  const menuItems = [
+    {
+      key: "profile",
+      label: (
+        <span onClick={() => navigate("/dashboard/admin/settings")}>
+          Profile
+        </span>
+      ),
+      icon: <UserOutlined />, // Thêm icon UserOutlined cho Profile
+    },
+    {
+      key: "logout",
+      onClick: () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.reload();
+        window.location.href = "/";
+      },
+      label: <span>Logout</span>,
+      icon: <LogoutOutlined />, // Thêm icon LogoutOutlined cho Logout
+    },
+  ];
 
   return (
     <>
@@ -92,7 +106,7 @@ const AdminNavBar = () => {
           />
         </div>
 
-        <Dropdown overlay={menu} trigger={["click"]}>
+        <Dropdown menu={{ items: menuItems }} trigger={["click"]}>
           <div
             style={{
               display: "flex",
@@ -114,7 +128,7 @@ const AdminNavBar = () => {
             <Avatar
               shape="square"
               size="large"
-              src="https://picsum.photos/id/237/200/300"
+              src={currentUser.avatar_url}
               alt="User Avatar"
               style={{ border: "2px solid white" }}
             />
@@ -126,7 +140,7 @@ const AdminNavBar = () => {
                   transition: "color 0.3s",
                 }}
               >
-                Admin
+                {currentUser.name}
               </span>
             )}
           </div>
