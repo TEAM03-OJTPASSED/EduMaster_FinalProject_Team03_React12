@@ -89,8 +89,6 @@ const InstructorLessonList = () => {
 
   const showModal = (lesson: Lesson) => {
     setSelectedLesson(lesson);
-    fetchCourses();
-    fetchLessons();
     setIsModalVisible(true);
   };
 
@@ -123,6 +121,7 @@ const InstructorLessonList = () => {
   };
 
   const fetchLessons = async () => {
+    console.log("fec")
     const response = await LessonService.getLessons(searchParams);
     setListLessons(response?.data?.pageData ?? []);
   };
@@ -194,11 +193,13 @@ const InstructorLessonList = () => {
   }, []);
 
   useEffect(() => {
+    if (sessionSearchParams === initialSessionsParams) return
     fetchSessions();
   }, [sessionSearchParams]);
 
   useEffect(() => {
     fetchLessons();
+    console.log(searchParams)
   }, [searchParams]);
 
   const columns: TableProps<Lesson>["columns"] = [
@@ -366,10 +367,10 @@ const InstructorLessonList = () => {
         onCancel={() => handleCancel()}
         footer={null}
         forceRender
-        width={1000}
+        width={1200}
+        className="min-h-800"
         destroyOnClose={true}
       >
-        {selectedLesson && (
           <LessonIOptions
             form={form}
             onCourseChange={(value) => {
@@ -377,7 +378,7 @@ const InstructorLessonList = () => {
               setSessionSearchParams({
                 ...sessionSearchParams,
                 searchCondition: {
-                  ...searchParams.searchCondition,
+                  ...sessionSearchParams.searchCondition,
                   course_id: value,
                 },
               });
@@ -387,8 +388,7 @@ const InstructorLessonList = () => {
             onFinished={handleUpdateLesson}
             mode="update"
             initialValues={selectedLesson}
-          />
-        )}
+          />        
       </Modal>
 
       <Modal
@@ -407,7 +407,7 @@ const InstructorLessonList = () => {
             setSessionSearchParams({
               ...sessionSearchParams,
               searchCondition: {
-                ...searchParams.searchCondition,
+                ...sessionSearchParams.searchCondition,
                 course_id: value,
               },
             })

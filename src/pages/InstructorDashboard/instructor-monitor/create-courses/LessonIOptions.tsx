@@ -66,6 +66,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
       form.setFieldsValue({
         ...initialValues,
         description: initialValues?.description,
+        session_id: initialValues?.session_id,
       });
       setVideoFileList(
         initialValues?.video_url
@@ -100,7 +101,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
   const handleCourseChange = useCallback(
     (courseId: string) => {
       form.setFieldsValue({
-        session_id: initialValues?.session_id ?? undefined,
+        session_id: undefined,
       }); // Reset session selection
       onCourseChange(courseId);
     },
@@ -130,8 +131,9 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
   useEffect(() => {
     if (initialValues?.course_id) {
       handleCourseChange(initialValues.course_id);
+      form.setFieldsValue({ session_id: initialValues.session_id });
     }
-  }, [handleCourseChange, initialValues]);
+  }, [handleCourseChange, initialValues, form]);
 
   //Huko additional code
   const { Option } = Select;
