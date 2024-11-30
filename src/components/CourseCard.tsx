@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { AiOutlineClockCircle } from "react-icons/ai";
 import { BiBook } from "react-icons/bi";
 import { FaBook, FaShoppingCart } from "react-icons/fa";
-import { TiUserOutline } from "react-icons/ti";
+// import { TiUserOutline } from "react-icons/ti";
 import { Course } from "../models/Course.model";
 import { FaStar } from "react-icons/fa6";
 import { useCustomNavigate } from "../hooks/customNavigate";
