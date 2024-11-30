@@ -81,7 +81,6 @@ const BlogDetailPage = () => {
               width="100%"
               height="400"
               src={url.replace("youtu.be", "youtube.com/embed")}
-              frameBorder="0"
               allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             ></iframe>
@@ -99,7 +98,7 @@ const BlogDetailPage = () => {
 
   return (
     <div className="font-exo flex mt-6">
-      <div className="w-3/4">
+      <div className="lg:w-3/4 w-full">
         <BlogHeader
           title={blog.name}
           date={dayjs(blog.created_at).format("DD/MM/YYYY")}
@@ -132,7 +131,7 @@ const BlogDetailPage = () => {
           </div>
         </div>
       </div>
-      <div className="w-1/4"></div>
+      <div className="lg:w-1/4 hidden"></div>
     </div>
   );
 };

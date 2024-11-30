@@ -236,7 +236,7 @@ const LearnCoursePage = () => {
   }
   return (
     <div className="fixed top-0 left-0 z-50 bg-white w-full h-[100vh] no-select">
-      <Navbar />
+      <div className="h-[8vh]"><Navbar /></div>
       <div className="flex justify-between">
         <Sidebar
           sidebarWidth={sidebarWidth}

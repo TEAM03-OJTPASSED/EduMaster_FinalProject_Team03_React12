@@ -22,15 +22,10 @@ const CourseDetailPage = () => {
     setLoading(true);
     try {
       const response = await ClientService.getCourseDetails(courseId);
-      if (response.success && response.data) {
-        setCourse(response.data as Course);
-        console.log('Course details:', response.data);
-        setSession((response.data as Course).session_list as unknown as Session);
-      } else {
-        console.error('Error fetching course details:', response.message);
-      }
+      setCourse(response.data as Course);
+      setSession((response.data as Course).session_list as unknown as Session);
     } catch (error) {
-      console.error('Error fetching course details:', error);
+      console.error("Error fetching course details:", error);
     } finally {
       setLoading(false);
     }
