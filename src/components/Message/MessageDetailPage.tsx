@@ -31,6 +31,7 @@
 
 
 
+
 //   // const [messages, setMessages] = useState<Message[]>([]);
 //   // const messages = [
 //   //   ...listMessage
@@ -76,7 +77,6 @@
 //   //   };
 //   //   fetchData();
 //   // }, [messageSearchParams]);
-
 //   if (!user) {
 //     return <div>User not found</div>;
 //   }

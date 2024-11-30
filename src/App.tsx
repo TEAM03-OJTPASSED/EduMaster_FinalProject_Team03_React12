@@ -175,8 +175,8 @@ function App() {
                 </Route>
               </Route>
             </Route>
-
-            {/* <Route
+{/* 
+            <Route
               path="message"
               element={
                 <ProtectedRoute
@@ -184,12 +184,11 @@ function App() {
                 ></ProtectedRoute>
               }
             >
-              {/* <Route element={<MessageLayout />}> */}
-              {/* <Route index element={<MessageContent />}/> */}
+              <Route element={<MessageLayout />}>
+              <Route index element={<MessageContent />}/>
                 {/* <Route element={<MessageDetailPage />} path="/message/:id"/> */}
               {/* </Route>
-            // </Route> */} 
-
+            </Route> */} */
             {/* Instructor Layout */}
             <Route
               path="dashboard/instructor"

@@ -75,12 +75,12 @@ export const SearchFilter: React.FC<BlogSearchFilterProps> = ({ filters, onFilte
   return (
     <>
       {isMobile ? (
-        <div className='absolute -top-2 right-4'>
+        <div className='absolute top-[70px] left-1/2 sm:left-auto sm:transform-none transform -translate-x-1/2 -translate-y-1/2 sm:translate-x-0 sm:translate-y-0 sm:-top-2 sm:right-4'>
           <Button
             type="primary"
             icon={<FilterOutlined />}
             onClick={() => setVisible(true)}
-            className="mb-4"
+            className="mb-4 font-jost view-button ant-btn-variant-solid"
           >
             Filters
           </Button>
