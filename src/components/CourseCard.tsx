@@ -3,13 +3,14 @@ import { useEffect, useState } from "react";
 import { AiOutlineClockCircle } from "react-icons/ai";
 import { BiBook } from "react-icons/bi";
 import { FaBook, FaShoppingCart } from "react-icons/fa";
-import { TiUserOutline } from "react-icons/ti";
+// import { TiUserOutline } from "react-icons/ti";
 import { Course } from "../models/Course.model";
 import { FaStar } from "react-icons/fa6";
 import { useCustomNavigate } from "../hooks/customNavigate";
 import { moneyFormatter } from "../utils/moneyFormatter";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store/store";
+import { ArrowRightOutlined } from "@ant-design/icons";
 
 const CourseCard: React.FC<{
   course: Course;
@@ -34,7 +35,7 @@ const CourseCard: React.FC<{
   }
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(min-width: 992px)");
+    const mediaQuery = window.matchMedia("(min-width: 1200px)");
     const handleResize = () => setIsMdScreen(mediaQuery.matches);
     handleResize(); // Initial check
     mediaQuery.addEventListener("change", handleResize); 
@@ -119,11 +120,20 @@ const CourseCard: React.FC<{
 
             <div className="flex justify-between items-center">
               <span className="text-base sm:text-lg font-bold text-orange-500">
-                {typeof course.price === "number"
-                  ? moneyFormatter(course.price)
-                  : course.price}
+              {!course.is_purchased ? (
+                typeof course.price === "number"? moneyFormatter(course.price) : course.price
+                )
+              : (
+                <a href={`/course/${course._id}` } 
+                className="px-4 sm:px-2 py-1 bg-orange-500 rounded-full hover:bg-orange-400 text-sm transition-all flex justify-center font-jost font-medium text- text-white hover:text-white"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  navigate(`/course/${course._id}`)
+                }}>Go to course <ArrowRightOutlined className="w-3 ml-2"/></a>
+              )}
               </span>
-              <Button type="link" className="text-blue-600 hover:text-blue-800">
+              <Button type="link" className="text-blue-600 !p-0 hover:text-blue-800">
                 View More
               </Button>
             </div>
@@ -155,10 +165,6 @@ const CourseCard: React.FC<{
               <li className="flex items-center mb-1">
                 <BiBook className="mr-2 text-primary" size={16} />
                 All Levels
-              </li>
-              <li className="flex items-center">
-                <TiUserOutline className="mr-2 text-primary" size={18} />
-                Subtitles
               </li>
             </ul>
             {!isInCart &&

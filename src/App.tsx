@@ -79,7 +79,7 @@ function App() {
     const init = () => {
       gapi.client.init({
         clientId:
-          "67368420889-utrdru1873d1pudjah97ihj32vvfire8.apps.googleusercontent.com",
+          "12105794051-m9vscderip9vtvhqh04t75ic5efpej4e.apps.googleusercontent.com",
         scope: "",
       });
     };
