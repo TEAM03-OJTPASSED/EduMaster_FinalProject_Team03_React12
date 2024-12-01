@@ -27,7 +27,7 @@ const MainContent: React.FC<MainContentProps> = ({
   return (
     <div
       ref={scrollRef}
-      className="flex-grow h-[86vh] overflow-y-scroll" 
+      className="flex-grow lg:h-[92vh] h-[86vh] overflow-y-scroll" 
       style={{ width: remainingWidth }}
     >
       {selectedLesson && (
@@ -39,6 +39,7 @@ const MainContent: React.FC<MainContentProps> = ({
                 <ReactPlayer
                   width="100%"
                   height="auto"
+        
                   url={selectedLesson.video_url}
                   controls
                 />

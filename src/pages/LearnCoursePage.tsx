@@ -199,9 +199,9 @@ const LearnCoursePage = () => {
         <Navbar />
       </div>
       <div className="flex justify-between">
-        <div className="lg:block hidden w-1/3">
+        <div className="lg:block hidden w-1/3" style={{ width: sidebarWidth }}>
           <Sidebar
-            sidebarWidth={sidebarWidth}
+            sidebarWidth="100%"
             sessions={session}
             expandedSessions={expandedSessions}
             selectedLesson={selectedLesson}
@@ -210,7 +210,7 @@ const LearnCoursePage = () => {
           />
         </div>
         <div
-          className="lg:block hidden group flex h-[92vh] items-center justify-center w-2 bg-orange-100"
+          className="lg:flex hidden group h-[92vh] items-center justify-center w-2 bg-orange-100"
           onMouseDown={handleMouseDown}
         >
           <div className="group-hover:block hidden w-[1px] bg-orange-500 h-[85vh]"></div>
@@ -223,7 +223,7 @@ const LearnCoursePage = () => {
           buttonText={buttonText}
         />
       </div>
-      <div className="fixed bottom-3 w-full text-center rounded-lg py-2">
+      <div className="lg:hidden fixed bottom-3 w-full text-center rounded-lg py-2">
         <div
           className="text-white bg-orange-500 mx-4 py-2 rounded-lg font-bold"
           onClick={() => toggleSessionMenu()}
@@ -232,7 +232,7 @@ const LearnCoursePage = () => {
         </div>
       </div>
       {sessionMenu && (
-        <div className="absolute top-24 bg-white">
+        <div className="lg:hidden absolute top-24 bg-white">
           <div
             className="flex items-center justify-end gap-2 px-5 text-orange-500 font-semibold"
             onClick={() => toggleSessionMenu()}
