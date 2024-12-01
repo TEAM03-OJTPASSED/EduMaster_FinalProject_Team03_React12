@@ -63,7 +63,6 @@ const StudentMenuItems: MenuItem[] = [
 const DashboardSideBar: React.FC<SideBarProps> = ({ onMenuClick }) => {
   const location = useLocation();
   const lastPathSegment = location.pathname.split("/").filter(Boolean).pop();
-
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {

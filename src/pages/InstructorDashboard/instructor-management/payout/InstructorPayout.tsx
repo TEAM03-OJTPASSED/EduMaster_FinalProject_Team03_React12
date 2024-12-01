@@ -4,19 +4,19 @@ import { useEffect } from "react";
 const items: MenuProps["items"] = [
   {
     label: "Request Payout",
-    key: "Request Payout",
+    key: "payout",
   },
   {
     label: "Awaiting Payout",
-    key: "Awaiting Payout",
+    key: "awaiting-payout",
   },
   {
     label: "Completed Payout",
-    key: "Completed Payout",
+    key: "completed-payout",
   },
   {
     label: "Rejected Payout",
-    key: "Rejected Payout",
+    key: "rejected-payout",
   }
 ];
 
@@ -31,18 +31,22 @@ const InstructorPayout = () => {
       });
     }
   }, [location, naviagte]);
+  const defaultTab = location.pathname.split("/").filter(Boolean).pop();
+
+
+
   const handleSelectMenu: MenuProps["onClick"] = (e) => {
     switch (e.key) {
-      case "Request Payout":
+      case "payout":
         naviagte("/dashboard/instructor/payout", {state: {status: ["Request Payout", "New"]} });
         break;
-      case "Awaiting Payout":
+      case "awaiting-payout":
         naviagte("awaiting-payout", {state: {status: ["request_payout", "Awaiting Payout"]} });
         break; 
-      case "Completed Payout":
+      case "completed-payout":
         naviagte("completed-payout", {state: {status: "Completed"} });
         break;
-      case "Rejected Payout":
+      case "rejected-payout":
         naviagte("rejected-payout", {state: {status: "Rejected"} });
         break;      
       default:
@@ -55,7 +59,7 @@ const InstructorPayout = () => {
       <Menu
         items={items}
         mode="horizontal"
-        defaultSelectedKeys={["Request Payout"]}
+        defaultSelectedKeys={[defaultTab ?? 'payout']}
         onClick={handleSelectMenu}
       />
       <Outlet />
