@@ -83,7 +83,8 @@ const InstructorSidebar: React.FC<{ onMenuClick?: () => void }> = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const lastPathSegment = location.pathname.split("/").filter(Boolean).pop();
+  const pathSegments = location.pathname.split("/").filter(Boolean);
+  const lastPathSegment = pathSegments[2];
   const [selectedParent, setSelectedParent] = useState<string>("")
 
   useEffect(() => {

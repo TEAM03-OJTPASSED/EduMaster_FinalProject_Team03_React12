@@ -35,8 +35,10 @@ const BlogCard: React.FC<BlogCardProps> = ({ blog, viewMode }) => {
               alt={blog.name}
               src={blog.image_url}
               className={`${
-                viewMode === "list" ? "min-w-[250px] w-[250px]" : "w-full"
-              } h-56 object-cover`}
+                viewMode === "list"
+                  ? "min-w-[200px]  w-[200px] md:min-w-[250px] md:w-[250px]"
+                  : "w-full"
+              } h-40 sm:h-56 object-cover`}
             />
             <Tag className="absolute top-2 left-2 bg-black text-white">
               {blog.category_name}

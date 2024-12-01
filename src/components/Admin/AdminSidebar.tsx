@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Menu } from "antd";
 import {
   DashboardOutlined,
@@ -14,7 +14,7 @@ import {
   ShoppingCartOutlined,
   StarOutlined,
 } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface MenuItem {
   key: string;
@@ -37,31 +37,31 @@ const menuItems: MenuItem[] = [
     label: "Management",
     items: [
       {
-        key: "management-users",
+        key: "users",
         icon: <UserOutlined />,
         label: "Users",
         path: "/dashboard/admin/users",
       },
       {
-        key: "management-requests",
+        key: "request-management",
         icon: <FormOutlined />,
         label: "Request",
         path: "/dashboard/admin/request-management",
       },
       {
-        key: "management-categories",
+        key: "categories",
         icon: <FolderOutlined />,
         label: "Categories",
         path: "/dashboard/admin/categories",
       },
       {
-        key: "management-payout",
+        key: "payout",
         icon: <MoneyCollectOutlined />,
         label: "Payout",
         path: "/dashboard/admin/payout",
       },
       {
-        key: "management-blog",
+        key: "blog",
         icon: <FileTextOutlined />,
         label: "Blog",
         path: "/dashboard/admin/blog",
@@ -104,6 +104,24 @@ const AdminSidebar: React.FC<{ onMenuClick?: () => void }> = ({
   onMenuClick,
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const pathSegments = location.pathname.split("/").filter(Boolean);
+  const lastPathSegment = pathSegments[2]; 
+  const [selectedParent, setSelectedParent] = useState<string>("");
+
+  useEffect(() => {
+    if (lastPathSegment) {
+      const foundParent = menuItems.find((item) => {
+        const isDirectMatch = item.key === lastPathSegment;
+        const hasMatchingChild = item.items?.some(
+          (child) => child.key === lastPathSegment
+        );
+        return isDirectMatch || hasMatchingChild;
+      });
+
+      setSelectedParent(foundParent?.key ?? "");
+    }
+  }, [lastPathSegment]);
 
   const handleMenuClick = (key: string) => {
     if (onMenuClick) onMenuClick(); // Close Drawer if needed
@@ -151,7 +169,7 @@ const AdminSidebar: React.FC<{ onMenuClick?: () => void }> = ({
     <Menu
       theme="light"
       mode="inline"
-      defaultSelectedKeys={["dashboard"]}
+      defaultSelectedKeys={[selectedParent, lastPathSegment ?? "dashboard"]}
       items={renderMenuItems(menuItems)}
     />
   );
