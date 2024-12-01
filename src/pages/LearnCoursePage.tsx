@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Course } from "../models/Course.model";
@@ -8,35 +7,20 @@ import Navbar from "../components/Navbar";
 import Skeleton from "../components/LearningPage/Skeleton";
 import Sidebar from "../components/LearningPage/Sidebar";
 import MainComponent from "../components/LearningPage/MainComponent";
-
-const token = localStorage.getItem("token");
-
-const fetchCourse = async (courseId: string) => {
-  try {
-    const response = await axios.get(
-      `https://edumaster-api-dev.vercel.app/api/client/course/${courseId}`,
-      token ? { headers: { Authorization: `Bearer ${token}` } } : {}
-    );
-    console.log("Response:", response.data);
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 500) {
-      window.location.href = "/error";
-    }
-  }
-};
+import ClientService from "../services/client.service";
+import { completeLesson } from "../services/user.service";
 
 const LearnCoursePage = () => {
   const { id } = useParams<{ id: string }>();
   const courseId = id ? id.toString() : "";
 
-  const [returnCode, setReturnCode] = useState<number | null>(0);
   const [course, setCourse] = useState<Course | null>(null);
   const [session, setSession] = useState<Session[] | null>(null);
   const [buttonText, setButtonText] = useState("");
   const [loading, setLoading] = useState(false);
   const [countdown, setCountDown] = useState(5);
   const [sidebarWidth, setSidebarWidth] = useState("33%");
+  const [sessionMenu, setSessionMenu] = useState(false);
 
   const navigate = useNavigate();
   const colors = [
@@ -53,21 +37,24 @@ const LearnCoursePage = () => {
     }
   }, [countdown, navigate, courseId]);
 
+  const fetchData = async (courseId: string) => {
+    setLoading(true);
+    try {
+      const response = await ClientService.getCourseDetails(courseId);
+      setCourse(response.data as Course);
+      setSession(
+        (response.data as Course).session_list as unknown as Session[]
+      );
+    } catch (error) {
+      console.error("Error fetching course details:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    fetchCourse(courseId).then((data) => {
-      if (data) {
-        setCourse(data.data);
-        setSession(data.data.session_list || []);
-      }
-      if (data === "Forbidden") {
-        setReturnCode(403);
-        setTimeout(() => {
-          navigate(`/course-detail/${courseId}`);
-        }, 5000);
-      }
-    });
-    console.log("Course:", course);
-  }, []);
+    fetchData(courseId);
+  }, [courseId]);
 
   const sessionIndex = sessionStorage.getItem("sessionIndex");
 
@@ -99,13 +86,17 @@ const LearnCoursePage = () => {
 
   const selectLesson = (lesson: Lesson) => {
     setSelectedLesson(lesson);
+    if (sessionMenu) {
+      console.log("toggleSessionMenu");
+      toggleSessionMenu();
+    }
     setButtonText(
       lesson.is_completed ? "Go To Next Item" : "Mark as Completed"
     );
   };
 
   const handleClick = async (lesson: Lesson) => {
-    // Handle next lesson selection
+    console.log("handleClick");
     if (buttonText === "Go To Next Item") {
       const currentSessionIndex = session?.findIndex((s) =>
         s.lesson_list.some((l) => l._id === lesson._id)
@@ -137,56 +128,20 @@ const LearnCoursePage = () => {
           setButtonText("Completed");
         }
       }
-    } else
+    } else if (buttonText === "Mark as Completed") {
       try {
-        setLoading(true);
-        const endpoint =
-          "https://edumaster-backend-dev.vercel.app/api/users/completed-lesson/";
-        const response = await axios.post(
-          `${endpoint}`,
-          { lessonId: lesson._id },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        if (response.data.success) {
-          setButtonText(
-            lesson.is_completed ? "Mark as Completed" : "Go To Next Item"
-          );
-          setSession((prevSessions: Session[] | null) => {
-            if (!prevSessions) return null;
-            return prevSessions.map((sessionItem: Session) => ({
-              ...sessionItem,
-              lesson_list: sessionItem.lesson_list.map((lessonItem: Lesson) =>
-                lessonItem._id === lesson._id
-                  ? { ...lessonItem, is_completed: true }
-                  : lessonItem
-              ),
-            }));
+        const success = await completeLesson(lesson._id);
+        if (success) {
+          setButtonText("Go To Next Item");
+          setSelectedLesson({
+            ...lesson,
+            is_completed: true,
           });
-
-          // Update the selectedLesson state directly
-          setSelectedLesson((prevLesson) =>
-            prevLesson
-              ? { ...prevLesson, is_completed: !prevLesson.is_completed }
-              : null
-          );
-
-          // Update the user object in localStorage
-          const user = JSON.parse(localStorage.getItem("user") || "{}");
-          const updatedUser = {
-            ...user,
-            completed_lesson: [...(user.completed_lesson || []), lesson._id],
-          };
-          localStorage.setItem("user", JSON.stringify(updatedUser));
         }
       } catch (error) {
-        console.error("Error marking lesson as completed:", error);
-      } finally {
-        setLoading(false);
+        console.error("Error completing lesson:", error);
       }
+    }
   };
 
   const handleMouseDown = () => {
@@ -206,11 +161,15 @@ const LearnCoursePage = () => {
     document.removeEventListener("mouseup", handleMouseUp);
   };
 
-  if ((!course || !session) && returnCode !== 403) {
+  const toggleSessionMenu = () => {
+    setSessionMenu(!sessionMenu);
+  };
+
+  if (!course || !session) {
     return <Skeleton />;
   }
 
-  if (returnCode === 403) {
+  if (course.is_purchased === false) {
     return (
       <div className="my-40">
         <div className="font-exo text-2xl font-bold pt-8 text-center">
@@ -226,7 +185,7 @@ const LearnCoursePage = () => {
           If you are not redirected automatically,{" "}
           <button
             className="text-orange-500 underline px-2"
-            onClick={() => navigate(`/course-detail/${courseId}`)}
+            onClick={() => navigate(`/course/${courseId}`)}
           >
             go to purchase
           </button>
@@ -236,18 +195,22 @@ const LearnCoursePage = () => {
   }
   return (
     <div className="fixed top-0 left-0 z-50 bg-white w-full h-[100vh] no-select">
-      <div className="h-[8vh]"><Navbar /></div>
+      <div className="h-[8vh]">
+        <Navbar />
+      </div>
       <div className="flex justify-between">
-        <Sidebar
-          sidebarWidth={sidebarWidth}
-          sessions={session}
-          expandedSessions={expandedSessions}
-          selectedLesson={selectedLesson}
-          toggleSession={toggleSession}
-          selectLesson={selectLesson}
-        />
+        <div className="lg:block hidden w-1/3">
+          <Sidebar
+            sidebarWidth={sidebarWidth}
+            sessions={session}
+            expandedSessions={expandedSessions}
+            selectedLesson={selectedLesson}
+            toggleSession={toggleSession}
+            selectLesson={selectLesson}
+          />
+        </div>
         <div
-          className="group flex h-[92vh] items-center justify-center w-2 bg-orange-100"
+          className="lg:block hidden group flex h-[92vh] items-center justify-center w-2 bg-orange-100"
           onMouseDown={handleMouseDown}
         >
           <div className="group-hover:block hidden w-[1px] bg-orange-500 h-[85vh]"></div>
@@ -260,6 +223,54 @@ const LearnCoursePage = () => {
           buttonText={buttonText}
         />
       </div>
+      <div className="fixed bottom-3 w-full text-center rounded-lg py-2">
+        <div
+          className="text-white bg-orange-500 mx-4 py-2 rounded-lg font-bold"
+          onClick={() => toggleSessionMenu()}
+        >
+          Session Menu
+        </div>
+      </div>
+      {sessionMenu && (
+        <div className="absolute top-24 bg-white">
+          <div
+            className="flex items-center justify-end gap-2 px-5 text-orange-500 font-semibold"
+            onClick={() => toggleSessionMenu()}
+          >
+            <div>Close</div>
+            <svg
+              aria-hidden="true"
+              fill="none"
+              focusable="false"
+              height="16"
+              viewBox="0 0 16 16"
+              width="16"
+              id="cds-react-aria-204"
+            >
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M13.585 14.353l-11.94-12 .71-.706 11.94 12-.71.706z"
+                fill="currentColor"
+              ></path>
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M14.344 2.353l-11.99 12-.708-.706 11.99-12 .708.706z"
+                fill="currentColor"
+              ></path>
+            </svg>
+          </div>
+          <Sidebar
+            sidebarWidth="100%"
+            sessions={session}
+            expandedSessions={expandedSessions}
+            selectedLesson={selectedLesson}
+            toggleSession={toggleSession}
+            selectLesson={selectLesson}
+          />
+        </div>
+      )}
     </div>
   );
 };

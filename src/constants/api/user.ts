@@ -9,6 +9,7 @@ export const USER_API = {
   DELETE_USER: (id: string) => `${API_BASE_URL}/${id}`,
   CHANGE_ROLE: `${API_BASE_URL}/change-role`,
   CHANGE_STATUS: `${API_BASE_URL}/change-status`,
+  COMPLETED_LESSON: `${API_BASE_URL}/completed-lesson`,
 };
 
 export default USER_API;

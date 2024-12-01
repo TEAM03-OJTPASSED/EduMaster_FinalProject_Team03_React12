@@ -5,7 +5,7 @@ import { Lesson } from "../../models/Lesson.model";
 interface MainContentProps {
   remainingWidth: string;
   selectedLesson: Lesson | null;
-  handleClick: (lesson: any) => void;
+  handleClick: (lesson: Lesson) => void;
   loading: boolean;
   buttonText: string;
 }
@@ -27,7 +27,7 @@ const MainContent: React.FC<MainContentProps> = ({
   return (
     <div
       ref={scrollRef}
-      className="flex-grow h-[92vh] overflow-y-scroll"
+      className="flex-grow h-[86vh] overflow-y-scroll" 
       style={{ width: remainingWidth }}
     >
       {selectedLesson && (
@@ -38,7 +38,7 @@ const MainContent: React.FC<MainContentProps> = ({
               <div className="w-full">
                 <ReactPlayer
                   width="100%"
-                  height="65vh"
+                  height="auto"
                   url={selectedLesson.video_url}
                   controls
                 />
