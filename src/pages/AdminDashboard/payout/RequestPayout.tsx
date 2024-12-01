@@ -132,7 +132,6 @@ const AdminRequestPayout = () => {
       dataIndex: "view_transaction",
       key: "view_transaction",
       align: "center",
-      fixed: "right",
       render: (_, record: Payout) => {
         return (
           <div>
@@ -152,7 +151,6 @@ const AdminRequestPayout = () => {
       title: "Actions",
       key: "action",
       align: "center",
-      fixed: "right",
       render: (record: Payout) => (
         <Space size="middle">
           <Tooltip title="Accept">

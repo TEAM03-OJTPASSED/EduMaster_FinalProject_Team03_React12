@@ -117,7 +117,7 @@ const BlogDetailPage = () => {
         <TagList tags={blog.tags || []} />
         <div className="mb-20">
           <h2 className="text-lg font-semibold mt-8">Recent Blogs</h2>
-          <div className="flex gap-4">
+          <div className="flex-wrap gap-4 sm:flex">
             {recentBlogs.map((recentBlog) => (
               <RecentBlog
                 key={recentBlog._id}

@@ -12,7 +12,7 @@ export interface AuthState {
     loading: boolean;
     error: string | null;
     success: boolean;
-    is_google: boolean;
+    // is_google: boolean;
     is_register_google: boolean;
     googleId?: string;
   };
@@ -36,7 +36,6 @@ const initialState: AuthState = {
     currentUser: currentUser,
     token: token,
     error: null,
-    is_google: false,
     success: false,
     is_register_google: false,
   },
@@ -94,7 +93,6 @@ export const registerWithGoogle = createAsyncThunk<
   const response = await postRequest("/api/users/google", formData);
   handleNotify("Register gg successfully", " ");
   localStorage.setItem("token", (response as any).data.token);
-
   return response.data as AuthState;
 });
 
@@ -138,18 +136,7 @@ export const authSlice = createSlice({
       state.resendToken.loading = false;
       state.resendToken.success = false;
     },
-    setRegisterGoogle: (state, action) => {
-      state.login.is_register_google = action.payload.is_register;
-      state.login.googleId = action.payload.google_id;
-    },    
-    setIsLoginGoogleStart: (state, action) => {
-      state.login.googleId = action.payload;
-      state.login.is_google = true;
-    },
-    setIsLoginGoogleFailed: (state) => {
-      state.login.is_google = false;
-      state.login.is_register_google = true;
-    },
+
   },
   extraReducers: (builder) => {
     builder
@@ -218,9 +205,9 @@ export const {
   resendTokenFulfilled,
   resendTokenPending,
   resendTokenRejected,
-  setRegisterGoogle,
-  setIsLoginGoogleStart,
-  setIsLoginGoogleFailed,
+  // setRegisterGoogle,
+  // setIsLoginGoogleStart,
+  // setIsLoginGoogleFailed,
 } = authSlice.actions;
 
 export default authSlice.reducer;
