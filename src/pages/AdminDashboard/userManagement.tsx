@@ -161,9 +161,9 @@ const UserManagement: React.FC = () => {
       key: "action",
       render: (record: User) => (
         <>
-          <Button 
-            type="text" 
-            icon={<EditOutlined style={{ color: "blue" }} />} 
+          <Button
+            type="text"
+            icon={<EditOutlined style={{ color: "blue" }} />}
             onClick={() => handleEdit(record)} />
           <Button
             type="text"
@@ -196,7 +196,7 @@ const UserManagement: React.FC = () => {
             label: `${key.charAt(0).toUpperCase() + key.slice(1)} Users`,
             children: (
               <>
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex flex-wrap items-center justify-between mb-4 gap-2">
                   <GlobalSearchUnit
                     placeholder="Search By Course Name"
                     selectFields={[
@@ -214,7 +214,7 @@ const UserManagement: React.FC = () => {
                   <Button
                     type="primary"
                     onClick={() => setCreateVisible(true)}
-                    style={{borderRadius: "15px"}}
+                    style={{ borderRadius: "15px" }}
                     icon={<PlusCircleOutlined />}
                   >
                     Add new user

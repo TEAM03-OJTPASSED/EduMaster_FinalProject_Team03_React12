@@ -77,7 +77,6 @@ const AdminCompletedPayout = () => {
       dataIndex: "view_transaction",
       key: "view_transaction",
       align: "center",
-      fixed: "right",
       render: (_, record: Payout) => {
         return (
           <div>
