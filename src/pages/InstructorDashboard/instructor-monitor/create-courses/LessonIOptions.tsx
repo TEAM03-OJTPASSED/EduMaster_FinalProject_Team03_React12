@@ -41,6 +41,7 @@ type LessonOptionsProps = {
   listCourses: Course[];
   onCourseChange: (value: string) => void;
   form: FormInstance<Lesson>
+  resetVisbility?: boolean
 };
 
 const LessonIOptions: React.FC<LessonOptionsProps> = ({
@@ -50,16 +51,21 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
   listCourses,
   listSessions,
   onCourseChange,
+  resetVisbility,
   form
 }) => {
   const [imageFileList, setImageFileList] = useState<UploadFile[]>([]);
   const [videoFileList, setVideoFileList] = useState<UploadFile[]>([]);
-  const [visibility, setVisibility] = useState<
-    "reading" | "video" | "assignment" | "image"
-  >("reading");
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | undefined>(
     initialValues?.video_url
   );
+  const [visibility, setVisibility] = useState<LessonTypeEnum>()
+
+  useEffect(() => {
+    if (resetVisbility) {
+      setVisibility(undefined)
+    }
+  },[resetVisbility])
 
   useEffect(() => {
     if (mode === "update") {
@@ -68,6 +74,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
         description: initialValues?.description,
         session_id: initialValues?.session_id,
       });
+      setVisibility(initialValues?.lesson_type as LessonTypeEnum)
       setVideoFileList(
         initialValues?.video_url
           ? [
@@ -108,25 +115,43 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
     [form, initialValues]
   );
 
-  const handleLessonType = () => {
-    const lessonType = form.getFieldValue("lesson_type") as LessonTypeEnum;
-    if (lessonType === LessonTypeEnum.READING) {
-      form.setFieldsValue({ video_url: "" });
-      setVideoPreviewUrl(undefined);
-      setVisibility("reading");
-    } else if (lessonType === LessonTypeEnum.ASSIGNMENT) {
-      form.setFieldsValue({ video_url: "" });
-      setImageFileList([]);
-      setVideoPreviewUrl(undefined);
-      setVisibility("assignment");
-    } else if (lessonType === LessonTypeEnum.VIDEO) {
-      setImageFileList([]);
-      setVisibility("video");
-    } else if (lessonType === LessonTypeEnum.IMAGE) {
-      setImageFileList([]);
-      setVisibility("image");
+  const handleLessonType = (type: LessonTypeEnum) => {
+    setVisibility(type);
+  
+    // Reset fields based on the selected lesson type
+    if (type === LessonTypeEnum.READING) {
+      form.setFieldsValue({ 
+        video_url: "", 
+        image_url: "", 
+        assignment: "" 
+      });
+      setVideoPreviewUrl(undefined); // Ensure string type
+      setImageFileList([]); // Clear image list
+    } else if (type === LessonTypeEnum.ASSIGNMENT) {
+      form.setFieldsValue({ 
+        video_url: "", 
+        image_url: "", 
+        assignment: "" 
+      });
+      setVideoPreviewUrl(""); // Ensure string type
+      setImageFileList([]); // Clear image list
+    } else if (type === LessonTypeEnum.VIDEO) {
+      form.setFieldsValue({ 
+        video_url: "", 
+        image_url: "", 
+        assignment: "" 
+      });
+      setImageFileList([]); // Clear image list
+    } else if (type === LessonTypeEnum.IMAGE) {
+      form.setFieldsValue({ 
+        video_url: "", 
+        image_url: "", 
+        assignment: "" 
+      });
+      setImageFileList([]); // Clear image list
     }
   };
+  
 
   useEffect(() => {
     if (initialValues?.course_id) {
@@ -283,6 +308,10 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
   return (
     <Form<Lesson>
       form={form}
+      onResetCapture={() => {
+        console.log('Resetting')
+
+       setVisibility(undefined)}}
       layout="vertical"
       initialValues={initialValues}
       onFinish={onFinish}
@@ -336,9 +365,8 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
           rules={[{ required: true, message: "Please select lesson type" }]}
         >
           <Select
-            onChange={() => handleLessonType()}
-            defaultValue={LessonTypeEnum.READING}
             placeholder="Lesson Type"
+            onChange={(e) => handleLessonType(e)}
             options={[
               { label: "Reading", value: LessonTypeEnum.READING },
               { label: "Video", value: LessonTypeEnum.VIDEO },
@@ -447,7 +475,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
           )}
 
           <div className="flex justify-around">
-            {visibility === LessonTypeEnum.VIDEO && (
+            {visibility=== LessonTypeEnum.VIDEO && (
               <div>
                 <Form.Item
                   label="Content"
@@ -517,7 +545,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
               </div>
             )}
 
-            {visibility === LessonTypeEnum.ASSIGNMENT && (
+            {visibility  === LessonTypeEnum.ASSIGNMENT && (
               <div className="h-[70vh] w-full overflow-y-scroll">
                 <Form.Item name="assignment">
                   {questions.map((q) => (

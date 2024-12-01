@@ -84,12 +84,16 @@ const InstructorLessonList = () => {
   const [sessionSearchParams, setSessionSearchParams] = useState<GetSessions>(
     initialSessionsParams
   );
+  const [lessonToDelete, setLessonToDelete] = useState<Lesson>({} as Lesson);
 
-  const [form] = Form.useForm<Lesson>();
+  const [createForm] = Form.useForm<Lesson>();
+  const [updateForm] = Form.useForm<Lesson>();
+
 
   const showModal = (lesson: Lesson) => {
     setSelectedLesson(lesson);
     setIsModalVisible(true);
+    fetchCourses();
   };
 
   const showCreateModal = () => {
@@ -105,7 +109,8 @@ const InstructorLessonList = () => {
 
   const handleCancel = () => {
     resetModalState();
-    form.resetFields();
+    createForm.resetFields();
+    updateForm.resetFields();
     console.log("cancelling");
   };
 
@@ -127,6 +132,7 @@ const InstructorLessonList = () => {
   };
 
   const handleCreateLesson = async (values: LessonRequest) => {
+    console.log("is create")
     const {
       position_order,
       full_time,
@@ -159,11 +165,20 @@ const InstructorLessonList = () => {
     }
   };
 
-  const handleUpdateLesson = async (updatedLesson: LessonRequest) => {
+  const handleUpdateLesson = async (values: LessonRequest) => {
+    const numericValues: LessonRequest = {
+      ...values,
+      position_order: values.position_order ? Number(values.position_order) : 0,
+      full_time: values.full_time ? Number(values.full_time) : 0,
+      video_url: values.video_url || "",
+      image_url: values.image_url || "",
+      assignment: values.assignment || "",
+    };
+    console.log(numericValues)
     if (selectedLesson) {
       const response = await LessonService.updateLesson(
         selectedLesson._id,
-        updatedLesson
+        numericValues
       );
       if (response.success) {
         resetModalState();
@@ -275,7 +290,7 @@ const InstructorLessonList = () => {
               type="text"
               icon={<DeleteFilled style={{ color: "red" }} />}
               onClick={() => {
-                setSelectedLesson(record);
+                setLessonToDelete(record);
                 setDeleteModal(true);
               }}
             />
@@ -372,7 +387,7 @@ const InstructorLessonList = () => {
         destroyOnClose={true}
       >
           <LessonIOptions
-            form={form}
+            form={updateForm}
             onCourseChange={(value) => {
               console.log("line 392");
               setSessionSearchParams({
@@ -402,7 +417,8 @@ const InstructorLessonList = () => {
         destroyOnClose={true}
       >
         <LessonIOptions
-          form={form}
+          form={createForm}
+          resetVisbility={isModalCreateVisible}
           onCourseChange={(value) =>
             setSessionSearchParams({
               ...sessionSearchParams,
@@ -421,7 +437,7 @@ const InstructorLessonList = () => {
       <DeleteItemModal
         visible={deleteModal}
         onCancel={() => setDeleteModal(false)}
-        onDelete={() => handleDeleteLesson(selectedLesson?._id!)}
+        onDelete={() => handleDeleteLesson(lessonToDelete?._id)}
         itemName={selectedLesson?.name}
         itemType="Lesson" // Pass the type as 'category'
       />

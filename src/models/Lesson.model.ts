@@ -9,6 +9,7 @@ export interface Lesson {
   lesson_type: string;
   description: string;
   video_url: string;
+  image_url: string;
   assignment: string;
   full_time: number;
   position_order: number;
