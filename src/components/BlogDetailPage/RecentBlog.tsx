@@ -1,5 +1,3 @@
-import dayjs from "dayjs";
-import { AiOutlineCalendar } from "react-icons/ai";
 import { BiCategory } from "react-icons/bi";
 import { TiUserOutline } from "react-icons/ti";
 import { useNavigate } from "react-router-dom";
@@ -12,7 +10,7 @@ type Props = {
   description?: string;
 };
 
-export const RecentBlog = ({ blog_id, name, created_at, user_name, description }: Props) => {
+export const RecentBlog = ({ blog_id, name, user_name, description }: Props) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -22,7 +20,7 @@ export const RecentBlog = ({ blog_id, name, created_at, user_name, description }
   };
   return (
     <div
-      className="border rounded-lg px-6 py-4 cursor-pointer mt-2"
+      className="w-1/2 border rounded-lg lg:px-6 lg:py-4 p-2 cursor-pointer mt-2"
       onClick={handleClick}
     >
       <div className="flex-grow">
@@ -31,19 +29,15 @@ export const RecentBlog = ({ blog_id, name, created_at, user_name, description }
         </h2>
       </div>
       <div>
-        <div className="grid grid-cols-2 grid-rows-2 gap-2 justify-between text-sm text-gray-500 mb-4">
-          <span className="flex items-center">
-            <AiOutlineCalendar className="mr-1 text-orange-500" size={18} />
-            {dayjs(created_at).format("DD/MM/YYYY")}
-          </span>
-          <span className="flex items-center justify-end">
+        <div className="flex flex-col">
+          <div className="flex items-center text-sm">
             <TiUserOutline className="mr-1 text-orange-500" size={20} />
             {user_name}
-          </span>
-          <span className="flex items-center">
+          </div>
+          <div className="flex items-center">
             <BiCategory className="mr-1 text-orange-500" size={18} />
             {description}
-          </span>
+          </div>
         </div>
 
       </div>

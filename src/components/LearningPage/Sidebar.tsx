@@ -1,8 +1,12 @@
-import React from 'react';
-import { Session } from '../../models/Session.model';
-import { Lesson } from '../../models/Lesson.model';
-import { MdOutlinePlayCircle, MdOutlineTaskAlt } from 'react-icons/md';
-import { FiBookOpen } from 'react-icons/fi';
+import React from "react";
+import { Session } from "../../models/Session.model";
+import { Lesson } from "../../models/Lesson.model";
+import {
+  MdOutlineImage,
+  MdOutlinePlayCircle,
+  MdOutlineTaskAlt,
+} from "react-icons/md";
+import { FiBookOpen } from "react-icons/fi";
 
 interface SidebarProps {
   sidebarWidth: string;
@@ -23,8 +27,8 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   return (
     <div
-      className="p-4 h-[92vh] overflow-y-scroll custom-scrollbar"
-      style={{ width: sidebarWidth, minWidth: '20%', maxWidth: '50%' }}
+      className="p-4 h-[92vh] overflow-y-scroll custom-scrollbar max-w-full lg:max-w-1/2"
+      style={{ width: sidebarWidth, minWidth: "20%" }}
     >
       {sessions?.map((sessionItem, sessionIndex) => (
         <div key={sessionIndex} className="mb-4">
@@ -50,8 +54,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     key={lessonItem._id}
                     onClick={() => selectLesson(lessonItem)}
                     className={`pl-2 py-2 rounded cursor-pointer ${
-                      selectedLesson &&
-                      selectedLesson._id === lessonItem._id
+                      selectedLesson && selectedLesson._id === lessonItem._id
                         ? "bg-orange-500 text-white"
                         : ""
                     }`}
@@ -69,12 +72,13 @@ const Sidebar: React.FC<SidebarProps> = ({
                               {lessonItem.lesson_type === "reading" && (
                                 <FiBookOpen className="w-6 h-6" />
                               )}
+                              {lessonItem.lesson_type === "image" && (
+                                <MdOutlineImage className="w-6 h-6" />
+                              )}
                             </div>
                           )}
                         </div>
-                        <div className="font-semibold">
-                          {lessonItem.name}
-                        </div>
+                        <div className="font-semibold">{lessonItem.name}</div>
                       </div>
                       <span className="text-sm">
                         {lessonItem.lesson_type.charAt(0).toUpperCase() +

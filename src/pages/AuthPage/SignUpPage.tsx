@@ -109,7 +109,7 @@ const SignUppage = () => {
           />
         </div>
         {/* FORM */}
-        <div className="w-full h-full bg-white px-10 lg:w-1/2 lg:p-10 justify-center ">
+        <div className="w-full bg-white px-10 lg:w-1/2 lg:p-10 justify-center ">
           <h1 className="text-4xl font-semibold text-center text-gray-800">
             Register
           </h1>
@@ -125,7 +125,7 @@ const SignUppage = () => {
               onFinish={onFinish}
               autoComplete="off"
             >
-              <div className="flex-grow mb-6 overflow-auto h-[24rem]">
+              <div className="flex-grow mb-6">
                 {/* email */}
                 <Form.Item<RegisterType>
                   label="Email"
@@ -394,7 +394,7 @@ const SignUppage = () => {
               </Form.Item>
             </Form>
             <div className="text-center mt-6">
-              <span className="text-gray-500">Don’t have an account? </span>
+              <span className="text-gray-500">Already have an account? </span>
               <NavLink to={"/login"} className="text-[#FF782D] hover:underline">
                 Sign in
               </NavLink>

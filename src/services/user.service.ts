@@ -226,7 +226,7 @@ export const deleteUser = async (userId: string) => {
 
 export const previewInstructor = async (
   formData: any,
-  dispatch: AppDispatch,
+  dispatch: AppDispatch
 ) => {
   dispatch(previewProfilePending());
   try {
@@ -242,5 +242,26 @@ export const previewInstructor = async (
   } catch (error) {
     console.log(error);
     dispatch(previewProfileRejected());
+  }
+};
+
+export const completeLesson = async (lessonId: string) => {
+  try {
+    const response = await postRequest(`${BASE_URL}/completed-lesson`, {
+      lessonId: lessonId,
+    });
+    if (response.success) {
+      handleNotify("Lesson completed", "");
+      return true;
+    } else {
+      handleNotify(
+        "Error",
+        response.message || "Failed to complete lesson",
+        "error"
+      );
+    }
+  } catch (error) {
+    console.error("Error completing lesson:", error);
+    throw error;
   }
 };
