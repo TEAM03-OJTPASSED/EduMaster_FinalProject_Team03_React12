@@ -134,12 +134,7 @@ const Loginpage = () => {
             Or sign in with
           </Divider>
           <div className="flex justify-center">
-            {/* <GoogleLogin
-            onSuccess={handleLoginGoogleSuccess}
-            onError={() => {
-              console.log("Login Failed");
-            }}
-          /> */}
+
 
             <GoogleLoginButton />
           </div>
