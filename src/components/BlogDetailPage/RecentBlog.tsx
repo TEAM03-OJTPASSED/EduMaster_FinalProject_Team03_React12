@@ -22,7 +22,7 @@ export const RecentBlog = ({ blog_id, name, created_at, user_name, description }
   };
   return (
     <div
-      className="w-1/2 border rounded-lg px-6 py-4 cursor-pointer mt-2"
+      className="border rounded-lg px-6 py-4 cursor-pointer mt-2"
       onClick={handleClick}
     >
       <div className="flex-grow">
