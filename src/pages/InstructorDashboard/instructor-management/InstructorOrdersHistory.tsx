@@ -8,7 +8,7 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 import PayoutService from "../../../services/payout.service";
 import { CreatePayout } from "../../../models/Payout.model";
 import { handleNotify } from "../../../utils/handleNotify";
-import EmptyData from "../../../components/Empty Data/EmptyData";
+// import EmptyData from "../../../components/Empty Data/EmptyData";
 
 
 const initialParams: GetPurchases = {
@@ -79,6 +79,7 @@ const InstructorSalesHistory = () => {
         dataIndex: "select",
         key: "select",
         fixed: true,
+        align: 'center' as const,
         render: (_: any, record: Purchase) => (
           <Checkbox
             checked={selectedRowKeys.includes(record.purchase_no)}
@@ -220,11 +221,11 @@ const InstructorSalesHistory = () => {
         dataSource={salesHistory}
         columns={columns}
         scroll={{ x: 'max-content' }}
-        pagination={{ pageSize: 4 }}
+        pagination={{ pageSize: 5 }}
         rowKey="purchase_no"
         bordered
         style={{ borderRadius: "8px" }}
-        locale={{emptyText: <EmptyData message="No orders found" description="No orders found for the given search parameters"/>}}
+        // locale={{emptyText: <EmptyData message="No orders found" description="No orders found for the given search parameters"/>}}
       />
 
       {/* Modal for showing detailed information */}

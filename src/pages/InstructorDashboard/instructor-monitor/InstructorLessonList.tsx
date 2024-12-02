@@ -30,6 +30,8 @@ import LessonService from "../../../services/lesson.service";
 import { handleNotify } from "../../../utils/handleNotify";
 import GlobalSearchUnit from "../../../components/GlobalSearchUnit";
 import DeleteItemModal from "../../../components/DeleteItemModal";
+import { RootState } from "../../../redux/store/store";
+import { useSelector } from "react-redux";
 
 const initialCoursesParams: GetCourses = {
   pageInfo: {
@@ -84,6 +86,7 @@ const InstructorLessonList = () => {
   const [sessionSearchParams, setSessionSearchParams] = useState<GetSessions>(
     initialSessionsParams
   );
+  const {currentUser} = useSelector((state:RootState) => state.auth.login)
   const [lessonToDelete, setLessonToDelete] = useState<Lesson>({} as Lesson);
 
   const [createForm] = Form.useForm<Lesson>();
@@ -172,7 +175,8 @@ const InstructorLessonList = () => {
       full_time: values.full_time ? Number(values.full_time) : 0,
       video_url: values.video_url || "",
       image_url: values.image_url || "",
-      assignment: values.assignment || "",
+      assignment: "",
+      user_id: currentUser._id
     };
     console.log(numericValues)
     if (selectedLesson) {

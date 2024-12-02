@@ -24,6 +24,7 @@ export interface Lesson {
 
 export interface LessonRequest {
   name: string;
+  user_id: string;
   course_id: string;
   session_id: string;
   lesson_type: string;

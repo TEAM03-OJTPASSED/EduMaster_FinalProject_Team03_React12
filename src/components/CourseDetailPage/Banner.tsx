@@ -1,9 +1,12 @@
 import { FaPlay } from "react-icons/fa";
 import { useCustomNavigate } from "../../hooks/customNavigate";
 import { Course } from "../../models/Course.model";
-import { handleAddCart } from "../../utils/handleAddCart";
 import { CourseSummary } from "./CourseSummary";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../redux/store/store";
+import { addToCart } from "../../redux/slices/cartSlice";
+import { hideLoadingOverlay, showLoadingOverlay } from "../../utils/loadingOverlay";
 
 type Props = {
   course: Course;
@@ -20,6 +23,7 @@ export const Banner = ({
   isPurchased,
   completed_lesson,
 }: Props) => {
+  const dispatch = useDispatch<AppDispatch>();
   const totalLessons = course.session_list.reduce((sum, session) => {
     return sum + session.lesson_list.length;
   }, 0);
@@ -41,8 +45,14 @@ export const Banner = ({
     course: Course,
     navigate: (path: string) => void
   ) => {
-    await handleAddCart(userRole, course, navigate);
-    navigate("/cart/new");
+
+    try {
+      showLoadingOverlay()
+      await dispatch(addToCart({ course, userRole, navigate }));
+      navigate("/cart/new");
+    } finally {
+      hideLoadingOverlay()
+    }
   };
 
   const handleLearn = (course: Course) => {
