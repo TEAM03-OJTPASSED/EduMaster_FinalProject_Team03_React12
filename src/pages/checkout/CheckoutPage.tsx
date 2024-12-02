@@ -22,6 +22,7 @@ import { RootState } from "../../redux/store/store";
 import { useSelector } from "react-redux";
 import { Cart, CartItem } from "../../models/Cart.model";
 import { useNavigate } from "react-router-dom";
+import { moneyFormatter } from "../../utils/moneyFormatter";
 
 const { Title, Text } = Typography;
 
@@ -43,7 +44,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({
   const { currentUser } = useSelector((state: RootState) => state.auth.login);
   const navigate = useNavigate();
 
-  const total = carts.reduce((sum, cart) => sum + cart.price, 0);
+  const total = carts.reduce((sum, cart) => sum + cart.price_paid, 0);
 
   // const onFinish = (values: any) => {
   //   console.log('Success:', values);
@@ -62,7 +63,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({
       <div className="w-full">
         {carts.length > 0 && (
           <div className="flex flex-col lg:flex-row gap-8">
-            <div className="w-full lg:w-2/3">
+            <div className="w-full lg:w-3/5">
               <Card title="Billing Information" className="mb-8">
                 <Form
                   name="checkout"
@@ -168,24 +169,39 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({
                 </Form>
               </Card>
             </div>
-            <div className="w-full lg:w-1/3">
+            <div className="w-full lg:w-2/5">
               <Card title="Order Summary" className="sticky top-4">
                 <List
                   dataSource={carts}
                   renderItem={(cart) => (
-                    <List.Item key={cart._id} className="justify-between">
-                      <Text>{cart.course_name}</Text>
-                      <div className="flex w-1/4 justify-end items-center">
-                        <Text className="">${cart.price.toFixed(2)}</Text>
-                        <Button
-                          type="link"
-                          onClick={() => cancelCart(cart)}
-                          className="text-red-500 px-2"
-                        >
-                          X
-                        </Button>
+                    <List.Item key={cart._id} className="flex-col flex">
+                      {cart.discount > 0 &&
+                      <div className="flex w-full h-2 text-gray-400 line-through  justify-end items-center">
+                          <Text className="text-gray-400">{moneyFormatter(cart.price)}</Text>
+                          <Button
+                            type="link"
+                            className="text-gray-500 opacity-0 underline text-xs px-2 font-semibold hover:!text-red-500"
+                          >
+                            Cancel
+                          </Button>
+                        </div>
+                    }
+                      <div className="justify-between flex w-full">
+                        <Text>{cart.course_name}</Text>
+                        <div className="flex w-2/5 justify-end items-center">
+                          <Text className="">{moneyFormatter(cart.price_paid)}</Text>
+                          <Button
+                            type="link"
+                            onClick={() => cancelCart(cart)}
+                            className="text-gray-500 underline text-xs px-2 font-semibold hover:!text-red-500"
+                          >
+                            Cancel
+                          </Button>
+                        </div>
                       </div>
+                      
                     </List.Item>
+                    
                   )}
                 />
                 <Divider />

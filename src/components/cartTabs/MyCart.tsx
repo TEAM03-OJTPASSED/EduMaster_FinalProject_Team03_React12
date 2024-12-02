@@ -15,6 +15,7 @@ interface MyCartProps {
   toggleSelectCart: (cartItem: CartItem) => void;
   removeCart: (cartItem: CartItem) => void;
   total: number;
+  discounted: number;
   navigate: (path: string) => void;
   onCheckOut: () => void;
   isLoading?: boolean; // New prop for loading state
@@ -60,6 +61,7 @@ const MyCart: React.FC<MyCartProps> = ({
   toggleSelectCart,
   removeCart,
   total,
+  discounted,
   navigate,
   onCheckOut,
   isLoading = false,
@@ -83,7 +85,7 @@ const MyCart: React.FC<MyCartProps> = ({
     return (
       <>
         <h1 className="mb-2 pt-4 text-4xl font-semibold">Your Cart</h1>
-        <div className="flex flex-col md:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-8">
           <div className="w-full md:w-2/3">
             <CartSkeleton />
           </div>
@@ -98,8 +100,8 @@ const MyCart: React.FC<MyCartProps> = ({
   return (
     <>
       <h1 className="mb-2 pt-4 text-4xl font-semibold">Your Cart</h1>
-      <div className="flex flex-col md:flex-row gap-8">
-        <div className="w-full md:w-2/3">
+      <div className="flex flex-col lg:flex-row gap-8">
+        <div className="w-full lg:w-2/3">
           {carts.length > 0 ? (
             <List
               itemLayout="horizontal"
@@ -140,7 +142,7 @@ const MyCart: React.FC<MyCartProps> = ({
                       />
                     }
                     title={
-                      <Text strong className="font-jost">
+                      <Text strong className="font-jost hover:text-orange-400 transition whitespace-nowrap overflow-ellipsis" onClick={() => navigate(`/course/${cart.course_id}`)}>
                         {cart.course_name}
                       </Text>
                     }
@@ -172,13 +174,19 @@ const MyCart: React.FC<MyCartProps> = ({
             />
           )}
         </div>
-        <div className="w-full md:w-1/3">
+        <div className="w-full lg:w-1/3">
           <Card title="Order Summary" className="sticky top-4">
             <Space direction="vertical" className="w-full">
-              <div className="flex justify-between">
+            <div className="flex justify-between">
                 <Text>Subtotal</Text>
-                <Text>${total.toFixed(2)}</Text>
+                <Text>${(discounted + total).toFixed(2)}</Text>
               </div>
+              {discounted > 0 &&
+              <div className="flex justify-between">
+                <Text>You saved</Text>
+                <Text>- ${discounted.toFixed(2)}</Text>
+              </div>
+              }
               <div className="flex justify-between items-center">
                 <Text strong>Total</Text>
                 <Text strong className="text-4xl font-jost">

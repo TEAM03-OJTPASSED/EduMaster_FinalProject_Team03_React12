@@ -184,8 +184,14 @@ const CartPage: React.FC = () => {
     )
     .reduce((sum, cart) => sum + cart.price * (1 - cart.discount / 100), 0);
 
+  const discounted = carts
+    .filter((cart) =>
+      selectedCarts.some((selectedCart) => selectedCart._id === cart._id)
+    )
+    .reduce((sum, cart) => sum + cart.price * (cart.discount / 100), 0);
+
   return (
-    <div className="container mx-auto px-4 py-8 font-jost min-h-screen">
+    <div className=" mx-auto px-4 py-8 font-jost min-h-screen">
       <DynamicBreadcrumb />
       <Tabs
         defaultActiveKey={cartStatus}
@@ -208,6 +214,7 @@ const CartPage: React.FC = () => {
                 toggleSelectCart={toggleSelectCart}
                 total={total}
                 onCheckOut={handleAddToCheckout}
+                discounted={discounted}
               />
             ),
           },

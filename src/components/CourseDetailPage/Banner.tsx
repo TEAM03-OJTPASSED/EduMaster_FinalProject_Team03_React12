@@ -3,10 +3,13 @@ import { useCustomNavigate } from "../../hooks/customNavigate";
 import { Course } from "../../models/Course.model";
 import { CourseSummary } from "./CourseSummary";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../redux/store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../redux/store/store";
 import { addToCart } from "../../redux/slices/cartSlice";
-import { hideLoadingOverlay, showLoadingOverlay } from "../../utils/loadingOverlay";
+import {
+  hideLoadingOverlay,
+  showLoadingOverlay,
+} from "../../utils/loadingOverlay";
 
 type Props = {
   course: Course;
@@ -14,8 +17,6 @@ type Props = {
   id: string;
   completed_lesson: string[];
 };
-
-const currentUser = localStorage.getItem("user");
 
 export const Banner = ({
   id,
@@ -27,6 +28,7 @@ export const Banner = ({
   const totalLessons = course.session_list.reduce((sum, session) => {
     return sum + session.lesson_list.length;
   }, 0);
+  const { currentUser } = useSelector((state: RootState) => state.auth.login);
 
   const completedLessonCount = course.session_list.reduce((sum, session) => {
     return (
@@ -45,13 +47,12 @@ export const Banner = ({
     course: Course,
     navigate: (path: string) => void
   ) => {
-
     try {
-      showLoadingOverlay()
+      showLoadingOverlay();
       await dispatch(addToCart({ course, userRole, navigate }));
       navigate("/cart/new");
     } finally {
-      hideLoadingOverlay()
+      hideLoadingOverlay();
     }
   };
 
@@ -139,16 +140,32 @@ export const Banner = ({
             </div>
           ) : (
             <div className="flex">
-              <div
-                className="bg-orange-500 text-white text-2xl font-semibold px-8 py-4 rounded cursor-pointer"
-                onClick={() =>
-                  currentUser
-                    ? handleAdd(JSON.parse(currentUser).role, course, navigate)
-                    : navigate("/login")
+              {currentUser._id === course.instructor_id ? (
+                <div
+                  className="bg-orange-500 text-white text-2xl font-semibold px-8 py-4 rounded cursor-pointer"
+                  onClick={() => navigate("/dashboard/instructor/my-courses")}
+                >
+                  Edit This Course
+                </div>
+              ) : (
+                <div
+                  className="bg-orange-500 text-white text-2xl font-semibold px-8 py-4 rounded cursor-pointer"
+                  onClick={() => {
+                    if (currentUser) {
+                      if (course.is_in_cart) {
+                        navigate(`/cart/new`)
+                      } else {
+                        handleAdd(currentUser.role, course, navigate)
+                      }
+                    } else {
+                      navigate("/login")
+                    }
+                  }
                 }
-              >
-                Buy Now
-              </div>
+                >
+                  {course.is_in_cart ?"View in Cart" :"Buy Now"}
+                </div>
+              )}
               <div className="flex flex-col items-start justify-center ml-4">
                 {course.discount && course.discount > 0 ? (
                   <>
@@ -190,7 +207,10 @@ export const Banner = ({
               onClick={handleModalClick}
             >
               <div className="bg-white p-4 rounded-lg relative flex items-center justify-center">
-                <video controls className="max-w-[80vw] max-h-[80vh] object-contain">
+                <video
+                  controls
+                  className="max-w-[80vw] max-h-[80vh] object-contain"
+                >
                   <source src={course.video_url} type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>

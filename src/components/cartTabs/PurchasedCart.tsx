@@ -1,17 +1,9 @@
 import { List, Button, Empty, Space, Typography } from "antd";
-import {
-  ShoppingCartOutlined,
-
-  CheckCircleOutlined,
-  ArrowRightOutlined,
-
-} from "@ant-design/icons";
+import { ArrowRightOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { Cart } from "../../models/Cart.model";
 import { moneyFormatter } from "../../utils/moneyFormatter";
 
 const { Text } = Typography;
-
-
 
 interface OrderProps {
   carts: Cart[];
@@ -23,13 +15,11 @@ interface OrderProps {
   isLoading?: boolean;
 }
 
-
 // Purchased Orders Component
 const PurchasedOrders: React.FC<OrderProps> = ({
   carts,
   navigate,
-  isLoading = false
-
+  isLoading = false,
 }) => {
   return (
     <>
@@ -38,39 +28,16 @@ const PurchasedOrders: React.FC<OrderProps> = ({
         <div className="w-full">
           {carts.length > 0 && (
             <List
-              itemLayout="horizontal"
+              itemLayout="horizontal" // Change layout for more vertical space
               dataSource={carts}
               renderItem={(cart) => (
-                <List.Item
-                  key={cart._id}
-                  actions={[
-                    <div key={cart._id}>
-                      <Text className={`font-jost px-8 text-base`}>
-                        <span className={`${cart.discount ? "line-through text-gray-400 text-sm pr-2" : "text-black text-right"}`}>{moneyFormatter(cart.price)} </span>
-                        {cart.discount > 0 &&  `${moneyFormatter(cart.price_paid)}`
-                        }
-                      </Text>
-                      <Text type="success">
-                          <CheckCircleOutlined /> Purchase Complete
-                      </Text>
-                    </div>,
-                    <Button
-                      key={cart._id}
-                      type="primary"
-                      size="large"
-                      className="w-full mt-4 view-button ant-btn-variant-solid font-jost"
-                      onClick={() => navigate(`/course/${cart.course_id}`)}
-                    >
-                      Learn <ArrowRightOutlined />
-                    </Button>,
-                  ]}
-                >
+                <List.Item key={cart._id} className="relative">
                   <List.Item.Meta
                     avatar={
                       <img
                         src={cart.course_image}
                         alt={cart.course_name}
-                        className="w-24 h-16 object-cover rounded"
+                        className="w-36 h-28 object-cover rounded"
                       />
                     }
                     title={
@@ -81,15 +48,38 @@ const PurchasedOrders: React.FC<OrderProps> = ({
                     description={
                       <Space className="flex flex-col items-start">
                         <Text>By {cart.instructor_name}</Text>
-                        
                       </Space>
                     }
                   />
+                  {/* Responsive price and button */}
+                  <div className="flex flex-row absolute items-center mb-4 justify-between  bottom-0 w-full mt-4">
+                    <Text className={`font-jost text-base ml-40`}>
+                      <span
+                        className={`${
+                          cart.discount
+                            ? "line-through text-gray-400 text-sm pr-2"
+                            : "text-black text-right"
+                        }`}
+                      >
+                        {moneyFormatter(cart.price)}
+                      </span>
+                      {cart.discount > 0 && `${moneyFormatter(cart.price_paid)}`}
+                    </Text>
+                    <Button
+                      type="primary"
+                      size="large"
+                      className="  lg:mt-0 p-2 view-button text-base ant-btn-variant-solid rounded-full font-jost"
+                      onClick={() => navigate(`/course/${cart.course_id}`)}
+                    >
+                      Learn <ArrowRightOutlined/>
+                    </Button>
+                  </div>
+                  
                 </List.Item>
               )}
             />
-          )}  
-        {carts.length === 0 && isLoading === false && (
+          )}
+          {carts.length === 0 && isLoading === false && (
             <Empty
               image={Empty.PRESENTED_IMAGE_SIMPLE}
               description={
@@ -108,11 +98,9 @@ const PurchasedOrders: React.FC<OrderProps> = ({
             />
           )}
         </div>
-        
       </div>
     </>
   );
 };
 
-
-export default PurchasedOrders
+export default PurchasedOrders;

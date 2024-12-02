@@ -52,6 +52,7 @@ const CourseCard: React.FC<{
       }}>
         <Card
           hoverable
+          
           styles={{
             body: {
               height: "100%",
@@ -76,7 +77,7 @@ const CourseCard: React.FC<{
           }
           className={`${
             viewMode === "list" && " h-[200px] md:"
-          }h-full rounded-3xl overflow-hidden group font-jost  hover:-translate-y-2 transition-all duration-500 ${
+          }h-full group-hover:shadow-lg rounded-3xl overflow-hidden group font-jost  group-hover:-translate-y-2  hover:-translate-y-2 transition-all duration-500 ${
             viewMode === "list" ? "flex" : ""
           }`}
         >
@@ -120,9 +121,10 @@ const CourseCard: React.FC<{
 
             <div className="flex justify-between items-center">
               <span className="text-base sm:text-lg font-bold text-orange-500">
-              {!course.is_purchased ? (
-                typeof course.price === "number"? moneyFormatter(course.price) : course.price
-                )
+              {!course.is_purchased ? (<p className="flex items-center">
+                {typeof course.price === "number"? moneyFormatter(course.price, course.discount) : course.price}
+                {course.discount > 0 &&<span className=" ml-2 font-normal text-sm line-through text-gray-400 "> {moneyFormatter(course.price)}</span>}
+              </p>)
               : (
                 <a href={`/course/${course._id}` } 
                 className="px-4 sm:px-2 py-1 bg-orange-500 rounded-full hover:bg-orange-400 text-sm transition-all flex justify-center font-jost font-medium text- text-white hover:text-white"
@@ -133,40 +135,53 @@ const CourseCard: React.FC<{
                 }}>Go to course <ArrowRightOutlined className="w-3 ml-2"/></a>
               )}
               </span>
-              <Button type="link" className="text-blue-600 !p-0 hover:text-blue-800">
-                View More
-              </Button>
+             
             </div>
           </div>
         </Card>
 
         <div
-          className={`z-50 absolute w-[352px] top-0 opacity-0 px-4 group-hover:opacity-100 transition-all duration-300 transform group-hover:translate-x-0 pointer-events-none group-hover:pointer-events-auto ${
-            (index + 1) % (isMdScreen ? 3 : 2) === 0 && viewMode !== "list"
-              ? "right-full -translate-x-4 "
-              : "left-full translate-x-4"
-          } `}
+          className={`z-40 absolute top-0 opacity-0 group-hover:opacity-100 group-hover:-translate-y-4  transition-all duration-300 transform pointer-events-none group-hover:pointer-events-auto
+            ${viewMode !== "list"
+              ? "w-full group-hover:-translate-y-4 max-h-[70%] min-h-[60%]"
+              : "w-[352px] left-full translate-x-4"}
+            `}
+          
         >
-          <div className="w-80 font-jost bg-white p-4 rounded-3xl shadow-lg ">
-            <h3 className="text-xl font-semibold mb-2">{course.name}</h3>
-            <p className="text-sm text-gray-600 mb-2">
+          <div className={`${viewMode !== "list" ? "w-full" : "w-80"} font-jost bg-white p-4 rounded-3xl shadow-lg`}>
+            <h3 className="text-xl font-semibold">{course.name}</h3>
+            <a className="text-gray-500 text-sm mb-2" 
+            href={`profile/${course.instructor_id}`} 
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              navigate(`/profile/${course.instructor_id}`)
+            }
+            }>
+              by {course.instructor_name}
+            </a>
+            <p className="text-sm text-gray-600">
               Created at{" "}
               {new Date(course.created_at).toLocaleDateString() ?? "Recently"}
             </p>
-            <p className="text-sm text-gray-700 mb-4">
+            <p className="text-sm text-gray-700 mb-4 mt-2">
               {course.description ??
                 "In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content."}
             </p>
-            <ul className="text-sm text-gray-600 mb-4">
+            {/* <ul className="text-sm text-gray-600 mb-4">
               <li className="flex items-center mb-1">
                 <AiOutlineClockCircle className="mr-2 text-primary" size={16} />
-                {course.full_time} total hours
+                {Math.ceil(course.full_time/60)} Hours
               </li>
               <li className="flex items-center mb-1">
                 <BiBook className="mr-2 text-primary" size={16} />
-                All Levels
+                {course.level}
               </li>
-            </ul>
+              <li className="flex items-center mb-1">
+                <BiBook className="mr-2 text-primary" size={16} />
+                {course.lesson_count}
+              </li>
+            </ul> */}
             {!isInCart &&
               <Button
                 loading={loading}

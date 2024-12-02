@@ -75,6 +75,7 @@ export default function CoursesPage() {
     }));
   };
   const handlePagination = (page: number) => {
+    window.scrollTo(0,0)
     setNoResult(false);
     setCourses([])
     setSearchParams((prevParams) => {
