@@ -61,7 +61,7 @@ const initialSessionsParams: GetSessions = {
 const initialLessonsParams: GetLessons = {
   pageInfo: {
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 5,
   },
   searchCondition: {
     keyword: "",
@@ -86,6 +86,7 @@ const InstructorLessonList = () => {
   const [sessionSearchParams, setSessionSearchParams] = useState<GetSessions>(
     initialSessionsParams
   );
+  const [totalItems, setTotalItems] = useState<number>();
   const {currentUser} = useSelector((state:RootState) => state.auth.login)
   const [lessonToDelete, setLessonToDelete] = useState<Lesson>({} as Lesson);
 
@@ -129,9 +130,9 @@ const InstructorLessonList = () => {
   };
 
   const fetchLessons = async () => {
-    console.log("fec")
     const response = await LessonService.getLessons(searchParams);
     setListLessons(response?.data?.pageData ?? []);
+    setTotalItems(response?.data?.pageInfo?.totalItems);
   };
 
   const handleCreateLesson = async (values: LessonRequest) => {
@@ -218,7 +219,6 @@ const InstructorLessonList = () => {
 
   useEffect(() => {
     fetchLessons();
-    console.log(searchParams)
   }, [searchParams]);
 
   const columns: TableProps<Lesson>["columns"] = [
@@ -373,7 +373,15 @@ const InstructorLessonList = () => {
       <Table
         dataSource={listLessons}
         columns={columns}
-        pagination={{ pageSize: 5 }}
+        pagination={{
+          pageSize: 5,
+          total: totalItems,
+          onChange: (page) =>
+            setSearchParams({
+              ...searchParams,
+              pageInfo: { ...searchParams.pageInfo, pageNum: page },
+            }),
+        }}
         rowKey="id"
         bordered
         style={{ borderRadius: "8px" }}

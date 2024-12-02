@@ -17,10 +17,12 @@ import { addToCart } from "../../redux/slices/cartSlice";
 export const SearchResults: React.FC<{
   courses: Course[];
   onSearch: (searchValue: string) => void;
+  onPaginate: (paginateValue: number) => void;
   searchQuery?: string;
   noResult: boolean;
+  totalItems: number | undefined;
   // onCourseSelected: (course: Course) => void;
-}> = ({ courses, onSearch, searchQuery, noResult }) => {
+}> = ({ courses, onSearch, onPaginate, totalItems, searchQuery, noResult }) => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const navigate = useCustomNavigate()
   const dispatch = useDispatch<AppDispatch>();
@@ -79,9 +81,8 @@ export const SearchResults: React.FC<{
               <CoursesGrid viewMode={viewMode} courses={courses} onAddCartClick={onAddCart}/>
         
               <Pagination
-                total={courses.length}
-                showSizeChanger
-                showQuickJumper
+                total={totalItems}
+                onChange={(e) => onPaginate(e)}
                 className="mt-8 text-center"
               /></>)
               : (

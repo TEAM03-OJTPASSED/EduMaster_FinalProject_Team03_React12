@@ -19,7 +19,7 @@ const initialParams: GetPurchases = {
   },
   pageInfo: {
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 5,
   },
 };
 
@@ -29,6 +29,7 @@ const InstructorSalesHistory = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Purchase | null>(null); // Thêm state cho đơn hàng được chọn
   const [searchParams, setSearchParams] = useState<GetPurchases>(initialParams)
+  const [totalItems, setTotalItems] = useState<number>();
 
 
   const handleSelect = (key: React.Key) => {
@@ -164,7 +165,8 @@ const InstructorSalesHistory = () => {
 
   const fetchSalesHistory = async () => {
     const response = await PurchaseService.getPurchasesInstructor(searchParams);
-    setSalesHistory(response.data?.pageData || []); 
+    setSalesHistory(response.data?.pageData || []);
+    setTotalItems(response?.data?.pageInfo?.totalItems);
   };
 
 
@@ -221,7 +223,15 @@ const InstructorSalesHistory = () => {
         dataSource={salesHistory}
         columns={columns}
         scroll={{ x: 'max-content' }}
-        pagination={{ pageSize: 5 }}
+        pagination={{
+          pageSize: 5,
+          total: totalItems,
+          onChange: (page) =>
+            setSearchParams({
+              ...searchParams,
+              pageInfo: { ...searchParams.pageInfo, pageNum: page },
+            }),
+        }}
         rowKey="purchase_no"
         bordered
         style={{ borderRadius: "8px" }}

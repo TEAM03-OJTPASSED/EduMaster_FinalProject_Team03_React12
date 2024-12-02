@@ -192,8 +192,11 @@ const InstructorCourseList: React.FC = () => {
 
   useEffect(() => {
     fetchCourses();
-    fetchCategories();
   }, [searchParams]);
+
+  useEffect(() => {
+    fetchCategories();
+  },[])
 
   const handleSendToAdmin = async (course: Course) => {
     console.log("Sending course to admin:", course);

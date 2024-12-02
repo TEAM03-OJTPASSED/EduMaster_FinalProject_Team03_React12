@@ -12,7 +12,7 @@ import { Category } from "../models/Category.model";
 const initialCoursesParams: GetCourseClient = {
   pageInfo: {
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 9,
   },
   searchCondition: {
     keyword: "",
@@ -37,12 +37,18 @@ export default function CoursesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [noResult, setNoResult] = useState(false);
+  const [totalItems, setTotalItems] = useState<number>();
+
 
   const initialKeyword = searchParams.get("search") || "";
   const initialCategoryId = searchParams.get("category") || "";
+  const initialPageNo = Number(searchParams.get("page") || 1);
 
   const [coursesParams, setCoursesParams] = useState<GetCourseClient>({
-    ...initialCoursesParams,
+    pageInfo: {
+      pageNum: initialPageNo,
+      pageSize: initialCoursesParams.pageInfo.pageSize
+    },
     searchCondition: {
       ...initialCoursesParams.searchCondition,
       keyword: initialKeyword,
@@ -65,10 +71,28 @@ export default function CoursesPage() {
       },
       pageInfo: {
         ...prevParams.pageInfo,
-        pageNum: 1,
       },
     }));
   };
+  const handlePagination = (page: number) => {
+    setNoResult(false);
+    setCourses([])
+    setSearchParams((prevParams) => {
+      prevParams.set("page", String(page));
+      return prevParams;
+    });
+
+    setCoursesParams((prevParams) => ({
+      ...prevParams,
+      searchCondition: {
+        ...prevParams.searchCondition,
+      },
+      pageInfo: {
+        ...prevParams.pageInfo,
+        pageNum: page
+      },
+    }));
+  }
 
   const handleFilterChange = (value: string) => {
     setNoResult(false);
@@ -100,6 +124,7 @@ export default function CoursesPage() {
       const response = await ClientService.getCourses(coursesParams);
       if (response.data?.pageInfo?.totalItems === 0) setNoResult(true);
       setCourses(response?.data?.pageData ?? []);
+      setTotalItems(response?.data?.pageInfo?.totalItems);
     };
 
     fetchCourses();
@@ -120,6 +145,8 @@ export default function CoursesPage() {
           courses={courses}
           onSearch={handleSearch}
           searchQuery={coursesParams.searchCondition.keyword}
+          onPaginate={handlePagination}
+          totalItems={totalItems}
         />
         <SearchFilter
           onChange={handleFilterChange}
