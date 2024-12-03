@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { Layout, Button, Drawer, Avatar, Dropdown, Menu } from "antd";
-import { MenuOutlined } from "@ant-design/icons";
+import { useState, useEffect } from "react";
+import { Layout, Button, Drawer, Avatar, Dropdown } from "antd";
+import { MenuOutlined, UserOutlined, LogoutOutlined } from "@ant-design/icons";
 import logoImage from "../../assets/EduMaster.png"; // Đường dẫn đến logo
 import { useCustomNavigate } from "../../hooks/customNavigate"; // Hook tùy chỉnh cho điều hướng
-import InstructorSidebar from "./instructorSidebar";
-
-
+import InstructorSidebar from "./InstructorSidebar";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store/store";
 const { Sider } = Layout; // Chỉ destructure Sider
-
 const InstructorNavbar = () => {
+  const { currentUser } = useSelector((state: RootState) => state.auth.login);
   const navigate = useCustomNavigate();
   const [isMobile, setIsMobile] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -28,20 +28,29 @@ const InstructorNavbar = () => {
     setDrawerVisible(!drawerVisible); // Toggle Drawer khi click
   };
 
-  // Menu items for the dropdown
-  const menu = (
-    <Menu>
-      <Menu.Item key="profile" onClick={() => navigate("/profile")}>
-        Profile
-      </Menu.Item>
-      <Menu.Item key="settings" onClick={() => navigate("/settings")}>
-        Settings
-      </Menu.Item>
-      <Menu.Item key="logout" onClick={() => navigate("/logout")}>
-        Logout
-      </Menu.Item>
-    </Menu>
-  );
+  // Update the menu items to use items prop
+  const menuItems = [
+    {
+      key: "profile",
+      label: (
+        <span onClick={() => navigate("/dashboard/instructor/settings")}>
+          Profile
+        </span>
+      ),
+      icon: <UserOutlined />, // Thêm icon UserOutlined cho Profile
+    },
+    {
+      key: "logout",
+      onClick: () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.reload();
+        window.location.href = "/";
+      },
+      label: <span>Logout</span>,
+      icon: <LogoutOutlined />, // Thêm icon LogoutOutlined cho Logout
+    },
+  ];
 
   return (
     <>
@@ -69,11 +78,12 @@ const InstructorNavbar = () => {
           title="Menu"
           placement="left"
           onClose={toggleDrawer}
-          visible={drawerVisible} // Control visibility
+          open={drawerVisible} // Control visibility
         >
           {/* Sử dụng AdminSiderMenu bên trong Drawer */}
-          < InstructorSidebar onMenuClick={toggleDrawer} />
+          <InstructorSidebar onMenuClick={toggleDrawer} />
         </Drawer>
+
         {/* Logo ở Navbar */}
         <div
           style={{
@@ -87,14 +97,14 @@ const InstructorNavbar = () => {
             src={logoImage}
             alt="EduMaster logo"
             style={{
-              height: isMobile ? "30px" : "40px", // Điều chỉnh kích thước logo
-              marginRight: "16px", // Khoảng cách giữa logo và các thành phần khác
+              height: isMobile ? "30px" : "40px",
+              marginRight: "16px",
             }}
           />
         </div>
 
         {/* Avatar cho Navbar */}
-        <Dropdown overlay={menu} trigger={["click"]}>
+        <Dropdown menu={{ items: menuItems }} trigger={["click"]}>
           <div
             style={{
               display: "flex",
@@ -106,28 +116,25 @@ const InstructorNavbar = () => {
               borderRadius: "10px",
               backgroundColor: "transparent",
               transition:
-                "background-color 0.3s, opacity 0.3s, transform 0.3s, box-shadow 0.3s", // Added transform and box-shadow
-              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)", // Added shadow for depth
+                "background-color 0.3s, opacity 0.3s, transform 0.3s, box-shadow 0.3s",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "rgba(0, 0, 0, 0.1)"; // Subtle background color change on hover
-              e.currentTarget.style.opacity = "1"; // Ensure full opacity on hover
-              e.currentTarget.style.transform = "scale(1.05)"; // Slightly scale up on hover
-              e.currentTarget.style.boxShadow = "0 6px 12px rgba(0, 0, 0, 0.3)"; // Enhance shadow on hover
+              e.currentTarget.style.backgroundColor = "rgba(0, 0, 0, 0.1)";
+              e.currentTarget.style.opacity = "1";
+              e.currentTarget.style.transform = "scale(1.05)";
+              e.currentTarget.style.boxShadow = "0 6px 12px rgba(0, 0, 0, 0.3)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "transparent"; // Reset background color
-              e.currentTarget.style.opacity = "0.9"; // Reset opacity
-              e.currentTarget.style.transform = "scale(1)"; // Reset scale
-              e.currentTarget.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)"; // Reset shadow
+              e.currentTarget.style.backgroundColor = "transparent";
             }}
           >
             <Avatar
               shape="square"
               size="large"
-              src="https://picsum.photos/id/237/200/300"
+              src={currentUser.avatar_url}
               alt="User Avatar"
-              style={{ border: "2px solid white" }} // Added border for contrast
+              style={{ border: "2px solid white" }}
             />
             {!isMobile && (
               <span
@@ -137,10 +144,9 @@ const InstructorNavbar = () => {
                   transition: "color 0.3s",
                 }}
               >
-                Admin
+                {currentUser.name}
               </span>
             )}
-            {/* Improved text color on hover */}
           </div>
         </Dropdown>
       </div>
@@ -149,15 +155,15 @@ const InstructorNavbar = () => {
       {!isMobile && (
         <Sider
           theme="light"
-          width={250} // Chiều rộng cố định
+          width={250}
           style={{
-            position: "fixed", // Cố định sidebar
-            height: "100vh", // Chiều cao bao phủ toàn trang
-            top: "80px", // Khoảng cách từ đầu trang, để tránh bị navbar đè lên
-            left: 0, // Canh lề trái
-            zIndex: 999, // Đảm bảo z-index để không bị các phần tử khác đè lên
-            backgroundColor: "#fff", // Đặt màu nền cho sidebar
-            boxShadow: "2px 0 5px rgba(0, 0, 0, 0.1)", // Thêm chút shadow cho đẹp
+            position: "fixed",
+            height: "100vh",
+            top: "80px",
+            left: 0,
+            zIndex: 999,
+            backgroundColor: "#fff",
+            boxShadow: "2px 0 5px rgba(0, 0, 0, 0.1)",
           }}
         >
           <InstructorSidebar /> {/* Thêm AdminSiderMenu */}

@@ -1,80 +1,115 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Table, Button, Card, Select, Switch, Tabs } from "antd";
 import {
-  Table,
-  Button,
-  Input,
-  Space,
-  Card,
-  Typography,
-  Select,
-  Switch,
-} from "antd";
-import {
-  SearchOutlined,
   EditOutlined,
   DeleteOutlined,
+  PlusCircleOutlined,
 } from "@ant-design/icons";
-import EditUserModal from "../../components/Admin/AdminModals/EditUserModal";
+import EditUser from "../../components/Admin/AdminModals/EditUserModal";
+import CreateUser from "../../components/Admin/AdminModals/CreateUserModal";
+import DeleteUserModal from "../../components/Admin/AdminModals/DeleteUserModal";
+import { UserSearchParams } from "../../models/SearchInfo.model";
+import { User, UserStatusEnum } from "../../models/UserModel";
+import { UserService } from "../../services/user.service";
+import GlobalSearchUnit from "../../components/GlobalSearchUnit";
+import { statusFormatter } from "../../utils/statusFormatter";
 
-const { Title } = Typography;
-const { Option } = Select; // Destructure Option from Select
+const { Option } = Select;
 
-const UserManagement = () => {
-  const [dataSource, setDataSource] = useState([
-    {
-      key: "1",
-      name: "Nguyễn Văn A",
-      email: "a@example.com",
-      phone: "0123456789",
-      username: "nguyenvana",
-      status: true, // Use boolean for status
-      role: "Admin",
-      createdAt: "2023-01-15",
-    },
-    {
-      key: "2",
-      name: "Trần Thị B",
-      email: "b@example.com",
-      phone: "0987654321",
-      username: "tranthib",
-      status: false, // Use boolean for status
-      role: "Instructor",
-      createdAt: "2023-02-20",
-    },
-    {
-      key: "3",
-      name: "Lê Văn C",
-      email: "c@example.com",
-      phone: "0912345678",
-      username: "levanc",
-      status: true, // Use boolean for status
-      role: "Student",
-      createdAt: "2023-03-05",
-    },
-  ]);
+const initialUsersParams: UserSearchParams = {
+  searchCondition: {
+    keyword: "",
+    role: "",
+    status: true,
+    is_delete: false,
+    is_verified: true,
+  },
+  pageInfo: { pageNum: 1, pageSize: 10 },
+};
 
+const UserManagement: React.FC = () => {
+  const [activeTabKey, setActiveTabKey] = useState("active");
+  const [searchParams, setSearchParams] = useState<UserSearchParams>(initialUsersParams);
   const [editVisible, setEditVisible] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [createVisible, setCreateVisible] = useState(false);
+  const [deleteUserModalVisible, setDeleteUserModalVisible] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [users, setUsers] = useState<User[]>([]);
+  const [total, setTotal] = useState(0);
 
-  const handleEdit = (record) => {
-    setCurrentUser(record); // Set the current user to edit
-    setEditVisible(true); // Show edit modal
+  const fetchUsers = async () => {
+    try {
+      const response = await UserService.getUsers(searchParams);
+      const responseData = response.data?.pageData;
+      const flattenedUsers: User[] = Array.isArray(responseData) ? responseData.flat() : [];
+      setUsers(flattenedUsers);
+      setTotal(response.data?.pageInfo?.totalItems ?? 0);
+    } catch (err) {
+      console.error("Error fetching users:", err);
+    }
   };
 
-  const handleDelete = (record) => {
-    console.log("Deleting user:", record);
-    // Implement delete logic
+  const handleTabChange = (key: string) => {
+    setActiveTabKey(key);
+    setSearchParams((prev) => ({
+      ...prev,
+      searchCondition: {
+        ...prev.searchCondition,
+        status: key === "active" || key === "unverified" ? true : false, // Đặt status là true cho cả hai tab "active" và "unverified"
+        is_verified: key === "unverified" ? false : true, // Đặt is_verified là false cho tab "unverified" và true cho các tab khác
+      },
+    }));
   };
 
-  const handleSave = (values) => {
-    console.log("Saving user:", values);
-    // Update user logic here, possibly update dataSource state
-    // setDataSource(updatedData);
+
+
+  const handleSearchSubmit = (values: Record<string, any>) => {
+    setSearchParams((prev) => ({
+      ...prev,
+      searchCondition: {
+        ...prev.searchCondition,
+        keyword: values.keyword,
+        role: values.role,
+      },
+    }));
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, [searchParams]);
+
+  const handleSave = async (updatedUserData: any) => {
+    if (!currentUser) return;
+    try {
+      await UserService.updateUser(currentUser._id, updatedUserData);
+      setEditVisible(false);
+      fetchUsers();
+    } catch (error) {
+      console.error("Error updating user:", error);
+    }
+  };
+
+  const handleEdit = (record: User) => {
+    setCurrentUser(record);
+    setEditVisible(true);
+  };
+
+  const handleDeleteConfirm = async (userId: string) => {
+    await UserService.deleteUser(userId);
+    fetchUsers();
+    setDeleteUserModalVisible(false);
+  };
+
+  const handleTableChange = (pagination: any) => {
+    setSearchParams((prev) => ({
+      ...prev,
+      pageInfo: { pageNum: pagination.current, pageSize: pagination.pageSize },
+    }));
   };
 
   const columns = [
     {
-      title: "Họ và tên",
+      title: "Name",
       dataIndex: "name",
       key: "name",
     },
@@ -84,99 +119,141 @@ const UserManagement = () => {
       key: "email",
     },
     {
-      title: "Số điện thoại",
-      dataIndex: "phone",
+      title: "Phone Number",
+      dataIndex: "phone_number",
       key: "phone",
     },
     {
-      title: "Tên đăng nhập",
-      dataIndex: "username",
-      key: "username",
-    },
-    {
-      title: "Trạng thái",
+      title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (text, record) => (
+      render: (status: boolean, record: User) => (
         <Switch
-          checked={text}
-          // checkedChildren="Kích hoạt"
-          // unCheckedChildren="Không kích hoạt"
-          onChange={(checked) => handleStatusChange(checked, record.key)}
+          checked={status}
+          onChange={async (checked) => {
+            await UserService.changeStatus({
+              user_id: record._id,
+              status: checked,
+            });
+            fetchUsers();
+          }}
         />
       ),
     },
     {
-      title: "Loại người dùng",
+      title: "User Role",
       dataIndex: "role",
       key: "role",
-      render: (text, record) => (
+      render: (text: string, record: User) => (
         <Select
-          defaultValue={text}
+          value={text}
           style={{ width: 120 }}
-          onChange={(value) => handleRoleChange(value, record.key)}
+          onChange={async (value) => {
+            await UserService.changeRole({ user_id: record._id, role: value });
+            fetchUsers();
+          }}
         >
-          <Option value="Admin">Admin</Option>
-          <Option value="Instructor">Instructor</Option>
-          <Option value="Student">Student</Option>
+          <Option value="admin">Admin</Option>
+          <Option value="instructor">Instructor</Option>
+          <Option value="student">Student</Option>
         </Select>
       ),
     },
-    // {
-    //   title: "Ngày tạo",
-    //   dataIndex: "createdAt",
-    //   key: "createdAt",
-    // },
     {
-      title: "Hành động",
+      title: "Actions",
       key: "action",
-      render: (text, record) => (
-        <Space size="middle">
+      render: (record: User) => (
+        <>
           <Button
-            color="primary"
-            variant="outlined"
-            icon={<EditOutlined />}
+            type="text"
+            icon={<EditOutlined style={{ color: "blue" }} />}
             onClick={() => handleEdit(record)}
-          >
-            Chỉnh sửa
-          </Button>
+          />
           <Button
-            color="danger"
-            variant="outlined"
-            icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record)}
-          >
-            Xóa
-          </Button>
-        </Space>
+            type="text"
+            icon={<DeleteOutlined style={{ color: "red" }} />}
+            onClick={() => {
+              setCurrentUser(record);
+              setDeleteUserModalVisible(true);
+            }}
+          />
+        </>
       ),
     },
   ];
 
+  const role = [
+    UserStatusEnum.ADMIN,
+    UserStatusEnum.INSTRUCTOR,
+    UserStatusEnum.STUDENT,
+  ];
+
   return (
-    <div style={{ padding: "10px", backgroundColor: "#f0f2f5" }}>
+    <div>
       <Card>
-        <h3>Quản lý người dùng</h3>
-        <Input
-          placeholder="Tìm kiếm..."
-          prefix={<SearchOutlined />}
-          style={{ width: "45%", marginBottom: "20px", borderRadius: "4px" }}
+        <h1 className="text-2xl my-5">User Management</h1>
+        <Tabs
+          activeKey={activeTabKey}
+          onChange={handleTabChange}
+          items={[
+            { key: "active", label: "Active Users" },
+            { key: "inactive", label: "Inactive Users" },
+            { key: "unverified", label: "Unverified Users" }, // Added unverified tab
+          ]}
         />
+        <div className="flex flex-wrap items-center justify-between mb-4 gap-2">
+          <GlobalSearchUnit
+            placeholder="Search By Name"
+            selectFields={[{
+              name: "role",
+              options: role.map((status) => ({
+                label: statusFormatter(status),
+                value: status,
+              })),
+              placeholder: "Filter by roles",
+            }]}
+            onSubmit={handleSearchSubmit}
+          />
+          <Button
+            type="primary"
+            onClick={() => setCreateVisible(true)}
+            style={{ borderRadius: "15px" }}
+            icon={<PlusCircleOutlined />}
+          >
+            Add new user
+          </Button>
+        </div>
         <Table
-          dataSource={dataSource}
+          dataSource={users}
           columns={columns}
-          pagination={{ pageSize: 5 }}
-          rowKey="key"
+          pagination={{
+            total,
+            showSizeChanger: true,
+          }}
+          onChange={handleTableChange}
+          rowKey="_id"
           bordered
-          style={{ borderRadius: "8px" }}
-          scroll={{ x: true }} // Thêm scroll cho bảng
+          scroll={{ x: "max-content" }}
         />
       </Card>
-      <EditUserModal
+
+      <EditUser
+        key={currentUser?._id}
         visible={editVisible}
         onClose={() => setEditVisible(false)}
-        user={currentUser}
+        user={currentUser ?? ({} as User)}
         onSave={handleSave}
+      />
+      <CreateUser
+        visible={createVisible}
+        onClose={() => setCreateVisible(false)}
+        onSave={fetchUsers}
+      />
+      <DeleteUserModal
+        visible={deleteUserModalVisible}
+        onCancel={() => setDeleteUserModalVisible(false)}
+        onDelete={() => handleDeleteConfirm(currentUser?._id!)}
+        userName={currentUser?.name || "Undefined User"}
       />
     </div>
   );
