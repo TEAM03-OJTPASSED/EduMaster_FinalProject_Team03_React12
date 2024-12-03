@@ -17,7 +17,6 @@ import CourseService from "../../services/course.service";
 import CategoryService from "../../services/category.service";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
-import { User } from "../../models/UserModel";
 import CountUp from "react-countup";
 
 interface InfoCardProps {
@@ -105,7 +104,7 @@ const AdminContent = () => {
 
   const fetchCounts = useCallback(async () => {
     try {
-      const [usersRes, blogsRes, coursesRes, categoriesRes, totalBalanceRes] =
+      const [usersRes, blogsRes, coursesRes, categoriesRes, ] =
         await Promise.all([
           UserService.getUsers(defaultPayload),
           BlogService.getBlogs(defaultPayload),
