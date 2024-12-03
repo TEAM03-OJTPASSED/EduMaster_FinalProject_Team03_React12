@@ -22,7 +22,7 @@ import CountUp from "react-countup";
 
 interface InfoCardProps {
   title: string;
-  value: React.ReactNode; 
+  value: React.ReactNode;
   icon: React.ReactNode;
   gradient: string;
   color: string;
@@ -81,12 +81,12 @@ const AdminContent = () => {
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
   const { currentUser } = useSelector((state: RootState) => state.auth.login);
+  const [totalBalance, setTotalBalance] = useState(0); // state cho totalBalance
   const [counts, setCounts] = useState({
     blogs: 0,
     categories: 0,
     courses: 0,
     users: 0,
-    totalBalance: 0,
   });
 
   const defaultPayload = {
@@ -128,15 +128,13 @@ const AdminContent = () => {
 
           UserService.getUser(currentUser._id),
         ]);
-      const user = totalBalanceRes?.data as User;
-      const userBalance = user?.balance_total || 0;
+
 
       setCounts({
         categories: categoriesRes.data?.pageInfo?.totalItems || 0,
         blogs: blogsRes.data?.pageInfo?.totalItems || 0,
         courses: coursesRes.data?.pageInfo?.totalItems || 0,
         users: usersRes.data?.pageInfo?.totalItems || 0,
-        totalBalance: userBalance,
       });
     } catch (err) {
       console.error("Error fetching counts:", err);
@@ -168,6 +166,14 @@ const AdminContent = () => {
       const responseData = responses.flatMap(
         (response) => response.data?.pageData || []
       );
+
+      // Tính tổng balance_instructor_paid
+      const newTotalBalance = responseData.reduce((sum, payout) => {
+        return sum + (payout.balance_instructor_paid || 0);
+      }, 0);
+
+      setTotalBalance(newTotalBalance); // Cập nhật state totalBalance
+
       setTransactions(
         responseData.flatMap(
           (payout) =>
@@ -248,7 +254,7 @@ const AdminContent = () => {
       <Row gutter={16}>
         <InfoCard
           title="Total Balance"
-          value={<CountUp start={0} end={counts.totalBalance} duration={2} decimals={2} />}
+          value={<CountUp start={0} end={totalBalance} duration={2} decimals={2} />}
           icon={<WalletOutlined style={{ fontSize: "24px", color: "#fff" }} />}
           gradient="linear-gradient(to bottom, #c6f6d5, #f0fff4)"
           color="#38a169"
