@@ -20,7 +20,6 @@ import { ApiResponse, APIResponseData } from "../models/ApiReponse.model";
 import { UserSearchParams } from "../models/SearchInfo.model";
 import { handleNotify } from "../utils/handleNotify";
 // import dayjs from "dayjs";
-import { message } from "antd";
 const BASE_URL = "/api/users";
 
 export const UserService = {
@@ -231,7 +230,7 @@ export const previewInstructor = async (
   dispatch(previewProfilePending());
   try {
     const res = await putRequest(USER_API.PREVIEW_INSTRUCTOR, formData);
-    message.success("Submit preview successfully");
+    handleNotify("Submit preview successfully", "");
     console.log("res preview", res);
     // const filterUserList = userList
     //   .slice()

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 import {
   DashboardOutlined,
-  UserOutlined,
+  SettingOutlined,
   FolderOutlined,
   StarOutlined,
   HistoryOutlined,
@@ -54,7 +54,7 @@ const StudentMenuItems: MenuItem[] = [
   },
   {
     key: "settings",
-    icon: <UserOutlined />,
+    icon: <SettingOutlined />,
     title: "Settings",
     path: "/dashboard/student/settings",
   },

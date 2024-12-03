@@ -1,5 +1,5 @@
-import { message } from "antd";
 import axios from "axios";
+import { handleNotify } from "../utils/handleNotify";
 export interface SendEmailType {
     name: string;
     email: string;
@@ -24,7 +24,7 @@ export const sendEmail = async (formValue: SendEmailType) => {
     try {
         const res = await axios.post("https://api.emailjs.com/api/v1.0/email/send", data);
         console.log(res.data);
-        message.success("Successfully !")
+        handleNotify("Successfully !", "")
     } catch (error) {
         console.log(error);
     }

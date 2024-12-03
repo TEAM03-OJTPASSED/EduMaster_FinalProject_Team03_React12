@@ -1,4 +1,4 @@
-import { Button, Form, Upload, Input, Select, message } from "antd";
+import { Button, Form, Upload, Input, Select } from "antd";
 import React, { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import type { UploadFile, UploadProps } from "antd";
@@ -10,6 +10,7 @@ import { BlogEditRequest } from "../../../models/Blog.model";
 import { uploadCustomRequest } from "../../../utils/uploadCustomReuquest";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store/store";
+import { handleNotify } from "../../../utils/handleNotify";
 
 type EditBlogProps = {
   initialValues?: BlogEditRequest;
@@ -82,16 +83,16 @@ const EditBlog: React.FC<EditBlogProps> = ({ initialValues, onSuccess }) => {
         );
 
         if (response?.success && onSuccess) {
-          message.success("Blog updated successfully");
+          handleNotify("Blog updated successfully", "");
           onSuccess();
         } else {
-          message.error("Failed to update blog");
+          handleNotify("Failed to update blog", "", "error");
         }
       } else {
-        message.error("Blog ID is missing.");
+        handleNotify("Blog ID is missing.", "", "error");
       }
     } catch (error) {
-      message.error("An error occurred while updating the blog.");
+      handleNotify("An error occurred while updating the blog.", "", "error");
     }
   };
 

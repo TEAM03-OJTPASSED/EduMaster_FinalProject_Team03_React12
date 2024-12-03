@@ -234,7 +234,7 @@ const InstructorContent = () => {
       dataIndex: "created_at",
       key: "created_at",
       render: (createdAt: string) => {
-        return dayjs(createdAt).format("DD-MM-YYYY");
+        return dayjs(createdAt).format("DD/MM/YYYY");
       },
     },
   ];
