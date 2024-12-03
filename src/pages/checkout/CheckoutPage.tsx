@@ -187,9 +187,9 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({
                         </div>
                     }
                       <div className="justify-between flex w-full">
-                        <Text>{cart.course_name}</Text>
-                        <div className="flex w-2/5 justify-end items-center">
-                          <Text className="">{moneyFormatter(cart.price_paid)}</Text>
+                        <Text className="overflow-hidden whitespace-nowrap overflow-ellipsis">{cart.course_name}</Text>
+                        <div className="flex  justify-end items-center">
+                          <Text className="whitespace-nowrap">{moneyFormatter(cart.price_paid)}</Text>
                           <Button
                             type="link"
                             onClick={() => cancelCart(cart)}

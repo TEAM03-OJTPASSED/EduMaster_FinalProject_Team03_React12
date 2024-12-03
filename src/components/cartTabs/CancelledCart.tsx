@@ -3,7 +3,6 @@ import {
   ShoppingCartOutlined,
 
   ArrowRightOutlined,
-  CodeSandboxCircleFilled,
   DeleteOutlined,
 
 } from "@ant-design/icons";
@@ -47,20 +46,18 @@ const CancelledOrders: React.FC<OrderProps> = ({
                   key={cart._id}
                   actions={[
                     <div key={cart._id}>
-                      <Text className={`font-jost px-8 text-base`}>
-                        <span className={`${cart.discount ? "line-through text-gray-400 text-sm pr-2" : "text-black text-right"}`}>${cart.price.toFixed(2)} </span>
-                        {cart.discount > 0 &&  `$${(cart.price * (100 - cart.discount)/100).toFixed(2)}`
-                        }
-                      </Text>
-                      <Text type="danger">
-                          <CodeSandboxCircleFilled /> Payment Cancelled
+                      <Text className={`font-jost sm:px-8 text-base`}>
+                        <span className={`${cart.discount ? "line-through sm:inline-block hidden text-gray-400 text-xs sm:text-sm pr-2" : "text-black text-right text-xs sm:text-sm "}`}>
+                          ${cart.price.toFixed(0)}
+                        </span>
+                        <span className="text-xs sm:text-sm">{cart.discount > 0 && `$${(cart.price * (100 - cart.discount)) / 100}`}</span>
                       </Text>
                     </div>,
                     <Button
                       key={cart._id}
                       type="primary"
                       size="large"
-                      className="w-full mt-4 view-button ant-btn-variant-solid font-jost"
+                      className="mt-4 sm:w-full sm:text-base text-xs w-24 view-button ant-btn-variant-solid font-jost"
                       onClick={() => repurchaseCart({_id: cart._id,cart_no: cart.cart_no})}
                     >
                       Repurchase <ArrowRightOutlined />
@@ -78,21 +75,23 @@ const CancelledOrders: React.FC<OrderProps> = ({
                       <img
                         src={cart.course_image}
                         alt={cart.course_name}
-                        className="w-24 h-16 object-cover rounded"
+                        className="w-24 h-16 object-cover rounded sm:inline-block hidden"
                       />
                     }
                     title={
-                      <Text strong className="font-jost">
+                      <div className="whitespace-nowrap  overflow-ellipsis overflow-hidden sm:w-auto">
+                      <Text strong className="font-jost hover:text-orange-400 transition whitespace-nowrap " onClick={() => navigate(`/course/${cart.course_id}`)}>
                         {cart.course_name}
                       </Text>
+                      </div>
                     }
                     description={
-                      <Space className="flex flex-col items-start">
-                        <Text>By {cart.instructor_name}</Text>
-                        
+                      <Space className="flex flex-col items-start pt-0 mt-0 justify-end space-y-0 hitespace-nowrap  overflow-ellipsis overflow-hidden">
+                        <Text className="whitespace-nowrap overflow-ellipsis overflow-hidden w-auto">By {cart.instructor_name}</Text>
                       </Space>
                     }
                   />
+                  
                 </List.Item>
               )}
             />

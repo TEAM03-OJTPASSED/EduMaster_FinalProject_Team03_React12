@@ -110,23 +110,23 @@ const MyCart: React.FC<MyCartProps> = ({
                 <List.Item
                   key={cart._id}
                   actions={[
-                    <>
-                      <Text className={`font-jost px-8 text-base`}>
-                        <span className={`${cart.discount ? "line-through text-gray-400 text-sm pr-2" : "text-black text-right"}`}>
+                    <div key={cart._id} >
+                     <Text className={`font-jost sm:px-8 text-base`}>
+                        <span className={`${cart.discount ? "line-through sm:inline-block hidden text-gray-400 text-sm pr-2" : "text-black text-right"}`}>
                           ${cart.price.toFixed(0)}
                         </span>
-                        {cart.discount > 0 && `$${(cart.price * (100 - cart.discount)) / 100}`}
+                        <span>{cart.discount > 0 && `$${(cart.price * (100 - cart.discount)) / 100}`}</span>
                       </Text>
                       <Button
                         type="text"
-                        icon={<DeleteOutlined />}
+                        icon={<DeleteOutlined/>}
                         onClick={(e) => handleRemoveCart(cart._id, cart.cart_no, e)}
                         aria-label={`Remove ${cart.course_name} from cart`}
                       />
-                    </>,
+                    </div>,
                   ]}
                   onClick={() => handleToggleSelect(cart._id, cart.cart_no)}
-                  className="cursor-pointer"
+                  className="cursor-pointer sm:w-auto"
                 >
                   <Checkbox
                     checked={selectedCarts.some((selectedCart) => selectedCart._id === cart._id)}
@@ -138,17 +138,19 @@ const MyCart: React.FC<MyCartProps> = ({
                       <img
                         src={cart.course_image}
                         alt={cart.course_name}
-                        className="w-24 h-16 object-cover rounded"
+                        className="w-24 h-16 object-cover rounded sm:inline-block hidden"
                       />
                     }
                     title={
-                      <Text strong className="font-jost hover:text-orange-400 transition whitespace-nowrap overflow-ellipsis" onClick={() => navigate(`/course/${cart.course_id}`)}>
+                      <div className="whitespace-nowrap  overflow-ellipsis overflow-hidden sm:w-auto">
+                      <Text strong className="font-jost hover:text-orange-400 transition whitespace-nowrap " onClick={() => navigate(`/course/${cart.course_id}`)}>
                         {cart.course_name}
                       </Text>
+                      </div>
                     }
                     description={
                       <Space className="flex flex-col items-start pt-0 mt-0 justify-end space-y-0">
-                        <Text>By {cart.instructor_name}</Text>
+                        <Text className="whitespace-nowrap overflow-ellipsis overflow-hidden w-auto">By {cart.instructor_name}</Text>
                       </Space>
                     }
                   />

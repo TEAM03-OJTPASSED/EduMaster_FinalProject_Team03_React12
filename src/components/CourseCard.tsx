@@ -1,5 +1,5 @@
 import { Button, Card, Tag } from "antd";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AiOutlineClockCircle } from "react-icons/ai";
 import { BiBook } from "react-icons/bi";
 import { FaBook, FaShoppingCart } from "react-icons/fa";
@@ -17,8 +17,8 @@ const CourseCard: React.FC<{
   viewMode: string;
   index: number;
   onAddCartClick: (course: Course) => void;
-}> = ({ course, viewMode, index, onAddCartClick }) => {
-  const [isMdScreen, setIsMdScreen] = useState(false);
+}> = ({ course, viewMode, onAddCartClick }) => {
+  // const [isMdScreen, setIsMdScreen] = useState(false);
   const [isInCart, setIsInCart] = useState(course.is_in_cart);
   const { currentUser } = useSelector((state: RootState) => state.auth.login);
   const [loading, setLoading] = useState(false);
@@ -34,14 +34,14 @@ const CourseCard: React.FC<{
       }
   }
 
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(min-width: 1200px)");
-    const handleResize = () => setIsMdScreen(mediaQuery.matches);
-    handleResize(); // Initial check
-    mediaQuery.addEventListener("change", handleResize); 
+  // useEffect(() => {
+  //   const mediaQuery = window.matchMedia("(min-width: 1200px)");
+  //   const handleResize = () => setIsMdScreen(mediaQuery.matches);
+  //   handleResize(); // Initial check
+  //   mediaQuery.addEventListener("change", handleResize); 
 
-    return () => mediaQuery.removeEventListener("change", handleResize); 
-  }, []);
+  //   return () => mediaQuery.removeEventListener("change", handleResize); 
+  // }, []);
 
   return (
     <div className="group relative cursor-pointer">
