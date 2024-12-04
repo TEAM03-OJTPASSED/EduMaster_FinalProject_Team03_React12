@@ -60,6 +60,7 @@ const InstructorSalesHistory = () => {
       const response = await PayoutService.createPayout(createPayout);
       if (response.success) {
         handleNotify("Payout created!", "Your payout was created successfully")
+        setSelectedRowKeys([])
         fetchSalesHistory()
       }
   };
