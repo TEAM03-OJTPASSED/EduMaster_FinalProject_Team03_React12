@@ -151,7 +151,7 @@ export const Banner = ({
                 <div
                   className="bg-orange-500 text-white text-2xl font-semibold px-8 py-4 rounded cursor-pointer"
                   onClick={() => {
-                    if (currentUser) {
+                    if (currentUser.role) {
                       if (course.is_in_cart) {
                         navigate(`/cart/new`)
                       } else {
