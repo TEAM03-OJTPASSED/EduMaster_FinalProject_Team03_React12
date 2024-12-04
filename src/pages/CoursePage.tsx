@@ -70,7 +70,8 @@ export default function CoursesPage() {
         keyword: searchText,
       },
       pageInfo: {
-        ...prevParams.pageInfo,
+        ...prevParams.pageInfo, 
+        pageNum: 1,
       },
     }));
   };

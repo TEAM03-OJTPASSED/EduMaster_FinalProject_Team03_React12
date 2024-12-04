@@ -37,7 +37,7 @@ const StudentOrderHistory = () => {
 
   const handleSearch = (values: Record<string, any>) => {
     setPurchaseLogSearchParam((prev) => ({
-      ...prev,
+      pageInfo: { ...prev.pageInfo, pageNum: 1  },
       searchCondition: {
         ...prev.searchCondition,
         purchase_no: values.keyword,

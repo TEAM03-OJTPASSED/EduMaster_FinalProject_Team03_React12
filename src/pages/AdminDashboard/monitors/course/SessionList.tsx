@@ -55,7 +55,7 @@ const SessionList = () => {
 
   const handleSearch = (values: Record<string, any>) => {
     setSearchParams({
-      ...searchParams,
+      pageInfo: { ...searchParams.pageInfo, pageNum: 1  },
       searchCondition: {
         ...searchParams.searchCondition,
         course_id: values.course_id || "",
@@ -69,7 +69,7 @@ const SessionList = () => {
     // try {
       const response = await SessionService.getSessions({
         ...searchParams,
-        pageInfo: { pageNum, pageSize },
+        pageInfo: { pageNum: searchParams.pageInfo.pageNum, pageSize },
       });
       setListSessions(response.data?.pageData ?? []);
       setTotal(response.data?.pageInfo?.totalItems ?? 0);
@@ -169,10 +169,14 @@ const SessionList = () => {
         dataSource={listSessions}
         columns={columns}
         pagination={{
-          current: pageNum,
-          pageSize,
-          total,
-          showSizeChanger: true,
+          pageSize: pageSize,
+          total: total,
+          current: searchParams.pageInfo.pageNum,
+          onChange: (page) =>
+            setSearchParams({
+              ...searchParams,
+              pageInfo: { ...searchParams.pageInfo, pageNum: page },
+            }),
         }}
         onChange={handleTableChange}
         rowKey="_id"

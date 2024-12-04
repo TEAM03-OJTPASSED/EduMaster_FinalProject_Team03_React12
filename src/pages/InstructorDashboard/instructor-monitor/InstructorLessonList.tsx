@@ -309,7 +309,7 @@ const InstructorLessonList = () => {
 
   const handleSearch = (values: Record<string, any>) => {
     setSearchParams({
-      pageInfo: searchParams.pageInfo,
+      pageInfo: { ...searchParams.pageInfo, pageNum: 1  },
       searchCondition: {
         ...searchParams.searchCondition,
         course_id: values.course_id,
@@ -379,6 +379,7 @@ const InstructorLessonList = () => {
         pagination={{
           pageSize: 5,
           total: totalItems,
+          current: searchParams.pageInfo.pageNum,
           onChange: (page) =>
             setSearchParams({
               ...searchParams,

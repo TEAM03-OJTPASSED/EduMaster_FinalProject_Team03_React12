@@ -138,7 +138,7 @@ const AdminRejectedPayout = () => {
     console.log("request payout", values);
 
     setSearchRequestPayoutParam((prev) => ({
-      ...prev,
+      pageInfo: { ...prev.pageInfo, pageNum: 1  },
       searchCondition: {
         ...prev.searchCondition,
         payout_no: values.keyword,

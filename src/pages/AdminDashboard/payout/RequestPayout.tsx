@@ -57,7 +57,6 @@ const AdminRequestPayout = () => {
   // fetch request payout
   const fetchDataRequestPayout = async () => {
     const res = await PayoutService.getPayout(searchRequestPayoutParam);
-
     setRequestPayoutList(res?.data?.pageData as Payout[]);
     setCurrentRequestPayouts(res?.data?.pageInfo as PageInfo);
   };
@@ -180,7 +179,7 @@ const AdminRequestPayout = () => {
     console.log("request payout", values);
 
     setSearchRequestPayoutParam((prev) => ({
-      ...prev,
+      pageInfo: { ...prev.pageInfo, pageNum: 1  },
       searchCondition: {
         ...prev.searchCondition,
         payout_no: values.keyword,
