@@ -2,6 +2,7 @@ import { Form, Input, Button, Rate } from "antd";
 import { Review, ReviewRequest } from "../models/Review.model";
 import ReviewService from "../services/review.service";
 import { handleNotify } from "../utils/handleNotify";
+import { useCustomNavigate } from "../hooks/customNavigate";
 type Props = {
   label?: boolean;
   courseId: string;
@@ -9,7 +10,7 @@ type Props = {
 
 export const LeaveAComment = ({ courseId }: Props) => {
   const [form] = Form.useForm();
-
+  const navigate = useCustomNavigate();
   const onFinish = async ({ rating, comment }: Review) => {
     const reviewRequest: ReviewRequest = {
       course_id: courseId,
@@ -32,6 +33,9 @@ export const LeaveAComment = ({ courseId }: Props) => {
       form.resetFields();
     } catch (error: any) {
       form.resetFields();
+      if(error.status == 404) {
+        navigate('/login');
+      }
     }
   };
   return (
