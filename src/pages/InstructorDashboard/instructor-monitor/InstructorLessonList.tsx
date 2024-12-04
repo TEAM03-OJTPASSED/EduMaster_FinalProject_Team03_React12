@@ -109,6 +109,8 @@ const InstructorLessonList = () => {
     setSelectedLesson({} as Lesson);
     setIsModalVisible(false);
     setIsModalCreateVisible(false);
+    createForm.resetFields();
+    updateForm.resetFields();
   };
 
   const handleCancel = () => {
@@ -177,6 +179,7 @@ const InstructorLessonList = () => {
       video_url: values.video_url || "",
       image_url: values.image_url || "",
       assignment: "",
+      description: values.description || "",
       user_id: currentUser._id
     };
     console.log(numericValues)

@@ -96,7 +96,6 @@ const LearnCoursePage = () => {
   };
 
   const handleClick = async (lesson: Lesson) => {
-    console.log("handleClick");
     if (buttonText === "Go To Next Item") {
       const currentSessionIndex = session?.findIndex((s) =>
         s.lesson_list.some((l) => l._id === lesson._id)
@@ -137,6 +136,12 @@ const LearnCoursePage = () => {
             ...lesson,
             is_completed: true,
           });
+          const user = JSON.parse(localStorage.getItem("user") || "{}");
+          if (!user.completed_lesson) {
+            user.completed_lesson = [];
+          }
+          user.completed_lesson.push(lesson._id);
+          localStorage.setItem("user", JSON.stringify(user));
         }
       } catch (error) {
         console.error("Error completing lesson:", error);

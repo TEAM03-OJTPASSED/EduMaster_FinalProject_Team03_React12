@@ -61,7 +61,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                   >
                     <div>
                       <div className="flex gap-2">
-                        <div className="w-1/10">
+                        <div className="w-1/10"> 
                           {lessonItem.is_completed ? (
                             <MdOutlineTaskAlt className="w-6 h-6 text-green-500" />
                           ) : (
