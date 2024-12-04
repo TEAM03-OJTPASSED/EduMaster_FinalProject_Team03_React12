@@ -130,10 +130,11 @@ const InstructorCourseList: React.FC = () => {
   };
 
   const handleSearch = (values: Record<string, any>) => {
+    
     setSearchParams({
-      pageInfo: searchParams.pageInfo,
+      pageInfo: { ...searchParams.pageInfo, pageNum: 1  },
       searchCondition: {
-        ...searchParams.searchCondition, // Spread existing searchCondition fields
+        ...searchParams.searchCondition, 
         category_id: values.category_id,
         keyword: values.keyword,
         status: values.status,
@@ -456,6 +457,7 @@ const InstructorCourseList: React.FC = () => {
         pagination={{
           pageSize: 5,
           total: totalItems,
+          current: searchParams.pageInfo.pageNum,
           onChange: (page) =>
             setSearchParams({
               ...searchParams,

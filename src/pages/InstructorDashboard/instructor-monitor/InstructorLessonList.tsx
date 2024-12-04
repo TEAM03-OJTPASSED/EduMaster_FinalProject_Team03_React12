@@ -109,6 +109,8 @@ const InstructorLessonList = () => {
     setSelectedLesson({} as Lesson);
     setIsModalVisible(false);
     setIsModalCreateVisible(false);
+    createForm.resetFields();
+    updateForm.resetFields();
   };
 
   const handleCancel = () => {
@@ -177,6 +179,7 @@ const InstructorLessonList = () => {
       video_url: values.video_url || "",
       image_url: values.image_url || "",
       assignment: "",
+      description: values.description || "",
       user_id: currentUser._id
     };
     console.log(numericValues)
@@ -306,7 +309,7 @@ const InstructorLessonList = () => {
 
   const handleSearch = (values: Record<string, any>) => {
     setSearchParams({
-      pageInfo: searchParams.pageInfo,
+      pageInfo: { ...searchParams.pageInfo, pageNum: 1  },
       searchCondition: {
         ...searchParams.searchCondition,
         course_id: values.course_id,
@@ -376,6 +379,7 @@ const InstructorLessonList = () => {
         pagination={{
           pageSize: 5,
           total: totalItems,
+          current: searchParams.pageInfo.pageNum,
           onChange: (page) =>
             setSearchParams({
               ...searchParams,

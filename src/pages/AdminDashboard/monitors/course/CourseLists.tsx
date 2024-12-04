@@ -79,7 +79,7 @@ const CourseLists: React.FC = () => {
 
   const handleSearch = (values: Record<string, any>) => {
     setSearchParams((prev) => ({
-      ...prev,
+      pageInfo: { ...prev.pageInfo, pageNum: 1  },
       searchCondition: {
         ...prev.searchCondition,
         category_id: values.category_id,
@@ -91,8 +91,11 @@ const CourseLists: React.FC = () => {
 
   useEffect(() => {
     fetchCourses();
-    fetchCategories();
   }, [pageNum, pageSize, searchParams]);
+
+  useEffect(() => {
+    fetchCategories();
+  },[])
 
   const columns = [
     {
@@ -211,7 +214,16 @@ const CourseLists: React.FC = () => {
         <Table
           dataSource={courses}
           columns={columns}
-          pagination={{ current: pageNum, pageSize, total, showSizeChanger: true }}
+          pagination={{
+            pageSize: pageSize,
+            total: total,
+            current: searchParams.pageInfo.pageNum,
+            onChange: (page) =>
+              setSearchParams({
+                ...searchParams,
+                pageInfo: { ...searchParams.pageInfo, pageNum: page },
+              }),
+          }}
           onChange={handleTableChange}
           rowKey="_id"
           bordered

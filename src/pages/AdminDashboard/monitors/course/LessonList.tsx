@@ -87,7 +87,7 @@ const LessonList = () => {
     //   setLoading(true);
       const response = await LessonService.getLessons({
         ...searchParams,
-        pageInfo: { pageNum, pageSize },
+        pageInfo: { pageNum: searchParams.pageInfo.pageNum, pageSize },
       });
       setListLessons(response.data?.pageData ?? []);
       setTotal(response.data?.pageInfo?.totalItems ?? 0);
@@ -193,7 +193,7 @@ const LessonList = () => {
 
   const handleSearch = (values: Record<string, any>) => {
     setSearchParams({
-      ...searchParams,
+      pageInfo: { ...searchParams.pageInfo, pageNum: 1  },
       searchCondition: {
         ...searchParams.searchCondition,
         keyword: values.keyword,
@@ -241,10 +241,14 @@ const LessonList = () => {
         dataSource={listLessons}
         columns={columns}
         pagination={{
-          current: pageNum,
-          pageSize,
-          total,
-          showSizeChanger: true,
+          pageSize: pageSize,
+          total: total,
+          current: searchParams.pageInfo.pageNum,
+          onChange: (page) =>
+            setSearchParams({
+              ...searchParams,
+              pageInfo: { ...searchParams.pageInfo, pageNum: page },
+            }),
         }}
         onChange={handleTableChange}
         rowKey={(record) => record._id}

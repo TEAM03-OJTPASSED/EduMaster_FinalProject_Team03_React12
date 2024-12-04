@@ -36,7 +36,7 @@ const initialCoursesParams: GetCourses = {
 const initialSessionsParams: GetSessions = {
   pageInfo: {
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 5,
   },
   searchCondition: {
     keyword: "",
@@ -56,6 +56,7 @@ const InstructorSessionList = () => {
   const [searchParams, setSearchParams] = useState<GetSessions>(
     initialSessionsParams
   );
+  const [totalItems, setTotalItems] = useState<number>()
 
   const showModal = (session: Session) => {
     setSelectedSession(null); // Reset the selected session first
@@ -81,6 +82,7 @@ const InstructorSessionList = () => {
   const fetchSessions = async () => {
     const response = await SessionService.getSessions(searchParams);
     setListSessions(response?.data?.pageData ?? []);
+    setTotalItems(response?.data?.pageInfo?.totalItems);
   };
 
   const handleCreateSession = async (values: SessionRequest) => {
@@ -132,7 +134,7 @@ const InstructorSessionList = () => {
   const handleSearch = (values: Record<string, any>) => {
     console.log(values);
     setSearchParams({
-      pageInfo: searchParams.pageInfo,
+      pageInfo: { ...searchParams.pageInfo, pageNum: 1  },
       searchCondition: {
         ...searchParams.searchCondition, // Spread existing searchCondition fields
         course_id: values.course_id,
@@ -266,7 +268,16 @@ const InstructorSessionList = () => {
       <Table
         dataSource={listSessions}
         columns={columns}
-        pagination={{ pageSize: 5 }}
+        pagination={{
+          pageSize: 5,
+          total: totalItems,
+          current: searchParams.pageInfo.pageNum,
+          onChange: (page) =>
+            setSearchParams({
+              ...searchParams,
+              pageInfo: { ...searchParams.pageInfo, pageNum: page },
+            }),
+        }}
         rowKey="name"
         bordered
         style={{ borderRadius: "8px" }}

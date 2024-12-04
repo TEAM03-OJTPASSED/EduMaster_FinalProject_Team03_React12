@@ -60,6 +60,7 @@ const InstructorSalesHistory = () => {
       const response = await PayoutService.createPayout(createPayout);
       if (response.success) {
         handleNotify("Payout created!", "Your payout was created successfully")
+        setSelectedRowKeys([])
         fetchSalesHistory()
       }
   };
@@ -177,7 +178,7 @@ const InstructorSalesHistory = () => {
   const handleSearch = (values: Record<string, any>) => {
     console.log(values)
     setSearchParams({
-      pageInfo: searchParams.pageInfo,
+      pageInfo: { ...searchParams.pageInfo, pageNum: 1  },
       searchCondition: {
         ...searchParams.searchCondition,
         purchase_no: values.keyword,
@@ -225,11 +226,12 @@ const InstructorSalesHistory = () => {
         scroll={{ x: 'max-content' }}
         pagination={{
           pageSize: 5,
-          total: totalItems,
+          total: totalItems, 
+          current: searchParams.pageInfo.pageNum,
           onChange: (page) =>
             setSearchParams({
               ...searchParams,
-              pageInfo: { ...searchParams.pageInfo, pageNum: page },
+              pageInfo: { ...searchParams.pageInfo, pageNum: page},
             }),
         }}
         rowKey="purchase_no"

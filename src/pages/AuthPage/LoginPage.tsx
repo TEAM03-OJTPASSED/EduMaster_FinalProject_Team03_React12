@@ -18,12 +18,12 @@ export type LoginProps = {
 const Loginpage = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const { currentUser, token, loading,is_register_google } = useSelector(
-    (state: RootState) => state.auth.login
-  );
+  const { currentUser, token, loading, is_register_google, success } =
+    useSelector((state: RootState) => state.auth.login);
 
   const navigate = useNavigate();
   const isNotExistAccount = localStorage.getItem("isNotExist");
+
   useEffect(() => {
     if (isNotExistAccount === "true") {
       setIsOpenModal(true);
@@ -31,6 +31,12 @@ const Loginpage = () => {
       setIsOpenModal(false);
     }
   }, [isNotExistAccount]);
+
+  useEffect(() => {
+    if (success) {
+      setIsOpenModal(false);
+    }
+  }, [success]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -134,8 +140,6 @@ const Loginpage = () => {
             Or sign in with
           </Divider>
           <div className="flex justify-center">
-
-
             <GoogleLoginButton />
           </div>
         </div>

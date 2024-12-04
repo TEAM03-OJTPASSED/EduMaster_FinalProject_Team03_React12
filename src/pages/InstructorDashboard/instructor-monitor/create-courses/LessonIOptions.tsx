@@ -4,13 +4,11 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import {
   Button,
   Checkbox,
-  Col,
   Form,
   FormInstance,
   FormProps,
   Input,
   Radio,
-  Row,
   Select,
   Tooltip,
   Upload,
@@ -40,8 +38,8 @@ type LessonOptionsProps = {
   listSessions: Session[];
   listCourses: Course[];
   onCourseChange: (value: string) => void;
-  form: FormInstance<Lesson>
-  resetVisbility?: boolean
+  form: FormInstance<Lesson>;
+  resetVisbility?: boolean;
 };
 
 const LessonIOptions: React.FC<LessonOptionsProps> = ({
@@ -52,20 +50,20 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
   listSessions,
   onCourseChange,
   resetVisbility,
-  form
+  form,
 }) => {
   const [imageFileList, setImageFileList] = useState<UploadFile[]>([]);
   const [videoFileList, setVideoFileList] = useState<UploadFile[]>([]);
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | undefined>(
     initialValues?.video_url
   );
-  const [visibility, setVisibility] = useState<LessonTypeEnum>()
+  const [visibility, setVisibility] = useState<LessonTypeEnum>();
 
   useEffect(() => {
     if (resetVisbility) {
-      setVisibility(undefined)
+      setVisibility(undefined);
     }
-  },[resetVisbility])
+  }, [resetVisbility]);
 
   useEffect(() => {
     if (mode === "update") {
@@ -74,7 +72,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
         description: initialValues?.description,
         session_id: initialValues?.session_id,
       });
-      setVisibility(initialValues?.lesson_type as LessonTypeEnum)
+      setVisibility(initialValues?.lesson_type as LessonTypeEnum);
       setVideoFileList(
         initialValues?.video_url
           ? [
@@ -83,6 +81,18 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
                 name: "video.mp4",
                 status: "done",
                 url: initialValues.video_url,
+              },
+            ]
+          : []
+      );
+      setImageFileList(
+        initialValues?.image_url
+          ? [
+              {
+                uid: "-1",
+                name: "image",
+                status: "done",
+                url: initialValues.image_url,
               },
             ]
           : []
@@ -105,6 +115,19 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
     }
   };
 
+  const handleImageChange: UploadProps["onChange"] = ({
+    fileList: newFileList,
+  }) => {
+    setImageFileList(newFileList || []);
+    if (newFileList.length > 0 && newFileList[0].status === "done") {
+      console.log(newFileList[0].response?.secure_url)
+      const uploadedImageUrl = newFileList[0].response?.secure_url;
+      form.setFieldsValue({ image_url: uploadedImageUrl });
+    } else if (newFileList.length === 0 || newFileList[0].status === "error") {
+      form.setFieldsValue({ image_url: "" });
+    }
+  };
+
   const handleCourseChange = useCallback(
     (courseId: string) => {
       form.setFieldsValue({
@@ -117,41 +140,34 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
 
   const handleLessonType = (type: LessonTypeEnum) => {
     setVisibility(type);
-  
+
     // Reset fields based on the selected lesson type
     if (type === LessonTypeEnum.READING) {
-      form.setFieldsValue({ 
-        video_url: "", 
-        image_url: "", 
-        assignment: "" 
+      form.setFieldsValue({
+        video_url: "",
+        image_url: "",
+        assignment: "",
       });
-      setVideoPreviewUrl(undefined); // Ensure string type
-      setImageFileList([]); // Clear image list
-    } else if (type === LessonTypeEnum.ASSIGNMENT) {
-      form.setFieldsValue({ 
-        video_url: "", 
-        image_url: "", 
-        assignment: "" 
-      });
-      setVideoPreviewUrl(""); // Ensure string type
-      setImageFileList([]); // Clear image list
+      setVideoPreviewUrl(""); 
+      setVideoFileList([])
+      setImageFileList([]);
     } else if (type === LessonTypeEnum.VIDEO) {
-      form.setFieldsValue({ 
-        video_url: "", 
-        image_url: "", 
-        assignment: "" 
+      form.setFieldsValue({
+        video_url: "",
+        image_url: "",
+        assignment: "",
       });
       setImageFileList([]); // Clear image list
     } else if (type === LessonTypeEnum.IMAGE) {
-      form.setFieldsValue({ 
-        video_url: "", 
-        image_url: "", 
-        assignment: "" 
+      form.setFieldsValue({
+        video_url: "",
+        image_url: "",
+        assignment: "",
       });
-      setImageFileList([]); // Clear image list
+      setVideoPreviewUrl("")
+      setVideoFileList([])
     }
   };
-  
 
   useEffect(() => {
     if (initialValues?.course_id) {
@@ -291,7 +307,7 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
 
   const onFinish = (values: Lesson) => {
     if (values.lesson_type === LessonTypeEnum.ASSIGNMENT) {
-      const sanitizedQuestions = questions.map(({ _id, ...rest }) => rest);
+      const sanitizedQuestions = questions.map(({ ...rest }) => rest);
       values.assignment = JSON.stringify({
         name: values.name,
         question_list: sanitizedQuestions,
@@ -302,16 +318,15 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
     }
   };
 
-
-
   // Huko additional code
   return (
     <Form<Lesson>
       form={form}
       onResetCapture={() => {
-        console.log('Resetting')
+        console.log("Resetting");
 
-       setVisibility(undefined)}}
+        setVisibility(undefined);
+      }}
       layout="vertical"
       initialValues={initialValues}
       onFinish={onFinish}
@@ -354,7 +369,6 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
               value: session._id,
             }))}
             disabled={!form.getFieldValue("course_id")}
-
           />
         </Form.Item>
         {/* {(form.getFieldValue("course_id")).toString()} */}
@@ -430,8 +444,8 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
           )}
 
           {visibility === LessonTypeEnum.IMAGE && (
-            <div>
-              <Form.Item
+            <div className="flex-col flex items-center">
+              {/* <Form.Item
                 label="Content"
                 name="description"
                 rules={[
@@ -445,22 +459,21 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
                     form.setFieldsValue({ description: editor.getData() })
                   }
                 />
-              </Form.Item>
+              </Form.Item> */}
               <Form.Item
                 label="Lesson Image"
                 name="image_url"
                 rules={[{ required: true, message: "Please input image" }]}
               >
-                <div className="space-y-4">
+                <div style={{ textAlign: "center", marginBottom: "16px" }}>
                   <Upload
                     customRequest={uploadCustomRequest}
-                    action="https://api.cloudinary.com/v1_1/dz2dv8lk4/upload?upload_preset=edumaster1"
+                    action={API_UPLOAD_FILE}
                     accept="image/*"
                     listType="picture-card"
                     fileList={imageFileList}
-                    onChange={({ fileList }) => setImageFileList(fileList)}
+                    onChange={handleImageChange}
                     maxCount={1}
-                    
                   >
                     {imageFileList.length >= 1 ? null : (
                       <div>
@@ -474,10 +487,9 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
             </div>
           )}
 
-          <div className="flex justify-around">
-            {visibility=== LessonTypeEnum.VIDEO && (
-              <div>
-                <Form.Item
+            {visibility === LessonTypeEnum.VIDEO && (
+              <div className="flex-col flex items-center justify-center">
+                {/* <Form.Item
                   label="Content"
                   name="description"
                   rules={[
@@ -491,61 +503,75 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
                       form.setFieldsValue({ description: editor.getData() })
                     }
                   />
-                </Form.Item>
-                <Col span={12}>
+                </Form.Item> */}
                   <Form.Item
                     label="Lesson Video"
                     name="video_url"
                     rules={[{ required: true, message: "Please input video" }]}
+                    
                   >
-                    <Row gutter={16} align="middle">
-                      <Col span={8}>
-                        <Upload
-                          action={API_UPLOAD_FILE}
-                          customRequest={uploadCustomRequest}
-                          accept="video/*"
-                          listType="picture-card"
-                          fileList={videoFileList}
-                          onChange={handleVideoChange}
-                          maxCount={1}
-                          showUploadList
-                          beforeUpload={(file) => {
-                        const isSupportedFormat = ["video/mp4", "video/webm", "video/ogg", "video/mov"].includes(file.type);
-                        if (!isSupportedFormat) {
-                          handleNotify("File format not supported","You can only upload MP4, WebM, MOV or OGG video files!", 'error');
-                        }
-                        return isSupportedFormat || Upload.LIST_IGNORE; 
-                      }}
-                    >
-                          {videoFileList.length >= 1 ? null : (
-                            <div>
-                              <PlusOutlined className="h-5 w-5" />
-                              <div>Upload</div>
-                            </div>
-                          )}
-                        </Upload>
-                      </Col>
-
-                      <Col span={16}>
-                        {videoPreviewUrl && (
-                          <div style={{ width: "100%", overflow: "hidden" }}>
-                            <ReactPlayer
-                              url={videoPreviewUrl}
-                              width="100%"
-                              height="auto" // Adjusts height to maintain aspect ratio
-                              controls
-                              style={{ maxWidth: "400px" }} // Limit max width
-                            />
+                    <div style={{ textAlign: "center", marginBottom: "16px" }}>
+                      <Upload
+                        action={API_UPLOAD_FILE}
+                        customRequest={uploadCustomRequest}
+                        accept="video/*"
+                        listType="picture-card"
+                        fileList={videoFileList}
+                        onChange={handleVideoChange}
+                        maxCount={1}
+                        showUploadList
+                        beforeUpload={(file) => {
+                          const isSupportedFormat = [
+                            "video/mp4",
+                            "video/webm",
+                            "video/ogg",
+                            "video/quicktime",                
+                          ].includes(file.type);
+                          console.log(file.type)
+                          if (!isSupportedFormat) {
+                            handleNotify(
+                              "File format not supported",
+                              "You can only upload MP4, WebM, MOV or OGG video files!",
+                              "error"
+                            );
+                          }
+                          return isSupportedFormat || Upload.LIST_IGNORE;
+                        }}
+                      >
+                        {videoFileList.length >= 1 ? null : (
+                          <div>
+                            <PlusOutlined className="h-5 w-5" />
+                            <div>Upload</div>
                           </div>
                         )}
-                      </Col>
-                    </Row>
+                      </Upload>
+                    </div>
                   </Form.Item>
-                </Col>
+                  {videoPreviewUrl && (
+                      <div
+                        style={{
+                          width: "100%",
+                          overflow: "hidden",
+                          textAlign: "center",
+                        }}
+                      >
+                        <ReactPlayer
+                          url={videoPreviewUrl}
+                          width="100%"
+                          height="auto" // Adjusts height to maintain aspect ratio
+                          controls
+                          style={{
+                            minWidth: "400px", // Limit max width
+                            maxWidth:"200px",
+                            margin: "0 auto", // Center the preview
+                          }}
+                        />
+                      </div>
+                    )}
               </div>
             )}
 
-            {visibility  === LessonTypeEnum.ASSIGNMENT && (
+            {visibility === LessonTypeEnum.ASSIGNMENT && (
               <div className="h-[70vh] w-full overflow-y-scroll">
                 <Form.Item name="assignment">
                   {questions.map((q) => (
@@ -648,7 +674,6 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
             )}
           </div>
         </div>
-      </div>
     </Form>
   );
 };
