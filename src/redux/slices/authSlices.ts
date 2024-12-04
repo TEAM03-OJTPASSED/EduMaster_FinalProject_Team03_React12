@@ -136,6 +136,9 @@ export const authSlice = createSlice({
       state.resendToken.loading = false;
       state.resendToken.success = false;
     },
+    setIsLoginGoogleStart:(state, action)=>{
+      state.login.googleId = action.payload
+    }
 
   },
   extraReducers: (builder) => {
@@ -206,7 +209,7 @@ export const {
   resendTokenPending,
   resendTokenRejected,
   // setRegisterGoogle,
-  // setIsLoginGoogleStart,
+  setIsLoginGoogleStart,
   // setIsLoginGoogleFailed,
 } = authSlice.actions;
 
