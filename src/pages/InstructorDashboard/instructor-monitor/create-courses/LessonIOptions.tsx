@@ -555,17 +555,28 @@ const LessonIOptions: React.FC<LessonOptionsProps> = ({
                           textAlign: "center",
                         }}
                       >
-                        <ReactPlayer
-                          url={videoPreviewUrl}
-                          width="100%"
-                          height="auto" // Adjusts height to maintain aspect ratio
-                          controls
+                        <div
                           style={{
-                            minWidth: "400px", // Limit max width
-                            maxWidth:"200px",
-                            margin: "0 auto", // Center the preview
+                            width: "400px", 
+                            height: "225px", 
+                            margin: "0 auto", 
+                            overflow: "hidden", 
+                            display: "flex",
+                            alignItems: "center", 
+                            justifyContent: "center", 
                           }}
-                        />
+                        >
+                          <ReactPlayer
+                            url={videoPreviewUrl}
+                            width="100%" 
+                            height="100%" 
+                            controls
+                            style={{
+                              objectFit: "contain", 
+                            }}
+                          />
+                        </div>
+
                       </div>
                     )}
               </div>
