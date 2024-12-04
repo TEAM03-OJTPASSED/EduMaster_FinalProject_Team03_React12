@@ -362,23 +362,29 @@ const InstructorCourseList: React.FC = () => {
           </Tooltip>
 
           {record.status == CourseStatusEnum.NEW && (
-            <Tooltip title="Request Approval">
-              <Button
-                type="text"
-                icon={<RocketFilled style={{ color: "green" }} />}
-                onClick={() => handleSendToAdmin(record)}
-                disabled={
-                  record.status !== CourseStatusEnum.NEW &&
-                  record.status !== CourseStatusEnum.REJECT
-                }
-                aria-label={
-                  record.status !== CourseStatusEnum.NEW &&
-                  record.status !== CourseStatusEnum.REJECT
-                    ? "Can only send NEW or REJECT courses"
-                    : "Send to admin for approval"
-                }
-              />
-            </Tooltip>
+            <Tooltip
+            title={
+              record.status === CourseStatusEnum.NEW || record.status === CourseStatusEnum.REJECT
+                ? "Send to admin for approval"
+                : "Can only send NEW or REJECT courses"
+            }
+          >
+            <Button
+              type="text"
+              icon={<RocketFilled style={{ color: record.status === CourseStatusEnum.NEW || record.status === CourseStatusEnum.REJECT ? "green" : "gray" }} />}
+              onClick={() => handleSendToAdmin(record)}
+              disabled={
+                record.status !== CourseStatusEnum.NEW &&
+                record.status !== CourseStatusEnum.REJECT
+              }
+              aria-label={
+                record.status !== CourseStatusEnum.NEW &&
+                record.status !== CourseStatusEnum.REJECT
+                  ? "Can only send NEW or REJECT courses"
+                  : "Send to admin for approval"
+              }
+            />
+          </Tooltip>
           )}
           {record.status !== CourseStatusEnum.NEW &&
             record.status !== CourseStatusEnum.REJECT &&
