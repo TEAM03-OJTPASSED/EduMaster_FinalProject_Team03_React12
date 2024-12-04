@@ -17,6 +17,7 @@ import { User } from "../models/UserModel";
 import ReactPlayer from "react-player";
 import { handleNotify } from "../utils/handleNotify";
 import { uploadPlugin } from "./UploadImageInCKE";
+import { uploadCustomRequest } from "../utils/uploadCustomReuquest";
 
 interface UserProfileFormProps {
   currentUser: User;
@@ -135,6 +136,7 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
               <Form.Item label="Avatar" name="avatar_url">
                 <Upload
                   action={API_UPLOAD_FILE}
+                  customRequest={uploadCustomRequest}
                   listType="picture-card"
                   onChange={handleImageChange}
                   fileList={imageFileList}
@@ -160,6 +162,7 @@ const UserProfileForm: React.FC<UserProfileFormProps> = ({
               <Col>
                 <Upload
                   action={API_UPLOAD_FILE}
+                  customRequest={uploadCustomRequest}
                   listType="picture-card"
                   accept="video/*"
                   onChange={handleVideoChange}
