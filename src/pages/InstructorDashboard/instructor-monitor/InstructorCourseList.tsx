@@ -342,7 +342,8 @@ const InstructorCourseList: React.FC = () => {
       align: "center" as const,
       fixed: "right" as const,
       render: (record: Course) => (
-        <div className="flex justify-between">
+        <div className="justify-center">
+        <div className="flex justify-center">
           <Tooltip title="Edit" className="!font-jost">
             <Button
               type="text"
@@ -361,27 +362,20 @@ const InstructorCourseList: React.FC = () => {
             />
           </Tooltip>
 
-          {record.status == CourseStatusEnum.NEW && (
+          {(record.status == CourseStatusEnum.NEW || record.status == CourseStatusEnum.REJECT) &&  (
             <Tooltip
             title={
-              record.status === CourseStatusEnum.NEW || record.status === CourseStatusEnum.REJECT
+              record.lesson_count > 0
                 ? "Send to admin for approval"
-                : "Can only send NEW or REJECT courses"
+                : "Course is missing sessions, lessons"
             }
           >
             <Button
               type="text"
-              icon={<RocketFilled style={{ color: record.status === CourseStatusEnum.NEW || record.status === CourseStatusEnum.REJECT ? "green" : "gray" }} />}
-              onClick={() => handleSendToAdmin(record)}
+              icon={<RocketFilled style={{ color: record.lesson_count > 0 ? "green" : "gray" }} />}
+              onClick= {() => handleSendToAdmin(record)}
               disabled={
-                record.status !== CourseStatusEnum.NEW &&
-                record.status !== CourseStatusEnum.REJECT
-              }
-              aria-label={
-                record.status !== CourseStatusEnum.NEW &&
-                record.status !== CourseStatusEnum.REJECT
-                  ? "Can only send NEW or REJECT courses"
-                  : "Send to admin for approval"
+                record.lesson_count === 0
               }
             />
           </Tooltip>
@@ -404,6 +398,7 @@ const InstructorCourseList: React.FC = () => {
                 />
               </Tooltip>
             )}
+        </div>
         </div>
       ),
     },
