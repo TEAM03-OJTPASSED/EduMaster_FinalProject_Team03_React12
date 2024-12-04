@@ -48,7 +48,6 @@ const SignUppage = () => {
   );
   console.log("register success", success);
 
-  // const [imageUrl, setImageUrl] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [fileListImage, setFileListImage] = useState<UploadFile[]>([]);
   const [fileListVideo, setFileListVideo] = useState<UploadFile[]>([]);
@@ -78,6 +77,7 @@ const SignUppage = () => {
   const onFinish: FormProps["onFinish"] = (values) => {
     const { confirmPassword, ...others } = values;
     register(others, dispatch, navigate);
+    
   };
   const handleVideoChange: UploadProps["onChange"] = ({
     fileList: newFileList,

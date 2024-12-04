@@ -91,7 +91,8 @@ export const registerWithGoogle = createAsyncThunk<
   ModalRegisterGoogleProps
 >("auth/registerGoogle", async (formData) => {
   const response = await postRequest("/api/users/google", formData);
-  handleNotify("Register gg successfully", " ");
+  handleNotify("Sign Up Successful!", "Please check your email")
+  
   localStorage.setItem("token", (response as any).data.token);
   return response.data as AuthState;
 });
@@ -171,18 +172,15 @@ export const authSlice = createSlice({
       })
       .addCase(loginWithGoogle.pending, (state) => {
         state.login.loading = true;
-        // state.login.is_google = true;
       })
       .addCase(loginWithGoogle.fulfilled, (state) => {
         state.login.loading = false;
         state.login.success = true;
-        // state.login.is_google = false;
       })
       .addCase(loginWithGoogle.rejected, (state) => {
         state.login.loading = false;
         state.login.success = false;
         state.login.is_register_google = true;
-        // state.login.is_google = false;
       })
       .addCase(registerWithGoogle.pending, (state) => {
         state.login.loading = true;
@@ -190,7 +188,7 @@ export const authSlice = createSlice({
       .addCase(registerWithGoogle.fulfilled, (state) => {
         state.login.loading = false;
         state.login.success = true;
-        // state.login.is_register_google = false;
+        
       })
       .addCase(registerWithGoogle.rejected, (state) => {
         state.login.loading = false;

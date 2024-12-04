@@ -6,7 +6,7 @@ import axios, {
 import handleError, { ErrorResponse } from "./error";
 import { jwtDecode } from "jwt-decode";
 interface DecodedToken {
-  exp: number; // Thời gian hết hạn của token
+  exp: number;
 }
 // Tạo instance của axios
 export const axiosClientVer2 = axios.create({
@@ -20,8 +20,7 @@ export const axiosClientVer2 = axios.create({
 // Request Interceptor
 axiosClientVer2.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // Thêm Authorization header với token, nếu nó tồn tại
-    const token = localStorage.getItem("token"); // Hoặc bất kỳ phương pháp nào bạn lưu trữ token
+    const token = localStorage.getItem("token"); 
 
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
@@ -46,18 +45,10 @@ axiosClientVer2.interceptors.request.use(
 // Response Interceptor
 axiosClientVer2.interceptors.response.use(
   (response: AxiosResponse) => {
-    // Xử lý thành công response, nếu cần
     return response;
   },
   (error: AxiosError) => {
-    // Xử lý lỗi phản hồi toàn cầu
     handleError(error);
-    // console.log(
-    //   "error",
-    //   (error.response?.data as ErrorResponse).message?.includes(
-    //     "is not exists."
-    //   )
-    // );
     if (
       (error.response?.data as ErrorResponse).message?.includes(
         "is not exists."
