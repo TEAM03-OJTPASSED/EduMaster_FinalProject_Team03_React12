@@ -35,19 +35,15 @@ const MainContent: React.FC<MainContentProps> = ({
           <h2 className="text-xl font-bold">{selectedLesson.name}</h2>
           <div className="pt-2 rounded">
             {selectedLesson.lesson_type === "video" ? (
-              <div className="w-full">
+              <div className="w-full max-h-[70vh]">
                 <ReactPlayer
-                  width="100%"
-                  height="auto"
-        
                   url={selectedLesson.video_url}
                   controls
                 />
               </div>
-            ) : selectedLesson.lesson_type === "assignment" ? (
+            ) : selectedLesson.lesson_type === "image" ? (
               <div className="w-full">
-                <h2>Assignment</h2>
-                <p>{selectedLesson.assignment}</p>
+                <div><img src={selectedLesson.image_url} alt="Image"/></div>
               </div>
             ) : (
               <div
